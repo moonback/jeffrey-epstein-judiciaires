@@ -65,7 +65,7 @@ export const DataCard: React.FC<DataCardProps> = ({ data, sources, loading, onDe
     }
 
     return (
-        <div className="w-full bg-[#1E1E1E] rounded-3xl overflow-hidden border border-[#444746] shadow-2xl transition-all duration-500 flex flex-col h-full">
+        <div className="w-full bg-[#1E1E1E] rounded-[40px] overflow-hidden border border-[#444746] shadow-2xl transition-all duration-500 flex flex-col">
 
             {/* En-tête Badge */}
             <div className="bg-[#370003] px-6 py-4 flex justify-between items-center border-b border-[#601410]">
@@ -88,12 +88,14 @@ export const DataCard: React.FC<DataCardProps> = ({ data, sources, loading, onDe
             <div className="p-8 flex flex-col gap-8 flex-1">
 
                 {/* Résumé Global */}
-                <div>
-                    <label className="text-[11px] uppercase tracking-widest text-[#8E918F] mb-2 flex items-center gap-2">
-                        <FileText size={12} /> Synthèse de l'Investigation
+                <div className="animate-in fade-in slide-in-from-top-4 duration-700">
+                    <label className="text-[10px] uppercase font-black tracking-[0.2em] text-[#F2B8B5] mb-4 flex items-center gap-2">
+                        <div className="w-1.5 h-1.5 rounded-full bg-[#F2B8B5] animate-pulse"></div>
+                        Synthèse de l'Investigation
                     </label>
-                    <div className="text-[#E3E3E3] leading-relaxed text-sm bg-[#121212] p-4 rounded-xl border border-[#444746]/50 italic border-l-4 border-l-[#F2B8B5]">
-                        {data.context_general}
+                    <div className="text-[#E3E3E3] leading-relaxed text-base bg-[#121212] p-8 rounded-[32px] border border-[#2D2D2D] italic relative overflow-hidden group">
+                        <div className="absolute top-0 left-0 w-1.5 h-full bg-gradient-to-b from-[#F2B8B5] to-[#601410]"></div>
+                        <p className="relative z-10">{data.context_general}</p>
                     </div>
                 </div>
 
@@ -111,8 +113,8 @@ export const DataCard: React.FC<DataCardProps> = ({ data, sources, loading, onDe
                                 <button
                                     onClick={() => setActiveFilter('ALL')}
                                     className={`px-2.5 py-1 rounded-md text-[10px] uppercase font-bold tracking-wide transition-colors border ${activeFilter === 'ALL'
-                                            ? 'bg-[#E3E3E3] text-[#1E1E1E] border-[#E3E3E3]'
-                                            : 'bg-[#1E1E1E] text-[#757775] border-[#444746] hover:border-[#757775]'
+                                        ? 'bg-[#E3E3E3] text-[#1E1E1E] border-[#E3E3E3]'
+                                        : 'bg-[#1E1E1E] text-[#757775] border-[#444746] hover:border-[#757775]'
                                         }`}
                                 >
                                     TOUS
@@ -122,8 +124,8 @@ export const DataCard: React.FC<DataCardProps> = ({ data, sources, loading, onDe
                                         key={type}
                                         onClick={() => setActiveFilter(type)}
                                         className={`px-2.5 py-1 rounded-md text-[10px] uppercase font-bold tracking-wide transition-colors border whitespace-nowrap ${activeFilter === type
-                                                ? 'bg-[#004A77] text-[#D3E3FD] border-[#004A77]'
-                                                : 'bg-[#1E1E1E] text-[#757775] border-[#444746] hover:border-[#8AB4F8] hover:text-[#8AB4F8]'
+                                            ? 'bg-[#004A77] text-[#D3E3FD] border-[#004A77]'
+                                            : 'bg-[#1E1E1E] text-[#757775] border-[#444746] hover:border-[#8AB4F8] hover:text-[#8AB4F8]'
                                             }`}
                                     >
                                         {type}
