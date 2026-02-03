@@ -279,40 +279,58 @@ const App: React.FC = () => {
         }}
       />
 
-      <div className="flex-1 flex flex-col min-w-0 h-screen overflow-hidden">
+      <div className="flex-1 flex flex-col min-w-0 h-screen overflow-hidden bg-[#0A0A0A]">
 
-        {/* 2. Compact Module Header */}
-        <header className="px-8 h-16 shrink-0 flex justify-between items-center border-b border-[#2D2D2D] bg-[#121212]/50 backdrop-blur-md z-30">
-          <div className="flex gap-6 items-center">
-            <span className="flex items-center gap-1.5 px-3 py-1 bg-[#4BB543]/10 border border-[#4BB543]/20 rounded-full text-[10px] text-[#6DD58C] font-bold uppercase tracking-wider">
-              <span className="w-1.5 h-1.5 rounded-full bg-[#4BB543] animate-pulse"></span>
-              Node Live
-            </span>
-            <span className="text-[#757775] text-xs font-medium border-l border-[#2D2D2D]/50 pl-6">
-              <span className="text-[#F2B8B5] font-bold">{processedCount}</span> Dossiers Forensic Indexés
-            </span>
+        {/* 2. PREMIUM MODULE HEADER */}
+        <header className="px-10 h-20 shrink-0 flex justify-between items-center bg-[#0F0F0F]/80 backdrop-blur-3xl border-b border-[#1F1F1F] z-40">
+          <div className="flex gap-8 items-center">
+            <div className="flex items-center gap-2.5 px-4 py-2 bg-gradient-to-r from-[#0F5223]/20 to-transparent border border-[#6DD58C]/20 rounded-xl relative overflow-hidden group">
+              <div className="absolute inset-0 bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+              <span className="relative flex h-2 w-2">
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#6DD58C] opacity-75"></span>
+                <span className="relative inline-flex rounded-full h-2 w-2 bg-[#6DD58C]"></span>
+              </span>
+              <span className="text-[10px] text-[#6DD58C] font-black uppercase tracking-[0.2em] relative">Node Live</span>
+            </div>
+
+            <div className="h-6 w-[1px] bg-[#1F1F1F]"></div>
+
+            <div className="flex items-center gap-3">
+              <div className="text-[10px] font-black text-[#757775] uppercase tracking-widest">Database Capacity</div>
+              <div className="flex items-center gap-2">
+                <div className="text-lg font-mono font-black text-[#F2B8B5] leading-none">{processedCount}</div>
+                <div className="text-[9px] font-bold text-[#757775] uppercase tracking-tighter self-end mb-0.5">Dossiers Indexés</div>
+              </div>
+            </div>
           </div>
 
-          <div className="flex items-center gap-4">
+          <div className="flex items-center gap-6">
             {isProcessing && (
-              <div className="flex gap-2 items-center bg-[#370003] px-4 py-1.5 rounded-full text-[10px] text-[#F2B8B5] border border-[#601410] animate-in fade-in zoom-in">
-                <Loader2 size={12} className="animate-spin" />
-                INDEXATION EN COURS...
+              <div className="flex gap-3 items-center bg-[#370003] px-5 py-2 rounded-2xl text-[10px] text-[#F2B8B5] border border-[#601410] shadow-[0_0_20px_rgba(96,20,16,0.3)] animate-in fade-in zoom-in slide-in-from-right-4">
+                <Loader2 size={14} className="animate-spin" />
+                <span className="font-black uppercase tracking-[0.2em]">Neural Processing...</span>
               </div>
             )}
+
+            <div className="hidden xl:flex items-center gap-4 text-[10px] font-bold text-[#444746] uppercase border-l border-[#1F1F1F] pl-6 tracking-widest">
+              <span>LATENCY: 12ms</span>
+              <span className="text-[#F2B8B5]">ENCRYPTION: AES-256</span>
+            </div>
           </div>
         </header>
 
         {/* 3. Main Viewport */}
         <main className="flex-1 overflow-hidden relative">
 
-          <div className="absolute inset-0 z-0 opacity-[0.03] pointer-events-none"
-            style={{ backgroundImage: 'radial-gradient(#FFF 1px, transparent 1px)', backgroundSize: '32px 32px' }}>
+          {/* Forensic Technical Grid Background */}
+          <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
+            <div className="absolute inset-0 bg-[linear-gradient(to_right,#1F1F1F_1px,transparent_1px),linear-gradient(to_bottom,#1F1F1F_1px,transparent_1px)] bg-[size:64px_64px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] opacity-[0.2]"></div>
+            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#0A0A0A]/50 to-[#0A0A0A]"></div>
           </div>
 
           <div className="h-full w-full relative z-10 overflow-hidden">
             {viewMode === 'lab' && (
-              <div className="h-full flex flex-col lg:grid lg:grid-cols-12 gap-6 p-6 overflow-hidden">
+              <div className="h-full flex flex-col lg:grid lg:grid-cols-12 gap-8 p-10 overflow-hidden animate-in fade-in duration-700">
                 {/* Lab Sidebar: Queue & Logs */}
                 <section className="lg:col-span-3 flex flex-col gap-6 overflow-hidden min-h-0">
                   <div className="flex flex-col gap-4 flex-1 overflow-hidden min-h-0">
