@@ -5,7 +5,7 @@
 
 import React from 'react';
 import { DisclosureAnalysis } from '../types';
-import { Search, Calendar, Users, FileText, Link as LinkIcon, ShieldAlert, File, List, Zap, Scale, Download, BookOpen, GraduationCap } from 'lucide-react';
+import { Search, Calendar, Users, FileText, Link as LinkIcon, ShieldAlert, File, List, Zap, Scale, Download, BookOpen, GraduationCap, ArrowUpRight } from 'lucide-react';
 
 interface DataCardProps {
   data: DisclosureAnalysis | null;
@@ -13,9 +13,10 @@ interface DataCardProps {
   loading: boolean;
   onDeepDive: (docTitle: string, style: 'standard' | 'simple' | 'technical') => void;
   onDownload: () => void;
+  onEntityClick: (entityName: string) => void;
 }
 
-export const DataCard: React.FC<DataCardProps> = ({ data, sources, loading, onDeepDive, onDownload }) => {
+export const DataCard: React.FC<DataCardProps> = ({ data, sources, loading, onDeepDive, onDownload, onEntityClick }) => {
   if (loading) {
     return (
       <div className="w-full bg-[#1E1E1E] rounded-3xl p-8 border border-[#444746] flex flex-col items-center justify-center min-h-[400px] gap-6">
@@ -165,9 +166,15 @@ export const DataCard: React.FC<DataCardProps> = ({ data, sources, loading, onDe
                 <div className="flex flex-wrap gap-2">
                     {data.entites_cles && data.entites_cles.length > 0 ? (
                         data.entites_cles.map((entity, i) => (
-                            <span key={i} className="px-3 py-1.5 rounded-lg bg-[#2B2B2B] text-[#E3E3E3] text-xs border border-[#444746] hover:border-[#8AB4F8] transition-colors cursor-default">
-                                {entity}
-                            </span>
+                            <button 
+                                key={i} 
+                                onClick={() => onEntityClick(entity)}
+                                className="group flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[#2B2B2B] text-[#E3E3E3] text-xs border border-[#444746] hover:border-[#F2B8B5] hover:bg-[#370003] transition-all cursor-pointer"
+                                title={`Lancer une recherche spécifique sur ${entity}`}
+                            >
+                                <span>{entity}</span>
+                                <ArrowUpRight size={10} className="text-[#F2B8B5] opacity-0 group-hover:opacity-100 transition-opacity" />
+                            </button>
                         ))
                     ) : (
                         <span className="text-[#757775] text-xs italic">Aucune entité détectée</span>

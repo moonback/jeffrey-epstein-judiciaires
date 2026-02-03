@@ -9,6 +9,7 @@ import { InputData, ProcessedResult } from './types';
 import { mergeDataWithFlash } from './services/geminiService';
 import { DataCard } from './components/DataCard';
 import { LogTerminal } from './components/LogTerminal';
+import { LiveAssistant } from './components/LiveAssistant';
 import { Zap, Play, RotateCw, Database, Search, ArrowRight, Activity, Globe, Terminal, Trash2 } from 'lucide-react';
 
 const App: React.FC = () => {
@@ -77,6 +78,23 @@ const App: React.FC = () => {
     setQueue(prev => [...prev, ...newData]);
     queueRef.current = [...queueRef.current, ...newData];
   };
+
+  const handleEntityClick = (entityName: string) => {
+    const newId = `ENTITY-${Date.now().toString().slice(-4)}`;
+    const entityQuery: InputData = {
+        id: newId,
+        query: `PROFILAGE ENTITÉ : Qui est "${entityName}" dans le contexte de l'affaire Epstein ? Quel est son rôle exact, quelles sont les accusations ou implications mentionnées dans les documents DOJ ?`,
+        targetUrl: "https://www.justice.gov/epstein/doj-disclosures",
+        timestamp: Date.now()
+    };
+    
+    setQueue(prev => [entityQuery, ...prev]);
+    queueRef.current = [entityQuery, ...queueRef.current];
+    
+    if (!isProcessing) {
+        processQueue();
+    }
+  }
 
   const handleDeepDive = (docTitle: string, style: 'standard' | 'simple' | 'technical' = 'standard') => {
     const newId = `REFORM-${Date.now().toString().slice(-4)}`;
@@ -407,6 +425,7 @@ const App: React.FC = () => {
                                             loading={result.status === 'processing'} 
                                             onDeepDive={handleDeepDive}
                                             onDownload={() => handleDownload(result)}
+                                            onEntityClick={handleEntityClick}
                                         />
                                     </div>
 
@@ -423,6 +442,9 @@ const App: React.FC = () => {
         </section>
 
       </main>
+
+      {/* Floating Assistant */}
+      <LiveAssistant />
 
       <style>{`
         .custom-scrollbar::-webkit-scrollbar {

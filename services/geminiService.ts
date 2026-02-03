@@ -72,3 +72,28 @@ export const mergeDataWithFlash = async (input: InputData): Promise<{ json: Disc
     };
   }
 };
+
+export const askAssistant = async (history: {role: string, text: string}[], message: string): Promise<string> => {
+  const ai = getClient();
+  const chat = ai.chats.create({
+    model: 'gemini-3-flash-preview',
+    config: {
+      systemInstruction: `Vous êtes un assistant juridique spécialisé dans les 'DOJ Epstein Disclosures'.
+      Votre mission est de répondre aux questions de l'utilisateur en cherchant les informations DIRECTEMENT dans les fichiers PDF hébergés sur justice.gov/epstein/doj-disclosures.
+      
+      Règles :
+      1. Utilisez TOUJOURS Google Search pour vérifier vos dires.
+      2. Si vous trouvez une info, citez le nom du document (ex: "Déposition de X, page Y").
+      3. Soyez précis, factuel et neutre.
+      4. Répondez en français.`,
+      tools: [{ googleSearch: {} }]
+    },
+    history: history.map(h => ({
+      role: h.role,
+      parts: [{ text: h.text }]
+    }))
+  });
+
+  const result = await chat.sendMessage({ message: `Recherche spécifiquement sur le site site:justice.gov/epstein/doj-disclosures pour : ${message}` });
+  return result.text || "Je n'ai pas pu trouver d'information précise à ce sujet.";
+};
