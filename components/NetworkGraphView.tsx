@@ -22,7 +22,11 @@ interface GraphLink {
     value: number;
 }
 
-export const NetworkGraphView: React.FC = () => {
+interface NetworkGraphViewProps {
+    onDeepDive?: (docTitle: string, style: 'standard' | 'simple' | 'technical') => void;
+}
+
+export const NetworkGraphView: React.FC<NetworkGraphViewProps> = ({ onDeepDive }) => {
     const fgRef = useRef<ForceGraphMethods>();
     const containerRef = useRef<HTMLDivElement>(null);
     const [history, setHistory] = useState<ProcessedResult[]>([]);
@@ -255,7 +259,20 @@ export const NetworkGraphView: React.FC = () => {
                                     {String(i + 1).padStart(2, '0')}
                                 </div>
                                 <div className="flex-1 min-w-0">
-                                    <div className="text-sm font-bold truncate group-hover:text-[#F2B8B5] transition-colors">{inf.name}</div>
+                                    <div className="flex items-center justify-between gap-2">
+                                        <div className="text-sm font-bold truncate group-hover:text-[#F2B8B5] transition-colors">{inf.name}</div>
+                                        {onDeepDive && (
+                                            <button
+                                                onClick={(e) => {
+                                                    e.stopPropagation();
+                                                    onDeepDive(inf.name, 'technical');
+                                                }}
+                                                className="opacity-0 group-hover:opacity-100 text-[8px] font-black uppercase text-[#F2B8B5] hover:underline"
+                                            >
+                                                Inspect
+                                            </button>
+                                        )}
+                                    </div>
                                     <div className="flex items-center gap-4 mt-1">
                                         <div className="flex-1 h-1 bg-[#2D2D2D] rounded-full overflow-hidden">
                                             <div className="h-full bg-[#F2B8B5]" style={{ width: `${Math.min(100, (inf.val / 50) * 100)}%` }}></div>

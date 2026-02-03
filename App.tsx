@@ -446,10 +446,10 @@ const App: React.FC = () => {
               />
             )}
 
-            {viewMode === 'network' && <NetworkGraphView />}
-            {viewMode === 'timeline' && <TimelineView />}
-            {viewMode === 'contradictions' && <ContradictionsView />}
-            {viewMode === 'poi' && <POIView />}
+            {viewMode === 'network' && <NetworkGraphView onDeepDive={handleDeepDive} />}
+            {viewMode === 'timeline' && <TimelineView onDeepDive={handleDeepDive} />}
+            {viewMode === 'contradictions' && <ContradictionsView onDeepDive={handleDeepDive} />}
+            {viewMode === 'poi' && <POIView onDeepDive={handleDeepDive} />}
           </div>
         </main>
       </div>

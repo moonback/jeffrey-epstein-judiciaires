@@ -12,7 +12,11 @@ interface TimelineEvent {
     type: string;
 }
 
-export const TimelineView: React.FC = () => {
+interface TimelineViewProps {
+    onDeepDive: (docTitle: string, style: 'standard' | 'simple' | 'technical') => void;
+}
+
+export const TimelineView: React.FC<TimelineViewProps> = ({ onDeepDive }) => {
     const [history, setHistory] = useState<ProcessedResult[]>([]);
     const [loading, setLoading] = useState(true);
 
@@ -157,7 +161,10 @@ export const TimelineView: React.FC = () => {
                                                         <CornerDownRight size={12} /> Source Verified
                                                     </div>
                                                 </div>
-                                                <button className="flex items-center gap-2 text-[10px] font-black uppercase text-white hover:text-[#FFD54F] transition-colors tracking-[0.1em]">
+                                                <button
+                                                    onClick={() => onDeepDive(event.title, 'standard')}
+                                                    className="flex items-center gap-2 text-[10px] font-black uppercase text-white hover:text-[#FFD54F] transition-colors tracking-[0.1em]"
+                                                >
                                                     Inspect Deep Dive <ChevronRight size={14} />
                                                 </button>
                                             </div>

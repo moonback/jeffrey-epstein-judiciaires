@@ -1,10 +1,14 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { storageService } from '../services/storageService';
 import { ProcessedResult, DocumentDetail } from '../types';
-import { AlertTriangle, Users, ArrowLeftRight, Zap, Loader2, CheckCircle2, ShieldAlert, Target, Fingerprint, Shield, Activity, Search, Database } from 'lucide-react';
+import { AlertTriangle, Users, ArrowLeftRight, Zap, Loader2, CheckCircle2, ShieldAlert, Target, Fingerprint, Shield, Activity, Search, Database, ChevronRight } from 'lucide-react';
 import { mergeDataWithFlash } from '../services/openRouterService';
 
-export const ContradictionsView: React.FC = () => {
+interface ContradictionsViewProps {
+    onDeepDive: (docTitle: string, style: 'standard' | 'simple' | 'technical') => void;
+}
+
+export const ContradictionsView: React.FC<ContradictionsViewProps> = ({ onDeepDive }) => {
     const [history, setHistory] = useState<ProcessedResult[]>([]);
     const [doc1, setDoc1] = useState<string>('');
     const [doc2, setDoc2] = useState<string>('');
@@ -161,7 +165,11 @@ export const ContradictionsView: React.FC = () => {
     );
 };
 
-export const POIView: React.FC = () => {
+interface POIViewProps {
+    onDeepDive: (docTitle: string, style: 'standard' | 'simple' | 'technical') => void;
+}
+
+export const POIView: React.FC<POIViewProps> = ({ onDeepDive }) => {
     const [history, setHistory] = useState<ProcessedResult[]>([]);
     const [selectedEntity, setSelectedEntity] = useState<string | null>(null);
     const [searchQuery, setSearchQuery] = useState('');
@@ -237,8 +245,8 @@ export const POIView: React.FC = () => {
                                 key={name}
                                 onClick={() => setSelectedEntity(name)}
                                 className={`w-full text-left p-6 rounded-[28px] transition-all duration-300 relative overflow-hidden group border ${selectedEntity === name
-                                        ? 'bg-[#4DB6AC] border-[#4DB6AC] text-[#002D2A]'
-                                        : 'bg-transparent border-[#1F1F1F] text-[#757775] hover:bg-white/5 hover:border-[#2D2D2D]'
+                                    ? 'bg-[#4DB6AC] border-[#4DB6AC] text-[#002D2A]'
+                                    : 'bg-transparent border-[#1F1F1F] text-[#757775] hover:bg-white/5 hover:border-[#2D2D2D]'
                                     }`}
                             >
                                 {selectedEntity === name && (
@@ -312,9 +320,17 @@ export const POIView: React.FC = () => {
                                             .filter(d => d.key_facts.some(f => f.includes(selectedEntity)))
                                             .slice(0, 8)
                                             .map((d, i) => (
-                                                <div key={i} className="text-xs text-[#C4C7C5] leading-relaxed border-b border-[#1F1F1F] pb-6 last:border-0 relative pl-8">
+                                                <div key={i} className="text-xs text-[#C4C7C5] leading-relaxed border-b border-[#1F1F1F] pb-6 last:border-0 relative pl-8 group/item">
                                                     <div className="absolute left-0 top-1 w-1.5 h-1.5 rounded-full bg-[#4DB6AC]"></div>
-                                                    <div className="text-[9px] font-black text-[#757775] uppercase mb-2 tracking-widest">{d.title}</div>
+                                                    <div className="flex items-center justify-between mb-2">
+                                                        <div className="text-[9px] font-black text-[#757775] uppercase tracking-widest">{d.title}</div>
+                                                        <button
+                                                            onClick={() => onDeepDive(d.title, 'technical')}
+                                                            className="opacity-0 group-hover/item:opacity-100 flex items-center gap-1 text-[9px] font-black text-[#4DB6AC] uppercase tracking-widest transition-all hover:underline"
+                                                        >
+                                                            Inspect Deep Dive <ChevronRight size={10} />
+                                                        </button>
+                                                    </div>
                                                     {d.key_facts.find(f => f.includes(selectedEntity))}
                                                 </div>
                                             ))}
