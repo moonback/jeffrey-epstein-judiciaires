@@ -1,10 +1,6 @@
-/**
- * @license
- * SPDX-License-Identifier: Apache-2.0
-*/
-
 import React from 'react';
-import { X, Database, Download, ShieldCheck, Activity, Trash2, Cpu } from 'lucide-react';
+import { X, Database, Download, ShieldCheck, Trash2, Cpu, Cloud, CloudOff } from 'lucide-react';
+import { isSupabaseConfigured } from '../services/supabaseClient';
 
 interface SettingsModalProps {
   isOpen: boolean;
@@ -39,16 +35,21 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, o
             <div className="bg-[#121212] rounded-xl p-4 border border-[#444746] space-y-3">
               <div className="flex justify-between items-center">
                 <span className="text-[#C4C7C5] text-sm flex items-center gap-2"><Cpu size={14} /> Moteur IA</span>
-                <span className="text-[#E3E3E3] text-xs font-mono bg-[#2B2B2B] px-2 py-1 rounded border border-[#444746]">x-ai/grok-2-1212</span>
+                <span className="text-[#E3E3E3] text-xs font-mono bg-[#2B2B2B] px-2 py-1 rounded border border-[#444746]">Dynamic (API)</span>
               </div>
               <div className="flex justify-between items-center">
-                <span className="text-[#C4C7C5] text-sm flex items-center gap-2"><Activity size={14} /> Statut API</span>
-                <span className="text-[#6DD58C] text-[10px] font-bold bg-[#0F5223] px-2 py-1 rounded flex items-center gap-1 border border-[#6DD58C]/20">
-                  ENVIRONNEMENT SÉCURISÉ
+                <span className="text-[#C4C7C5] text-sm flex items-center gap-2">
+                  {isSupabaseConfigured ? <Cloud size={14} className="text-[#6DD58C]" /> : <CloudOff size={14} className="text-[#ED665B]" />}
+                  Synchronisation Cloud
+                </span>
+                <span className={`text-[10px] font-bold px-2 py-1 rounded flex items-center gap-1 border ${isSupabaseConfigured ? 'bg-[#0F5223] text-[#6DD58C] border-[#6DD58C]/20' : 'bg-[#370003] text-[#F2B8B5] border-[#601410]'}`}>
+                  {isSupabaseConfigured ? 'SUPABASE ACTIF' : 'STOCKAGE RÉSEAU DÉSACTIVÉ'}
                 </span>
               </div>
               <p className="text-[10px] text-[#757775] leading-relaxed border-t border-[#444746] pt-2 mt-1">
-                La clé API est injectée via les variables d'environnement (`process.env`) pour garantir la sécurité. La modification manuelle est désactivée.
+                {isSupabaseConfigured
+                  ? "Toutes les analyses sont automatiquement répliquées sur votre instance Supabase."
+                  : "Mode local activé. Les données restent uniquement dans IndexedDB."}
               </p>
             </div>
           </div>

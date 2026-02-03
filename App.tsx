@@ -27,6 +27,7 @@ const App: React.FC = () => {
 
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [viewMode, setViewMode] = useState<'investigation' | 'database'>('investigation');
+  const [showPlanner, setShowPlanner] = useState(false);
 
   const queueRef = useRef<InputData[]>([]);
 
@@ -67,6 +68,8 @@ const App: React.FC = () => {
 
     setQueue(prev => [newQuery, ...prev]);
     queueRef.current = [newQuery, ...queueRef.current];
+    setShowPlanner(false);
+    setActiveTabId(newId);
 
     if (!isProcessing) {
       processQueue();
@@ -231,6 +234,10 @@ const App: React.FC = () => {
         }
         return [...prev, tempResult];
       });
+
+      // Persist the start of investigation to DB
+      await storageService.saveResult(tempResult);
+
       // Switch to the new tab immediately so user sees progress
       setActiveTabId(tempResult.id);
 
@@ -286,71 +293,71 @@ const App: React.FC = () => {
         dbSize={resolutionHistory.length}
       />
 
-      {/* Top App Bar */}
-      <header className="max-w-[1600px] mx-auto w-full mb-6 flex flex-col md:flex-row justify-between items-center pb-6 border-b border-[#2D2D2D]">
-        <div className="flex items-center gap-4">
-          <div className="bg-[#1E1E1E] p-3 rounded-2xl shadow-lg border border-[#444746]">
-            <Globe className="text-[#F2B8B5]" size={28} />
+      {/* Top App Bar - Refined & Modern */}
+      <header className="max-w-[1600px] mx-auto w-full mb-8 flex flex-col lg:flex-row justify-between items-center p-6 bg-[#1A1A1A]/50 backdrop-blur-xl rounded-[32px] border border-[#2D2D2D] shadow-2xl">
+        <div className="flex items-center gap-5">
+          <div className="relative">
+            <div className="absolute inset-0 bg-[#F2B8B5] blur-xl opacity-20 animate-pulse"></div>
+            <div className="relative bg-gradient-to-br from-[#1E1E1E] to-[#2B2B2B] p-3.5 rounded-2xl shadow-xl border border-[#444746]">
+              <Globe className="text-[#F2B8B5]" size={30} />
+            </div>
           </div>
           <div>
-            <h1 className="text-2xl md:text-3xl font-normal text-[#E3E3E3] tracking-tight">
-              Analyseur de <span className="font-bold text-[#F2B8B5]">Documents Judiciaires</span>
+            <h1 className="text-2xl md:text-3xl font-light text-[#E3E3E3] tracking-tight flex items-center gap-2">
+              <span className="font-bold text-transparent bg-clip-text bg-gradient-to-r from-[#F2B8B5] to-[#FFD8D6]">DOJ</span>
+              Forensic <span className="text-[#8E918F] font-thin">Analyzer</span>
             </h1>
-            <p className="text-[#C4C7C5] text-sm mt-1 max-w-3xl">
-              Base Vectorielle Locale • Analyse Gemini 3 Flash • <span className="text-[#F2B8B5]">{processedCount}</span> dossiers indexés
-            </p>
+            <div className="flex items-center gap-3 mt-1.5">
+              <span className="flex items-center gap-1.5 px-2 py-0.5 bg-[#4BB543]/10 border border-[#4BB543]/20 rounded-full text-[10px] text-[#6DD58C] font-bold uppercase tracking-widest">
+                <span className="w-1.5 h-1.5 rounded-full bg-[#4BB543] animate-pulse"></span>
+                Node Online
+              </span>
+              <span className="text-[#757775] text-xs font-medium border-l border-[#2D2D2D] pl-3">
+                <span className="text-[#F2B8B5] font-bold">{processedCount}</span> Dossiers Indexés
+              </span>
+            </div>
           </div>
         </div>
 
-        <div className="flex gap-4 mt-6 md:mt-0 items-center">
+        <div className="flex gap-3 mt-6 lg:mt-0 items-center bg-[#121212]/50 p-1.5 rounded-full border border-[#2D2D2D]">
+
+          <div className="flex px-1">
+            <button
+              onClick={() => setViewMode('investigation')}
+              className={`flex items-center gap-2 px-5 py-2.5 rounded-full text-xs font-bold uppercase tracking-wider transition-all ${viewMode === 'investigation' ? 'bg-[#373737] text-[#F2B8B5] shadow-lg' : 'text-[#757775] hover:text-[#E3E3E3]'}`}
+            >
+              <Terminal size={16} />
+              Labo
+            </button>
+            <button
+              onClick={() => setViewMode('database')}
+              className={`flex items-center gap-2 px-5 py-2.5 rounded-full text-xs font-bold uppercase tracking-wider transition-all ${viewMode === 'database' ? 'bg-[#373737] text-[#F2B8B5] shadow-lg' : 'text-[#757775] hover:text-[#E3E3E3]'}`}
+            >
+              <Database size={16} />
+              Base
+            </button>
+          </div>
+
+          <div className="w-[1px] h-8 bg-[#2D2D2D] mx-1"></div>
+
+          <button
+            onClick={() => {
+              setViewMode('investigation');
+              setShowPlanner(true);
+              setActiveTabId(null);
+            }}
+            className="flex items-center gap-2 px-6 py-2.5 rounded-full bg-gradient-to-r from-[#F2B8B5] to-[#FFD8D6] text-[#370003] hover:shadow-[0_0_20px_rgba(242,184,181,0.3)] transition-all text-xs font-bold uppercase tracking-widest"
+          >
+            <Plus size={18} strokeWidth={3} />
+            Nouvelle Analyse
+          </button>
 
           <button
             onClick={() => setIsSettingsOpen(true)}
-            className="flex items-center gap-2 p-3 rounded-full text-[#757775] hover:text-[#E3E3E3] hover:bg-[#373737] transition-all border border-transparent hover:border-[#444746]"
-            title="Paramètres & Gestion des Données"
+            className="p-2.5 rounded-full text-[#757775] hover:text-[#E3E3E3] hover:bg-[#373737] transition-all"
+            title="Configuration"
           >
             <Settings size={20} />
-          </button>
-
-          <div className="h-8 w-[1px] bg-[#444746] mx-2"></div>
-
-          <button
-            onClick={() => setViewMode(viewMode === 'investigation' ? 'database' : 'investigation')}
-            className={`flex items-center gap-2 px-6 py-3 rounded-full border transition-all text-sm font-medium tracking-wide uppercase ${viewMode === 'database'
-              ? 'bg-[#8AB4F8] text-[#002B55] border-[#8AB4F8]'
-              : 'border-[#444746] text-[#E3E3E3] hover:bg-[#373737]'
-              }`}
-          >
-            {viewMode === 'investigation' ? (
-              <>
-                <Database size={18} />
-                Voir la Base
-              </>
-            ) : (
-              <>
-                <LayoutGrid size={18} />
-                Retour Labo
-              </>
-            )}
-          </button>
-
-          <button
-            onClick={addToQueue}
-            className="flex items-center gap-2 px-6 py-3 rounded-full border border-[#F2B8B5] text-[#F2B8B5] hover:bg-[#F2B8B5]/10 transition-colors text-sm font-medium tracking-wide uppercase"
-          >
-            <RotateCw size={18} />
-            Ajouter Requêtes
-          </button>
-          <button
-            onClick={processQueue}
-            disabled={isProcessing || (queue.length === 0 && queueRef.current.length === 0)}
-            className={`flex items-center gap-2 px-8 py-3 rounded-full text-sm font-medium tracking-wide uppercase transition-all shadow-md ${isProcessing || (queue.length === 0 && queueRef.current.length === 0)
-              ? 'bg-[#1E1E1E] text-[#757775] cursor-not-allowed shadow-none'
-              : 'bg-[#F2B8B5] text-[#370003] hover:bg-[#F9DEDC] shadow-lg shadow-[#F2B8B5]/20'
-              }`}
-          >
-            <Play size={18} fill="currentColor" />
-            {isProcessing ? 'Indexation en cours...' : 'Lancer Investigation'}
           </button>
         </div>
       </header>
@@ -449,7 +456,7 @@ const App: React.FC = () => {
                   style={{ backgroundImage: 'radial-gradient(#444746 1px, transparent 1px)', backgroundSize: '24px 24px' }}>
                 </div>
 
-                {activeResult ? (
+                {activeResult && !showPlanner ? (
                   <div className="h-full flex flex-col relative z-10 animate-in fade-in duration-300">
                     {/* Header of Active Tab */}
                     <div className="bg-[#1E1E1E]/90 backdrop-blur-md p-6 border-b border-[#444746] flex justify-between items-start">
@@ -487,10 +494,18 @@ const App: React.FC = () => {
                     </div>
                   </div>
                 ) : (
-                  <div className="h-full animate-in fade-in zoom-in-95 duration-500">
+                  <div className="h-full animate-in fade-in zoom-in-95 duration-500 relative z-10">
                     <InvestigationPlanner
                       onStartInvestigation={handleStartInvestigation}
                     />
+                    {showPlanner && activeResult && (
+                      <button
+                        onClick={() => setShowPlanner(false)}
+                        className="absolute top-8 right-8 p-3 bg-[#121212] rounded-full border border-[#444746] text-[#C4C7C5] hover:text-white transition-all shadow-2xl z-20"
+                      >
+                        <XCircle size={24} />
+                      </button>
+                    )}
                   </div>
                 )}
 

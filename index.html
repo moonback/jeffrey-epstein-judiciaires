@@ -12,26 +12,46 @@
 
     <script src="https://cdn.tailwindcss.com"></script>
     <style>
+      :root {
+        --glass-bg: rgba(26, 26, 26, 0.6);
+        --glass-border: rgba(255, 255, 255, 0.1);
+      }
+
       body {
         font-family: 'Inter', sans-serif;
-        background-color: #0F0F0F; /* Darker Background */
+        background-color: #0F0F0F; 
         color: #E3E3E3; 
+        background-image: 
+          radial-gradient(at 0% 0%, rgba(242, 184, 181, 0.05) 0px, transparent 50%),
+          radial-gradient(at 100% 100%, rgba(138, 180, 248, 0.05) 0px, transparent 50%);
+        background-attachment: fixed;
       }
       
-      /* Custom Scrollbar to match Material Dark */
-      ::-webkit-scrollbar {
-        width: 8px;
-        height: 8px;
+      .glass {
+        background: var(--glass-bg);
+        backdrop-filter: blur(12px);
+        -webkit-backdrop-filter: blur(12px);
+        border: 1px solid var(--glass-border);
       }
-      ::-webkit-scrollbar-track {
-        background: #1E1E1E; 
+
+      .custom-scrollbar::-webkit-scrollbar {
+        width: 6px;
       }
-      ::-webkit-scrollbar-thumb {
-        background: #444746; 
-        border-radius: 4px;
+      .custom-scrollbar::-webkit-scrollbar-track {
+        background: transparent;
       }
-      ::-webkit-scrollbar-thumb:hover {
-        background: #5E5E5E; 
+      .custom-scrollbar::-webkit-scrollbar-thumb {
+        background: #373737;
+        border-radius: 10px;
+      }
+
+      @keyframes fadelnUp {
+        from { opacity: 0; transform: translateY(10px); }
+        to { opacity: 1; transform: translateY(0); }
+      }
+
+      .animate-fade-up {
+        animation: fadelnUp 0.5s ease-out forwards;
       }
     </style>
     <script>
