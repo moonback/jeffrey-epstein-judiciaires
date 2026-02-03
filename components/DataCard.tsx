@@ -3,9 +3,9 @@
  * SPDX-License-Identifier: Apache-2.0
 */
 
-import React from 'react';
+import React, { useState, useMemo } from 'react';
 import { DisclosureAnalysis } from '../types';
-import { Search, Calendar, Users, FileText, Link as LinkIcon, ShieldAlert, File, List, Zap, Scale, Download, BookOpen, GraduationCap, ArrowUpRight } from 'lucide-react';
+import { Search, Calendar, Users, FileText, Link as LinkIcon, ShieldAlert, File, List, Zap, Scale, Download, BookOpen, GraduationCap, ArrowUpRight, Filter } from 'lucide-react';
 
 interface DataCardProps {
   data: DisclosureAnalysis | null;
@@ -17,6 +17,22 @@ interface DataCardProps {
 }
 
 export const DataCard: React.FC<DataCardProps> = ({ data, sources, loading, onDeepDive, onDownload, onEntityClick }) => {
+  const [activeFilter, setActiveFilter] = useState<string>('ALL');
+
+  // Extraction des types uniques de documents pour le filtre
+  const availableTypes = useMemo(() => {
+    if (!data?.documents) return [];
+    const types = data.documents.map(doc => doc.type).filter(Boolean);
+    return Array.from(new Set(types));
+  }, [data]);
+
+  // Filtrage de la liste des documents
+  const filteredDocuments = useMemo(() => {
+    if (!data?.documents) return [];
+    if (activeFilter === 'ALL') return data.documents;
+    return data.documents.filter(doc => doc.type === activeFilter);
+  }, [data, activeFilter]);
+
   if (loading) {
     return (
       <div className="w-full bg-[#1E1E1E] rounded-3xl p-8 border border-[#444746] flex flex-col items-center justify-center min-h-[400px] gap-6">
@@ -78,12 +94,45 @@ export const DataCard: React.FC<DataCardProps> = ({ data, sources, loading, onDe
 
         {/* Section Documents Détaillés */}
         <div>
-            <label className="text-[11px] uppercase tracking-widest text-[#8E918F] mb-3 flex items-center gap-2">
-                <File size={12} /> Documents & Preuves
-            </label>
+            <div className="flex flex-wrap items-center justify-between mb-3 gap-3">
+                <label className="text-[11px] uppercase tracking-widest text-[#8E918F] flex items-center gap-2">
+                    <File size={12} /> Documents & Preuves
+                </label>
+
+                {/* Barre de Filtres */}
+                {availableTypes.length > 0 && (
+                    <div className="flex items-center gap-2 overflow-x-auto pb-1 max-w-full no-scrollbar">
+                        <Filter size={12} className="text-[#444746] shrink-0" />
+                        <button
+                            onClick={() => setActiveFilter('ALL')}
+                            className={`px-2.5 py-1 rounded-md text-[10px] uppercase font-bold tracking-wide transition-colors border ${
+                                activeFilter === 'ALL' 
+                                ? 'bg-[#E3E3E3] text-[#1E1E1E] border-[#E3E3E3]' 
+                                : 'bg-[#1E1E1E] text-[#757775] border-[#444746] hover:border-[#757775]'
+                            }`}
+                        >
+                            TOUS
+                        </button>
+                        {availableTypes.map((type) => (
+                            <button
+                                key={type}
+                                onClick={() => setActiveFilter(type)}
+                                className={`px-2.5 py-1 rounded-md text-[10px] uppercase font-bold tracking-wide transition-colors border whitespace-nowrap ${
+                                    activeFilter === type 
+                                    ? 'bg-[#004A77] text-[#D3E3FD] border-[#004A77]' 
+                                    : 'bg-[#1E1E1E] text-[#757775] border-[#444746] hover:border-[#8AB4F8] hover:text-[#8AB4F8]'
+                                }`}
+                            >
+                                {type}
+                            </button>
+                        ))}
+                    </div>
+                )}
+            </div>
+
             <div className="space-y-4">
-                {data.documents && data.documents.length > 0 ? (
-                    data.documents.map((doc, idx) => (
+                {filteredDocuments && filteredDocuments.length > 0 ? (
+                    filteredDocuments.map((doc, idx) => (
                         <div key={idx} className="bg-[#2B2B2B] rounded-xl border border-[#444746] overflow-hidden hover:border-[#F2B8B5]/50 transition-colors group">
                             
                             {/* Doc Header */}
@@ -152,7 +201,9 @@ export const DataCard: React.FC<DataCardProps> = ({ data, sources, loading, onDe
                         </div>
                     ))
                 ) : (
-                    <div className="text-[#757775] text-xs italic p-4 bg-[#121212] rounded-lg">Aucun document spécifique détecté pour cette requête.</div>
+                    <div className="text-[#757775] text-xs italic p-4 bg-[#121212] rounded-lg border border-[#444746] border-dashed text-center">
+                        Aucun document ne correspond au filtre "{activeFilter}".
+                    </div>
                 )}
             </div>
         </div>
