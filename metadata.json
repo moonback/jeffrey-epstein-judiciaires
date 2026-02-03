@@ -1,0 +1,5 @@
+{
+  "name": "Analyseur de Documents Judiciaires",
+  "description": "Utilise Gemini 3 Flash pour analyser et extraire des informations des divulgations DOJ.",
+  "requestFramePermissions": []
+}
