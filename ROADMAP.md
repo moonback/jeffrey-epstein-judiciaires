@@ -1,34 +1,38 @@
-# 🗺️ Roadmap du Projet
+# 🗺️ Roadmap: DOJ Forensic Analyzer
 
-Ce document trace les étapes de développement de l'**Analyseur de Documents Judiciaires**, du MVP actuel vers une suite forensic complète.
+This roadmap outlines the evolution of the platform from its current MVP state to a full-featured forensic suite.
+
+## ✅ Phase 1: MVP (Completed)
+- [x] Functional React 19 / Vite infrastructure.
+- [x] AI analysis engine via OpenRouter (Gemini 2.5 Flash Lite).
+- [x] Local storage with IndexedDB.
+- [x] Multi-tab investigative interface.
+- [x] Dynamic Data Card view for analysis results.
+- [x] Interactive Chat Assistant.
+- [x] Basic Searchable Database view.
+
+## 🚧 Phase 2: Enhanced Visualization (Current)
+- [ ] **Network Graph Improvements**: Interactive nodes with entity details on click.
+- [ ] **Advanced Timeline**: Scaleable timeline with event clustering.
+- [ ] **Cross-Document Analysis**: Identify links between different independent analyses.
+- [ ] **Entity Profiling**: dedicated view for "who's who" across all indexed documents.
+
+## 🚀 Phase 3: V1.0 - Forensic Power Tools
+- [ ] **PDF Direct Processing**: Upload local PDFs for AI-assisted extraction (instead of URL-only).
+- [ ] **Export Suite**: Export to PDF, CSV, and Markdown for professional reports.
+- [ ] **Collaboration Mode**: Shared Supabase workspaces for multi-user investigations.
+- [ ] **OCR Integration**: Built-in OCR for scanned legal documents.
+- [ ] **Automatic Conflict Detection**: Flag discrepancies between different source documents.
+
+## 🔮 Phase 4: Long-Term Vision
+- [ ] **Custom Model Fine-tuning**: Use extracted data to fine-tune a specialized legal LLM.
+- [ ] **Audio/Video Forensics**: Process hearing recordings and video evidence.
+- [ ] **Dark Web Integration**: Link DOJ disclosures with leaked archives or OSINT databases.
+- [ ] **Global Search API**: Connect to other public legal databases (PACER, etc.).
 
 ---
 
-## ✅ Phase 1 : MVP (Actuel)
-- [x] Interface de laboratoire (Investigation Tabs).
-- [x] Intégration OpenRouter (Gemini / Grok).
-- [x] Extraction JSON structurée.
-- [x] Stockage persistant IndexedDB.
-- [x] Dashboard global des résultats.
-- [x] Assistant interactif (Live Chat).
-
----
-
-## 🛠️ Phase 2 : Optimisation & Analyse (V1.0)
-- [ ] **Recherche Vectorielle (RAG)** : Implémenter des embeddings locaux pour une recherche sémantique plus puissante dans la base.
-- [ ] **Visualisation de Graphe** : Créer une vue interactive reliant les entités (personnes, lieux, entreprises) entre les différents documents.
-- [ ] **Support Multi-Sources** : Permettre d'ajouter ses propres PDF ou URLs à analyser en plus du site du DOJ.
-- [ ] **Gestion des Proxy** : Ajouter une option dans l'UI pour configurer un proxy de recherche (Google Search API / Tavily).
-
----
-
-## 🚀 Phase 3 : Fonctionnalités Avancées (V2.0)
-- [ ] **Analyse de Sentiment & Contradiction** : Automatiquement détecter les contradictions entre deux dépositions.
-- [ ] **Timeline Interactive** : Générer une frise chronologique automatique à partir de tous les documents indexés.
-- [ ] **Collaboration** : Export/Import de "Bundles" d'investigation pour partager ses recherches avec d'autres enquêteurs.
-- [ ] **OCR Intégré** : Support pour les scans de mauvaise qualité via une couche OCR.
-
----
-
-## 🎯 Objectif Final
-Devenir l'outil de référence open-source pour l'analyse citoyenne des divulgations de documents gouvernementaux massifs.
+## 📈 Current Priority
+*   **Performance Optimization**: Reducing latency in the Network Graph.
+*   **UI Polish**: Refining the "Investigation Planner" for better user onboarding.
+*   **Data Integrity**: Improving JSON parsing reliability for complex AI responses.

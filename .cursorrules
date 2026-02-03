@@ -1,0 +1,57 @@
+# Cursor Rules for Analyseur-de-Documents-Judiciaires
+
+## Project Context
+The **Analyseur de Documents Judiciaires** (DOJ Forensic) is a high-performance OSINT and forensic platform designed to analyze, extract, and synthesize complex DOJ disclosures (focusing on the Epstein case). It uses AI to transform dense JSON/PDF data into a structured, searchable, and visual database.
+
+## Tech Stack
+- **Frontend**: React 19 (Functional Components), Vite, TypeScript.
+- **Styling**: Tailwind CSS + Vanilla CSS for premium dark mode aesthetics.
+- **Database**: Supabase (Remote Sync) + IndexedDB (`idb` library for local caching).
+- **AI**: OpenRouter API (Gemini 2.5 Flash Lite) for heavy forensic analysis.
+- **Icons/UI**: Lucide React, Framer Motion (for animations).
+- **Visualization**: `react-force-graph-2d` for network analysis.
+
+## Code Style and Conventions
+- **Naming**: 
+  - Components: `PascalCase` (e.g., `DataCard.tsx`).
+  - Functions/Variables: `camelCase`.
+  - Constants/Enums: `UPPER_SNAKE_CASE`.
+  - CSS Classes: Tailwind utility classes favored, custom CSS for complex glassmorphism.
+- **File Organization**:
+  - `components/`: UI modules and views.
+  - `services/`: API clients, storage logic, and external integrations.
+  - `types.ts`: Centralized TypeScript definitions.
+  - `constants.ts`: Prompts, configuration, and static data.
+- **Component Structure**:
+  - Use functional components with TypeScript interfaces for props.
+  - Prefer small, reusable components.
+  - Use `useEffect` sparingly; prefer derived state or custom hooks.
+
+## Architecture Patterns
+- **Service Layer**: All external calls (Supabase, OpenRouter) must go through the `services/` folder.
+- **Storage Strategy**: "Local-First". Data is always saved to IndexedDB first, then synced to Supabase if configured.
+- **State Management**: Primary application state is managed in `App.tsx` (Queue and Results). Use context if the tree grows too deep.
+
+## Best Practices
+- **Type Safety**: Avoid `any`. Define strict interfaces in `types.ts`.
+- **Error Handling**: Use `try/catch` in services with meaningful console logging and UI feedback.
+- **Security**: 
+  - Never hardcode API keys. Use `import.meta.env.VITE_*`.
+  - Validate AI outputs (JSON parsing) before updating state.
+- **Performance**:
+  - Use `React.memo` or `useMemo` for heavy visualizations (Graph, Timeline).
+  - Implement request debouncing/throttling for AI calls.
+
+## Common Workflows
+- **Adding a Feature**: Create the UI in `components/`, add necessary types in `types.ts`, and register the view in `Sidebar.tsx` and `App.tsx`.
+- **New AI Module**: Add a specialized prompt in `constants.ts` and a handler in `openRouterService.ts`.
+- **DB Update**: Update `storageService.ts` and sync the Supabase table schema.
+
+## Things to Avoid
+- Avoid prop drilling (use Context or pass components as children).
+- Do not add massive libraries for simple tasks (stay lightweight).
+- Avoid mutating state directly; always use the setter functions.
+
+## Documentation Requirements
+- Document complex logic with JSDoc comments.
+- Keep `ROADMAP.md` and `ARCHITECTURE.md` updated with major changes.

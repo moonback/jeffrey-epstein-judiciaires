@@ -1,43 +1,56 @@
-# 🏗️ Architecture du Système
+# 🏗️ System Architecture
 
-Ce document détaille l'organisation technique et le flux de données de l'**Analyseur de Documents Judiciaires**.
+The **Analyseur de Documents Judiciaires** (DOJ Forensic) is built on a modern, local-first architecture designed for speed, resilience, and complex data visualization.
 
-## 🧩 Modèle d'Architecture
+## 🧱 Architectural Overview
 
-L'application suit une architecture **Client-Side Heavy** (Single Page Application) avec une persistance locale et une orchestration d'API externe.
+The application is a Single Page Application (SPA) that orchestrates distributed services without a dedicated middleware backend.
 
-### 1. Frontend (Interface & UX)
-- **Framework** : React 19 gère l'état réactif.
-- **Gestionnaire d'État** : Utilisation de `useState` et `useRef` pour la file d'attente d'indexation (Queue Management).
-- **Paradigme de Design** : Système d'onglets (Multi-session) permettant d'isoler chaque requête d'analyse.
-
-### 2. Couche de Service IA (OpenRouter)
-- **Service** : `openRouterService.ts`
-- **Rôle** : Encapsule les appels `fetch` vers OpenRouter.
-- **Logique** : 
-  - Nettoyage des sorties Markdown de l'IA pour garantir un JSON valide.
-  - Système de Retry exponentiel pour gérer les Rate Limits des modèles gratuits/beta.
-
-### 3. Persistance des Données (Local Storage 2.0)
-- **Technologie** : IndexedDB (via la library `idb`).
-- **Service** : `storageService.ts`
-- **Flux** : 
-  1. L'utilisateur lance une investigation.
-  2. Un objet temporaire est créé dans l'état local.
-  3. Une fois l'IA répondue, le résultat complet (`ProcessedResult`) est sauvegardé dans IndexedDB.
-  4. Au rechargement de la page, l'historique est restauré depuis la DB locale.
-
-### 4. Flux de Données (Data Flow)
-```text
-[Utilisateur] -> [Requête] -> [File d'attente] 
-                                    |
-                          [OpenRouter Service] <-> [LLM (Gemini/Grok)]
-                                    |
-                          [Traitement JSON & Nettoyage]
-                                    |
-            [IndexedDB Store] <--- [Mise à jour UI]
+```mermaid
+graph TD
+    User((User)) --> UI[React 19 / Vite]
+    UI --> Queue[Investigation Queue]
+    Queue --> OR[OpenRouter API Service]
+    OR -- LLM Analysis --> UI
+    
+    UI --> Storage[Storage Service]
+    Storage --> IDB[(IndexedDB - Local)]
+    Storage --> SUPA[(Supabase - Remote)]
+    
+    UI --> Viz[Visualization Engine]
+    Viz --> Graph[Network Graph]
+    Viz --> Timeline[Timeline View]
 ```
 
-## 🔐 Sécurité & Confidentialité
-- **Clés API** : Les clés sont stockées dans `.env` et ne sont jamais commitées.
-- **Données** : Toutes les analyses restent dans le navigateur de l'utilisateur. Aucune donnée n'est stockée sur nos serveurs (architecture 100% locale).
+---
+
+## 🏗️ Technical Layers
+
+### 1. Presentation Layer (React 19)
+- **High-Performance Rendering**: Uses React's concurrent rendering for fluid UI even during heavy data processing.
+- **Micro-Animations**: Framer Motion and custom CSS transitions for a premium "investigative lab" feel.
+- **State Management**: Local component state for UI toggles, and a lifted state in `App.tsx` for core analytical data.
+
+### 2. Analytical Intelligence (OpenRouter & Gemini)
+- **Engine**: Google Gemini 2.5 Flash Lite via OpenRouter.
+- **Prompt Engineering**: Specialized system instructions (`SYSTEM_INSTRUCTION_DISCLOSURE`) that force the AI to act as a forensic investigator and output structured JSON.
+- **Extraction Logic**: Automated cleaning of markdown blocks and recursive retries for API reliability.
+
+### 3. Data Visualization (Forensic Views)
+- **Network Graph**: Uses `react-force-graph-2d` to visualize relationships between entities (People, Organizations, Locations).
+- **Temporal Analysis**: A custom Timeline view to map events chronologically.
+- **Investigation Planner**: A proactive UI that helps users structure their search queries for better AI extraction.
+
+### 4. Storage & Persistence (Local-First Design)
+- **Resilience**: Even without an internet connection, previously analyzed data is available via IndexedDB.
+- **Sync Strategy**: 
+  - **Local**: `idb` library for high-speed local document indexing.
+  - **Remote**: Supabase provides cross-device persistence and team-focused data sharing.
+- **Encryption**: Data transit is encrypted via HTTPS; database storage follows Supabase security standards.
+
+---
+
+## 🔒 Security Architecture
+- **API Key Proxying**: Recommended to use serverless functions for production, but currently handled via Vite env variables for developer flexibility.
+- **Isolation**: Each analysis session is isolated by a unique ID.
+- **Data Privacy**: No data is harvested for training; interactions are strictly between the Client and the authorized AI/DB providers.
