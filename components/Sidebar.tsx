@@ -10,7 +10,8 @@ import {
     Plus,
     ShieldCheck,
     ChevronLeft,
-    ChevronRight
+    ChevronRight,
+    Activity
 } from 'lucide-react';
 
 export type ViewType = 'lab' | 'database' | 'network' | 'timeline' | 'contradictions' | 'poi';
@@ -20,13 +21,15 @@ interface SidebarProps {
     onViewChange: (view: ViewType) => void;
     onOpenSettings: () => void;
     onNewAnalysis: () => void;
+    onToggleLogs: () => void;
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({
     currentView,
     onViewChange,
     onOpenSettings,
-    onNewAnalysis
+    onNewAnalysis,
+    onToggleLogs
 }) => {
     const [isCollapsed, setIsCollapsed] = useState(false);
 
@@ -66,7 +69,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                             <h1 className="font-black text-white tracking-tighter text-2xl leading-none">
                                 DOJ<span className="text-[#F2B8B5]">Forensic</span>
                             </h1>
-                            <span className="text-[9px] font-black text-[#757775] uppercase tracking-[0.3em] mt-1 block">Advanced Analyzer</span>
+                            <span className="text-[10px] font-black text-[#757775] uppercase tracking-[0.3em] mt-1 block">Advanced Analyzer</span>
                         </div>
                     )}
                 </div>
@@ -79,7 +82,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                     <div className="absolute inset-0 bg-[#F2B8B5] blur-md opacity-20 group-hover:opacity-40 transition-opacity rounded-2xl"></div>
                     <div className={`relative w-full flex items-center justify-center ${isCollapsed ? '' : 'lg:justify-start'} gap-4 bg-[#F2B8B5] hover:bg-white text-[#370003] p-4 rounded-2xl transition-all duration-300 transform active:scale-95 border border-white/20`}>
                         <Plus size={20} className="stroke-[3] shrink-0" />
-                        {!isCollapsed && <span className="hidden lg:block font-black text-xs uppercase tracking-[0.15em] whitespace-nowrap animate-in fade-in">Nouvelle Analyse</span>}
+                        {!isCollapsed && <span className="hidden lg:block font-black text-[12px] uppercase tracking-[0.15em] whitespace-nowrap animate-in fade-in">Nouvelle Analyse</span>}
                     </div>
                 </button>
 
@@ -115,7 +118,19 @@ export const Sidebar: React.FC<SidebarProps> = ({
             </div>
 
             {/* FOOTER */}
-            <div className={`mt-auto p-8 transition-all duration-500 overflow-hidden ${isCollapsed ? 'px-4' : ''}`}>
+            <div className={`mt-auto p-8 transition-all duration-500 overflow-hidden ${isCollapsed ? 'px-4' : ''} space-y-2`}>
+                <button
+                    onClick={onToggleLogs}
+                    className={`w-full flex items-center justify-center ${isCollapsed ? '' : 'lg:justify-start'} gap-5 p-4 rounded-2xl text-[#757775] hover:bg-white/5 hover:text-[#6DD58C] transition-all group border border-transparent hover:border-[#6DD58C]/20`}
+                    title={isCollapsed ? 'Console Système' : ''}
+                >
+                    <Activity
+                        size={20}
+                        className="group-hover:animate-pulse transition-all shrink-0"
+                    />
+                    {!isCollapsed && <span className="hidden lg:block text-[10px] font-black uppercase tracking-[0.1em] whitespace-nowrap animate-in fade-in">Console Système</span>}
+                </button>
+
                 <button
                     onClick={onOpenSettings}
                     className={`w-full flex items-center justify-center ${isCollapsed ? '' : 'lg:justify-start'} gap-5 p-4 rounded-2xl text-[#757775] hover:bg-white/5 hover:text-white transition-all group border border-transparent hover:border-white/5`}
@@ -125,12 +140,12 @@ export const Sidebar: React.FC<SidebarProps> = ({
                         size={20}
                         className="group-hover:rotate-90 transition-transform duration-500 shrink-0"
                     />
-                    {!isCollapsed && <span className="hidden lg:block text-xs font-black uppercase tracking-[0.1em] whitespace-nowrap animate-in fade-in">Paramètres</span>}
+                    {!isCollapsed && <span className="hidden lg:block text-[10px] font-black uppercase tracking-[0.1em] whitespace-nowrap animate-in fade-in">Paramètres</span>}
                 </button>
 
                 <div className={`mt-6 flex items-center ${isCollapsed ? 'justify-center' : 'gap-3 px-4 py-3'} bg-[#1A1A1A]/30 rounded-2xl border border-white/5 min-h-[44px]`}>
                     <div className="w-1.5 h-1.5 rounded-full bg-[#6DD58C] shadow-[0_0_8px_#6DD58C] shrink-0"></div>
-                    {!isCollapsed && <span className="hidden lg:block text-[10px] font-bold text-[#757775] uppercase tracking-widest whitespace-nowrap animate-in fade-in">Sys. Integrity OK</span>}
+                    {!isCollapsed && <span className="hidden lg:block text-[11px] font-bold text-[#757775] uppercase tracking-widest whitespace-nowrap animate-in fade-in">Sys. Integrity OK</span>}
                 </div>
             </div>
         </aside>

@@ -80,7 +80,7 @@ export const TimelineView: React.FC<TimelineViewProps> = ({ onDeepDive }) => {
                         <div className="absolute inset-0 border-t-2 border-[#FFD54F] rounded-full animate-spin"></div>
                         <Clock size={24} className="absolute inset-0 m-auto text-[#FFD54F]" />
                     </div>
-                    <span className="text-[10px] font-black text-[#757775] uppercase tracking-[0.3em]">Reconstructing Timeline...</span>
+                    <span className="text-[11px] font-black text-[#757775] uppercase tracking-[0.3em]">Reconstructing Timeline...</span>
                 </div>
             </div>
         );
@@ -98,16 +98,16 @@ export const TimelineView: React.FC<TimelineViewProps> = ({ onDeepDive }) => {
                         <div className="p-2 bg-[#FFD54F]/10 rounded-lg">
                             <Clock className="text-[#FFD54F]" size={20} />
                         </div>
-                        <h2 className="text-2xl font-black text-white tracking-tighter uppercase italic">Chronologie Forensic</h2>
+                        <h2 className="text-xl font-black text-white tracking-tighter uppercase italic">Chronologie Forensic</h2>
                     </div>
-                    <p className="text-[#757775] text-xs font-bold uppercase tracking-widest pl-12 flex items-center gap-2">
+                    <p className="text-[#757775] text-[12px] font-bold uppercase tracking-widest pl-12 flex items-center gap-2">
                         <Activity size={12} className="text-[#6DD58C]" />
                         {events.length} Data Points Syncronisés
                     </p>
                 </div>
                 <div className="hidden lg:block text-right pb-1">
-                    <div className="text-[10px] font-black text-[#444746] uppercase tracking-[0.2em] mb-1">Time Range</div>
-                    <div className="text-xl font-mono font-black text-[#FFD54F]">
+                    <div className="text-[11px] font-black text-[#444746] uppercase tracking-[0.2em] mb-1">Time Range</div>
+                    <div className="text-lg font-mono font-black text-[#FFD54F]">
                         {events.length > 0 ? `${events[events.length - 1].dateStr} — ${events[0].dateStr}` : 'N/A'}
                     </div>
                 </div>
@@ -126,12 +126,12 @@ export const TimelineView: React.FC<TimelineViewProps> = ({ onDeepDive }) => {
                             <div className="flex flex-col lg:grid lg:grid-cols-12 gap-8 group">
                                 {/* Date Side */}
                                 <div className="lg:col-span-2 pt-2">
-                                    <div className="text-2xl font-black text-[#FFD54F] tracking-tighter leading-none mb-2 tabular-nums">
+                                    <div className="text-xl font-black text-[#FFD54F] tracking-tighter leading-none mb-2 tabular-nums">
                                         {event.dateStr}
                                     </div>
                                     <div className="flex items-center gap-2">
                                         <span className="w-4 h-[1px] bg-[#1F1F1F]"></span>
-                                        <span className="text-[9px] font-black text-[#757775] uppercase tracking-widest truncate">
+                                        <span className="text-[10px] font-black text-[#757775] uppercase tracking-widest truncate">
                                             {event.type}
                                         </span>
                                     </div>
@@ -145,25 +145,25 @@ export const TimelineView: React.FC<TimelineViewProps> = ({ onDeepDive }) => {
                                         </div>
 
                                         <div className="relative z-10">
-                                            <h3 className="text-white font-black text-xl mb-4 italic tracking-tight flex items-center gap-3">
+                                            <h3 className="text-white font-black text-lg mb-4 italic tracking-tight flex items-center gap-3">
                                                 {event.title}
                                             </h3>
-                                            <p className="text-[#C4C7C5] text-sm leading-relaxed mb-8 italic border-l-2 border-[#FFD54F]/20 pl-6">
+                                            <p className="text-[#C4C7C5] text-[13px] leading-relaxed mb-8 italic border-l-2 border-[#FFD54F]/20 pl-6">
                                                 "{event.description}"
                                             </p>
 
                                             <div className="flex items-center justify-between border-t border-[#1F1F1F] pt-6">
                                                 <div className="flex items-center gap-4">
-                                                    <div className="text-[10px] bg-[#0A0A0A] border border-[#2D2D2D] px-3 py-1.5 rounded-xl font-mono text-[#757775]">
+                                                    <div className="text-[11px] bg-[#0A0A0A] border border-[#2D2D2D] px-3 py-1.5 rounded-xl font-mono text-[#757775]">
                                                         ID: {event.sourceId}
                                                     </div>
-                                                    <div className="flex items-center gap-1 text-[10px] font-black text-[#FFD54F] uppercase tracking-widest opacity-60">
+                                                    <div className="flex items-center gap-1 text-[11px] font-black text-[#FFD54F] uppercase tracking-widest opacity-60">
                                                         <CornerDownRight size={12} /> Source Verified
                                                     </div>
                                                 </div>
                                                 <button
                                                     onClick={() => onDeepDive(event.title, 'standard')}
-                                                    className="flex items-center gap-2 text-[10px] font-black uppercase text-white hover:text-[#FFD54F] transition-colors tracking-[0.1em]"
+                                                    className="flex items-center gap-2 text-[11px] font-black uppercase text-white hover:text-[#FFD54F] transition-colors tracking-[0.1em]"
                                                 >
                                                     Inspect Deep Dive <ChevronRight size={14} />
                                                 </button>

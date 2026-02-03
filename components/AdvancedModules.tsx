@@ -63,10 +63,10 @@ export const ContradictionsView: React.FC<ContradictionsViewProps> = ({ onDeepDi
                         <AlertTriangle className="text-[#F44336]" size={24} />
                     </div>
                     <div>
-                        <h2 className="text-2xl font-black text-white tracking-tighter uppercase italic">Neural Contradiction Detector</h2>
+                        <h2 className="text-xl font-black text-white tracking-tighter uppercase italic">Neural Contradiction Detector</h2>
                         <div className="flex items-center gap-2 mt-1">
                             <span className="w-1.5 h-1.5 rounded-full bg-[#F44336] animate-pulse"></span>
-                            <span className="text-[10px] font-bold text-[#757775] uppercase tracking-[0.2em]">Source Comparison Engine Active</span>
+                            <span className="text-[11px] font-bold text-[#757775] uppercase tracking-[0.2em]">Source Comparison Engine Active</span>
                         </div>
                     </div>
                 </div>
@@ -80,13 +80,13 @@ export const ContradictionsView: React.FC<ContradictionsViewProps> = ({ onDeepDi
 
                         <div className="lg:col-span-5 space-y-6 relative">
                             <div className="flex items-center gap-3">
-                                <span className="flex items-center justify-center w-8 h-8 rounded-full bg-black border border-[#2D2D2D] text-[10px] font-black font-mono">01</span>
-                                <label className="text-[10px] uppercase font-black text-[#757775] tracking-[0.2em]">Source Alpha Stream</label>
+                                <span className="flex items-center justify-center w-8 h-8 rounded-full bg-black border border-[#2D2D2D] text-[11px] font-black font-mono">01</span>
+                                <label className="text-[11px] uppercase font-black text-[#757775] tracking-[0.2em]">Source Alpha Stream</label>
                             </div>
                             <select
                                 value={doc1}
                                 onChange={e => setDoc1(e.target.value)}
-                                className="w-full bg-[#0A0A0A] border border-[#2D2D2D] rounded-3xl p-6 text-sm text-white focus:border-[#F44336] focus:outline-none transition-all shadow-inner"
+                                className="w-full bg-[#0A0A0A] border border-[#2D2D2D] rounded-3xl p-6 text-[13px] text-white focus:border-[#F44336] focus:outline-none transition-all shadow-inner"
                             >
                                 <option value="">Sélectionner une source...</option>
                                 {allDocs.map((d, i) => <option key={i} value={d.title}>{d.title}</option>)}
@@ -101,13 +101,13 @@ export const ContradictionsView: React.FC<ContradictionsViewProps> = ({ onDeepDi
 
                         <div className="lg:col-span-5 space-y-6 relative">
                             <div className="flex items-center gap-3">
-                                <span className="flex items-center justify-center w-8 h-8 rounded-full bg-black border border-[#2D2D2D] text-[10px] font-black font-mono">02</span>
-                                <label className="text-[10px] uppercase font-black text-[#757775] tracking-[0.2em]">Source Beta Stream</label>
+                                <span className="flex items-center justify-center w-8 h-8 rounded-full bg-black border border-[#2D2D2D] text-[11px] font-black font-mono">02</span>
+                                <label className="text-[11px] uppercase font-black text-[#757775] tracking-[0.2em]">Source Beta Stream</label>
                             </div>
                             <select
                                 value={doc2}
                                 onChange={e => setDoc2(e.target.value)}
-                                className="w-full bg-[#0A0A0A] border border-[#2D2D2D] rounded-3xl p-6 text-sm text-white focus:border-[#F44336] focus:outline-none transition-all shadow-inner"
+                                className="w-full bg-[#0A0A0A] border border-[#2D2D2D] rounded-3xl p-6 text-[13px] text-white focus:border-[#F44336] focus:outline-none transition-all shadow-inner"
                             >
                                 <option value="">Sélectionner une source...</option>
                                 {allDocs.map((d, i) => <option key={i} value={d.title}>{d.title}</option>)}
@@ -121,7 +121,7 @@ export const ContradictionsView: React.FC<ContradictionsViewProps> = ({ onDeepDi
                                 className="w-full relative group"
                             >
                                 <div className="absolute inset-0 bg-[#F44336] blur-xl opacity-20 group-hover:opacity-40 transition-opacity rounded-3xl"></div>
-                                <div className="relative flex items-center justify-center gap-4 bg-gradient-to-r from-[#F44336] to-[#601410] text-white font-black uppercase tracking-[0.3em] text-[10px] py-6 rounded-[32px] shadow-2xl transition-all duration-300 transform active:scale-[0.98] disabled:opacity-30">
+                                <div className="relative flex items-center justify-center gap-4 bg-gradient-to-r from-[#F44336] to-[#601410] text-white font-black uppercase tracking-[0.3em] text-[12px] py-6 rounded-[32px] shadow-2xl transition-all duration-300 transform active:scale-[0.98] disabled:opacity-30">
                                     {isAnalyzing ? <Loader2 className="animate-spin" size={20} /> : <Zap size={20} className="animate-pulse" />}
                                     Execute Multi-Source Sync & Cross-Check
                                 </div>
@@ -135,13 +135,13 @@ export const ContradictionsView: React.FC<ContradictionsViewProps> = ({ onDeepDi
                                 <div className="flex items-center gap-4">
                                     <ShieldAlert className="text-[#F44336]" size={32} />
                                     <div>
-                                        <h3 className="text-2xl font-black italic tracking-tight">Forensic Discrepancy Report</h3>
-                                        <div className="text-[10px] font-bold text-[#757775] uppercase tracking-widest mt-1 italic">Calculated by Neural Engine v4.0</div>
+                                        <h3 className="text-xl font-black italic tracking-tight">Forensic Discrepancy Report</h3>
+                                        <div className="text-[11px] font-bold text-[#757775] uppercase tracking-widest mt-1 italic">Calculated by Neural Engine v4.0</div>
                                     </div>
                                 </div>
                                 <button onClick={() => setResults(null)} className="text-[10px] font-black uppercase tracking-widest text-[#757775] hover:text-white transition-colors">Dismiss Report</button>
                             </div>
-                            <div className="bg-black p-10 rounded-[40px] border border-[#2D2D2D] font-mono text-sm leading-relaxed text-[#C4C7C5] whitespace-pre-wrap shadow-inner overflow-hidden relative">
+                            <div className="bg-black p-10 rounded-[40px] border border-[#2D2D2D] font-mono text-[13px] leading-relaxed text-[#C4C7C5] whitespace-pre-wrap shadow-inner overflow-hidden relative">
                                 <div className="absolute top-0 right-0 p-8 opacity-5">
                                     <ShieldAlert size={120} />
                                 </div>
@@ -156,7 +156,7 @@ export const ContradictionsView: React.FC<ContradictionsViewProps> = ({ onDeepDi
                                 <div className="absolute inset-0 bg-[#F44336]/5 blur-xl animate-pulse"></div>
                                 <Fingerprint size={40} className="text-[#444746] relative" />
                             </div>
-                            <p className="text-[#757775] font-black uppercase tracking-[0.4em] text-[10px]">Awaiting Manual Source Linking...</p>
+                            <p className="text-[#757775] font-black uppercase tracking-[0.4em] text-[11px]">Awaiting Manual Source Linking...</p>
                         </div>
                     )}
                 </div>
@@ -216,10 +216,10 @@ export const POIView: React.FC<POIViewProps> = ({ onDeepDive }) => {
                             <Users className="text-[#4DB6AC]" size={24} />
                         </div>
                         <div>
-                            <h2 className="text-2xl font-black text-white tracking-tighter uppercase italic">Neural POI Profiling</h2>
+                            <h2 className="text-xl font-black text-white tracking-tighter uppercase italic">Neural POI Profiling</h2>
                             <div className="flex items-center gap-2 mt-1">
                                 <span className="w-1.5 h-1.5 rounded-full bg-[#4DB6AC] animate-pulse"></span>
-                                <span className="text-[10px] font-bold text-[#757775] uppercase tracking-[0.2em]">{entities.length} Targets Verified</span>
+                                <span className="text-[11px] font-bold text-[#757775] uppercase tracking-[0.2em]">{entities.length} Targets Verified</span>
                             </div>
                         </div>
                     </div>
@@ -230,7 +230,7 @@ export const POIView: React.FC<POIViewProps> = ({ onDeepDive }) => {
                             placeholder="Search Database..."
                             value={searchQuery}
                             onChange={e => setSearchQuery(e.target.value)}
-                            className="bg-[#161616] border border-[#2D2D2D] rounded-2xl py-3 pl-12 pr-6 text-xs text-white focus:border-[#4DB6AC] focus:outline-none transition-all w-80 shadow-2xl"
+                            className="bg-[#161616] border border-[#2D2D2D] rounded-2xl py-3 pl-12 pr-6 text-sm text-white focus:border-[#4DB6AC] focus:outline-none transition-all w-80 shadow-2xl"
                         />
                     </div>
                 </div>
@@ -252,8 +252,8 @@ export const POIView: React.FC<POIViewProps> = ({ onDeepDive }) => {
                                 {selectedEntity === name && (
                                     <div className="absolute inset-0 bg-gradient-to-br from-white/20 to-transparent opacity-50"></div>
                                 )}
-                                <div className="relative z-10 font-black text-sm mb-2 truncate italic">{name}</div>
-                                <div className={`relative z-10 text-[9px] flex gap-4 uppercase font-black tracking-[0.2em] ${selectedEntity === name ? 'opacity-100' : 'opacity-40'}`}>
+                                <div className="relative z-10 font-black text-[13px] mb-2 truncate italic">{name}</div>
+                                <div className={`relative z-10 text-[10px] flex gap-4 uppercase font-black tracking-[0.2em] ${selectedEntity === name ? 'opacity-100' : 'opacity-40'}`}>
                                     <span>{stats.docs} DOCS</span>
                                     <span>{stats.events} FAITS</span>
                                 </div>
@@ -278,12 +278,12 @@ export const POIView: React.FC<POIViewProps> = ({ onDeepDive }) => {
                                     </div>
                                 </div>
                                 <div className="space-y-4">
-                                    <h3 className="text-6xl font-black text-white tracking-tight italic mb-2 selection:bg-[#4DB6AC]/40">{selectedEntity}</h3>
+                                    <h3 className="text-5xl font-black text-white tracking-tight italic mb-2 selection:bg-[#4DB6AC]/40">{selectedEntity}</h3>
                                     <div className="flex flex-wrap gap-4">
-                                        <span className="flex items-center gap-2 px-6 py-2 bg-[#4DB6AC]/10 border border-[#4DB6AC]/20 rounded-2xl text-[10px] text-[#4DB6AC] font-black uppercase tracking-[0.2em] shadow-lg">
+                                        <span className="flex items-center gap-2 px-6 py-2 bg-[#4DB6AC]/10 border border-[#4DB6AC]/20 rounded-2xl text-[11px] text-[#4DB6AC] font-black uppercase tracking-[0.2em] shadow-lg">
                                             <Target size={14} className="animate-pulse" /> High Priority Target
                                         </span>
-                                        <span className="flex items-center gap-2 px-6 py-2 bg-white/5 border border-white/10 rounded-2xl text-[10px] text-[#757775] font-black uppercase tracking-[0.2em]">
+                                        <span className="flex items-center gap-2 px-6 py-2 bg-white/5 border border-white/10 rounded-2xl text-[11px] text-[#757775] font-black uppercase tracking-[0.2em]">
                                             <Shield size={14} /> Intelligence Level: Restricted
                                         </span>
                                     </div>
@@ -295,7 +295,7 @@ export const POIView: React.FC<POIViewProps> = ({ onDeepDive }) => {
                                     <div className="absolute top-0 right-0 p-12 opacity-5 scale-150 transition-transform group-hover:scale-125 duration-1000">
                                         <Database size={100} />
                                     </div>
-                                    <h4 className="text-[10px] font-black text-[#4DB6AC] uppercase tracking-[0.3em] mb-10 flex items-center gap-3">
+                                    <h4 className="text-[11px] font-black text-[#4DB6AC] uppercase tracking-[0.3em] mb-10 flex items-center gap-3">
                                         <Activity size={16} /> Neural Resonance Track
                                     </h4>
                                     <div className="space-y-4">
@@ -323,7 +323,7 @@ export const POIView: React.FC<POIViewProps> = ({ onDeepDive }) => {
                                                 <div key={i} className="text-xs text-[#C4C7C5] leading-relaxed border-b border-[#1F1F1F] pb-6 last:border-0 relative pl-8 group/item">
                                                     <div className="absolute left-0 top-1 w-1.5 h-1.5 rounded-full bg-[#4DB6AC]"></div>
                                                     <div className="flex items-center justify-between mb-2">
-                                                        <div className="text-[9px] font-black text-[#757775] uppercase tracking-widest">{d.title}</div>
+                                                        <div className="text-[10px] font-black text-[#757775] uppercase tracking-widest">{d.title}</div>
                                                         <button
                                                             onClick={() => onDeepDive(d.title, 'technical')}
                                                             className="opacity-0 group-hover/item:opacity-100 flex items-center gap-1 text-[9px] font-black text-[#4DB6AC] uppercase tracking-widest transition-all hover:underline"

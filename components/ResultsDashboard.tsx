@@ -68,10 +68,10 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ history, onD
                 <DatabaseIcon className="text-[#8AB4F8]" size={24} />
               </div>
               <div>
-                <h2 className="text-2xl font-black text-white tracking-tighter uppercase italic">Central Evidence Vault</h2>
+                <h2 className="text-xl font-black text-white tracking-tighter uppercase italic">Central Evidence Vault</h2>
                 <div className="flex items-center gap-2 mt-1">
                   <span className="w-1.5 h-1.5 rounded-full bg-[#8AB4F8] animate-pulse"></span>
-                  <span className="text-[10px] font-bold text-[#757775] uppercase tracking-[0.2em]">Restricted Access Database</span>
+                  <span className="text-[11px] font-bold text-[#757775] uppercase tracking-[0.2em]">Restricted Access Database</span>
                 </div>
               </div>
             </div>
@@ -95,9 +95,9 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ history, onD
             <ListFilter size={14} className="text-[#757775]" />
             <button
               onClick={() => setActiveType('ALL')}
-              className={`px-4 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all ${activeType === 'ALL'
-                  ? 'bg-[#8AB4F8] text-[#002B55]'
-                  : 'text-[#757775] hover:text-white'
+              className={`px-4 py-1.5 rounded-xl text-[11px] font-black uppercase tracking-widest transition-all ${activeType === 'ALL'
+                ? 'bg-[#8AB4F8] text-[#002B55]'
+                : 'text-[#757775] hover:text-white'
                 }`}
             >
               All Entities
@@ -106,9 +106,9 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ history, onD
               <button
                 key={type}
                 onClick={() => setActiveType(type)}
-                className={`px-4 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all whitespace-nowrap ${activeType === type
-                    ? 'bg-[#8AB4F8] text-[#002B55]'
-                    : 'text-[#757775] hover:text-white'
+                className={`px-4 py-1.5 rounded-xl text-[11px] font-black uppercase tracking-widest transition-all whitespace-nowrap ${activeType === type
+                  ? 'bg-[#8AB4F8] text-[#002B55]'
+                  : 'text-[#757775] hover:text-white'
                   }`}
               >
                 {type}
@@ -135,7 +135,7 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ history, onD
 
                 <div className="p-8 pb-4">
                   <div className="flex justify-between items-start gap-4 mb-6">
-                    <span className="px-4 py-1.5 rounded-xl text-[10px] font-black uppercase tracking-widest bg-[#004A77] text-[#D3E3FD] border border-white/5 shadow-lg">
+                    <span className="px-4 py-1.5 rounded-xl text-[11px] font-black uppercase tracking-widest bg-[#004A77] text-[#D3E3FD] border border-white/5 shadow-lg">
                       {item.doc.type}
                     </span>
                     <button
@@ -145,26 +145,26 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ history, onD
                       <ArrowUpRight size={18} />
                     </button>
                   </div>
-                  <h3 className="text-white font-black text-xl italic leading-tight group-hover:text-[#8AB4F8] transition-colors h-14 line-clamp-2">
+                  <h3 className="text-white font-black text-lg italic leading-tight group-hover:text-[#8AB4F8] transition-colors h-14 line-clamp-2">
                     {item.doc.title}
                   </h3>
                 </div>
 
                 <div className="px-8 py-4 space-y-6 flex-1">
                   <div className="relative">
-                    <p className="text-[#8E918F] text-xs leading-relaxed line-clamp-3 italic pl-4 border-l-2 border-[#1F1F1F] group-hover:border-[#8AB4F8]/30 transition-all">
+                    <p className="text-[#8E918F] text-[12px] leading-relaxed line-clamp-3 italic pl-4 border-l-2 border-[#1F1F1F] group-hover:border-[#8AB4F8]/30 transition-all">
                       {item.doc.description}
                     </p>
                   </div>
 
                   {item.doc.key_facts && item.doc.key_facts.length > 0 && (
                     <div className="space-y-3 bg-[#0A0A0A] p-5 rounded-[32px] border border-[#1F1F1F]">
-                      <label className="text-[9px] uppercase font-black tracking-[0.2em] text-[#444746] flex items-center gap-2">
+                      <label className="text-[10px] uppercase font-black tracking-[0.2em] text-[#444746] flex items-center gap-2">
                         <Activity size={10} className="text-[#8AB4F8]" /> Verified Findings
                       </label>
                       <ul className="space-y-3">
                         {item.doc.key_facts.slice(0, 2).map((fact, fidx) => (
-                          <li key={fidx} className="flex items-start gap-3 text-[11px] text-[#C4C7C5] leading-snug">
+                          <li key={fidx} className="flex items-start gap-3 text-[12px] text-[#C4C7C5] leading-snug">
                             <span className="w-1 h-1 rounded-full bg-[#8AB4F8] mt-1.5 shrink-0"></span>
                             <span>{fact}</span>
                           </li>
@@ -178,19 +178,19 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ history, onD
                   <div className="grid grid-cols-3 gap-2 p-2 bg-black rounded-[28px] border border-[#1F1F1F]">
                     <button
                       onClick={() => onDeepDive(item.doc.title, 'simple')}
-                      className="flex items-center justify-center gap-1.5 py-3 hover:bg-[#8AB4F8] hover:text-[#002B55] text-[#8AB4F8] rounded-2xl text-[9px] font-black uppercase tracking-widest transition-all"
+                      className="flex items-center justify-center gap-1.5 py-3 hover:bg-[#8AB4F8] hover:text-[#002B55] text-[#8AB4F8] rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all"
                     >
                       <BookOpen size={12} /> Simple
                     </button>
                     <button
                       onClick={() => onDeepDive(item.doc.title, 'technical')}
-                      className="flex items-center justify-center gap-1.5 py-3 hover:bg-[#D3E3FD] hover:text-[#002B55] text-[#C4C7C5] rounded-2xl text-[9px] font-black uppercase tracking-widest transition-all"
+                      className="flex items-center justify-center gap-1.5 py-3 hover:bg-[#D3E3FD] hover:text-[#002B55] text-[#C4C7C5] rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all"
                     >
                       <Shield size={12} /> Tech
                     </button>
                     <button
                       onClick={() => onDeepDive(item.doc.title, 'standard')}
-                      className="flex items-center justify-center gap-1.5 py-3 bg-[#370003] hover:bg-[#F2B8B5] hover:text-[#370003] text-[#F2B8B5] rounded-2xl text-[9px] font-black uppercase tracking-widest transition-all"
+                      className="flex items-center justify-center gap-1.5 py-3 bg-[#370003] hover:bg-[#F2B8B5] hover:text-[#370003] text-[#F2B8B5] rounded-2xl text-[10px] font-black uppercase tracking-widest transition-all"
                     >
                       <Zap size={12} /> Neural
                     </button>
@@ -206,8 +206,8 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ history, onD
               <div className="absolute inset-0 bg-[#8AB4F8] blur-3xl opacity-5 animate-pulse"></div>
               <DatabaseIcon size={80} className="text-[#1F1F1F] relative" strokeWidth={0.5} />
             </div>
-            <h3 className="text-2xl font-black text-white uppercase tracking-[0.5em] italic">No Matches Found</h3>
-            <p className="max-w-md mt-4 text-[#444746] font-bold text-xs uppercase tracking-widest">
+            <h3 className="text-xl font-black text-white uppercase tracking-[0.5em] italic">No Matches Found</h3>
+            <p className="max-w-md mt-4 text-[#444746] font-bold text-[12px] uppercase tracking-widest">
               Adjust clearance level or refine search parameters
             </p>
           </div>

@@ -20,7 +20,8 @@ import {
   Plus,
   XCircle,
   Activity,
-  Loader2
+  Loader2,
+  X
 } from 'lucide-react';
 import { Sidebar, ViewType } from './components/Sidebar';
 import { NetworkGraphView } from './components/NetworkGraphView';
@@ -39,6 +40,7 @@ const App: React.FC = () => {
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
   const [viewMode, setViewMode] = useState<ViewType>('lab');
   const [showPlanner, setShowPlanner] = useState(false);
+  const [showLogs, setShowLogs] = useState(false);
 
   const queueRef = useRef<InputData[]>([]);
 
@@ -277,6 +279,7 @@ const App: React.FC = () => {
           setShowPlanner(true);
           setActiveTabId(null);
         }}
+        onToggleLogs={() => setShowLogs(!showLogs)}
       />
 
       <div className="flex-1 flex flex-col min-w-0 h-screen overflow-hidden bg-[#0A0A0A]">
@@ -290,29 +293,29 @@ const App: React.FC = () => {
                 <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#6DD58C] opacity-75"></span>
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-[#6DD58C]"></span>
               </span>
-              <span className="text-[10px] text-[#6DD58C] font-black uppercase tracking-[0.2em] relative">Node Live</span>
+              <span className="text-[12px] text-[#6DD58C] font-black uppercase tracking-[0.2em] relative">Node Live</span>
             </div>
 
             <div className="h-6 w-[1px] bg-[#1F1F1F]"></div>
 
             <div className="flex items-center gap-3">
-              <div className="text-[10px] font-black text-[#757775] uppercase tracking-widest">Database Capacity</div>
+              <div className="text-[11px] font-black text-[#757775] uppercase tracking-widest">Database Capacity</div>
               <div className="flex items-center gap-2">
-                <div className="text-lg font-mono font-black text-[#F2B8B5] leading-none">{processedCount}</div>
-                <div className="text-[9px] font-bold text-[#757775] uppercase tracking-tighter self-end mb-0.5">Dossiers Indexés</div>
+                <div className="text-base font-mono font-black text-[#F2B8B5] leading-none">{processedCount}</div>
+                <div className="text-[10px] font-bold text-[#757775] uppercase tracking-tighter self-end mb-0.5">Dossiers Indexés</div>
               </div>
             </div>
           </div>
 
           <div className="flex items-center gap-6">
             {isProcessing && (
-              <div className="flex gap-3 items-center bg-[#370003] px-5 py-2 rounded-2xl text-[10px] text-[#F2B8B5] border border-[#601410] shadow-[0_0_20px_rgba(96,20,16,0.3)] animate-in fade-in zoom-in slide-in-from-right-4">
+              <div className="flex gap-3 items-center bg-[#370003] px-5 py-2 rounded-2xl text-[11px] text-[#F2B8B5] border border-[#601410] shadow-[0_0_20px_rgba(96,20,16,0.3)] animate-in fade-in zoom-in slide-in-from-right-4">
                 <Loader2 size={14} className="animate-spin" />
                 <span className="font-black uppercase tracking-[0.2em]">Neural Processing...</span>
               </div>
             )}
 
-            <div className="hidden xl:flex items-center gap-4 text-[10px] font-bold text-[#444746] uppercase border-l border-[#1F1F1F] pl-6 tracking-widest">
+            <div className="hidden xl:flex items-center gap-4 text-[11px] font-bold text-[#444746] uppercase border-l border-[#1F1F1F] pl-6 tracking-widest">
               <span>LATENCY: 12ms</span>
               <span className="text-[#F2B8B5]">ENCRYPTION: AES-256</span>
             </div>
@@ -333,35 +336,28 @@ const App: React.FC = () => {
               <div className="h-full flex flex-col lg:grid lg:grid-cols-12 gap-8 p-10 overflow-hidden animate-in fade-in duration-700">
                 {/* Lab Sidebar: Queue & Logs */}
                 <section className="lg:col-span-3 flex flex-col gap-6 overflow-hidden min-h-0">
-                  <div className="flex flex-col gap-4 flex-1 overflow-hidden min-h-0">
+                  <div className="flex flex-col gap-4 flex-1 overflow-hidden min-h-0 pb-10">
                     <div className="flex justify-between items-center px-1">
                       <h2 className="text-xs font-bold text-[#8E918F] uppercase tracking-widest flex items-center gap-2">
                         Inbound Pipeline
                       </h2>
-                      <span className="text-[10px] bg-[#1E1E1E] text-[#C4C7C5] px-2 py-0.5 rounded-full border border-[#444746]">{queue.length}</span>
+                      <span className="text-[11px] bg-[#1E1E1E] text-[#C4C7C5] px-2 py-0.5 rounded-full border border-[#444746]">{queue.length}</span>
                     </div>
                     <div className="bg-[#1A1A1A] rounded-3xl p-3 flex-1 border border-[#2D2D2D] overflow-hidden flex flex-col shadow-inner min-h-0">
                       <div className="flex-1 overflow-y-auto space-y-2 custom-scrollbar pr-1">
                         {queue.length === 0 && (
                           <div className="flex flex-col items-center justify-center h-full opacity-20">
                             <Activity size={32} className="mb-2" />
-                            <span className="text-[10px] uppercase font-bold tracking-tighter">Idle</span>
+                            <span className="text-[11px] uppercase font-bold tracking-tighter">Idle</span>
                           </div>
                         )}
                         {queue.map((item) => (
                           <div key={item.id} className="bg-[#252525] p-3 rounded-2xl border border-transparent border-l-2 border-l-[#F2B8B5]/30 animate-in slide-in-from-left-2">
-                            <div className="text-[9px] font-mono text-[#757775] mb-1">{item.id}</div>
-                            <div className="text-xs text-[#E3E3E3] font-medium truncate">"{item.query}"</div>
+                            <div className="text-[10px] font-mono text-[#757775] mb-1">{item.id}</div>
+                            <div className="text-[13px] text-[#E3E3E3] font-medium truncate">"{item.query}"</div>
                           </div>
                         ))}
                       </div>
-                    </div>
-                  </div>
-
-                  <div className="h-1/3 flex flex-col gap-3 min-h-[150px]">
-                    <h2 className="text-xs font-bold text-[#8E918F] uppercase tracking-widest">System Logs</h2>
-                    <div className="flex-1 bg-black rounded-3xl border border-[#2D2D2D] overflow-hidden shadow-2xl min-h-0">
-                      <LogTerminal logs={activeLogs} type="flash" />
                     </div>
                   </div>
                 </section>
@@ -378,8 +374,8 @@ const App: React.FC = () => {
                           }`}
                       >
                         <div className="flex flex-col overflow-hidden">
-                          <span className={`text-[9px] font-mono ${activeTabId === res.id ? 'text-[#F2B8B5]' : ''}`}>{res.id}</span>
-                          <span className="text-[11px] font-bold truncate max-w-[120px]">{res.input.query}</span>
+                          <span className={`text-[10px] font-mono ${activeTabId === res.id ? 'text-[#F2B8B5]' : ''}`}>{res.id}</span>
+                          <span className="text-[12px] font-bold truncate max-w-[120px]">{res.input.query}</span>
                         </div>
                         {res.status === 'processing' ? (
                           <div className="ml-auto w-1.5 h-1.5 rounded-full bg-[#F2B8B5] animate-ping"></div>
@@ -392,7 +388,7 @@ const App: React.FC = () => {
                         )}
                       </div>
                     ))}
-                    {resolutionHistory.length === 0 && <span className="px-6 py-3 text-[10px] text-[#757775] uppercase font-bold pt-6">Dossier Vide</span>}
+                    {resolutionHistory.length === 0 && <span className="px-6 py-3 text-[11px] text-[#757775] uppercase font-bold pt-6">Dossier Vide</span>}
                   </div>
 
                   {/* Content Container */}
@@ -402,16 +398,16 @@ const App: React.FC = () => {
                         <div className="p-8 border-b border-[#2D2D2D] flex justify-between items-center bg-gradient-to-r from-transparent to-[#252525]/30 shrink-0">
                           <div>
                             <div className="flex items-center gap-3 mb-2">
-                              <span className={`px-2.5 py-1 rounded-full text-[9px] font-black uppercase tracking-widest ${activeResult.status === 'completed' ? 'bg-[#0F5223] text-[#6DD58C] border border-[#6DD58C]/20' : 'bg-[#601410] text-[#F2B8B5] animate-pulse'}`}>
+                              <span className={`px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-widest ${activeResult.status === 'completed' ? 'bg-[#0F5223] text-[#6DD58C] border border-[#6DD58C]/20' : 'bg-[#601410] text-[#F2B8B5] animate-pulse'}`}>
                                 {activeResult.status === 'completed' ? 'Evidence Ready' : 'Processing Content'}
                               </span>
-                              <span className="text-[10px] text-[#757775] font-mono uppercase">{activeResult.input.targetUrl}</span>
+                              <span className="text-[11px] text-[#757775] font-mono uppercase">{activeResult.input.targetUrl}</span>
                             </div>
                             <h2 className="text-2xl font-light text-[#E3E3E3] tracking-tight italic">"{activeResult.input.query}"</h2>
                           </div>
                           <div className="text-right">
-                            <div className="text-[10px] text-[#757775] uppercase font-bold tracking-widest mb-1">Latency</div>
-                            <div className="text-xl font-mono text-[#F2B8B5]">{activeResult.durationMs ? `${Math.round(activeResult.durationMs)}ms` : '--'}</div>
+                            <div className="text-[11px] text-[#757775] uppercase font-bold tracking-widest mb-1">Latency</div>
+                            <div className="text-lg font-mono text-[#F2B8B5]">{activeResult.durationMs ? `${Math.round(activeResult.durationMs)}ms` : '--'}</div>
                           </div>
                         </div>
                         <div className="flex-1 overflow-y-auto p-8 custom-scrollbar">
@@ -455,6 +451,29 @@ const App: React.FC = () => {
       </div>
 
       <LiveAssistant />
+
+      {showLogs && (
+        <div className="fixed bottom-10 right-10 w-[500px] h-[450px] z-[100] animate-in slide-in-from-bottom-10 fade-in duration-500">
+          <div className="absolute inset-0 bg-black/60 backdrop-blur-3xl rounded-[40px] border border-white/10 shadow-[0_32px_100px_rgba(0,0,0,0.8)] overflow-hidden flex flex-col">
+            <div className="px-8 py-5 border-b border-white/5 flex justify-between items-center bg-white/5 backdrop-blur-md">
+              <div className="flex items-center gap-3">
+                <div className="w-2 h-2 rounded-full bg-[#6DD58C] animate-pulse"></div>
+                <span className="text-[12px] font-black uppercase tracking-[0.2em] text-[#E3E3E3]">Moteur de Trace Forensique</span>
+              </div>
+              <button
+                onClick={() => setShowLogs(false)}
+                className="w-8 h-8 flex items-center justify-center hover:bg-white/10 rounded-xl transition-all"
+              >
+                <X size={18} className="text-[#757775] hover:text-white" />
+              </button>
+            </div>
+            <div className="flex-1 overflow-hidden p-4">
+              <LogTerminal logs={activeLogs} type="flash" />
+            </div>
+          </div>
+        </div>
+      )}
+
       <SettingsModal
         isOpen={isSettingsOpen}
         onClose={() => setIsSettingsOpen(false)}

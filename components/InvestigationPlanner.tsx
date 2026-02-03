@@ -43,9 +43,9 @@ export const InvestigationPlanner: React.FC<InvestigationPlannerProps> = ({ onSt
                     <div className="p-3 bg-[#370003] rounded-2xl border border-[#601410]">
                         <FileSearch className="text-[#F2B8B5]" size={24} />
                     </div>
-                    <h2 className="text-2xl font-bold text-[#E3E3E3]">Planificateur d'Investigation</h2>
+                    <h2 className="text-xl font-bold text-[#E3E3E3]">Planificateur d'Investigation</h2>
                 </div>
-                <p className="text-[#C4C7C5] text-sm">Précisez la source et l'objectif de l'analyse IA parmi les 3.5M de documents.</p>
+                <p className="text-[#C4C7C5] text-[13px]">Précisez la source et l'objectif de l'analyse IA parmi les 3.5M de documents.</p>
             </div>
 
             <div className="flex-1 overflow-y-auto p-8 space-y-8 custom-scrollbar">
@@ -53,7 +53,7 @@ export const InvestigationPlanner: React.FC<InvestigationPlannerProps> = ({ onSt
                 <section className="space-y-4">
                     <div className="flex items-center gap-2 mb-4">
                         <Database size={18} className="text-[#F2B8B5]" />
-                        <h3 className="text-sm font-bold uppercase tracking-widest text-[#8E918F]">1. Sélection du Data Set DOJ</h3>
+                        <h3 className="text-[13px] font-bold uppercase tracking-widest text-[#8E918F]">1. Sélection du Data Set DOJ</h3>
                     </div>
                     <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                         {DOJ_SOURCES.map((source) => (
@@ -66,12 +66,12 @@ export const InvestigationPlanner: React.FC<InvestigationPlannerProps> = ({ onSt
                                     }`}
                             >
                                 <div className="flex items-center justify-between mb-1">
-                                    <span className={`text-sm font-bold ${selectedSource === source.id ? 'text-[#F2B8B5]' : 'text-[#E3E3E3]'}`}>
+                                    <span className={`text-[13px] font-bold ${selectedSource === source.id ? 'text-[#F2B8B5]' : 'text-[#E3E3E3]'}`}>
                                         {source.name}
                                     </span>
                                     {selectedSource === source.id && <Shield size={14} className="text-[#F2B8B5]" />}
                                 </div>
-                                <span className="text-[10px] text-[#C4C7C5] leading-relaxed">{source.description}</span>
+                                <span className="text-[9px] text-[#C4C7C5] leading-relaxed">{source.description}</span>
                             </button>
                         ))}
                     </div>
@@ -81,20 +81,20 @@ export const InvestigationPlanner: React.FC<InvestigationPlannerProps> = ({ onSt
                 <section className="space-y-4">
                     <div className="flex items-center gap-2 mb-4">
                         <FileText size={18} className="text-[#F2B8B5]" />
-                        <h3 className="text-sm font-bold uppercase tracking-widest text-[#8E918F]">2. Objectif de Recherche</h3>
+                        <h3 className="text-[13px] font-bold uppercase tracking-widest text-[#8E918F]">2. Objectif de Recherche</h3>
                     </div>
 
                     <div className="bg-[#121212] rounded-2xl border border-[#444746] p-4 space-y-4">
                         <div className="flex gap-2 p-1 bg-[#1E1E1E] rounded-xl w-fit">
                             <button
                                 onClick={() => setActiveTab('dataset')}
-                                className={`px-4 py-2 rounded-lg text-xs font-medium transition-all ${activeTab === 'dataset' ? 'bg-[#2B2B2B] text-[#F2B8B5] shadow-sm' : 'text-[#757775] hover:text-[#E3E3E3]'}`}
+                                className={`px-4 py-2 rounded-lg text-[11px] font-medium transition-all ${activeTab === 'dataset' ? 'bg-[#2B2B2B] text-[#F2B8B5] shadow-sm' : 'text-[#757775] hover:text-[#E3E3E3]'}`}
                             >
                                 Modèles Prédéfinis
                             </button>
                             <button
                                 onClick={() => setActiveTab('custom')}
-                                className={`px-4 py-2 rounded-lg text-xs font-medium transition-all ${activeTab === 'custom' ? 'bg-[#2B2B2B] text-[#F2B8B5] shadow-sm' : 'text-[#757775] hover:text-[#E3E3E3]'}`}
+                                className={`px-4 py-2 rounded-lg text-[11px] font-medium transition-all ${activeTab === 'custom' ? 'bg-[#2B2B2B] text-[#F2B8B5] shadow-sm' : 'text-[#757775] hover:text-[#E3E3E3]'}`}
                             >
                                 Requête Libre
                             </button>
@@ -109,7 +109,7 @@ export const InvestigationPlanner: React.FC<InvestigationPlannerProps> = ({ onSt
                                         className={`flex items-center justify-between p-3 rounded-xl border border-[#444746] text-left transition-all ${customQuery === q.query ? 'bg-[#F2B8B5]/10 border-[#F2B8B5]/50' : 'hover:bg-[#1E1E1E]'
                                             }`}
                                     >
-                                        <span className="text-sm text-[#E3E3E3]">{q.label}</span>
+                                        <span className="text-[13px] text-[#E3E3E3]">{q.label}</span>
                                         <ChevronRight size={14} className="text-[#757775]" />
                                     </button>
                                 ))}
@@ -119,7 +119,7 @@ export const InvestigationPlanner: React.FC<InvestigationPlannerProps> = ({ onSt
                                 value={customQuery}
                                 onChange={(e) => setCustomQuery(e.target.value)}
                                 placeholder="Ex: 'Listez toutes les mentions de l'île Little St. James entre 2004 et 2006...'"
-                                className="w-full h-32 bg-[#0F0F0F] rounded-xl p-4 text-sm text-[#E3E3E3] border border-[#444746] focus:border-[#F2B8B5] transition-all outline-none resize-none placeholder-[#444746]"
+                                className="w-full h-32 bg-[#0F0F0F] rounded-xl p-4 text-[13px] text-[#E3E3E3] border border-[#444746] focus:border-[#F2B8B5] transition-all outline-none resize-none placeholder-[#444746]"
                             />
                         )}
                     </div>
@@ -139,7 +139,7 @@ export const InvestigationPlanner: React.FC<InvestigationPlannerProps> = ({ onSt
                 <button
                     onClick={handleStart}
                     disabled={activeTab === 'custom' && !customQuery}
-                    className={`w-full flex items-center justify-center gap-3 py-4 rounded-2xl font-bold uppercase tracking-widest text-sm transition-all shadow-xl ${activeTab === 'custom' && !customQuery
+                    className={`w-full flex items-center justify-center gap-3 py-4 rounded-2xl font-bold uppercase tracking-widest text-[13px] transition-all shadow-xl ${activeTab === 'custom' && !customQuery
                         ? 'bg-[#2B2B2B] text-[#757775] cursor-not-allowed'
                         : 'bg-[#F2B8B5] text-[#370003] hover:bg-[#F9DEDC] hover:scale-[1.02] active:scale-95 shadow-[#F2B8B5]/20'
                         }`}
