@@ -12,7 +12,10 @@ export interface InputData {
 
 export interface DocumentDetail {
   title: string;
+  type: string;
   description: string;
+  key_facts: string[];
+  legal_implications: string;
   date: string;
 }
 

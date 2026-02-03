@@ -57,6 +57,25 @@ const App: React.FC = () => {
     queueRef.current = [...queueRef.current, ...newData];
   };
 
+  const handleDeepDive = (docTitle: string) => {
+    const newId = `DEEP-DIVE-${Date.now().toString().slice(-4)}`;
+    const deepDiveQuery: InputData = {
+        id: newId,
+        query: `ANALYSE PROFONDE REQUISE : Concentre-toi exclusivement sur le document intitulé "${docTitle}". Détaille chaque section, liste tous les noms cités dans ce document spécifique, et analyse les contradictions ou révélations majeures.`,
+        targetUrl: "https://www.justice.gov/epstein/doj-disclosures",
+        timestamp: Date.now()
+    };
+    
+    // Add to state and ref immediately
+    setQueue(prev => [deepDiveQuery, ...prev]);
+    queueRef.current = [deepDiveQuery, ...queueRef.current];
+    
+    // If not processing, start processing to handle this new urgent item immediately
+    if (!isProcessing) {
+        processQueue();
+    }
+  };
+
   const processQueue = async () => {
     if (isProcessing || queueRef.current.length === 0) return;
     setIsProcessing(true);
@@ -76,7 +95,7 @@ const App: React.FC = () => {
           id: item.id,
           input: item,
           output: null,
-          logs: ["Initialisation de l'agent de recherche..."],
+          logs: ["Initialisation de l'agent de recherche approfondie..."],
           sources: [],
           durationMs: 0,
           status: 'processing',
@@ -146,9 +165,9 @@ const App: React.FC = () => {
           </button>
           <button 
             onClick={processQueue}
-            disabled={isProcessing || queue.length === 0}
+            disabled={isProcessing || (queue.length === 0 && queueRef.current.length === 0)}
             className={`flex items-center gap-2 px-8 py-3 rounded-full text-sm font-medium tracking-wide uppercase transition-all shadow-md ${
-              isProcessing || queue.length === 0
+              isProcessing || (queue.length === 0 && queueRef.current.length === 0)
                 ? 'bg-[#1E1E1E] text-[#757775] cursor-not-allowed shadow-none' 
                 : 'bg-[#F2B8B5] text-[#370003] hover:bg-[#F9DEDC] shadow-lg shadow-[#F2B8B5]/20'
             }`}
@@ -187,7 +206,7 @@ const App: React.FC = () => {
                          <span className="text-[#F2B8B5] text-[10px] font-mono tracking-wider">{item.id}</span>
                          <span className="text-[#757775] text-[10px]">{new Date(item.timestamp).toLocaleTimeString()}</span>
                        </div>
-                       <div className="text-xs text-[#E3E3E3] font-medium leading-relaxed">"{item.query}"</div>
+                       <div className="text-xs text-[#E3E3E3] font-medium leading-relaxed line-clamp-2">"{item.query}"</div>
                      </div>
                    ))}
                  </div>
@@ -305,6 +324,7 @@ const App: React.FC = () => {
                                             data={result.output} 
                                             sources={result.sources}
                                             loading={result.status === 'processing'} 
+                                            onDeepDive={handleDeepDive}
                                         />
                                     </div>
 
