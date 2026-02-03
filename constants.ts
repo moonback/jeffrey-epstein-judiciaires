@@ -48,16 +48,16 @@ let sequenceIndex = 0;
 
 export const generateInputData = (count: number): InputData[] => {
   const data: InputData[] = [];
-  
+
   for (let i = 0; i < count; i++) {
     data.push({
-      id: `ANALYSE-${202400 + sequenceIndex}`,
+      id: `ANALYSE-${Date.now().toString().slice(-6)}-${sequenceIndex}`,
       query: QUERIES[sequenceIndex % QUERIES.length],
       targetUrl: "https://www.justice.gov/epstein/doj-disclosures",
       timestamp: Date.now() + (i * 2000),
     });
     sequenceIndex++;
   }
-  
+
   return data;
 };
