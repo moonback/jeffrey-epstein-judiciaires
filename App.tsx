@@ -9,17 +9,38 @@ import { InputData, ProcessedResult } from './types';
 import { mergeDataWithFlash } from './services/geminiService';
 import { DataCard } from './components/DataCard';
 import { LogTerminal } from './components/LogTerminal';
-import { Zap, Play, RotateCw, Database, Search, ArrowRight, Activity, Globe, Terminal } from 'lucide-react';
+import { Zap, Play, RotateCw, Database, Search, ArrowRight, Activity, Globe, Terminal, Trash2 } from 'lucide-react';
 
 const App: React.FC = () => {
   const [queue, setQueue] = useState<InputData[]>([]);
-  const [resolutionHistory, setResolutionHistory] = useState<ProcessedResult[]>([]);
+  
+  // Initialize history from localStorage if available
+  const [resolutionHistory, setResolutionHistory] = useState<ProcessedResult[]>(() => {
+    try {
+      const saved = localStorage.getItem('doj_analysis_history');
+      return saved ? JSON.parse(saved) : [];
+    } catch (e) {
+      console.error("Failed to load history", e);
+      return [];
+    }
+  });
+
   const [isProcessing, setIsProcessing] = useState(false);
   
-  const [processedCount, setProcessedCount] = useState(0);
+  // Initialize count based on loaded history
+  const [processedCount, setProcessedCount] = useState(resolutionHistory.length);
 
   const queueRef = useRef<InputData[]>([]);
   const isAtBottomRef = useRef(true);
+
+  // Persistence Effect
+  useEffect(() => {
+    try {
+      localStorage.setItem('doj_analysis_history', JSON.stringify(resolutionHistory));
+    } catch (e) {
+      console.error("Failed to save history", e);
+    }
+  }, [resolutionHistory]);
 
   useEffect(() => {
     const handleScroll = () => {
@@ -57,22 +78,72 @@ const App: React.FC = () => {
     queueRef.current = [...queueRef.current, ...newData];
   };
 
-  const handleDeepDive = (docTitle: string) => {
-    const newId = `DEEP-DIVE-${Date.now().toString().slice(-4)}`;
+  const handleDeepDive = (docTitle: string, style: 'standard' | 'simple' | 'technical' = 'standard') => {
+    const newId = `REFORM-${Date.now().toString().slice(-4)}`;
+    
+    let promptPrefix = "";
+    let promptSuffix = "";
+
+    switch (style) {
+        case 'simple':
+            promptPrefix = "VULGARISATION (ELI5) : ";
+            promptSuffix = "Explique le contenu de ce document en langage très simple, accessible au grand public. Utilise des analogies si nécessaire et évite le jargon juridique complexe.";
+            break;
+        case 'technical':
+            promptPrefix = "EXPERTISE JURIDIQUE : ";
+            promptSuffix = "Analyse ce document avec une rigueur académique. Identifie les précédents juridiques, la terminologie procédurale exacte et les implications légales techniques.";
+            break;
+        case 'standard':
+        default:
+            promptPrefix = "ANALYSE PROFONDE : ";
+            promptSuffix = "Détaille chaque section, liste tous les noms cités dans ce document spécifique, et analyse les contradictions ou révélations majeures.";
+            break;
+    }
+
     const deepDiveQuery: InputData = {
         id: newId,
-        query: `ANALYSE PROFONDE REQUISE : Concentre-toi exclusivement sur le document intitulé "${docTitle}". Détaille chaque section, liste tous les noms cités dans ce document spécifique, et analyse les contradictions ou révélations majeures.`,
+        query: `${promptPrefix}Concentre-toi exclusivement sur le document intitulé "${docTitle}". ${promptSuffix}`,
         targetUrl: "https://www.justice.gov/epstein/doj-disclosures",
         timestamp: Date.now()
     };
     
-    // Add to state and ref immediately
     setQueue(prev => [deepDiveQuery, ...prev]);
     queueRef.current = [deepDiveQuery, ...queueRef.current];
     
-    // If not processing, start processing to handle this new urgent item immediately
     if (!isProcessing) {
         processQueue();
+    }
+  };
+
+  const handleDownload = (result: ProcessedResult) => {
+    if (!result.output) return;
+    
+    const exportData = {
+      meta: {
+        id: result.id,
+        timestamp: new Date().toISOString(),
+        query: result.input.query,
+        source: result.input.targetUrl,
+        latency_ms: result.durationMs
+      },
+      analysis: result.output,
+      sources: result.sources
+    };
+
+    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(exportData, null, 2));
+    const downloadAnchorNode = document.createElement('a');
+    downloadAnchorNode.setAttribute("href", dataStr);
+    downloadAnchorNode.setAttribute("download", `DOJ_Analysis_${result.id}.json`);
+    document.body.appendChild(downloadAnchorNode);
+    downloadAnchorNode.click();
+    downloadAnchorNode.remove();
+  };
+
+  const handleClearHistory = () => {
+    if (window.confirm("Êtes-vous sûr de vouloir effacer tout l'historique d'analyse ?")) {
+      setResolutionHistory([]);
+      setProcessedCount(0);
+      localStorage.removeItem('doj_analysis_history');
     }
   };
 
@@ -155,7 +226,17 @@ const App: React.FC = () => {
           </div>
         </div>
         
-        <div className="flex gap-4 mt-6 md:mt-0">
+        <div className="flex gap-4 mt-6 md:mt-0 items-center">
+           {resolutionHistory.length > 0 && (
+            <button 
+              onClick={handleClearHistory}
+              className="flex items-center gap-2 px-4 py-3 rounded-full text-[#757775] hover:text-[#FFB4AB] hover:bg-[#370003] transition-colors text-xs font-bold uppercase tracking-wider mr-2"
+            >
+              <Trash2 size={16} />
+              Effacer Historique
+            </button>
+          )}
+
           <button 
             onClick={addToQueue}
             className="flex items-center gap-2 px-6 py-3 rounded-full border border-[#F2B8B5] text-[#F2B8B5] hover:bg-[#F2B8B5]/10 transition-colors text-sm font-medium tracking-wide uppercase"
@@ -325,6 +406,7 @@ const App: React.FC = () => {
                                             sources={result.sources}
                                             loading={result.status === 'processing'} 
                                             onDeepDive={handleDeepDive}
+                                            onDownload={() => handleDownload(result)}
                                         />
                                     </div>
 

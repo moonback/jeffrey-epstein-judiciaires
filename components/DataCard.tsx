@@ -5,16 +5,17 @@
 
 import React from 'react';
 import { DisclosureAnalysis } from '../types';
-import { Search, Calendar, Users, FileText, Link as LinkIcon, ShieldAlert, File, List, Zap, Scale } from 'lucide-react';
+import { Search, Calendar, Users, FileText, Link as LinkIcon, ShieldAlert, File, List, Zap, Scale, Download, BookOpen, GraduationCap } from 'lucide-react';
 
 interface DataCardProps {
   data: DisclosureAnalysis | null;
   sources: { title: string; uri: string }[];
   loading: boolean;
-  onDeepDive: (docTitle: string) => void;
+  onDeepDive: (docTitle: string, style: 'standard' | 'simple' | 'technical') => void;
+  onDownload: () => void;
 }
 
-export const DataCard: React.FC<DataCardProps> = ({ data, sources, loading, onDeepDive }) => {
+export const DataCard: React.FC<DataCardProps> = ({ data, sources, loading, onDeepDive, onDownload }) => {
   if (loading) {
     return (
       <div className="w-full bg-[#1E1E1E] rounded-3xl p-8 border border-[#444746] flex flex-col items-center justify-center min-h-[400px] gap-6">
@@ -50,7 +51,16 @@ export const DataCard: React.FC<DataCardProps> = ({ data, sources, loading, onDe
             <ShieldAlert size={20} className="text-[#F2B8B5]" />
             <span className="text-[#F2B8B5] font-bold tracking-wide text-sm uppercase">Rapport Forensique</span>
         </div>
-        <span className="text-[#F2B8B5] font-mono text-xs opacity-80 px-2 py-1 bg-[#601410] rounded">{data.contexte_juridique || 'DOSSIER CLASSIFIÉ'}</span>
+        <div className="flex items-center gap-2">
+            <button 
+                onClick={onDownload}
+                className="flex items-center gap-1.5 bg-[#444746]/50 hover:bg-[#F2B8B5] hover:text-[#370003] text-[#E3E3E3] px-3 py-1.5 rounded-lg text-[10px] uppercase font-bold tracking-wide transition-all border border-[#444746]"
+                title="Télécharger les données au format JSON"
+            >
+                <Download size={12} /> Sauvegarder JSON
+            </button>
+            <span className="text-[#F2B8B5] font-mono text-xs opacity-80 px-2 py-1 bg-[#601410] rounded">{data.contexte_juridique || 'DOSSIER CLASSIFIÉ'}</span>
+        </div>
       </div>
 
       <div className="p-8 flex flex-col gap-8 flex-1">
@@ -76,7 +86,7 @@ export const DataCard: React.FC<DataCardProps> = ({ data, sources, loading, onDe
                         <div key={idx} className="bg-[#2B2B2B] rounded-xl border border-[#444746] overflow-hidden hover:border-[#F2B8B5]/50 transition-colors group">
                             
                             {/* Doc Header */}
-                            <div className="bg-[#1E1E1E] p-3 border-b border-[#444746] flex justify-between items-start gap-4">
+                            <div className="bg-[#1E1E1E] p-3 border-b border-[#444746] flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
                                 <div>
                                     <div className="flex items-center gap-2 mb-1">
                                         <span className="text-[10px] font-bold uppercase text-[#004A77] bg-[#D3E3FD] px-1.5 rounded">{doc.type || 'DOCUMENT'}</span>
@@ -84,12 +94,29 @@ export const DataCard: React.FC<DataCardProps> = ({ data, sources, loading, onDe
                                     </div>
                                     <h4 className="text-[#E3E3E3] font-semibold text-sm leading-tight">{doc.title}</h4>
                                 </div>
-                                <button 
-                                    onClick={() => onDeepDive(doc.title)}
-                                    className="shrink-0 flex items-center gap-1.5 bg-[#370003] hover:bg-[#601410] text-[#F2B8B5] px-3 py-1.5 rounded-lg text-[10px] uppercase font-bold tracking-wide transition-colors border border-[#601410]"
-                                >
-                                    <Zap size={10} fill="currentColor" /> Analyser ce Doc
-                                </button>
+                                <div className="flex items-center gap-1">
+                                    <button 
+                                        onClick={() => onDeepDive(doc.title, 'simple')}
+                                        className="flex items-center gap-1 bg-[#1E1E1E] hover:bg-[#F2B8B5] hover:text-[#370003] text-[#F2B8B5] px-2 py-1.5 rounded-lg border border-[#F2B8B5]/30 transition-all text-[10px] uppercase font-bold"
+                                        title="Vulgariser (Expliquer simplement)"
+                                    >
+                                        <BookOpen size={12} /> Simple
+                                    </button>
+                                    <button 
+                                        onClick={() => onDeepDive(doc.title, 'technical')}
+                                        className="flex items-center gap-1 bg-[#1E1E1E] hover:bg-[#8AB4F8] hover:text-[#004A77] text-[#8AB4F8] px-2 py-1.5 rounded-lg border border-[#8AB4F8]/30 transition-all text-[10px] uppercase font-bold"
+                                        title="Analyse Technique Juridique"
+                                    >
+                                        <GraduationCap size={12} /> Technique
+                                    </button>
+                                    <button 
+                                        onClick={() => onDeepDive(doc.title, 'standard')}
+                                        className="flex items-center gap-1 bg-[#370003] hover:bg-[#601410] text-[#F2B8B5] px-2 py-1.5 rounded-lg border border-[#601410] transition-all text-[10px] uppercase font-bold"
+                                        title="Analyse Approfondie Standard"
+                                    >
+                                        <Zap size={12} /> Profond
+                                    </button>
+                                </div>
                             </div>
 
                             {/* Doc Body */}
