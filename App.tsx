@@ -13,7 +13,8 @@ import { LogTerminal } from './components/LogTerminal';
 import { LiveAssistant } from './components/LiveAssistant';
 import { SettingsModal } from './components/SettingsModal';
 import { ResultsDashboard } from './components/ResultsDashboard';
-import { Zap, Play, RotateCw, Database, Search, Activity, Globe, Terminal, Trash2, Layout, Plus, XCircle, Settings, LayoutGrid } from 'lucide-react';
+import { InvestigationPlanner } from './components/InvestigationPlanner';
+import { Zap, Play, RotateCw, Database, Search, Activity, Globe, Terminal, Trash2, Layout, Plus, XCircle, Settings, LayoutGrid, ClipboardList } from 'lucide-react';
 
 const App: React.FC = () => {
   const [queue, setQueue] = useState<InputData[]>([]);
@@ -49,12 +50,28 @@ const App: React.FC = () => {
     loadData();
   }, []);
 
-  // Initialize Queue
+  // Initialize Empty Queue (Manual Control preferred now)
   useEffect(() => {
-    const initialData = generateInputData(5);
-    setQueue(initialData);
-    queueRef.current = initialData;
+    setQueue([]);
+    queueRef.current = [];
   }, []);
+
+  const handleStartInvestigation = (query: string, sourceName: string) => {
+    const newId = `ANALYSE-${Date.now().toString().slice(-6)}`;
+    const newQuery: InputData = {
+      id: newId,
+      query: query,
+      targetUrl: `Source : ${sourceName}`,
+      timestamp: Date.now()
+    };
+
+    setQueue(prev => [newQuery, ...prev]);
+    queueRef.current = [newQuery, ...queueRef.current];
+
+    if (!isProcessing) {
+      processQueue();
+    }
+  };
 
   const addToQueue = () => {
     const newData = generateInputData(5);
@@ -470,10 +487,10 @@ const App: React.FC = () => {
                     </div>
                   </div>
                 ) : (
-                  <div className="flex flex-col items-center justify-center h-full opacity-30">
-                    <Layout size={80} className="mb-4 text-[#F2B8B5]" />
-                    <p className="text-xl">Espace de Travail Vide</p>
-                    <p className="text-sm mt-2">Lancez une investigation pour ouvrir un nouvel onglet.</p>
+                  <div className="h-full animate-in fade-in zoom-in-95 duration-500">
+                    <InvestigationPlanner
+                      onStartInvestigation={handleStartInvestigation}
+                    />
                   </div>
                 )}
 
