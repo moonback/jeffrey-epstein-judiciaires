@@ -46,6 +46,13 @@ export interface AssetDetail {
   description: string;
 }
 
+export interface PhotoDetail {
+  titre: string;
+  description: string;
+  localisation?: string;
+  date?: string;
+}
+
 export interface DisclosureAnalysis {
   context_general: string;
   documents: DocumentDetail[];
@@ -53,6 +60,7 @@ export interface DisclosureAnalysis {
   entites_details?: EntityDetail[];
   transactions_financieres?: TransactionDetail[];
   actifs?: AssetDetail[];
+  photos?: PhotoDetail[];
   contexte_juridique: string;
 }
 

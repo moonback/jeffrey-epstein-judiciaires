@@ -22,7 +22,7 @@ const DOJ_SOURCES = [
 const QUICK_QUERIES = [
     { label: 'Analyse Financière', query: 'Extraire tous les transferts de fonds suspects mentionnés et les entités bancaires impliquées.' },
     { label: 'Réseau d\'Influence', query: 'Identifier les noms de personnalités publiques cités dans les dépositions et la nature de leur lien.' },
-    { label: 'Preuves Matérielles', query: 'Lister les descriptions de preuves physiques (disques durs, photos, journaux de bord) saisies.' },
+    { label: 'Preuves Matérielles', query: 'Lister les descriptions de preuves physiques (disques durs, photos, journaux de bord) saisies. Pour chaque photo, donnez son titre, description et localisation si disponible.' },
     { label: 'Témoignages Victimes', query: 'Synthétiser les déclarations clés des Jane Doe concernant les lieux de recrutement.' },
     { label: 'Chronologie Critique', query: 'Établir une chronologie détaillée des événements majeurs cités, triée par date.' },
     { label: 'Logs de Vol', query: 'Extraire et structurer toutes les mentions de déplacements aériens, passagers et destinations.' },

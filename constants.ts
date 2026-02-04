@@ -92,6 +92,14 @@ Format de sortie JSON STRICT :
       "description": string
     }
   ],
+  "photos": [
+    {
+      "titre": string (Description courte de l'image),
+      "description": string (Analyse du contenu visuel),
+      "localisation": string,
+      "date": string
+    }
+  ],
   "contexte_juridique": string
 }
 `;
