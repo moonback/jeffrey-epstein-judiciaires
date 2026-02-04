@@ -35,7 +35,14 @@ import {
   Cpu,
   Layers,
   ArrowUpRight,
-  Lock
+  Lock,
+  Briefcase,
+  DollarSign,
+  Archive,
+  Link2,
+  ShieldAlert,
+  Users,
+  Mic
 } from 'lucide-react';
 import { Sidebar, ViewType } from './components/Sidebar';
 import { CaseListView } from './components/CaseListView';
@@ -868,7 +875,7 @@ const App: React.FC = () => {
         </main >
 
         {/* MOBILE BOTTOM NAVIGATION - PREMIUM PRO LIGHT */}
-        < nav className="lg:hidden fixed bottom-0 left-0 right-0 h-20 bg-white/90 border-t border-slate-100 flex items-center justify-around px-4 z-50 backdrop-blur-3xl shadow-[0_-20px_50px_rgba(0,0,0,0.05)]" >
+        <nav className="lg:hidden fixed bottom-0 left-0 right-0 h-20 bg-white/90 border-t border-slate-100 flex items-center justify-start overflow-x-auto no-scrollbar px-6 z-50 backdrop-blur-3xl shadow-[0_-20px_50px_rgba(0,0,0,0.05)] gap-2">
           {!isGuestMode && (
             <MobileNavItem
               icon={Terminal}
@@ -877,30 +884,87 @@ const App: React.FC = () => {
               onClick={() => setViewMode('lab')}
             />
           )}
+
           <MobileNavItem
             icon={Database}
             label="Archives"
             isActive={viewMode === 'database'}
             onClick={() => setViewMode('database')}
           />
+
+          {!isGuestMode && (
+            <MobileNavItem
+              icon={Briefcase}
+              label="Epstein"
+              isActive={viewMode === 'epstein_docs'}
+              onClick={() => setViewMode('epstein_docs')}
+            />
+          )}
+
           <MobileNavItem
             icon={Share2}
             label="Neural"
             isActive={viewMode === 'network'}
             onClick={() => setViewMode('network')}
           />
+
           <MobileNavItem
             icon={Clock}
             label="Temps"
             isActive={viewMode === 'timeline'}
             onClick={() => setViewMode('timeline')}
           />
+
+          <MobileNavItem
+            icon={DollarSign}
+            label="Finance"
+            isActive={viewMode === 'finance'}
+            onClick={() => setViewMode('finance')}
+          />
+
+          <MobileNavItem
+            icon={Archive}
+            label="Patrimoine"
+            isActive={viewMode === 'assets'}
+            onClick={() => setViewMode('assets')}
+          />
+
+          <MobileNavItem
+            icon={Link2}
+            label="X-Intel"
+            isActive={viewMode === 'cross'}
+            onClick={() => setViewMode('cross')}
+          />
+
+          <MobileNavItem
+            icon={ShieldAlert}
+            label="Contrad"
+            isActive={viewMode === 'contradictions'}
+            onClick={() => setViewMode('contradictions')}
+          />
+
+          <MobileNavItem
+            icon={Users}
+            label="Cibles"
+            isActive={viewMode === 'poi'}
+            onClick={() => setViewMode('poi')}
+          />
+
+          {!isGuestMode && (
+            <MobileNavItem
+              icon={Mic}
+              label="Vocal"
+              isActive={viewMode === 'voice'}
+              onClick={() => setViewMode('voice')}
+            />
+          )}
+
           {!isGuestMode && (
             <>
-              <div className="h-10 w-px bg-slate-100 mx-2"></div>
+              <div className="h-10 w-px bg-slate-100 mx-2 shrink-0"></div>
               <button
                 onClick={() => setShowLogs(!showLogs)}
-                className={`flex flex-col items-center justify-center gap-2 transition-all w-16 ${showLogs ? 'text-[#B91C1C]' : 'text-slate-400'}`}
+                className={`flex flex-col items-center justify-center gap-2 transition-all min-w-[64px] shrink-0 ${showLogs ? 'text-[#B91C1C]' : 'text-slate-400'}`}
               >
                 <div className={`p-3 rounded-2xl transition-all ${showLogs ? 'bg-red-50 shadow-inner' : 'hover:bg-slate-50'}`}>
                   <Activity size={20} className={showLogs ? 'animate-pulse' : ''} />
@@ -910,10 +974,10 @@ const App: React.FC = () => {
             </>
           )}
 
-          <div className="h-10 w-px bg-slate-100 mx-2"></div>
+          <div className="h-10 w-px bg-slate-100 mx-2 shrink-0"></div>
           <button
             onClick={handleLogout}
-            className={`flex flex-col items-center justify-center gap-2 transition-all w-16 ${isGuestMode ? 'text-[#B91C1C]' : 'text-slate-400'}`}
+            className={`flex flex-col items-center justify-center gap-2 transition-all min-w-[64px] shrink-0 ${isGuestMode ? 'text-[#B91C1C]' : 'text-slate-400'}`}
           >
             <div className={`p-3 rounded-2xl transition-all ${isGuestMode ? 'bg-red-50' : 'hover:bg-slate-50'}`}>
               <Lock size={20} />
@@ -922,8 +986,8 @@ const App: React.FC = () => {
               {isGuestMode ? 'Login' : 'Out'}
             </span>
           </button>
-        </nav >
-      </div >
+        </nav>
+      </div>
 
       {!isGuestMode && <LiveAssistant />}
 
@@ -998,7 +1062,7 @@ interface MobileNavItemProps {
 const MobileNavItem: React.FC<MobileNavItemProps> = ({ icon: Icon, label, isActive, onClick }) => (
   <button
     onClick={onClick}
-    className={`flex flex-col items-center justify-center gap-2 transition-all w-20 ${isActive ? 'text-[#B91C1C]' : 'text-slate-400'}`}
+    className={`flex flex-col items-center justify-center gap-2 transition-all w-20 shrink-0 ${isActive ? 'text-[#B91C1C]' : 'text-slate-400'}`}
   >
     <div className={`p-3 rounded-2xl transition-all duration-500 ${isActive ? 'bg-[#0F172A] text-white shadow-xl scale-110 -translate-y-1' : 'hover:bg-slate-50'}`}>
       <Icon size={20} />
