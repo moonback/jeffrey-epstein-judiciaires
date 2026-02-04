@@ -8,6 +8,15 @@ interface ForensicVectorDB extends DBSchema {
     value: ProcessedResult;
     indexes: { 'by-date': number };
   };
+  epstein_file_metadata: {
+    key: string;
+    value: {
+      path: string;
+      file_type?: 'doc' | 'image';
+      is_selected: boolean;
+      updated_at: string;
+    };
+  };
 }
 
 const DB_NAME = 'doj_forensic_vector_store';
@@ -17,11 +26,14 @@ class StorageService {
   private dbPromise: Promise<IDBPDatabase<ForensicVectorDB>>;
 
   constructor() {
-    this.dbPromise = openDB<ForensicVectorDB>(DB_NAME, 1, {
+    this.dbPromise = openDB<ForensicVectorDB>(DB_NAME, 2, {
       upgrade(db) {
         if (!db.objectStoreNames.contains(STORE_NAME)) {
           const store = db.createObjectStore(STORE_NAME, { keyPath: 'id' });
           store.createIndex('by-date', 'input.timestamp');
+        }
+        if (!db.objectStoreNames.contains('epstein_file_metadata')) {
+          db.createObjectStore('epstein_file_metadata', { keyPath: 'path' });
         }
       },
     });
@@ -121,7 +133,68 @@ class StorageService {
   async clearAll(): Promise<void> {
     const db = await this.dbPromise;
     await db.clear(STORE_NAME);
+    await db.clear('epstein_file_metadata');
     console.log(`[Local Storage] Workspace cleared. Remote preserved.`);
+  }
+
+  async saveFileMetadata(path: string, metadata: { type?: 'doc' | 'image', selected?: boolean }): Promise<void> {
+    const db = await this.dbPromise;
+    const existing = await db.get('epstein_file_metadata', path);
+
+    const entry = {
+      path,
+      file_type: metadata.type !== undefined ? metadata.type : existing?.file_type,
+      is_selected: metadata.selected !== undefined ? metadata.selected : (existing?.is_selected || false),
+      updated_at: new Date().toISOString()
+    };
+
+    await db.put('epstein_file_metadata', entry);
+    console.log(`[Local Metadata] Saved for ${path}`, entry);
+
+    if (isSupabaseConfigured && supabase) {
+      try {
+        const { error } = await supabase
+          .from('epstein_file_metadata')
+          .upsert(entry, { onConflict: 'path' }); // Explicit onConflict
+
+        if (error) throw error;
+        console.log(`[Supabase Metadata] Synced ${path}`);
+      } catch (e) {
+        console.error('[Supabase Metadata Sync Error]', e);
+      }
+    }
+  }
+
+  async getAllFileMetadata(): Promise<any[]> {
+    const db = await this.dbPromise;
+    const local = await db.getAll('epstein_file_metadata');
+    console.log(`[Local Metadata] Loaded ${local.length} items`);
+
+    if (!isSupabaseConfigured || !supabase) {
+      return local;
+    }
+
+    try {
+      console.log('[Supabase Metadata] Fetching from remote...');
+      const { data, error } = await supabase
+        .from('epstein_file_metadata')
+        .select('*');
+      if (error) throw error;
+
+      if (data && data.length > 0) {
+        console.log(`[Supabase Metadata] Received ${data.length} items from remote`);
+        const tx = db.transaction('epstein_file_metadata', 'readwrite');
+        for (const item of data) {
+          await tx.store.put(item);
+        }
+        await tx.done;
+        return data;
+      }
+    } catch (e) {
+      console.warn('[Supabase Metadata Fetch Error] Using local only', e);
+    }
+
+    return local;
   }
 }
 

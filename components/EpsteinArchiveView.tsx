@@ -3,6 +3,7 @@ import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { createPortal } from 'react-dom';
 import { Search, FileText, Grid, List, ExternalLink, Filter, ChevronLeft, ChevronRight, Folder, Zap, ShieldCheck, EyeOff, Eye, CheckSquare, Square, Image as ImageIcon } from 'lucide-react';
 import { PdfHoverPreview } from './PdfHoverPreview';
+import { storageService } from '../services/storageService';
 
 interface PdfFile {
     name: string;
@@ -86,6 +87,20 @@ export const EpsteinArchiveView: React.FC<EpsteinArchiveViewProps> = ({ onAnalyz
                 console.error("Failed to load index", err);
                 setLoading(false);
             });
+
+        // Load metadata from database
+        storageService.getAllFileMetadata().then(metadata => {
+            if (metadata && metadata.length > 0) {
+                const newTypes = new Map();
+                const newSelected = new Set();
+                metadata.forEach(item => {
+                    if (item.file_type) newTypes.set(item.path, item.file_type);
+                    if (item.is_selected) newSelected.add(item.path);
+                });
+                setFileTypes(newTypes);
+                setSelectedPaths(newSelected);
+            }
+        });
     }, []);
 
     const formatSize = (bytes: number) => {
@@ -102,19 +117,23 @@ export const EpsteinArchiveView: React.FC<EpsteinArchiveViewProps> = ({ onAnalyz
 
     const toggleSelection = (path: string) => {
         const newSelected = new Set(selectedPaths);
+        const isNowSelected = !newSelected.has(path);
         if (newSelected.has(path)) {
             newSelected.delete(path);
         } else {
             newSelected.add(path);
         }
         setSelectedPaths(newSelected);
+        storageService.saveFileMetadata(path, { selected: isNowSelected });
     };
 
     const toggleFileType = (path: string) => {
         const newTypes = new Map(fileTypes);
         const current = newTypes.get(path) || (path.includes('/IMAGES/') ? 'image' : 'doc');
-        newTypes.set(path, current === 'doc' ? 'image' : 'doc');
+        const next = current === 'doc' ? 'image' : 'doc';
+        newTypes.set(path, next);
         setFileTypes(newTypes);
+        storageService.saveFileMetadata(path, { type: next });
     };
 
     const directories = useMemo(() => {
