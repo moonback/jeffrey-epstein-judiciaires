@@ -36,12 +36,23 @@ export interface TransactionDetail {
   description: string;
 }
 
+export interface AssetDetail {
+  nom: string;
+  type: 'immobilier' | 'vehicule' | 'compte_bancaire' | 'societe' | 'autre';
+  valeur_estimee?: number;
+  devise?: string;
+  localisation?: string;
+  proprietaire_declare: string;
+  description: string;
+}
+
 export interface DisclosureAnalysis {
   context_general: string;
   documents: DocumentDetail[];
   entites_cles: string[];
   entites_details?: EntityDetail[];
   transactions_financieres?: TransactionDetail[];
+  actifs?: AssetDetail[];
   contexte_juridique: string;
 }
 

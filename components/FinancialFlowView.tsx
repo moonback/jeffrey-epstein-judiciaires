@@ -120,8 +120,9 @@ export const FinancialFlowView: React.FC = () => {
                 }
                 const p = profiles[name];
                 p.transactionCount++;
-                if (idx === 0) p.totalSent += t.montant;
-                else p.totalReceived += t.montant;
+                const amount = Number(t.montant) || 0;
+                if (idx === 0) p.totalSent += amount;
+                else p.totalReceived += amount;
             });
         });
 
@@ -134,8 +135,8 @@ export const FinancialFlowView: React.FC = () => {
     }, [history]);
 
     const analytics = useMemo(() => {
-        const totalVolume = allTransactions.reduce((acc, t) => acc + t.montant, 0);
-        const suspiciousCount = allTransactions.filter(t => t.montant > 1000000).length;
+        const totalVolume = allTransactions.reduce((acc, t) => acc + (Number(t.montant) || 0), 0);
+        const suspiciousCount = allTransactions.filter(t => (Number(t.montant) || 0) > 1000000).length;
         return {
             totalVolume,
             count: allTransactions.length,

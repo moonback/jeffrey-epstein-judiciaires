@@ -44,6 +44,7 @@ export const NetworkGraphView: React.FC<NetworkGraphViewProps> = ({ onDeepDive, 
     const [highlightLinks, setHighlightLinks] = useState(new Set<GraphLink>());
     const [searchQuery, setSearchQuery] = useState('');
     const [filterType, setFilterType] = useState<'ALL' | 'PERSON' | 'INVESTIGATION'>('ALL');
+    const [minConnections, setMinConnections] = useState(0);
     const [isSidebarOpen, setIsSidebarOpen] = useState(true);
     const [isFullscreen, setIsFullscreen] = useState(false);
 
@@ -151,11 +152,35 @@ export const NetworkGraphView: React.FC<NetworkGraphViewProps> = ({ onDeepDive, 
             });
         });
 
+        let finalNodes = Array.from(nodesMap.values());
+
+        // Apply Density Filter
+        if (minConnections > 0) {
+            finalNodes = finalNodes.filter(n => (n.neighbors?.length || 0) >= minConnections || n.type === 'INVESTIGATION');
+        }
+
+        const nodeIds = new Set(finalNodes.map(n => n.id));
+        const finalLinks = links.filter(l =>
+            nodeIds.has(typeof l.source === 'string' ? l.source : (l.source as any).id) &&
+            nodeIds.has(typeof l.target === 'string' ? l.target : (l.target as any).id)
+        );
+
         return {
-            nodes: Array.from(nodesMap.values()),
-            links: links
+            nodes: finalNodes,
+            links: finalLinks
         };
-    }, [history]);
+    }, [history, minConnections]);
+
+    useEffect(() => {
+        if (fgRef.current) {
+            // Increase repulsion significantly to spread out nodes
+            fgRef.current.d3Force('charge')?.strength(-1000);
+            // Link distance should be enough to space things out
+            fgRef.current.d3Force('link')?.distance(120);
+            // Center the graph gently
+            fgRef.current.d3Force('center')?.strength(0.05);
+        }
+    }, [graphData]);
 
     const handleNodeHover = (node: any) => {
         highlightNodes.clear();
@@ -287,6 +312,27 @@ export const NetworkGraphView: React.FC<NetworkGraphViewProps> = ({ onDeepDive, 
                                 </button>
                             ))}
                         </div>
+
+                        {/* Density Control */}
+                        <div className="pt-4 px-2">
+                            <div className="flex justify-between items-center mb-3">
+                                <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Densité du Réseau</span>
+                                <span className="text-[10px] font-mono-data font-black text-[#B91C1C]">{minConnections}+ liens</span>
+                            </div>
+                            <input
+                                type="range"
+                                min="0"
+                                max="10"
+                                step="1"
+                                value={minConnections}
+                                onChange={(e) => setMinConnections(parseInt(e.target.value))}
+                                className="w-full h-1.5 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-[#B91C1C]"
+                            />
+                            <div className="flex justify-between mt-2 text-[8px] font-black text-slate-300 uppercase tracking-tighter">
+                                <span>Complexe</span>
+                                <span>Épuré</span>
+                            </div>
+                        </div>
                     </div>
 
                     {/* Influencers */}
@@ -413,16 +459,19 @@ export const NetworkGraphView: React.FC<NetworkGraphViewProps> = ({ onDeepDive, 
                     <ForceGraph2D
                         ref={fgRef}
                         graphData={graphData}
-                        nodeLabel={() => ""}
-                        nodeRelSize={1}
-                        nodeVal={(node: any) => node.val}
+                        nodeLabel={(node: any) => node.name}
+                        nodeRelSize={1.5}
+                        nodeVal={(node: any) => Math.sqrt(node.val) * 2}
+                        cooldownTicks={100}
+                        d3AlphaDecay={0.02}
+                        d3VelocityDecay={0.3}
                         linkColor={(link: any) => {
                             if (highlightLinks.has(link)) return '#B91C1C';
-                            return link.type === 'TRANSACTION' ? 'rgba(239, 68, 68, 0.4)' : '#F1F5F9';
+                            return link.type === 'TRANSACTION' ? 'rgba(239, 68, 68, 0.2)' : 'rgba(226, 232, 240, 0.4)';
                         }}
                         linkWidth={(link: any) => {
-                            if (highlightLinks.has(link)) return 3;
-                            return link.type === 'TRANSACTION' ? 2 : 1;
+                            if (highlightLinks.has(link)) return 2;
+                            return link.type === 'TRANSACTION' ? 1.5 : 0.8;
                         }}
                         linkDirectionalArrowLength={(link: any) => link.type === 'TRANSACTION' ? 6 : 0}
                         linkDirectionalArrowRelPos={1}
@@ -478,35 +527,44 @@ export const NetworkGraphView: React.FC<NetworkGraphViewProps> = ({ onDeepDive, 
                                 ctx.fill();
                             }
 
-                            // Label Styling - More Professional
-                            if (globalScale > 0.9 || active) {
-                                const labelFontSize = (active ? 12 : 9) / globalScale;
+                            // Label Styling - Intelligently hide labels to avoid clutter
+                            const isImportant = node.neighbors!.length > 4 || node.val > 30;
+                            const shouldShowLabel = globalScale > 2.0 || (globalScale > 1.1 && isImportant) || active;
+
+                            if (shouldShowLabel) {
+                                const labelFontSize = (active ? 13 : 8) / globalScale;
                                 ctx.font = `${active ? '900' : '600'} ${labelFontSize}px Inter`;
                                 ctx.textAlign = 'center';
                                 ctx.textBaseline = 'middle';
 
+                                // Truncate long investigation titles
+                                let text = active ? node.name.toUpperCase() : node.name;
+                                if (!active && text.length > 25) text = text.substring(0, 22) + '...';
+
+                                const textWidth = ctx.measureText(text).width;
+                                const padding = 4 / globalScale;
+
                                 if (active) {
-                                    const text = node.name.toUpperCase();
-                                    const textWidth = ctx.measureText(text).width;
+                                    // Premium Tag-style label background for active nodes
+                                    ctx.fillStyle = 'rgba(15, 23, 42, 0.98)';
+                                    const rectX = node.x - textWidth / 2 - padding * 2;
+                                    const rectY = node.y + size + (10 / globalScale);
+                                    const rectW = textWidth + padding * 4;
+                                    const rectH = labelFontSize + padding * 2;
 
-                                    // Tag-style label background
-                                    ctx.fillStyle = 'rgba(15, 23, 42, 0.95)';
-                                    const padding = 6 / globalScale;
-                                    const rectX = node.x - textWidth / 2 - padding;
-                                    const rectY = node.y + size + (12 / globalScale);
-                                    const rectW = textWidth + padding * 2;
-                                    const rectH = labelFontSize + padding * 1.5;
-
-                                    // Rounded Rect label
                                     ctx.beginPath();
-                                    ctx.roundRect(rectX, rectY, rectW, rectH, 4 / globalScale);
+                                    ctx.roundRect(rectX, rectY, rectW, rectH, 6 / globalScale);
                                     ctx.fill();
 
                                     ctx.fillStyle = '#FFFFFF';
                                     ctx.fillText(text, node.x, rectY + rectH / 2);
                                 } else {
-                                    ctx.fillStyle = '#64748B';
-                                    ctx.fillText(node.name, node.x, node.y + size + (12 / globalScale));
+                                    // Subtle labels for other important nodes
+                                    ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+                                    ctx.fillRect(node.x - textWidth / 2 - 2, node.y + size + 8 / globalScale - labelFontSize / 2, textWidth + 4, labelFontSize + 2);
+
+                                    ctx.fillStyle = '#475569';
+                                    ctx.fillText(text, node.x, node.y + size + (12 / globalScale));
                                 }
                             }
                         }}

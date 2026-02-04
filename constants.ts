@@ -81,6 +81,17 @@ Format de sortie JSON STRICT :
       "description": string
     }
   ],
+  "actifs": [
+    {
+      "nom": string (Nom du bien, ex: "Manoir Manhattan", "Gulfstream IV"),
+      "type": string ("immobilier" | "vehicule" | "compte_bancaire" | "societe" | "autre"),
+      "valeur_estimee": number,
+      "devise": string,
+      "localisation": string,
+      "proprietaire_declare": string,
+      "description": string
+    }
+  ],
   "contexte_juridique": string
 }
 `;
