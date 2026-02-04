@@ -43,14 +43,28 @@ export const AssetsView: React.FC = () => {
     }, []);
 
     const allAssets = useMemo(() => {
-        const list: (AssetDetail & { parentId: string })[] = [];
+        const uniqueMap = new Map<string, AssetDetail & { parentId: string }>();
+
         history.forEach(res => {
             if (res.output?.actifs) {
                 res.output.actifs.forEach(a => {
-                    list.push({ ...a, parentId: res.id });
+                    // Create a unique key for deduplication (Type + Normalised Name)
+                    const key = `${a.type}-${a.nom.toLowerCase().trim()}`;
+
+                    if (!uniqueMap.has(key)) {
+                        uniqueMap.set(key, { ...a, parentId: res.id });
+                    } else {
+                        // Optional: Keep the one with value if the existing one doesn't have it
+                        const existing = uniqueMap.get(key)!;
+                        if (!existing.valeur_estimee && a.valeur_estimee) {
+                            uniqueMap.set(key, { ...a, parentId: res.id });
+                        }
+                    }
                 });
             }
         });
+
+        const list = Array.from(uniqueMap.values());
 
         return list.filter(a => {
             const matchesSearch = a.nom.toLowerCase().includes(searchQuery.toLowerCase()) ||
