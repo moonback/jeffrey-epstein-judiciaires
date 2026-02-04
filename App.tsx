@@ -42,11 +42,13 @@ import {
   Link2,
   ShieldAlert,
   Users,
-  Mic
+  Mic,
+  Box
 } from 'lucide-react';
 import { Sidebar, ViewType } from './components/Sidebar';
 import { CaseListView } from './components/CaseListView';
 import { NetworkGraphView } from './components/NetworkGraphView';
+import { NetworkGraphView3D } from './components/NetworkGraphView3D';
 import { TimelineView } from './components/TimelineView';
 import { ContradictionsView, POIView } from './components/AdvancedModules';
 import { FinancialFlowView } from './components/FinancialFlowView';
@@ -93,6 +95,9 @@ const App: React.FC = () => {
   const [showLogs, setShowLogs] = useState(false);
   const [logs, setLogs] = useState<string[]>([]);
   const [showTabsDropdown, setShowTabsDropdown] = useState(false);
+  const [is3DView, setIs3DView] = useState<boolean>(
+    localStorage.getItem('NETWORK_3D_VIEW') === 'true'
+  );
   const [selectedAiModel, setSelectedAiModel] = useState<string>(
     localStorage.getItem('SELECTED_AI_MODEL') || 'google/gemini-2.0-flash-lite-preview-02-05'
   );
@@ -847,12 +852,31 @@ const App: React.FC = () => {
             )}
 
             {viewMode === 'network' && (
-              <div className="h-full bg-slate-50">
-                <NetworkGraphView
-                  onDeepDive={handleDeepDive}
-                  onNavigateToInvestigation={handleOpenInvestigation}
-                  isGuestMode={isGuestMode}
-                />
+              <div className="h-full bg-slate-50 relative">
+                {/* Conditional Rendering */}
+                {is3DView ? (
+                  <NetworkGraphView3D
+                    onDeepDive={handleDeepDive}
+                    onNavigateToInvestigation={handleOpenInvestigation}
+                    isGuestMode={isGuestMode}
+                    onToggle2D3D={() => {
+                      const newValue = !is3DView;
+                      setIs3DView(newValue);
+                      localStorage.setItem('NETWORK_3D_VIEW', String(newValue));
+                    }}
+                  />
+                ) : (
+                  <NetworkGraphView
+                    onDeepDive={handleDeepDive}
+                    onNavigateToInvestigation={handleOpenInvestigation}
+                    isGuestMode={isGuestMode}
+                    onToggle2D3D={() => {
+                      const newValue = !is3DView;
+                      setIs3DView(newValue);
+                      localStorage.setItem('NETWORK_3D_VIEW', String(newValue));
+                    }}
+                  />
+                )}
               </div>
             )}
 

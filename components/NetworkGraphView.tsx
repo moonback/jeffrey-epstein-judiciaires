@@ -7,7 +7,7 @@ import React, { useMemo, useState, useEffect, useRef } from 'react';
 import ForceGraph2D, { ForceGraphMethods } from 'react-force-graph-2d';
 import { ProcessedResult } from '../types';
 import { storageService } from '../services/storageService';
-import { Share2, Info, Crosshair, ZoomIn, ZoomOut, Activity, Users, FileText, Search, Filter, Shield, Target, Link2, Maximize2, Minimize2, PanelLeftClose, PanelLeftOpen, ArrowUpRight, Zap, ShieldCheck } from 'lucide-react';
+import { Share2, Info, Crosshair, ZoomIn, ZoomOut, Activity, Users, FileText, Search, Filter, Shield, Target, Link2, Maximize2, Minimize2, PanelLeftClose, PanelLeftOpen, ArrowUpRight, Zap, ShieldCheck, Box } from 'lucide-react';
 import { EntityProfile } from './EntityProfile';
 
 interface GraphNode {
@@ -32,10 +32,11 @@ interface NetworkGraphViewProps {
     onDeepDive?: (docTitle: string, style: 'standard' | 'simple' | 'technical') => void;
     onNavigateToInvestigation?: (investigationId: string) => void;
     isGuestMode?: boolean;
+    onToggle2D3D?: () => void;
 }
 
-export const NetworkGraphView: React.FC<NetworkGraphViewProps> = ({ onDeepDive, onNavigateToInvestigation, isGuestMode }) => {
-    const fgRef = useRef<ForceGraphMethods>();
+export const NetworkGraphView: React.FC<NetworkGraphViewProps> = ({ onDeepDive, onNavigateToInvestigation, isGuestMode, onToggle2D3D }) => {
+    const fgRef = useRef<ForceGraphMethods>(undefined);
     const containerRef = useRef<HTMLDivElement>(null);
     const [history, setHistory] = useState<ProcessedResult[]>([]);
     const [loading, setLoading] = useState(true);
@@ -394,6 +395,16 @@ export const NetworkGraphView: React.FC<NetworkGraphViewProps> = ({ onDeepDive, 
                 {/* HUD Overlay - Top Right Controls */}
                 <div className="absolute top-6 right-6 z-30 flex flex-col items-end gap-3 scale-90 origin-top-right">
                     <div className="bg-white/80 backdrop-blur-3xl p-1.5 rounded-2xl shadow-xl border border-slate-100 flex items-center gap-1.5">
+                        {/* Toggle to 3D Iron Man View */}
+                        <button
+                            onClick={onToggle2D3D}
+                            className="flex items-center gap-2 px-4 py-2.5 hover:bg-slate-50 rounded-xl text-slate-600 hover:text-[#B91C1C] transition-all group"
+                            title="Basculer en Iron Man View 3D"
+                        >
+                            <Box size={16} className="group-hover:rotate-12 transition-transform" />
+                            <span className="text-[10px] font-black uppercase tracking-wider">Iron Man View</span>
+                        </button>
+                        <div className="w-[1px] h-6 bg-slate-100"></div>
                         <button onClick={toggleFullscreen} className="p-3 hover:bg-slate-50 rounded-xl text-slate-400 hover:text-[#B91C1C] transition-all" title="Fullscreen">
                             {isFullscreen ? <Minimize2 size={18} /> : <Maximize2 size={18} />}
                         </button>
