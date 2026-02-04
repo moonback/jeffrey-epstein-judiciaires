@@ -25,6 +25,8 @@ import {
     LayoutGrid,
     AlignLeft
 } from 'lucide-react';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 
 export const AssetsView: React.FC = () => {
     const [history, setHistory] = useState<ProcessedResult[]>([]);
@@ -266,7 +268,81 @@ export const AssetsView: React.FC = () => {
                 <div className="flex items-center gap-3">
                     <span className="text-[9px] font-black text-slate-300 uppercase tracking-[0.4em] italic">Forensic-Asset-Scanner // Unit.09</span>
                     <div className="h-4 w-px bg-slate-100"></div>
-                    <button className="text-[10px] font-black text-[#B91C1C] hover:text-[#7F1D1D] transition-colors flex items-center gap-2">
+                    <button
+                        onClick={() => {
+                            const doc = new jsPDF();
+
+                            // Title & Header
+                            doc.setFontSize(22);
+                            doc.setTextColor(185, 28, 28); // #B91C1C
+                            doc.text("RAPPORT D'INVENTAIRE PATRIMONIAL", 14, 22);
+
+                            doc.setFontSize(10);
+                            doc.setTextColor(100, 116, 139); // slate-500
+                            doc.text(`Généré le: ${new Date().toLocaleString('fr-FR')}`, 14, 30);
+                            doc.text("Unité Forensic: Forensic-Asset-Scanner // Unit.09", 14, 35);
+
+                            // Summary Stats
+                            doc.setDrawColor(241, 245, 249); // slate-100
+                            doc.line(14, 40, 196, 40);
+
+                            doc.setFontSize(12);
+                            doc.setTextColor(15, 23, 42); // slate-900
+                            doc.text("RÉSUMÉ DES ACTIFS", 14, 50);
+
+                            autoTable(doc, {
+                                startY: 55,
+                                head: [['Catégorie', 'Valeur / Nombre']],
+                                body: [
+                                    ['Patrimoine Total Estimé', formatCurrency(stats.totalValue)],
+                                    ['Nombre d\'Actifs Identifiés', stats.count.toString()],
+                                    ['Immobilier', (stats.typeCounts['immobilier'] || 0).toString()],
+                                    ['Comptes Bancaires', (stats.typeCounts['compte_bancaire'] || 0).toString()],
+                                    ['Sociétés / Holdings', (stats.typeCounts['societe'] || 0).toString()],
+                                    ['Véhicules', (stats.typeCounts['vehicule'] || 0).toString()]
+                                ],
+                                theme: 'striped',
+                                headStyles: { fillColor: [248, 250, 252], textColor: [15, 23, 42], fontStyle: 'bold' }
+                            });
+
+                            // Detailed Assets
+                            doc.addPage();
+                            doc.setFontSize(16);
+                            doc.setTextColor(185, 28, 28);
+                            doc.text("INVENTAIRE DÉTAILLÉ DES BIENS", 14, 22);
+
+                            const tableData = allAssets.map(a => [
+                                a.type.toUpperCase(),
+                                a.nom,
+                                a.proprietaire_declare,
+                                a.localisation || 'N/A',
+                                formatCurrency(a.valeur_estimee || 0, a.devise)
+                            ]);
+
+                            autoTable(doc, {
+                                startY: 30,
+                                head: [['Type', 'Nom de l\'Actif', 'Propriétaire', 'Localisation', 'Valeur']],
+                                body: tableData,
+                                headStyles: { fillColor: [185, 28, 28], textColor: [255, 255, 255] },
+                                styles: { fontSize: 8, cellPadding: 2 },
+                                columnStyles: {
+                                    4: { halign: 'right', fontStyle: 'bold' }
+                                }
+                            });
+
+                            // Footer on each page
+                            const pageCount = doc.getNumberOfPages();
+                            for (let i = 1; i <= pageCount; i++) {
+                                doc.setPage(i);
+                                doc.setFontSize(8);
+                                doc.setTextColor(150);
+                                doc.text(`Page ${i} sur ${pageCount} - Document Confidentiel - Audit Patrimonial Epstein`, 105, 285, { align: 'center' });
+                            }
+
+                            doc.save(`Rapport_Patrimoine_${new Date().getTime()}.pdf`);
+                        }}
+                        className="text-[10px] font-black text-[#B91C1C] hover:text-[#7F1D1D] transition-colors flex items-center gap-2"
+                    >
                         <Download size={12} /> RAPPORT DE PATRIMOINE
                     </button>
                 </div>

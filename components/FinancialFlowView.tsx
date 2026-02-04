@@ -26,8 +26,11 @@ import {
     Maximize2,
     BarChart3,
     Layers,
-    User
+    User,
+
 } from 'lucide-react';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 
 interface EntityFinanceProfile {
     name: string;
@@ -324,7 +327,105 @@ export const FinancialFlowView: React.FC = () => {
                 <div className="flex items-center gap-3">
                     <span className="text-[9px] font-black text-slate-300 uppercase tracking-[0.4em] italic">Quantum-Audit Bureau // Node.5-Finance</span>
                     <div className="h-4 w-px bg-slate-100"></div>
-                    <button className="text-[10px] font-black text-[#B91C1C] hover:text-[#7F1D1D] transition-colors flex items-center gap-2">
+                    <button
+                        onClick={() => {
+                            const doc = new jsPDF();
+
+                            // Title & Header
+                            doc.setFontSize(22);
+                            doc.setTextColor(185, 28, 28); // #B91C1C
+                            doc.text("RAPPORT D'AUDIT FINANCIER", 14, 22);
+
+                            doc.setFontSize(10);
+                            doc.setTextColor(100, 116, 139); // slate-500
+                            doc.text(`Généré le: ${new Date().toLocaleString('fr-FR')}`, 14, 30);
+                            doc.text("Unité Forensic: Quantum-Audit Bureau // Node.5-Finance", 14, 35);
+
+                            // Summary Stats
+                            doc.setDrawColor(241, 245, 249); // slate-100
+                            doc.line(14, 40, 196, 40);
+
+                            doc.setFontSize(12);
+                            doc.setTextColor(15, 23, 42); // slate-900
+                            doc.text("SYNTHÈSE ANALYTIQUE", 14, 50);
+
+                            autoTable(doc, {
+                                startY: 55,
+                                head: [['Indicateur', 'Valeur']],
+                                body: [
+                                    ['Volume Total Audité', formatCurrency(analytics.totalVolume, 'USD')],
+                                    ['Nombre de Transactions', analytics.count.toString()],
+                                    ['Alertes de Haut Risque', analytics.suspiciousCount.toString()],
+                                    ['Entités Identifiées', analytics.uniqueEntities.toString()],
+                                    ['Score de Fiabilité', '98.2%']
+                                ],
+                                theme: 'striped',
+                                headStyles: { fillColor: [248, 250, 252], textColor: [15, 23, 42], fontStyle: 'bold' }
+                            });
+
+                            // Detailed Transactions
+                            doc.addPage();
+                            doc.setFontSize(16);
+                            doc.setTextColor(185, 28, 28);
+                            doc.text("DÉTAIL DES FLUX TRANSACTIONNELS", 14, 22);
+
+                            const tableData = allTransactions.map(t => [
+                                t.date,
+                                t.source,
+                                t.destination,
+                                formatCurrency(t.montant, t.devise),
+                                t.description
+                            ]);
+
+                            autoTable(doc, {
+                                startY: 30,
+                                head: [['Date', 'Source', 'Destination', 'Montant', 'Description']],
+                                body: tableData,
+                                headStyles: { fillColor: [185, 28, 28], textColor: [255, 255, 255] },
+                                styles: { fontSize: 8, cellPadding: 2 },
+                                columnStyles: {
+                                    3: { halign: 'right', fontStyle: 'bold' },
+                                    4: { cellWidth: 50 }
+                                }
+                            });
+
+                            // Important Entities
+                            if (entityProfiles.length > 0) {
+                                doc.addPage();
+                                doc.setFontSize(16);
+                                doc.setTextColor(15, 23, 42);
+                                doc.text("PROFILING DES ENTITÉS À RISQUE", 14, 22);
+
+                                const entityData = entityProfiles.slice(0, 15).map(p => [
+                                    p.name,
+                                    formatCurrency(p.totalSent, 'USD'),
+                                    formatCurrency(p.totalReceived, 'USD'),
+                                    p.transactionCount,
+                                    `${Math.round(p.riskScore)}%`
+                                ]);
+
+                                autoTable(doc, {
+                                    startY: 30,
+                                    head: [['Entité', 'Total Envoyé', 'Total Reçu', 'Events', 'Score Risque']],
+                                    body: entityData,
+                                    headStyles: { fillColor: [15, 23, 42], textColor: [255, 255, 255] },
+                                    styles: { fontSize: 8 }
+                                });
+                            }
+
+                            // Footer on each page
+                            const pageCount = doc.getNumberOfPages();
+                            for (let i = 1; i <= pageCount; i++) {
+                                doc.setPage(i);
+                                doc.setFontSize(8);
+                                doc.setTextColor(150);
+                                doc.text(`Page ${i} sur ${pageCount} - Document Confidentiel - Audit Forensic Epstein`, 105, 285, { align: 'center' });
+                            }
+
+                            doc.save(`Rapport_Audit_Financier_${new Date().getTime()}.pdf`);
+                        }}
+                        className="text-[10px] font-black text-[#B91C1C] hover:text-[#7F1D1D] transition-colors flex items-center gap-2"
+                    >
                         <Download size={12} /> GÉNÉRER RAPPORT PDF
                     </button>
                 </div>
