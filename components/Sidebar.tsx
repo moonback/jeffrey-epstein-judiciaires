@@ -66,9 +66,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 {isCollapsed ? <ChevronRight size={14} /> : <ChevronLeft size={14} />}
             </button>
 
-            {/* LOGO AREA */}
-            <div className={`pt-8 pb-6 transition-all duration-500 overflow-hidden ${isCollapsed ? 'px-4' : 'px-8'}`}>
-                <div className="flex items-center gap-4 mb-10 group cursor-pointer whitespace-nowrap" onClick={() => onViewChange('lab')}>
+            {/* SCROLLABLE AREA: LOGO + ACTION + NAV */}
+            <div className={`flex-1 overflow-y-auto custom-scrollbar pt-6 pb-2 transition-all duration-500 ${isCollapsed ? 'px-4' : 'px-8'}`}>
+                <div className="flex items-center gap-4 mb-6 group cursor-pointer whitespace-nowrap" onClick={() => onViewChange('lab')}>
                     <div className="relative shrink-0">
                         <div className="absolute inset-0 bg-[#B91C1C] blur-xl opacity-0 group-hover:opacity-20 transition-opacity"></div>
                         <div className="relative w-11 h-11 bg-black rounded-[1rem] flex items-center justify-center shadow-2xl transition-all duration-500 group-hover:bg-[#B91C1C] group-hover:rotate-[360deg]">
@@ -90,9 +90,9 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 {/* ACTION BUTTON - PREMIUM */}
                 <button
                     onClick={onNewAnalysis}
-                    className="w-full mb-10 group relative"
+                    className="w-full mb-6 group relative"
                 >
-                    <div className={`relative w-full flex items-center justify-center ${isCollapsed ? '' : 'lg:justify-start lg:px-5'} h-12 bg-[#B91C1C] hover:bg-[#0F172A] text-white rounded-xl transition-all duration-500 shadow-xl shadow-red-900/10 hover:shadow-slate-900/20 active:scale-95 overflow-hidden`}>
+                    <div className={`relative w-full flex items-center justify-center ${isCollapsed ? '' : 'lg:justify-start lg:px-5'} h-10 bg-[#B91C1C] hover:bg-[#0F172A] text-white rounded-xl transition-all duration-500 shadow-xl shadow-red-900/10 hover:shadow-slate-900/20 active:scale-95 overflow-hidden`}>
                         <div className="absolute inset-x-0 h-px top-0 bg-white/20"></div>
                         <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
                         <Plus size={18} className="shrink-0 group-hover:rotate-90 transition-transform duration-500" />
@@ -101,15 +101,15 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 </button>
 
                 {/* NAVIGATION */}
-                <nav className="space-y-1.5">
-                    <div className={`text-[8px] font-black text-slate-200 uppercase tracking-[0.5em] mb-4 ml-5 ${isCollapsed ? 'hidden' : 'hidden lg:block'}`}>Investigation Suite</div>
+                <nav className="space-y-1 pb-2">
+                    <div className={`text-[8px] font-black text-slate-200 uppercase tracking-[0.5em] mb-2 ml-5 ${isCollapsed ? 'hidden' : 'hidden lg:block'}`}>Investigation Suite</div>
                     {menuItems.map((item) => {
                         const isActive = currentView === item.id;
                         return (
                             <button
                                 key={item.id}
                                 onClick={() => onViewChange(item.id as ViewType)}
-                                className={`w-full relative flex items-center justify-center ${isCollapsed ? '' : 'lg:justify-start lg:px-5'} h-11 rounded-xl transition-all duration-500 group ${isActive
+                                className={`w-full relative flex items-center justify-center ${isCollapsed ? '' : 'lg:justify-start lg:px-5'} h-10 rounded-xl transition-all duration-500 group ${isActive
                                     ? 'bg-[#F8FAFC] text-[#0F172A] shadow-inner border border-slate-50'
                                     : 'text-slate-400 hover:text-[#B91C1C] hover:bg-slate-50/50'}`}
                                 title={isCollapsed ? item.label : ''}
@@ -133,47 +133,47 @@ export const Sidebar: React.FC<SidebarProps> = ({
             </div>
 
             {/* FOOTER */}
-            <div className={`mt-auto p-6 transition-all duration-500 overflow-hidden ${isCollapsed ? 'px-4' : 'px-8'} pb-10`}>
-                <div className="space-y-1">
+            <div className={`mt-auto p-4 transition-all duration-500 overflow-hidden ${isCollapsed ? 'px-2' : 'px-4'} pb-4`}>
+                <div className="space-y-0.5">
                     <button
                         onClick={onToggleLogs}
-                        className={`w-full flex items-center justify-center ${isCollapsed ? '' : 'lg:justify-start lg:px-5'} h-10 rounded-xl text-slate-300 hover:bg-slate-50 hover:text-[#0F4C81] transition-all group border border-transparent`}
+                        className={`w-full flex items-center justify-center ${isCollapsed ? '' : 'lg:justify-start lg:px-4'} h-8 rounded-lg text-slate-300 hover:bg-slate-50 hover:text-[#0F4C81] transition-all group border border-transparent`}
                         title={isCollapsed ? 'Console Système' : ''}
                     >
                         <Activity
-                            size={16}
+                            size={14}
                             className={`group-hover:animate-pulse transition-all shrink-0`}
                         />
-                        {!isCollapsed && <span className="hidden lg:block text-[9px] font-black uppercase tracking-[0.3em] ml-4 transition-all duration-300">Console Monitor</span>}
+                        {!isCollapsed && <span className="hidden lg:block text-[9px] font-black uppercase tracking-[0.3em] ml-3 transition-all duration-300">Console Monitor</span>}
                     </button>
 
                     <button
                         onClick={onOpenSettings}
-                        className={`w-full flex items-center justify-center ${isCollapsed ? '' : 'lg:justify-start lg:px-5'} h-10 rounded-xl text-slate-300 hover:bg-slate-50 hover:text-[#B91C1C] transition-all group border border-transparent`}
+                        className={`w-full flex items-center justify-center ${isCollapsed ? '' : 'lg:justify-start lg:px-4'} h-8 rounded-lg text-slate-300 hover:bg-slate-50 hover:text-[#B91C1C] transition-all group border border-transparent`}
                         title={isCollapsed ? 'Paramètres' : ''}
                     >
                         <Settings
-                            size={16}
+                            size={14}
                             className="group-hover:rotate-180 transition-transform duration-700 shrink-0"
                         />
-                        {!isCollapsed && <span className="hidden lg:block text-[9px] font-black uppercase tracking-[0.3em] ml-4 transition-all duration-300">Protocole Config</span>}
+                        {!isCollapsed && <span className="hidden lg:block text-[9px] font-black uppercase tracking-[0.3em] ml-3 transition-all duration-300">Protocole Config</span>}
                     </button>
                 </div>
 
                 {!isCollapsed && (
-                    <div className="hidden lg:flex mt-6 items-center gap-3 px-5 py-3 bg-[#F8FAFC] rounded-2xl border border-slate-50 group cursor-help transition-all hover:bg-white hover:shadow-xl">
+                    <div className="hidden lg:flex mt-3 items-center gap-2 px-3 py-2 bg-[#F8FAFC] rounded-xl border border-slate-50 group cursor-help transition-all hover:bg-white hover:shadow-xl">
                         <div className="relative shrink-0">
-                            <div className="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.3)] animate-pulse"></div>
+                            <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.3)] animate-pulse"></div>
                         </div>
                         <div className="flex flex-col min-w-0">
-                            <span className="text-[9px] font-black text-[#0F172A] uppercase tracking-wider truncate">Node_01_SECURE</span>
-                            <div className="flex items-center gap-1.5">
-                                <Lock size={7} className="text-emerald-600 shrink-0" />
-                                <span className="text-[7px] text-slate-300 font-bold uppercase tracking-widest">TLS 1.3 ENABLED</span>
+                            <span className="text-[8px] font-black text-[#0F172A] uppercase tracking-wider truncate leading-none mb-0.5">Node_01_SECURE</span>
+                            <div className="flex items-center gap-1">
+                                <Lock size={6} className="text-emerald-600 shrink-0" />
+                                <span className="text-[6px] text-slate-300 font-bold uppercase tracking-widest leading-none">TLS 1.3 ENABLED</span>
                             </div>
                         </div>
                         <div className="ml-auto opacity-0 group-hover:opacity-100 transition-opacity">
-                            <Cpu size={12} className="text-slate-200" />
+                            <Cpu size={10} className="text-slate-200" />
                         </div>
                     </div>
                 )}
