@@ -427,6 +427,21 @@ const App: React.FC = () => {
     });
   };
 
+  const handleRetryInvestigation = (id: string) => {
+    const existing = resolutionHistory.find(r => r.id === id);
+    if (!existing) return;
+
+    const retryingResult: ProcessedResult = {
+      ...existing,
+      status: 'processing',
+      output: null,
+      logs: ["Relance de l'extraction forensique...", "Restauration du contexte..."],
+    };
+
+    setResolutionHistory(prev => prev.map(r => r.id === id ? retryingResult : r));
+    setQueue(prev => [existing.input, ...prev]);
+  };
+
   const handleDeepDive = (docTitle: string, style: 'standard' | 'simple' | 'technical') => {
     const newId = `DEEP-${Date.now().toString().slice(-4)}`;
     const queryMap = {
@@ -779,11 +794,12 @@ const App: React.FC = () => {
                           <div className="max-w-12xl mx-auto pb-40">
                             <DataCard
                               result={activeResult}
-                              loading={activeResult.status === 'processing'}
+                              loading={activeResult.status === 'processing' || activeResult.status === 'pending'}
                               onDeepDive={handleDeepDive}
                               onDownload={() => handleDownload(activeResult)}
                               onEntityClick={handleEntityClick}
                               isGuestMode={isGuestMode}
+                              onRetry={() => handleRetryInvestigation(activeResult.id)}
                             />
                           </div>
                         </div>

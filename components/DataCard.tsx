@@ -14,10 +14,11 @@ interface DataCardProps {
     onDeepDive: (docTitle: string, style: 'standard' | 'simple' | 'technical') => void;
     onDownload: () => void;
     onEntityClick: (entityName: string) => void;
+    onRetry?: () => void;
     isGuestMode?: boolean;
 }
 
-export const DataCard: React.FC<DataCardProps> = ({ result, loading, onDeepDive, onDownload, onEntityClick, isGuestMode }) => {
+export const DataCard: React.FC<DataCardProps> = ({ result, loading, onDeepDive, onDownload, onEntityClick, onRetry, isGuestMode }) => {
     const data = result.output;
     const sources = result.sources;
     const [activeFilter, setActiveFilter] = useState<string>('ALL');
@@ -68,7 +69,7 @@ export const DataCard: React.FC<DataCardProps> = ({ result, loading, onDeepDive,
                     <p className="text-slate-400 text-[13px] max-w-md font-medium leading-relaxed italic">
                         L'intégrité de la session analytique a été compromise. Le moteur de décryptage demande une réinitialisation.
                     </p>
-                    <button onClick={() => window.location.reload()} className="mt-4 px-8 py-3 bg-[#0F172A] text-white rounded-xl font-black uppercase tracking-[0.2em] text-[10px] hover:bg-[#B91C1C] transition-all shadow-lg active:scale-95">
+                    <button onClick={onRetry} className="mt-4 px-8 py-3 bg-[#0F172A] text-white rounded-xl font-black uppercase tracking-[0.2em] text-[10px] hover:bg-[#B91C1C] transition-all shadow-lg active:scale-95">
                         Relancer la Liaison
                     </button>
                 </div>
