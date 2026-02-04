@@ -8,6 +8,7 @@ import ForceGraph2D, { ForceGraphMethods } from 'react-force-graph-2d';
 import { ProcessedResult } from '../types';
 import { storageService } from '../services/storageService';
 import { Share2, Info, Crosshair, ZoomIn, ZoomOut, Activity, Users, FileText, Search, Filter, Shield, Target, Link2, Maximize2, Minimize2, PanelLeftClose, PanelLeftOpen, ArrowUpRight, Zap, ShieldCheck } from 'lucide-react';
+import { EntityProfile } from './EntityProfile';
 
 interface GraphNode {
     id: string;
@@ -29,14 +30,16 @@ interface GraphLink {
 
 interface NetworkGraphViewProps {
     onDeepDive?: (docTitle: string, style: 'standard' | 'simple' | 'technical') => void;
+    onNavigateToInvestigation?: (investigationId: string) => void;
 }
 
-export const NetworkGraphView: React.FC<NetworkGraphViewProps> = ({ onDeepDive }) => {
+export const NetworkGraphView: React.FC<NetworkGraphViewProps> = ({ onDeepDive, onNavigateToInvestigation }) => {
     const fgRef = useRef<ForceGraphMethods>();
     const containerRef = useRef<HTMLDivElement>(null);
     const [history, setHistory] = useState<ProcessedResult[]>([]);
     const [loading, setLoading] = useState(true);
     const [hoverNode, setHoverNode] = useState<GraphNode | null>(null);
+    const [selectedEntity, setSelectedEntity] = useState<string | null>(null);
     const [highlightNodes, setHighlightNodes] = useState(new Set<GraphNode>());
     const [highlightLinks, setHighlightLinks] = useState(new Set<GraphLink>());
     const [searchQuery, setSearchQuery] = useState('');
@@ -156,6 +159,17 @@ export const NetworkGraphView: React.FC<NetworkGraphViewProps> = ({ onDeepDive }
         );
     }
 
+    // Show Entity Profile if an entity is selected
+    if (selectedEntity) {
+        return (
+            <EntityProfile
+                entityName={selectedEntity}
+                onBack={() => setSelectedEntity(null)}
+                onNavigateToInvestigation={onNavigateToInvestigation}
+            />
+        );
+    }
+
     return (
         <div ref={containerRef} className={`h-full flex bg-[#F8FAFC] relative overflow-hidden font-sans text-[#0F172A] ${isFullscreen ? 'fixed inset-0 z-[100]' : ''}`}>
 
@@ -252,11 +266,13 @@ export const NetworkGraphView: React.FC<NetworkGraphViewProps> = ({ onDeepDive }
                                 <div
                                     key={inf.id}
                                     className="group relative flex items-center gap-4 p-4 bg-white hover:bg-slate-50 rounded-[1.5rem] border border-slate-100 hover:border-[#B91C1C]/10 transition-all cursor-pointer shadow-sm hover:shadow-md"
-                                    onClick={() => {
+                                    onClick={() => setSelectedEntity(inf.name)}
+                                    onDoubleClick={() => {
                                         fgRef.current?.centerAt(inf.x, inf.y, 800);
                                         fgRef.current?.zoom(3, 800);
                                         handleNodeHover(inf);
                                     }}
+                                    title="Cliquer pour voir le profil • Double-cliquer pour zoomer"
                                 >
                                     <div className="w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center text-[10px] font-black text-[#B91C1C] border border-slate-100 group-hover:bg-white group-hover:border-[#B91C1C] transition-all shrink-0 font-serif-legal italic">
                                         {String(i + 1).padStart(2, '0')}
@@ -371,6 +387,12 @@ export const NetworkGraphView: React.FC<NetworkGraphViewProps> = ({ onDeepDive }
                         linkWidth={(link: any) => highlightLinks.has(link) ? 2.5 : 1}
                         backgroundColor="transparent"
                         onNodeHover={handleNodeHover}
+                        onNodeClick={(node: any) => {
+                            const graphNode = node as GraphNode;
+                            if (graphNode.type === 'PERSON') {
+                                setSelectedEntity(graphNode.name);
+                            }
+                        }}
                         nodeCanvasObject={(nodeItem: any, ctx, globalScale) => {
                             const node = nodeItem as GraphNode;
                             if (!node.x || !node.y) return;

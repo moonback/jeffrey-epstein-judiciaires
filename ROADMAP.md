@@ -12,10 +12,10 @@ This roadmap outlines the evolution of the platform from its current MVP state t
 - [x] Basic Searchable Database view.
 
 ## 🚧 Phase 2: Enhanced Visualization (Current)
-- [ ] **Network Graph Improvements**: Interactive nodes with entity details on click.
-- [ ] **Advanced Timeline**: Scaleable timeline with event clustering.
-- [ ] **Cross-Document Analysis**: Identify links between different independent analyses.
-- [ ] **Entity Profiling**: dedicated view for "who's who" across all indexed documents.
+- [x] **Network Graph Improvements**: Interactive nodes with entity details on click.
+- [x] **Advanced Timeline**: Scaleable timeline with event clustering.
+- [x] **Cross-Document Analysis**: Identify links between different independent analyses.
+- [x] **Entity Profiling**: dedicated view for "who's who" across all indexed documents.
 
 ## 🚀 Phase 3: V1.0 - Forensic Power Tools
 - [ ] **PDF Direct Processing**: Upload local PDFs for AI-assisted extraction (instead of URL-only).

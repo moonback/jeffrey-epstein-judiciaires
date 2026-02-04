@@ -546,7 +546,10 @@ const App: React.FC = () => {
 
             {viewMode === 'network' && (
               <div className="h-full bg-slate-50">
-                <NetworkGraphView onDeepDive={handleDeepDive} />
+                <NetworkGraphView
+                  onDeepDive={handleDeepDive}
+                  onNavigateToInvestigation={handleOpenInvestigation}
+                />
               </div>
             )}
 

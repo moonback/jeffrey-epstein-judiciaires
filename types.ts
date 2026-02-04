@@ -35,4 +35,5 @@ export interface ProcessedResult {
   durationMs: number;
   status: 'pending' | 'processing' | 'completed' | 'error';
   error?: string;
+  timestamp?: number;
 }
