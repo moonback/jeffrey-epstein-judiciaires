@@ -13,7 +13,7 @@ This roadmap outlines the evolution of the platform from its current MVP state t
 
 ## 🚧 Phase 2: Enhanced Visualization (Current)
 - [x] **Network Graph Improvements**: Interactive nodes with entity details on click.
-- [x] **Advanced Timeline**: Scaleable timeline with event clustering.
+- [x] **Advanced Timeline v2.0**: Interactive temporal flow with search, type-filtering, and financial transaction integration.
 - [x] **Cross-Document Analysis**: Identify links between different independent analyses.
 - [x] **Entity Profiling**: dedicated view for "who's who" across all indexed documents.
 
@@ -30,7 +30,7 @@ This roadmap outlines the evolution of the platform from its current MVP state t
 - [ ] **Dark Web Integration**: Link DOJ disclosures with leaked archives or OSINT databases.
 - [ ] **Global Search API**: Connect to other public legal databases (PACER, etc.).
 
----
+---2
 
 ## 📈 Current Priority
 *   **Performance Optimization**: Reducing latency in the Network Graph.
