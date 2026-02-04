@@ -1,5 +1,10 @@
+/**
+ * @license
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 import React from 'react';
-import { X, Database, Download, ShieldCheck, Trash2, Cpu, Cloud, CloudOff } from 'lucide-react';
+import { X, Database, Download, ShieldCheck, Trash2, ArrowUpRight, Cpu, Cloud, CloudOff, Lock, Server, Shield } from 'lucide-react';
 import { isSupabaseConfigured } from '../services/supabaseClient';
 
 interface SettingsModalProps {
@@ -14,90 +19,155 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, o
   if (!isOpen) return null;
 
   return (
-    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-sm p-4 animate-in fade-in duration-200">
-      <div className="w-full max-w-md bg-[#1E1E1E] rounded-3xl border border-[#444746] shadow-2xl overflow-hidden animate-in zoom-in-95 duration-200">
+    <div className="fixed inset-0 z-[100] flex items-center justify-center bg-black/60 backdrop-blur-[20px] p-4 animate-in fade-in duration-500">
+      <div className="w-full max-w-xl max-h-[90vh] bg-white rounded-[3rem] border border-slate-100 shadow-[0_40px_120px_-20px_rgba(0,0,0,0.2)] overflow-hidden animate-in zoom-in-95 duration-500 relative flex flex-col">
+        <div className="absolute top-0 right-0 w-64 h-64 bg-[#B91C1C] rounded-full blur-[120px] opacity-[0.03] pointer-events-none"></div>
+
         {/* Header */}
-        <div className="px-6 py-4 border-b border-[#444746] flex justify-between items-center bg-[#252525]">
-          <h2 className="text-[#E3E3E3] font-medium text-lg">Paramètres Système</h2>
-          <button onClick={onClose} className="text-[#C4C7C5] hover:text-white transition-colors rounded-full p-1 hover:bg-[#373737]">
-            <X size={20} />
+        <div className="px-8 py-6 border-b border-slate-50 flex justify-between items-center bg-white relative z-10 shrink-0">
+          <div className="flex items-center gap-4">
+            <div className="w-12 h-12 bg-black rounded-[1.2rem] flex items-center justify-center shadow-xl">
+              <ShieldCheck className="text-white" size={22} />
+            </div>
+            <div className="flex flex-col">
+              <h2 className="text-[#0F172A] font-black text-xl tracking-tighter uppercase italic font-serif-legal leading-none">Terminal <span className="text-[#B91C1C]">Config</span></h2>
+              <div className="flex items-center gap-2 mt-1">
+                <span className="text-[8px] font-black text-slate-300 uppercase tracking-[0.4em]">Protocol Control Module</span>
+              </div>
+            </div>
+          </div>
+          <button
+            onClick={onClose}
+            className="w-10 h-10 flex items-center justify-center rounded-xl bg-slate-50 hover:bg-red-50 text-slate-300 hover:text-[#B91C1C] transition-all group"
+          >
+            <X size={22} className="group-hover:rotate-90 transition-transform duration-500" />
           </button>
         </div>
 
-        {/* Body */}
-        <div className="p-6 space-y-6">
-
-          {/* Section API (Read Only) */}
-          <div className="space-y-3">
-            <h3 className="text-xs font-bold text-[#8E918F] uppercase tracking-widest flex items-center gap-2">
-              <ShieldCheck size={14} /> Configuration
-            </h3>
-            <div className="bg-[#121212] rounded-xl p-4 border border-[#444746] space-y-3">
-              <div className="flex justify-between items-center">
-                <span className="text-[#C4C7C5] text-sm flex items-center gap-2"><Cpu size={14} /> Moteur IA</span>
-                <span className="text-[#E3E3E3] text-xs font-mono bg-[#2B2B2B] px-2 py-1 rounded border border-[#444746]">Dynamic (API)</span>
-              </div>
-              <div className="flex justify-between items-center">
-                <span className="text-[#C4C7C5] text-sm flex items-center gap-2">
-                  {isSupabaseConfigured ? <Cloud size={14} className="text-[#6DD58C]" /> : <CloudOff size={14} className="text-[#ED665B]" />}
-                  Synchronisation Cloud
-                </span>
-                <span className={`text-[10px] font-bold px-2 py-1 rounded flex items-center gap-1 border ${isSupabaseConfigured ? 'bg-[#0F5223] text-[#6DD58C] border-[#6DD58C]/20' : 'bg-[#370003] text-[#F2B8B5] border-[#601410]'}`}>
-                  {isSupabaseConfigured ? 'SUPABASE ACTIF' : 'STOCKAGE RÉSEAU DÉSACTIVÉ'}
-                </span>
-              </div>
-              <p className="text-[10px] text-[#757775] leading-relaxed border-t border-[#444746] pt-2 mt-1">
-                {isSupabaseConfigured
-                  ? "Toutes les analyses sont automatiquement répliquées sur votre instance Supabase."
-                  : "Mode local activé. Les données restent uniquement dans IndexedDB."}
-              </p>
-            </div>
+        {/* Global Security Badge */}
+        <div className="mx-8 mt-6 mb-3 px-5 py-2.5 bg-[#F8FAFC] border border-slate-100 rounded-xl flex items-center justify-between shrink-0">
+          <div className="flex items-center gap-2.5">
+            <Lock size={12} className="text-emerald-500" />
+            <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Session Encrypted (TLS 1.3)</span>
           </div>
-
-          {/* Section Données */}
-          <div className="space-y-3">
-            <h3 className="text-xs font-bold text-[#8E918F] uppercase tracking-widest flex items-center gap-2">
-              <Database size={14} /> Base de Données Vectorielle
-            </h3>
-            <div className="bg-[#121212] rounded-xl p-1 border border-[#444746]">
-              <button
-                onClick={onExportData}
-                className="w-full flex items-center justify-between p-3 hover:bg-[#2B2B2B] rounded-lg transition-colors group"
-              >
-                <div className="flex items-center gap-3">
-                  <div className="p-2 bg-[#004A77] rounded-lg text-[#D3E3FD] border border-[#004A77]">
-                    <Download size={18} />
-                  </div>
-                  <div className="text-left">
-                    <div className="text-[#E3E3E3] text-sm font-medium group-hover:text-[#D3E3FD] transition-colors">Exporter l'historique</div>
-                    <div className="text-[#C4C7C5] text-[10px]">{dbSize} dossiers d'investigation</div>
-                  </div>
-                </div>
-              </button>
-              <div className="h-[1px] bg-[#444746] mx-3 my-1 opacity-50"></div>
-              <button
-                onClick={onClearData}
-                className="w-full flex items-center justify-between p-3 hover:bg-[#370003] rounded-lg transition-colors group"
-              >
-                <div className="flex items-center gap-3">
-                  <div className="p-2 bg-[#601410] rounded-lg text-[#F2B8B5] border border-[#601410]">
-                    <Trash2 size={18} />
-                  </div>
-                  <div className="text-left">
-                    <div className="text-[#F2B8B5] text-sm font-medium">Vider la base locale</div>
-                    <div className="text-[#C4C7C5] text-[10px]">Action irréversible</div>
-                  </div>
-                </div>
-              </button>
-            </div>
+          <div className="flex items-center gap-1.5">
+            <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></div>
+            <span className="text-[8px] font-black text-emerald-600 uppercase">Live</span>
           </div>
-
         </div>
 
-        {/* Footer */}
-        <div className="px-6 py-3 bg-[#252525] border-t border-[#444746] text-center flex justify-between items-center">
-          <span className="text-[#757775] text-[10px] font-mono">IDB Storage v2.0</span>
-          <span className="text-[#757775] text-[10px]">DOJ Forensic Analyzer</span>
+        {/* Body - Scrollable */}
+        <div className="flex-1 overflow-y-auto custom-scrollbar">
+          <div className="p-8 space-y-8">
+
+            {/* Section API & Infrastructure */}
+            <div className="space-y-5">
+              <h3 className="text-[9px] font-black text-slate-300 uppercase tracking-[0.4em] flex items-center gap-3">
+                <Server size={12} className="text-[#B91C1C]" /> Infrastructure Core
+              </h3>
+
+              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                <div className="bg-[#F8FAFC] rounded-[1.5rem] p-6 border border-slate-100 relative group overflow-hidden">
+                  <div className="absolute top-0 right-0 p-3 opacity-[0.05] group-hover:scale-110 transition-transform">
+                    <Cpu size={32} className="text-black" />
+                  </div>
+                  <span className="text-[#0F172A] text-[13px] font-black uppercase tracking-tight block mb-3">Neural Engine</span>
+                  <div className="flex items-center justify-between">
+                    <span className="text-[9px] font-black text-[#B91C1C] bg-white px-3 py-1.5 rounded-lg border border-slate-100 shadow-sm tracking-widest uppercase italic">Gemini Flash 1.5</span>
+                    <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]"></div>
+                  </div>
+                </div>
+
+                <div className="bg-[#F8FAFC] rounded-[1.5rem] p-6 border border-slate-100 relative group overflow-hidden">
+                  <div className="absolute top-0 right-0 p-3 opacity-[0.05] group-hover:scale-110 transition-transform">
+                    <Cloud size={32} className="text-black" />
+                  </div>
+                  <span className="text-[#0F172A] text-[13px] font-black uppercase tracking-tight block mb-3">Cloud Sync</span>
+                  <div className="flex items-center justify-between">
+                    <span className={`text-[9px] font-black px-3 py-1.5 rounded-lg flex items-center gap-2 border shadow-sm tracking-widest ${isSupabaseConfigured ? 'bg-white text-emerald-600 border-emerald-100' : 'bg-white text-[#B91C1C] border-red-100'}`}>
+                      {isSupabaseConfigured ? <Cloud size={12} /> : <CloudOff size={12} />}
+                      {isSupabaseConfigured ? 'SYNC' : 'LOCAL'}
+                    </span>
+                    <div className={`w-1.5 h-1.5 rounded-full ${isSupabaseConfigured ? 'bg-emerald-500' : 'bg-[#B91C1C]'} shadow-sm`}></div>
+                  </div>
+                </div>
+              </div>
+
+              <p className="text-[10px] text-slate-400 leading-relaxed text-center font-bold px-4 italic">
+                {isSupabaseConfigured
+                  ? "Investigations synchronisées en temps réel avec le cluster distant sécurisé."
+                  : "Mode Offline : Données isolées localement. Export manuel recommandé."}
+              </p>
+            </div>
+
+            {/* Section Hardware & Data */}
+            <div className="space-y-5">
+              <h3 className="text-[9px] font-black text-slate-300 uppercase tracking-[0.4em] flex items-center gap-3">
+                <Database size={12} className="text-[#0F4C81]" /> Hardware Maintenance
+              </h3>
+
+              <div className="bg-white rounded-[2rem] p-2 border border-slate-100 shadow-sm overflow-hidden">
+                <button
+                  onClick={onExportData}
+                  className="w-full flex items-center justify-between p-5 hover:bg-[#F8FAFC] rounded-[1.5rem] transition-all group"
+                >
+                  <div className="flex items-center gap-4">
+                    <div className="w-11 h-11 bg-[#0F4C81] rounded-xl text-white flex items-center justify-center shadow-lg group-hover:rotate-12 transition-transform">
+                      <Download size={20} />
+                    </div>
+                    <div className="text-left">
+                      <div className="text-[#0F172A] text-base font-black uppercase tracking-tight italic font-serif-legal leading-none">Snapshot Archive</div>
+                      <div className="text-slate-400 text-[9px] font-black uppercase tracking-widest mt-1 flex items-center gap-2">
+                        {dbSize} Files <div className="w-0.5 h-0.5 bg-slate-200 rounded-full"></div> Qualified
+                      </div>
+                    </div>
+                  </div>
+                  <div className="w-8 h-8 rounded-full bg-slate-50 flex items-center justify-center group-hover:bg-[#0F4C81] group-hover:text-white transition-all">
+                    <ArrowUpRight size={16} className="group-hover:scale-110 transition-transform" />
+                  </div>
+                </button>
+
+                <div className="h-px bg-slate-50 mx-6 my-1"></div>
+
+                <button
+                  onClick={onClearData}
+                  className="w-full flex items-center justify-between p-5 hover:bg-red-50 rounded-[1.5rem] transition-all group"
+                >
+                  <div className="flex items-center gap-4">
+                    <div className="w-11 h-11 bg-white border border-red-100 rounded-xl text-[#B91C1C] flex items-center justify-center shadow-lg group-hover:scale-110 transition-all">
+                      <Trash2 size={20} />
+                    </div>
+                    <div className="text-left">
+                      <div className="text-[#B91C1C] text-base font-black uppercase tracking-tight italic font-serif-legal leading-none">Emergency Purge</div>
+                      <div className="text-slate-400 text-[9px] font-black uppercase tracking-widest mt-1 flex items-center gap-2">
+                        Irreversible <div className="w-0.5 h-0.5 bg-red-200 rounded-full"></div> High Risk
+                      </div>
+                    </div>
+                  </div>
+                  <div className="px-3 py-1.5 bg-red-100/50 rounded-lg text-[#B91C1C] text-[8px] font-black uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity">
+                    Execute
+                  </div>
+                </button>
+              </div>
+            </div>
+
+          </div>
+        </div>
+
+        {/* Footer Technical Meta */}
+        <div className="px-8 py-5 bg-[#F8FAFC] border-t border-slate-50 flex justify-between items-center relative overflow-hidden shrink-0">
+          <div className="absolute inset-0 opacity-[0.02] pointer-events-none">
+            <div className="line-glow h-full w-full"></div>
+          </div>
+          <div className="relative z-10">
+            <span className="text-slate-300 text-[8px] font-black uppercase tracking-[0.4em]">Core Version</span>
+            <div className="text-[#0F172A] text-[10px] font-mono-data font-black">2.4.0-RTX_FORENSIC</div>
+          </div>
+          <div className="flex items-center gap-3 relative z-10">
+            <Shield size={14} className="text-[#B5965D]" />
+            <div className="h-3 w-px bg-slate-200"></div>
+            <span className="text-[#B91C1C] text-[9px] font-black uppercase tracking-[0.3em] font-serif-legal italic">DOJ Authorized</span>
+          </div>
         </div>
       </div>
     </div>

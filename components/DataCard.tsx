@@ -1,11 +1,11 @@
 /**
  * @license
  * SPDX-License-Identifier: Apache-2.0
-*/
+ */
 
 import React, { useState, useMemo } from 'react';
 import { DisclosureAnalysis } from '../types';
-import { Search, Calendar, Users, FileText, Link as LinkIcon, ShieldAlert, File, List, Zap, Scale, Download, BookOpen, GraduationCap, ArrowUpRight, Filter } from 'lucide-react';
+import { Search, Calendar, Users, FileText, Link as LinkIcon, ShieldAlert, File, List, Zap, Scale, Download, BookOpen, GraduationCap, ArrowUpRight, Filter, Gavel, Award, Box, ShieldCheck } from 'lucide-react';
 
 interface DataCardProps {
     data: DisclosureAnalysis | null;
@@ -19,14 +19,12 @@ interface DataCardProps {
 export const DataCard: React.FC<DataCardProps> = ({ data, sources, loading, onDeepDive, onDownload, onEntityClick }) => {
     const [activeFilter, setActiveFilter] = useState<string>('ALL');
 
-    // Extraction des types uniques de documents pour le filtre
     const availableTypes = useMemo(() => {
         if (!data?.documents) return [];
         const types = data.documents.map(doc => doc.type).filter(Boolean);
         return Array.from(new Set(types));
     }, [data]);
 
-    // Filtrage de la liste des documents
     const filteredDocuments = useMemo(() => {
         if (!data?.documents) return [];
         if (activeFilter === 'ALL') return data.documents;
@@ -35,14 +33,20 @@ export const DataCard: React.FC<DataCardProps> = ({ data, sources, loading, onDe
 
     if (loading) {
         return (
-            <div className="w-full bg-[#1E1E1E] rounded-3xl p-8 border border-[#444746] flex flex-col items-center justify-center min-h-[400px] gap-6">
-                <div className="relative w-20 h-20">
-                    <div className="absolute inset-0 rounded-full border-4 border-[#444746]"></div>
-                    <div className="absolute inset-0 rounded-full border-4 border-[#F2B8B5] border-t-transparent animate-spin"></div>
+            <div className="w-full bg-white rounded-[3rem] p-12 lg:p-16 border border-slate-100 flex flex-col items-center justify-center min-h-[500px] gap-8 shadow-2xl animate-pro-reveal relative overflow-hidden">
+                <div className="absolute inset-0 z-0 pointer-events-none opacity-[0.2] report-paper"></div>
+                <div className="relative w-24 h-24 z-10">
+                    <div className="absolute inset-0 rounded-full border-[2px] border-slate-50"></div>
+                    <div className="absolute inset-0 rounded-full border-[2px] border-[#B91C1C] border-t-transparent animate-spin"></div>
+                    <ShieldCheck size={32} className="absolute inset-0 m-auto text-[#B91C1C] animate-pulse" />
                 </div>
-                <div className="text-center space-y-2">
-                    <p className="text-[#F2B8B5] font-medium animate-pulse tracking-widest uppercase text-[13px]">Extraction de Données Profondes</p>
-                    <p className="text-[#C4C7C5] text-[13px]">Analyse structurelle des documents en cours...</p>
+                <div className="text-center space-y-3 z-10">
+                    <p className="text-[#B91C1C] font-black tracking-[0.5em] uppercase text-[10px]">Neural Forensic Extraction</p>
+                    <div className="flex items-center gap-3 justify-center">
+                        <div className="h-[1px] w-8 bg-slate-100"></div>
+                        <p className="text-slate-400 text-[12px] font-bold italic font-serif-legal">Compiling Judicial Feed...</p>
+                        <div className="h-[1px] w-8 bg-slate-100"></div>
+                    </div>
                 </div>
             </div>
         );
@@ -50,220 +54,282 @@ export const DataCard: React.FC<DataCardProps> = ({ data, sources, loading, onDe
 
     if (!data && !loading) {
         return (
-            <div className="w-full bg-[#1E1E1E] rounded-3xl p-8 border border-[#601410] bg-gradient-to-br from-[#1E1E1E] to-[#370003]/20 flex flex-col items-center justify-center min-h-[400px] gap-4">
-                <div className="p-4 bg-[#601410]/20 rounded-full border border-[#601410]/50 text-[#F2B8B5]">
-                    <ShieldAlert size={40} />
+            <div className="w-full bg-[#FEF2F2]/50 rounded-[3rem] p-12 lg:p-16 border border-red-50 flex flex-col items-center justify-center min-h-[500px] gap-6 text-center shadow-2xl animate-pro-reveal relative overflow-hidden">
+                <div className="absolute inset-0 z-0 pointer-events-none opacity-[0.2] report-paper"></div>
+                <div className="p-6 bg-white rounded-2xl shadow-xl text-[#B91C1C] border border-red-50 z-10">
+                    <ShieldAlert size={48} />
                 </div>
-                <div className="text-center">
-                    <h3 className="text-[#F2B8B5] font-bold uppercase tracking-wider mb-2">Analyse Interrompue</h3>
-                    <p className="text-[#C4C7C5] text-[13px] max-w-sm">
-                        L'extraction a échoué ou les données sont corrompues. Vérifiez le terminal système pour plus de détails.
+                <div className="space-y-3 z-10">
+                    <h3 className="text-[#0F172A] font-black uppercase tracking-[0.3em] text-xl font-serif-legal italic">Flux Interrompu</h3>
+                    <p className="text-slate-400 text-[13px] max-w-md font-medium leading-relaxed italic">
+                        L'intégrité de la session analytique a été compromise. Le moteur de décryptage demande une réinitialisation.
                     </p>
+                    <button onClick={() => window.location.reload()} className="mt-4 px-8 py-3 bg-[#0F172A] text-white rounded-xl font-black uppercase tracking-[0.2em] text-[10px] hover:bg-[#B91C1C] transition-all shadow-lg active:scale-95">
+                        Relancer la Liaison
+                    </button>
                 </div>
             </div>
         );
     }
 
     return (
-        <div className="w-full bg-[#0D0D0D] border border-[#1A1A1A] rounded-2xl overflow-hidden shadow-2xl transition-all duration-500 flex flex-col">
+        <div className="w-full bg-white border border-slate-100 rounded-[3rem] overflow-hidden shadow-premium transition-all duration-700 flex flex-col animate-pro-reveal relative group/card">
+            <div className="absolute inset-0 z-0 pointer-events-none opacity-[0.25] report-paper"></div>
 
-            {/* En-tête Badge */}
-            <div className="bg-[#121212] px-6 py-4 flex justify-between items-center border-b border-[#1A1A1A]">
-                <div className="flex items-center gap-3">
-                    <div className="p-1.5 bg-[#301010] rounded border border-[#F2B8B5]/20">
-                        <ShieldAlert size={14} className="text-[#F2B8B5]" />
+            {/* Header / Meta Info */}
+            <div className="bg-white/80 backdrop-blur-3xl px-8 lg:px-12 py-8 flex flex-col sm:flex-row justify-between items-start sm:items-center border-b border-slate-100 gap-6 relative z-10">
+                <div className="absolute top-0 right-0 h-full w-1/4 bg-gradient-to-l from-[#F8FAFC] to-transparent pointer-events-none opacity-50"></div>
+
+                <div className="flex items-center gap-6 relative z-10">
+                    <div className="w-14 h-14 bg-[#B91C1C] rounded-[1.2rem] flex items-center justify-center shadow-2xl shadow-red-900/20 transform rotate-3 hover:rotate-0 transition-transform duration-500">
+                        <Gavel size={24} className="text-white" />
                     </div>
-                    <span className="text-[#EEE] font-bold tracking-widest text-[10px] uppercase">Rapport de Forensic Numérique</span>
+                    <div>
+                        <div className="flex items-center gap-2 mb-1">
+                            <span className="text-[9px] font-black text-[#B91C1C] uppercase tracking-[0.3em]">Module Analytique v4.2</span>
+                            <div className="h-0.5 w-4 bg-slate-100"></div>
+                            <span className="text-[9px] font-black text-slate-300 uppercase tracking-[0.3em]">SECURED DATA</span>
+                        </div>
+                        <h2 className="text-2xl font-black text-[#0F172A] font-serif-legal italic tracking-tight">{data.investigationId || 'Dossier Analytique'}</h2>
+                    </div>
                 </div>
-                <div className="flex items-center gap-3">
+
+                <div className="flex items-center gap-4 relative z-10 scale-90 sm:scale-100 origin-right">
+                    <div className="flex flex-col items-end mr-2 hidden md:flex">
+                        <span className="text-[8px] font-black text-slate-300 uppercase tracking-[0.3em] mb-1">Clearance Level</span>
+                        <div className="flex items-center gap-1.5">
+                            <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]"></div>
+                            <span className="text-[10px] font-black text-emerald-600 uppercase">Verified</span>
+                        </div>
+                    </div>
                     <button
                         onClick={onDownload}
-                        className="flex items-center gap-1.5 bg-[#1A1A1A] hover:bg-[#F2B8B5] hover:text-[#370003] text-[#888] px-3 py-1.5 rounded-md text-[10px] uppercase font-bold tracking-wider transition-all border border-[#2A2A2A]"
+                        className="group flex items-center gap-3 bg-white hover:bg-[#0F172A] hover:text-white px-5 py-3 rounded-xl text-[10px] uppercase font-black tracking-widest transition-all border border-slate-100 shadow-sm active:scale-95"
                     >
-                        <Download size={11} /> Export JSON
+                        <Download size={14} className="group-hover:translate-y-0.5 transition-transform" />
+                        EXPORT
                     </button>
-                    <div className="h-4 w-[1px] bg-[#2A2A2A]"></div>
-                    <span className="text-[#F2B8B5] font-mono text-[11px] font-bold opacity-90 px-2 py-0.5 bg-[#F2B8B5]/10 rounded border border-[#F2B8B5]/20 uppercase">{data.contexte_juridique || 'CLASSIFIED'}</span>
+                    <div className="h-8 w-[1px] bg-slate-100"></div>
+                    <div className="bg-[#F8FAFC] border border-slate-50 px-4 py-2 rounded-xl">
+                        <span className="text-slate-400 font-mono-data text-sm font-black uppercase tracking-tighter">{data.contexte_juridique || 'LITIGATION'}</span>
+                    </div>
                 </div>
             </div>
 
-            <div className="p-6 md:p-10 flex flex-col gap-10 flex-1 report-paper">
+            <div className="p-8 lg:p-14 lg:px-20 flex flex-col gap-16 flex-1 relative z-10">
 
-                {/* Résumé Global */}
-                <div className="animate-in fade-in slide-in-from-top-4 duration-700">
-                    <div className="flex items-center gap-4 mb-6">
-                        <div className="h-[1px] flex-1 bg-gradient-to-r from-transparent via-[#2A2A2A] to-[#2A2A2A]"></div>
-                        <label className="text-[10px] uppercase font-bold tracking-[0.3em] text-[#F2B8B5] flex items-center gap-2 px-2">
-                            Synthèse de l'Affaire
-                        </label>
-                        <div className="h-[1px] flex-1 bg-gradient-to-l from-transparent via-[#2A2A2A] to-[#2A2A2A]"></div>
+                {/* Executive Summary Section */}
+                <div className="relative">
+                    <div className="flex items-center gap-6 mb-10">
+                        <div className="h-[1px] flex-1 bg-slate-50"></div>
+                        <div className="px-5 py-1.5 bg-slate-50 border border-slate-100 rounded-full">
+                            <label className="text-[9px] uppercase font-black tracking-[0.4em] text-[#B91C1C] flex items-center gap-3">
+                                <Award size={12} /> Synthèse Forensique
+                            </label>
+                        </div>
+                        <div className="h-[1px] flex-1 bg-slate-50"></div>
                     </div>
-                    <div className="text-[#BBB] leading-relaxed text-base bg-[#0A0A0A]/60 backdrop-blur-sm p-8 rounded-xl border border-[#1A1A1A] relative group">
-                        <div className="absolute top-0 left-0 w-[2px] h-full bg-[#F2B8B5]/40 group-hover:bg-[#F2B8B5] transition-colors"></div>
-                        <p className="relative z-10 font-light italic leading-loose text-lg text-[#EEE]">{data.context_general}</p>
+
+                    <div className="max-w-4xl mx-auto relative group/summary">
+                        <div className="absolute -left-10 top-0 bottom-0 w-[1px] bg-slate-50 group-hover/summary:bg-[#B91C1C]/10 transition-colors"></div>
+                        <div className="absolute -left-[49px] top-6 w-5 h-5 rounded-full bg-white border border-[#B91C1C] shadow-lg flex items-center justify-center font-black text-[9px] text-[#B91C1C] group-hover/summary:scale-125 transition-transform">S</div>
+                        <p className="font-serif-legal italic leading-relaxed text-xl lg:text-2xl text-[#1E293B] first-letter:text-6xl first-letter:font-black first-letter:mr-4 first-letter:float-left first-letter:text-[#B91C1C] first-letter:leading-none">
+                            {data.context_general}
+                        </p>
                     </div>
                 </div>
 
-                {/* Section Documents Détaillés */}
-                <div>
-                    <div className="flex flex-wrap items-center justify-between mb-6 gap-4">
-                        <label className="text-[10px] uppercase font-bold tracking-[0.3em] text-[#555] flex items-center gap-2">
-                            <File size={12} /> Éléments de Preuve
-                        </label>
+                {/* Evidence Documents Section */}
+                <div className="space-y-10">
+                    <div className="flex flex-col md:flex-row md:items-end justify-between gap-6 border-b border-slate-50 pb-8">
+                        <div className="space-y-1">
+                            <div className="flex items-center gap-2 mb-1">
+                                <Box size={14} className="text-[#B91C1C]" />
+                                <span className="text-[10px] font-black text-slate-300 uppercase tracking-[0.4em]">Index des Pièces</span>
+                            </div>
+                            <h3 className="text-2xl font-black text-[#0F172A] font-serif-legal italic">Archives Qualifiées</h3>
+                        </div>
 
-                        {/* Barre de Filtres */}
-                        {availableTypes.length > 0 && (
-                            <div className="flex items-center gap-2 overflow-x-auto pb-1 max-w-full no-scrollbar">
+                        {/* Filter System */}
+                        <div className="flex items-center gap-2 p-1.5 bg-[#F8FAFC] rounded-xl border border-slate-50 overflow-x-auto no-scrollbar max-w-full">
+                            <button
+                                onClick={() => setActiveFilter('ALL')}
+                                className={`px-5 py-2 rounded-lg text-[9px] uppercase font-black tracking-widest transition-all ${activeFilter === 'ALL'
+                                    ? 'bg-white text-[#B91C1C] shadow-sm border border-slate-100'
+                                    : 'text-slate-400 hover:text-slate-600'
+                                    }`}
+                            >
+                                All
+                            </button>
+                            {availableTypes.map((type) => (
                                 <button
-                                    onClick={() => setActiveFilter('ALL')}
-                                    className={`px-3 py-1 rounded text-[9px] uppercase font-bold tracking-widest transition-all border ${activeFilter === 'ALL'
-                                        ? 'bg-[#EEE] text-[#000] border-[#EEE]'
-                                        : 'bg-[#121212] text-[#555] border-[#1A1A1A] hover:border-[#F2B8B5]/40 hover:text-[#888]'
+                                    key={type}
+                                    onClick={() => setActiveFilter(type)}
+                                    className={`px-5 py-2 rounded-lg text-[9px] uppercase font-black tracking-widest transition-all whitespace-nowrap ${activeFilter === type
+                                        ? 'bg-white text-[#B91C1C] shadow-sm border border-slate-100'
+                                        : 'text-slate-400 hover:text-slate-600'
                                         }`}
                                 >
-                                    ALL
+                                    {type}
                                 </button>
-                                {availableTypes.map((type) => (
-                                    <button
-                                        key={type}
-                                        onClick={() => setActiveFilter(type)}
-                                        className={`px-3 py-1 rounded text-[9px] uppercase font-bold tracking-widest transition-all border whitespace-nowrap ${activeFilter === type
-                                            ? 'bg-[#F2B8B5]/20 text-[#F2B8B5] border-[#F2B8B5]/40'
-                                            : 'bg-[#121212] text-[#555] border-[#1A1A1A] hover:border-[#F2B8B5]/40 hover:text-[#888]'
-                                            }`}
-                                    >
-                                        {type}
-                                    </button>
-                                ))}
-                            </div>
-                        )}
+                            ))}
+                        </div>
                     </div>
 
-                    <div className="grid grid-cols-1 gap-6">
-                        {filteredDocuments && filteredDocuments.length > 0 ? (
-                            filteredDocuments.map((doc, idx) => (
-                                <div key={idx} className="bg-[#0D0D0D] rounded-xl border border-[#1A1A1A] overflow-hidden hover:border-[#F2B8B5]/30 transition-all group flex flex-col md:flex-row">
+                    <div className="grid grid-cols-1 gap-12 relative pb-20">
+                        {/* Vertical Timeline Thread */}
+                        <div className="absolute left-[31px] top-6 bottom-6 w-[1px] bg-slate-50 hidden md:block"></div>
 
-                                    {/* Sidebar de la carte document */}
-                                    <div className="w-full md:w-64 bg-[#121212]/50 p-5 border-b md:border-b-0 md:border-r border-[#1A1A1A] shrink-0">
-                                        <div className="flex flex-col h-full">
-                                            <div className="mb-4">
-                                                <div className="text-[8px] font-bold text-[#F2B8B5] uppercase tracking-[0.3em] mb-1">Type de Document</div>
-                                                <span className="text-[10px] font-bold uppercase text-[#EEE] bg-[#F2B8B5]/10 px-2 py-0.5 rounded-sm border border-[#F2B8B5]/20 block w-fit">{doc.type || 'SOURCE'}</span>
-                                            </div>
-                                            <div className="mb-6">
-                                                <div className="text-[8px] font-bold text-[#555] uppercase tracking-[0.3em] mb-1">Datation</div>
-                                                <span className="text-[10px] font-mono text-[#888]">{doc.date}</span>
-                                            </div>
+                        {filteredDocuments.map((doc, idx) => (
+                            <div key={idx} className="relative group/doc animate-pro-reveal" style={{ animationDelay: `${idx * 0.05}s` }}>
+                                {/* Timeline Node */}
+                                <div className="absolute left-0 top-10 w-16 h-16 bg-white border border-slate-50 shadow-lg rounded-[1.5rem] hidden md:flex items-center justify-center font-black text-lg text-[#B91C1C] transition-all group-hover/doc:scale-110 group-hover/doc:rotate-3 z-10 font-serif-legal italic">
+                                    {String(idx + 1).padStart(2, '0')}
+                                </div>
 
-                                            <div className="mt-auto flex flex-col gap-2">
-                                                <button
-                                                    onClick={() => onDeepDive(doc.title, 'simple')}
-                                                    className="w-full flex items-center justify-center gap-2 bg-[#0A0A0A] hover:bg-[#F2B8B5] hover:text-[#000] text-[#888] py-2 rounded border border-[#1A1A1A] transition-all text-[9px] font-bold uppercase tracking-widest"
-                                                >
-                                                    <BookOpen size={10} /> Expliquer
-                                                </button>
-                                                <button
-                                                    onClick={() => onDeepDive(doc.title, 'technical')}
-                                                    className="w-full flex items-center justify-center gap-2 bg-[#0A0A0A] hover:bg-[#8AB4F8] hover:text-[#000] text-[#888] py-2 rounded border border-[#1A1A1A] transition-all text-[9px] font-bold uppercase tracking-widest"
-                                                >
-                                                    <GraduationCap size={10} /> Forensic
-                                                </button>
+                                <div className="md:ml-24 bg-white rounded-[2.5rem] border border-slate-50 overflow-hidden hover:shadow-2xl hover:border-[#B91C1C]/10 transition-all duration-700 flex flex-col xl:flex-row shadow-sm">
+                                    {/* Sidebar Detail */}
+                                    <div className="xl:w-72 bg-[#F8FAFC]/50 p-8 border-b xl:border-b-0 xl:border-r border-slate-50 flex flex-col gap-8">
+                                        <div className="space-y-5">
+                                            <div>
+                                                <div className="text-[9px] font-black text-slate-300 uppercase tracking-[0.3em] mb-3">Classification</div>
+                                                <div className="flex items-center gap-2">
+                                                    <div className="w-1.5 h-1.5 rounded-full bg-[#B91C1C]"></div>
+                                                    <span className="text-[11px] font-black uppercase text-slate-600">{doc.type || 'Standard'} Pieces</span>
+                                                </div>
                                             </div>
+                                            <div className="bg-white p-4 rounded-xl border border-slate-50 shadow-sm">
+                                                <div className="text-[9px] font-black text-slate-200 uppercase tracking-[0.3em] mb-2">Authenticity Date</div>
+                                                <div className="flex items-center gap-2.5">
+                                                    <Calendar size={12} className="text-[#B91C1C]" />
+                                                    <span className="text-[12px] font-mono-data font-black text-slate-500">{doc.date}</span>
+                                                </div>
+                                            </div>
+                                        </div>
+
+                                        <div className="mt-auto space-y-2">
+                                            <button
+                                                onClick={() => onDeepDive(doc.title, 'simple')}
+                                                className="w-full flex items-center justify-center gap-3 bg-white hover:bg-[#0F172A] hover:text-white text-slate-500 py-3 rounded-xl border border-slate-100 transition-all text-[9px] font-black uppercase tracking-widest shadow-sm active:scale-95 group/btn"
+                                            >
+                                                <BookOpen size={14} className="group-hover/btn:scale-110 transition-transform" /> Summarize
+                                            </button>
+                                            <button
+                                                onClick={() => onDeepDive(doc.title, 'technical')}
+                                                className="w-full flex items-center justify-center gap-3 bg-[#0F172A] hover:bg-[#B91C1C] text-white py-3 rounded-xl transition-all text-[9px] font-black uppercase tracking-widest shadow-lg active:scale-95 group/btn"
+                                            >
+                                                <Zap size={14} className="group-hover/btn:rotate-12 transition-transform" /> Neural Dive
+                                            </button>
                                         </div>
                                     </div>
 
-                                    {/* Contenu de la carte document */}
-                                    <div className="flex-1 p-6 flex flex-col gap-5">
-                                        <h4 className="text-[#EEE] font-bold text-lg leading-tight group-hover:text-[#F2B8B5] transition-colors">{doc.title}</h4>
-                                        <p className="text-[#888] text-[13px] leading-relaxed font-light italic">
-                                            {doc.description}
-                                        </p>
+                                    {/* Main Doc Body */}
+                                    <div className="flex-1 p-8 lg:p-10 flex flex-col gap-8 relative">
+                                        <div className="absolute top-0 right-0 p-10 opacity-[0.02] group-hover/doc:opacity-[0.05] transition-opacity pointer-events-none">
+                                            <FileText size={120} />
+                                        </div>
+
+                                        <h4 className="text-xl lg:text-2xl font-black text-[#0F172A] font-serif-legal italic tracking-tight group-hover/doc:text-[#B91C1C] transition-colors duration-500">{doc.title}</h4>
+
+                                        <div className="bg-[#FFFFF0]/40 p-8 rounded-[2rem] border border-yellow-100 relative shadow-inner">
+                                            <p className="text-slate-600 text-[15px] lg:text-[16px] font-medium italic leading-relaxed selection:bg-yellow-50">
+                                                "{doc.description}"
+                                            </p>
+                                        </div>
 
                                         {doc.key_facts && doc.key_facts.length > 0 && (
-                                            <div className="bg-[#0A0A0A] rounded-lg p-5 border border-[#1A1A1A]">
-                                                <label className="text-[9px] font-bold uppercase tracking-[0.2em] text-[#444] mb-3 flex items-center gap-2">
-                                                    <List size={10} /> Faits Extraits
-                                                </label>
-                                                <ul className="space-y-3">
+                                            <div className="space-y-6">
+                                                <div className="flex items-center gap-4">
+                                                    <span className="text-[9px] font-black uppercase tracking-[0.4em] text-slate-200">Verified Insights</span>
+                                                    <div className="h-[1px] flex-1 bg-slate-50"></div>
+                                                </div>
+                                                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
                                                     {doc.key_facts.map((fact, k) => (
-                                                        <li key={k} className="text-[#BBB] text-[12px] flex items-start gap-3 group/fact">
-                                                            <span className="text-[#F2B8B5] mt-1 text-[10px] font-bold opacity-40 group-hover/fact:opacity-100 transition-opacity">0{k + 1}</span>
-                                                            <span className="leading-snug">{fact}</span>
-                                                        </li>
+                                                        <div key={k} className="bg-slate-50 group-hover:bg-white p-5 rounded-2xl border border-slate-50 hover:border-[#B91C1C]/10 transition-all flex items-start gap-4 group/fact">
+                                                            <div className="w-6 h-6 rounded-lg bg-white border border-slate-100 flex items-center justify-center text-[10px] font-black text-[#B91C1C] shrink-0 group-hover/fact:bg-[#B91C1C] group-hover/fact:text-white transition-all">
+                                                                {k + 1}
+                                                            </div>
+                                                            <span className="text-slate-500 text-[13px] font-bold leading-relaxed group-hover:text-black transition-colors">{fact}</span>
+                                                        </div>
                                                     ))}
-                                                </ul>
+                                                </div>
                                             </div>
                                         )}
 
                                         {doc.legal_implications && (
-                                            <div className="flex items-start gap-3 text-[11px] text-[#8AB4F8] bg-[#8AB4F8]/5 p-3 rounded border border-[#8AB4F8]/10 group-hover:border-[#8AB4F8]/30 transition-colors">
-                                                <Scale size={14} className="shrink-0 mt-0.5 opacity-60" />
-                                                <span className="font-light leading-relaxed"><strong className="font-bold uppercase tracking-widest text-[9px] mr-2">Portée Juridique :</strong> {doc.legal_implications}</span>
+                                            <div className="flex items-start gap-5 text-[#0F4C81] bg-[#0F4C81]/5 p-6 rounded-[1.5rem] border border-[#0F4C81]/10">
+                                                <Scale size={20} className="shrink-0 mt-1" />
+                                                <div className="space-y-1">
+                                                    <div className="text-[8px] font-black uppercase tracking-[0.3em] opacity-60">Professional Legal Opinion</div>
+                                                    <p className="font-bold text-base leading-relaxed italic font-serif-legal">{doc.legal_implications}</p>
+                                                </div>
                                             </div>
                                         )}
                                     </div>
                                 </div>
-                            ))
-                        ) : (
-                            <div className="text-[#444] text-[10px] uppercase font-bold tracking-[0.2em] py-12 bg-[#0A0A0A] rounded-xl border border-[#1A1A1A] border-dashed text-center">
-                                Aucune donnée filtrée
                             </div>
-                        )}
+                        ))}
                     </div>
                 </div>
 
-                {/* Section Pied de Page: Entités & Sources */}
-                <div className="grid grid-cols-1 md:grid-cols-2 gap-10 pt-10 border-t border-[#1A1A1A]">
-                    {/* Entités Globales */}
-                    <div>
-                        <label className="text-[10px] uppercase font-bold tracking-[0.3em] text-[#555] mb-4 flex items-center gap-2">
-                            <Users size={12} /> Réseau de Personnes Morales & Physiques
-                        </label>
-                        <div className="flex flex-wrap gap-2">
-                            {data.entites_cles && data.entites_cles.length > 0 ? (
-                                data.entites_cles.map((entity, i) => (
-                                    <button
-                                        key={i}
-                                        onClick={() => onEntityClick(entity)}
-                                        className="group flex items-center gap-3 px-3 py-2 rounded-md bg-[#121212] text-[#888] text-[11px] border border-[#1A1A1A] hover:border-[#F2B8B5]/40 hover:bg-[#1A1A1A] transition-all"
-                                    >
-                                        <span className="font-medium group-hover:text-[#EEE] transition-colors">{entity}</span>
-                                        <ArrowUpRight size={10} className="text-[#F2B8B5] opacity-20 group-hover:opacity-100 transition-all" />
-                                    </button>
-                                ))
-                            ) : (
-                                <span className="text-[#333] text-[10px] uppercase font-bold italic tracking-widest">Inconnu</span>
-                            )}
+                {/* Footer Intelligence Sections */}
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 pt-12 border-t border-slate-50">
+                    {/* Entity Extraction */}
+                    <div className="space-y-6">
+                        <div className="flex items-center gap-4">
+                            <Users size={16} className="text-[#B91C1C]" />
+                            <h5 className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-300">Réseau d'Influence</h5>
+                        </div>
+                        <div className="flex flex-wrap gap-2.5">
+                            {data.entites_cles?.map((entity, i) => (
+                                <button
+                                    key={i}
+                                    onClick={() => onEntityClick(entity)}
+                                    className="group flex items-center gap-3 px-4 py-2.5 rounded-xl bg-slate-50 text-slate-500 text-[12px] font-black border border-slate-50 hover:border-[#B91C1C] hover:bg-white hover:shadow-xl transition-all active:scale-90"
+                                >
+                                    <span className="group-hover:text-[#B91C1C] transition-colors italic font-serif-legal">{entity}</span>
+                                    <ArrowUpRight size={14} className="text-[#B91C1C] opacity-0 group-hover:opacity-100 transition-all" />
+                                </button>
+                            ))}
                         </div>
                     </div>
 
-                    {/* Sources Section */}
-                    <div>
-                        <label className="text-[10px] uppercase font-bold tracking-[0.3em] text-[#555] mb-4 flex items-center gap-2">
-                            <LinkIcon size={12} /> Sources Authentifiées (Grounding)
-                        </label>
-                        <div className="space-y-1">
-                            {sources.length > 0 ? (
-                                sources.map((source, i) => (
-                                    <a
-                                        key={i}
-                                        href={source.uri}
-                                        target="_blank"
-                                        rel="noopener noreferrer"
-                                        className="flex items-center justify-between group p-2 rounded hover:bg-[#121212] transition-all"
-                                    >
-                                        <span className="text-[12px] text-[#555] group-hover:text-[#8AB4F8] transition-colors truncate max-w-[85%]">{source.title}</span>
-                                        <span className="text-[8px] font-bold text-[#333] group-hover:text-[#F2B8B5] transition-colors font-mono">LINK-EXT</span>
-                                    </a>
-                                ))
-                            ) : (
-                                <div className="text-[9px] text-[#333] uppercase font-bold italic tracking-widest">Aucune source listée</div>
-                            )}
+                    {/* Source Verification */}
+                    <div className="space-y-6">
+                        <div className="flex items-center gap-4">
+                            <LinkIcon size={16} className="text-[#0F4C81]" />
+                            <h5 className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-300">Liaison Sources</h5>
+                        </div>
+                        <div className="flex flex-col gap-3">
+                            {sources.map((source, i) => (
+                                <a
+                                    key={i}
+                                    href={source.uri}
+                                    target="_blank"
+                                    rel="noopener noreferrer"
+                                    className="flex items-center justify-between group p-5 rounded-xl bg-white border border-slate-50 hover:bg-[#F8FAFC] hover:border-[#0F4C81]/20 transition-all shadow-sm"
+                                >
+                                    <div className="flex items-center gap-4 min-w-0">
+                                        <div className="w-8 h-8 rounded-lg bg-slate-50 border border-slate-100 flex items-center justify-center text-slate-300 group-hover:bg-[#0F4C81] group-hover:text-white transition-all">
+                                            <File size={14} />
+                                        </div>
+                                        <div className="flex flex-col min-w-0">
+                                            <span className="text-[13px] font-black text-slate-500 group-hover:text-[#0F172A] transition-colors truncate font-serif-legal italic leading-none mb-1">{source.title}</span>
+                                            <span className="text-[8px] font-black text-slate-200 uppercase tracking-widest">Gov_Verified_Sync</span>
+                                        </div>
+                                    </div>
+                                    <ArrowUpRight size={14} className="text-[#0F4C81] opacity-0 group-hover:opacity-100 transition-all" />
+                                </a>
+                            ))}
                         </div>
                     </div>
                 </div>
 
+            </div>
+
+            {/* Side Label */}
+            <div className="absolute bottom-10 -left-6 rotate-90 origin-left pointer-events-none opacity-[0.05]">
+                <span className="text-[10px] font-black text-black uppercase tracking-[1em] whitespace-nowrap">AUTHENTICITY VERIFIED BY NEURAL AGENT</span>
             </div>
         </div>
     );

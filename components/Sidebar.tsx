@@ -1,3 +1,8 @@
+/**
+ * @license
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 import React, { useState } from 'react';
 import {
     Terminal,
@@ -13,7 +18,11 @@ import {
     ChevronRight,
     Activity,
     Search,
-    BookOpen
+    BookOpen,
+    Archive,
+    Lock,
+    Cpu,
+    ShieldAlert
 } from 'lucide-react';
 
 export type ViewType = 'lab' | 'database' | 'network' | 'timeline' | 'contradictions' | 'poi';
@@ -36,81 +45,84 @@ export const Sidebar: React.FC<SidebarProps> = ({
     const [isCollapsed, setIsCollapsed] = useState(false);
 
     const menuItems = [
-        { id: 'lab', label: 'Laboratoire', icon: Terminal, color: 'text-[#F2B8B5]' },
-        { id: 'database', label: 'Base de Données', icon: Database, color: 'text-[#8AB4F8]' },
-        { id: 'network', label: 'Réseau d\'Influence', icon: Share2, color: 'text-[#C6A7FB]' },
-        { id: 'timeline', label: 'Chronologie', icon: Clock, color: 'text-[#FFD54F]' },
-        { id: 'contradictions', label: 'Détecteur Dev', icon: AlertTriangle, color: 'text-[#F44336]' },
-        { id: 'poi', label: 'Cibles (POI)', icon: Users, color: 'text-[#4DB6AC]' },
+        { id: 'lab', label: 'Laboratoire Central', icon: Terminal, color: 'text-[#B91C1C]' },
+        { id: 'database', label: 'Archives Centrales', icon: Database, color: 'text-[#0F4C81]' },
+        { id: 'network', label: 'Cartographie', icon: Share2, color: 'text-[#0F4C81]' },
+        { id: 'timeline', label: 'Chronologie', icon: Clock, color: 'text-[#B91C1C]' },
+        { id: 'contradictions', label: 'Contradictions', icon: ShieldAlert, color: 'text-[#0F4C81]' },
+        { id: 'poi', label: 'Index des Cibles', icon: Users, color: 'text-[#B91C1C]' },
     ];
 
     return (
         <aside
-            className={`bg-[#080808] border-r border-[#1A1A1A] flex flex-col h-screen sticky top-0 z-50 transition-all duration-500 ease-[cubic-bezier(0.4,0,0.2,1)] ${isCollapsed ? 'w-20' : 'w-20 lg:w-[260px]'
+            className={`bg-white border-r border-slate-100 flex flex-col h-screen sticky top-0 z-50 transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] shadow-2xl relative ${isCollapsed ? 'w-24' : 'w-24 lg:w-[280px]'
                 }`}
         >
             {/* COLLAPSE TOGGLE */}
             <button
                 onClick={() => setIsCollapsed(!isCollapsed)}
-                className="absolute -right-3 top-20 w-6 h-6 bg-[#1A1A1A] border border-[#2A2A2A] rounded-full hidden lg:flex items-center justify-center text-[#555] hover:text-white transition-all z-[60] shadow-lg hover:border-[#F2B8B5]/40"
+                className="absolute -right-3 top-20 w-7 h-7 bg-white border border-slate-100 rounded-full hidden lg:flex items-center justify-center text-slate-300 hover:text-[#B91C1C] transition-all z-[60] shadow-xl hover:scale-110 active:scale-95"
             >
-                {isCollapsed ? <ChevronRight size={12} /> : <ChevronLeft size={12} />}
+                {isCollapsed ? <ChevronRight size={14} /> : <ChevronLeft size={14} />}
             </button>
 
             {/* LOGO AREA */}
-            <div className={`p-6 transition-all duration-500 ${isCollapsed ? 'px-4' : 'px-6'}`}>
-                <div className="flex items-center gap-3 mb-10 group cursor-pointer whitespace-nowrap px-2">
+            <div className={`pt-8 pb-6 transition-all duration-500 overflow-hidden ${isCollapsed ? 'px-4' : 'px-8'}`}>
+                <div className="flex items-center gap-4 mb-10 group cursor-pointer whitespace-nowrap" onClick={() => onViewChange('lab')}>
                     <div className="relative shrink-0">
-                        <div className="absolute inset-0 bg-[#F2B8B5] blur-lg opacity-10 group-hover:opacity-30 transition-opacity"></div>
-                        <div className="relative w-10 h-10 bg-[#121212] rounded-xl flex items-center justify-center border border-[#2A2A2A] group-hover:border-[#F2B8B5]/50 transition-colors">
-                            <ShieldCheck className="text-[#F2B8B5]" size={20} />
+                        <div className="absolute inset-0 bg-[#B91C1C] blur-xl opacity-0 group-hover:opacity-20 transition-opacity"></div>
+                        <div className="relative w-11 h-11 bg-black rounded-[1rem] flex items-center justify-center shadow-2xl transition-all duration-500 group-hover:bg-[#B91C1C] group-hover:rotate-[360deg]">
+                            <ShieldCheck className="text-white" size={20} />
                         </div>
                     </div>
                     {!isCollapsed && (
-                        <div className="hidden lg:block animate-in fade-in slide-in-from-left-2">
-                            <h1 className="font-bold text-white tracking-wider text-lg uppercase leading-none">
-                                DOJ <span className="text-[#F2B8B5]/80 font-normal">Forensic</span>
+                        <div className="hidden lg:block animate-pro-reveal duration-500">
+                            <h1 className="font-black text-[#0F172A] tracking-tighter text-lg uppercase leading-none font-serif-legal italic">
+                                DOJ <span className="text-[#B91C1C]">Forensic</span>
                             </h1>
-                            <span className="text-[9px] font-medium text-[#555] uppercase tracking-[0.2em] mt-1 block">Analytical Unit</span>
+                            <div className="flex items-center gap-2 mt-1">
+                                <span className="text-[8px] font-black text-slate-300 uppercase tracking-[0.4em]">Analytical Unit 4.2</span>
+                            </div>
                         </div>
                     )}
                 </div>
 
-                {/* ACTION BUTTON */}
+                {/* ACTION BUTTON - PREMIUM */}
                 <button
                     onClick={onNewAnalysis}
-                    className="w-full mb-8 group relative px-1"
+                    className="w-full mb-10 group relative"
                 >
-                    <div className="absolute inset-0 bg-[#F2B8B5] blur-md opacity-0 group-hover:opacity-10 transition-opacity rounded-xl"></div>
-                    <div className={`relative w-full flex items-center justify-center ${isCollapsed ? '' : 'lg:justify-start lg:px-4'} h-12 bg-[#121212] hover:bg-[#1A1A1A] text-white rounded-xl transition-all duration-300 border border-[#2A2A2A] group-hover:border-[#F2B8B5]/40 active:scale-95`}>
-                        <Plus size={18} className="text-[#F2B8B5] shrink-0" />
-                        {!isCollapsed && <span className="hidden lg:block font-bold text-[11px] uppercase tracking-widest ml-3 animate-in fade-in whitespace-nowrap">Démarrer Analyse</span>}
+                    <div className={`relative w-full flex items-center justify-center ${isCollapsed ? '' : 'lg:justify-start lg:px-5'} h-12 bg-[#B91C1C] hover:bg-[#0F172A] text-white rounded-xl transition-all duration-500 shadow-xl shadow-red-900/10 hover:shadow-slate-900/20 active:scale-95 overflow-hidden`}>
+                        <div className="absolute inset-x-0 h-px top-0 bg-white/20"></div>
+                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
+                        <Plus size={18} className="shrink-0 group-hover:rotate-90 transition-transform duration-500" />
+                        {!isCollapsed && <span className="hidden lg:block font-black text-[9px] uppercase tracking-[0.3em] ml-4 transition-all whitespace-nowrap">Nouvelle Investigation</span>}
                     </div>
                 </button>
 
                 {/* NAVIGATION */}
-                <nav className="space-y-1.5 px-1">
-                    <div className={`text-[10px] font-bold text-[#333] uppercase tracking-[0.2em] mb-4 ml-3 ${isCollapsed ? 'hidden' : 'hidden lg:block'}`}>Investigation</div>
+                <nav className="space-y-1.5">
+                    <div className={`text-[8px] font-black text-slate-200 uppercase tracking-[0.5em] mb-4 ml-5 ${isCollapsed ? 'hidden' : 'hidden lg:block'}`}>Investigation Suite</div>
                     {menuItems.map((item) => {
                         const isActive = currentView === item.id;
                         return (
                             <button
                                 key={item.id}
                                 onClick={() => onViewChange(item.id as ViewType)}
-                                className={`w-full relative flex items-center justify-center ${isCollapsed ? '' : 'lg:justify-start lg:px-4'} h-11 rounded-xl transition-all duration-300 group ${isActive
-                                    ? 'bg-[#121212] text-white border border-[#2A2A2A]'
-                                    : 'text-[#666] hover:text-[#BBB] hover:bg-[#121212]/50'}`}
+                                className={`w-full relative flex items-center justify-center ${isCollapsed ? '' : 'lg:justify-start lg:px-5'} h-11 rounded-xl transition-all duration-500 group ${isActive
+                                    ? 'bg-[#F8FAFC] text-[#0F172A] shadow-inner border border-slate-50'
+                                    : 'text-slate-400 hover:text-[#B91C1C] hover:bg-slate-50/50'}`}
                                 title={isCollapsed ? item.label : ''}
                             >
                                 {isActive && (
-                                    <div className="absolute left-[-4px] w-1 h-4 bg-[#F2B8B5] rounded-full shadow-[0_0_8px_#F2B8B5]"></div>
+                                    <div className="absolute left-0 w-1 h-5 bg-[#B91C1C] rounded-r-full shadow-[0_0_8px_rgba(185,28,28,0.3)]"></div>
                                 )}
                                 <item.icon
                                     size={18}
-                                    className={`shrink-0 transition-colors duration-300 ${isActive ? item.color : 'group-hover:text-[#AAA]'}`}
+                                    className={`shrink-0 transition-all duration-500 ${isActive ? item.color : 'group-hover:scale-110 opacity-70 group-hover:opacity-100'}`}
                                 />
                                 {!isCollapsed && (
-                                    <span className={`hidden lg:block text-[13px] font-medium tracking-tight ml-3 transition-all duration-200 ${isActive ? 'text-white' : 'opacity-80'}`}>
+                                    <span className={`hidden lg:block text-[13px] font-black tracking-tight ml-4 transition-all duration-300 font-serif-legal italic ${isActive ? 'translate-x-1' : 'opacity-60 group-hover:opacity-100'}`}>
                                         {item.label}
                                     </span>
                                 )}
@@ -121,42 +133,54 @@ export const Sidebar: React.FC<SidebarProps> = ({
             </div>
 
             {/* FOOTER */}
-            <div className={`mt-auto p-4 transition-all duration-500 overflow-hidden ${isCollapsed ? 'px-4' : 'px-6'} pb-8`}>
-                <div className={`text-[10px] font-bold text-[#333] uppercase tracking-[0.2em] mb-4 ml-3 ${isCollapsed ? 'hidden' : 'hidden lg:block'}`}>Système</div>
-                <div className="space-y-1.5">
+            <div className={`mt-auto p-6 transition-all duration-500 overflow-hidden ${isCollapsed ? 'px-4' : 'px-8'} pb-10`}>
+                <div className="space-y-1">
                     <button
                         onClick={onToggleLogs}
-                        className={`w-full flex items-center justify-center ${isCollapsed ? '' : 'lg:justify-start lg:px-4'} h-11 rounded-xl text-[#555] hover:bg-[#121212] hover:text-[#6DD58C] transition-all group border border-transparent`}
+                        className={`w-full flex items-center justify-center ${isCollapsed ? '' : 'lg:justify-start lg:px-5'} h-10 rounded-xl text-slate-300 hover:bg-slate-50 hover:text-[#0F4C81] transition-all group border border-transparent`}
                         title={isCollapsed ? 'Console Système' : ''}
                     >
                         <Activity
                             size={16}
                             className={`group-hover:animate-pulse transition-all shrink-0`}
                         />
-                        {!isCollapsed && <span className="hidden lg:block text-[11px] font-bold uppercase tracking-widest ml-3 animate-in fade-in">Console</span>}
+                        {!isCollapsed && <span className="hidden lg:block text-[9px] font-black uppercase tracking-[0.3em] ml-4 transition-all duration-300">Console Monitor</span>}
                     </button>
 
                     <button
                         onClick={onOpenSettings}
-                        className={`w-full flex items-center justify-center ${isCollapsed ? '' : 'lg:justify-start lg:px-4'} h-11 rounded-xl text-[#555] hover:bg-[#121212] hover:text-white transition-all group border border-transparent`}
+                        className={`w-full flex items-center justify-center ${isCollapsed ? '' : 'lg:justify-start lg:px-5'} h-10 rounded-xl text-slate-300 hover:bg-slate-50 hover:text-[#B91C1C] transition-all group border border-transparent`}
                         title={isCollapsed ? 'Paramètres' : ''}
                     >
                         <Settings
                             size={16}
-                            className="group-hover:rotate-90 transition-transform duration-500 shrink-0"
+                            className="group-hover:rotate-180 transition-transform duration-700 shrink-0"
                         />
-                        {!isCollapsed && <span className="hidden lg:block text-[11px] font-bold uppercase tracking-widest ml-3 animate-in fade-in">Configuration</span>}
+                        {!isCollapsed && <span className="hidden lg:block text-[9px] font-black uppercase tracking-[0.3em] ml-4 transition-all duration-300">Protocole Config</span>}
                     </button>
                 </div>
 
                 {!isCollapsed && (
-                    <div className="hidden lg:flex mt-6 items-center gap-3 px-4 py-3 bg-[#0D0D0D] rounded-xl border border-[#1A1A1A] animate-in fade-in">
-                        <div className="w-1.5 h-1.5 rounded-full bg-[#6DD58C] shadow-[0_0_8px_rgba(109,213,140,0.4)]"></div>
-                        <span className="text-[9px] font-bold text-[#444] uppercase tracking-[0.1em]">Node Intel Active</span>
+                    <div className="hidden lg:flex mt-6 items-center gap-3 px-5 py-3 bg-[#F8FAFC] rounded-2xl border border-slate-50 group cursor-help transition-all hover:bg-white hover:shadow-xl">
+                        <div className="relative shrink-0">
+                            <div className="w-2 h-2 rounded-full bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.3)] animate-pulse"></div>
+                        </div>
+                        <div className="flex flex-col min-w-0">
+                            <span className="text-[9px] font-black text-[#0F172A] uppercase tracking-wider truncate">Node_01_SECURE</span>
+                            <div className="flex items-center gap-1.5">
+                                <Lock size={7} className="text-emerald-600 shrink-0" />
+                                <span className="text-[7px] text-slate-300 font-bold uppercase tracking-widest">TLS 1.3 ENABLED</span>
+                            </div>
+                        </div>
+                        <div className="ml-auto opacity-0 group-hover:opacity-100 transition-opacity">
+                            <Cpu size={12} className="text-slate-200" />
+                        </div>
                     </div>
                 )}
             </div>
+
+            {/* Side Accent */}
+            <div className="absolute top-0 bottom-0 left-0 w-[2px] bg-gradient-to-b from-transparent via-[#B91C1C]/10 to-transparent"></div>
         </aside>
     );
 };
-

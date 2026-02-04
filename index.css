@@ -2,81 +2,101 @@
 @tailwind components;
 @tailwind utilities;
 
+@import url('https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700;800;900&family=Playfair+Display:ital,wght@0,700;0,900;1,700&family=JetBrains+Mono:wght@400;700&display=swap');
+
 :root {
-    --glass-bg: rgba(17, 17, 17, 0.7);
-    --glass-border: rgba(255, 255, 255, 0.08);
-    --accent-pink: #F2B8B5;
-    --accent-blue: #8AB4F8;
-    --accent-green: #6DD58C;
-    --accent-purple: #C6A7FB;
-    --bg-dark: #0A0A0A;
-    --panel-bg: #141414;
+    /* Base Colors - Pro Light Theme */
+    --bg-main: #F8FAFC;
+    --bg-panel: #FFFFFF;
+    --bg-sidebar: #FFFFFF;
+    --border-main: #E2E8F0;
+    --text-main: #0F172A;
+    --text-muted: #64748B;
+    --accent-primary: #B91C1C;
+    /* Professional Deep Red */
+    --accent-secondary: #0F4C81;
+    /* Classic Blue */
+    --accent-gold: #B5965D;
+    /* Legal Gold Accents */
+    --glass-bg: rgba(255, 255, 255, 0.85);
+    --glass-border: rgba(226, 232, 240, 0.8);
+
+    /* Premium Shadows */
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
+    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
+    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
+    --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
+    --shadow-premium: 0 25px 50px -12px rgba(0, 0, 0, 0.08);
+}
+
+[data-theme="dark"] {
+    --bg-main: #020617;
+    --bg-panel: #0F172A;
+    --bg-sidebar: #020617;
+    --border-main: #1E293B;
+    --text-main: #F8FAFC;
+    --text-muted: #94A3B8;
+    --accent-primary: #EF4444;
+    --accent-secondary: #38B2AC;
+    --accent-gold: #D4AF37;
+    --glass-bg: rgba(15, 23, 42, 0.8);
+    --glass-border: rgba(30, 41, 59, 0.8);
 }
 
 body {
-    font-family: 'Inter', system-ui, -apple-system, sans-serif;
-    background-color: var(--bg-dark);
-    color: #E3E3E3;
+    font-family: 'Inter', -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+    background-color: var(--bg-main);
+    color: var(--text-main);
     margin: 0;
     -webkit-font-smoothing: antialiased;
-    -moz-osx-font-smoothing: grayscale;
-    overflow-x: hidden;
+    letter-spacing: -0.011em;
+    transition: background-color 0.4s cubic-bezier(0.4, 0, 0.2, 1), color 0.4s cubic-bezier(0.4, 0, 0.2, 1);
 }
 
-/* Typography Enhancements */
-h1,
-h2,
-h3,
-h4 {
-    letter-spacing: -0.02em;
+.font-serif-legal {
+    font-family: 'Playfair Display', serif;
 }
 
-/* Glassmorphism */
+.font-mono-data {
+    font-family: 'JetBrains Mono', monospace;
+}
+
+/* Premium Glassmorphism */
 .glass-panel {
     background: var(--glass-bg);
-    backdrop-filter: blur(20px);
+    backdrop-filter: blur(12px) saturate(180%);
     border: 1px solid var(--glass-border);
-    box-shadow: 0 4px 30px rgba(0, 0, 0, 0.5);
+    box-shadow: var(--shadow-premium);
 }
 
-.glass-card {
-    background: rgba(20, 20, 20, 0.4);
-    backdrop-filter: blur(10px);
-    border: 1px solid rgba(255, 255, 255, 0.05);
-}
-
-/* Custom Scrollbar */
+/* Custom Scrollbar - Pro Style */
 .custom-scrollbar::-webkit-scrollbar {
     width: 5px;
     height: 5px;
 }
 
 .custom-scrollbar::-webkit-scrollbar-track {
-    background: rgba(255, 255, 255, 0.02);
+    background: transparent;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb {
-    background: rgba(255, 255, 255, 0.1);
-    border-radius: 10px;
+    background: #E2E8F0;
+    border-radius: 20px;
+    border: 1px solid transparent;
+    background-clip: content-box;
 }
 
 .custom-scrollbar::-webkit-scrollbar-thumb:hover {
-    background: rgba(255, 255, 255, 0.2);
+    background: #CBD5E1;
 }
 
-/* Interactive Elements */
-.hover-glow {
-    transition: all 0.3s ease;
+[data-theme="dark"] .custom-scrollbar::-webkit-scrollbar-thumb {
+    background: #334155;
 }
 
-.hover-glow:hover {
-    box-shadow: 0 0 20px rgba(242, 184, 181, 0.15);
-    border-color: rgba(242, 184, 181, 0.3);
-}
-
-/* Background Noise Effect */
+/* Background Noise - Subtle Pro Grain */
 .bg-noise {
-    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.65' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
+    background-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 200 200' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='noiseFilter'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.7' numOctaves='3' stitchTiles='stitch'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23noiseFilter)'/%3E%3C/svg%3E");
     opacity: 0.02;
     pointer-events: none;
     position: fixed;
@@ -84,31 +104,45 @@ h4 {
     z-index: 9999;
 }
 
-/* Animations */
-@keyframes pulse-soft {
-
-    0%,
-    100% {
-        opacity: 1;
-    }
-
-    50% {
-        opacity: 0.7;
-    }
-}
-
-.animate-pulse-soft {
-    animation: pulse-soft 3s infinite;
-}
-
-/* Document Print Styling (for analysis reports) */
+/* Document / Report Paper Effect - Refined */
 .report-paper {
-    background-color: #1A1A1A;
-    background-image: radial-gradient(circle at 2px 2px, rgba(255, 255, 255, 0.02) 1px, transparent 0);
-    background-size: 24px 24px;
+    background-color: #FFFFFF;
+    background-image:
+        radial-gradient(circle at 100% 100%, #F1F5F9 2px, transparent 2.5px),
+        linear-gradient(to right, #F8FAFC 1px, transparent 1px),
+        linear-gradient(to bottom, #F8FAFC 1px, transparent 1px);
+    background-size: 40px 40px, 40px 40px, 40px 40px;
+    box-shadow: inset 0 0 100px rgba(0, 0, 0, 0.01);
 }
 
-/* Utilities */
+/* Official Stamped Look */
+.official-stamp {
+    position: relative;
+    padding: 1rem;
+    border: 2px solid var(--accent-primary);
+    color: var(--accent-primary);
+    font-weight: 900;
+    text-transform: uppercase;
+    transform: rotate(-5deg);
+    opacity: 0.6;
+    border-radius: 4px;
+    mask-image: url("data:image/svg+xml,%3Csvg viewBox='0 0 100 100' xmlns='http://www.w3.org/2000/svg'%3E%3Cfilter id='f'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.8'/%3E%3C/filter%3E%3Crect width='100' height='100' filter='url(%23f)'/%3E%3C/svg%3E");
+}
+
+/* Pro Input Styles */
+input,
+select,
+textarea {
+    @apply border-[#E2E8F0] bg-[#F8FAFC] focus:ring-2 focus:ring-red-500/10 focus:border-[#B91C1C] transition-all duration-300;
+}
+
+/* Mobile Optimizations */
+@media (max-width: 1024px) {
+    .report-paper {
+        background-size: 20px 20px;
+    }
+}
+
 .no-scrollbar::-webkit-scrollbar {
     display: none;
 }
@@ -116,4 +150,38 @@ h4 {
 .no-scrollbar {
     -ms-overflow-style: none;
     scrollbar-width: none;
+}
+
+/* Premium Animations */
+@keyframes reveal {
+    from {
+        opacity: 0;
+        transform: translateY(20px) scale(0.98);
+    }
+
+    to {
+        opacity: 1;
+        transform: translateY(0) scale(1);
+    }
+}
+
+.animate-pro-reveal {
+    animation: reveal 0.8s cubic-bezier(0.16, 1, 0.3, 1) forwards;
+}
+
+/* Line Glow Animation */
+@keyframes lineGlow {
+    0% {
+        background-position: -200% 0;
+    }
+
+    100% {
+        background-position: 200% 0;
+    }
+}
+
+.line-glow {
+    background: linear-gradient(90deg, transparent, var(--accent-primary), transparent);
+    background-size: 200% 100%;
+    animation: lineGlow 3s infinite linear;
 }

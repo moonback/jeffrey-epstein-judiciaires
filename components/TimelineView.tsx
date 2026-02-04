@@ -1,7 +1,12 @@
+/**
+ * @license
+ * SPDX-License-Identifier: Apache-2.0
+ */
+
 import React, { useMemo, useState, useEffect } from 'react';
 import { storageService } from '../services/storageService';
 import { ProcessedResult } from '../types';
-import { Clock, Calendar, ChevronRight, FileText, Search, Activity, CornerDownRight } from 'lucide-react';
+import { Clock, Calendar, ChevronRight, FileText, Search, Activity, CornerDownRight, Zap, ShieldCheck } from 'lucide-react';
 
 interface TimelineEvent {
     date: Date;
@@ -59,10 +64,10 @@ export const TimelineView: React.FC<TimelineViewProps> = ({ onDeepDive }) => {
                         list.push({
                             date: new Date(year, 0, 1),
                             dateStr: year.toString(),
-                            title: "Événement extrait",
+                            title: "Fait Marquant",
                             description: fact,
                             sourceId: res.id,
-                            type: "FAIT_MARQUANT"
+                            type: "ÉVÉNEMENT_CLÉ"
                         });
                     }
                 });
@@ -74,98 +79,120 @@ export const TimelineView: React.FC<TimelineViewProps> = ({ onDeepDive }) => {
 
     if (loading) {
         return (
-            <div className="h-full flex items-center justify-center bg-[#0A0A0A]">
+            <div className="h-full flex items-center justify-center bg-white animate-pro-reveal">
                 <div className="flex flex-col items-center gap-6">
-                    <div className="relative w-16 h-16">
-                        <div className="absolute inset-0 border-t-2 border-[#FFD54F] rounded-full animate-spin"></div>
-                        <Clock size={24} className="absolute inset-0 m-auto text-[#FFD54F]" />
+                    <div className="relative w-20 h-20">
+                        <div className="absolute inset-0 border-[2px] border-slate-50 rounded-full"></div>
+                        <div className="absolute inset-0 border-t-[2px] border-[#B91C1C] rounded-full animate-spin"></div>
+                        <Clock size={24} className="absolute inset-0 m-auto text-[#B91C1C] animate-pulse" />
                     </div>
-                    <span className="text-[11px] font-black text-[#757775] uppercase tracking-[0.3em]">Reconstructing Timeline...</span>
+                    <span className="text-[10px] font-black text-slate-300 uppercase tracking-[0.4em] animate-pulse">Séquençage Chronologique...</span>
                 </div>
             </div>
         );
     }
 
     return (
-        <div className="h-full flex flex-col bg-[#0A0A0A] overflow-hidden relative">
-            <div className="absolute inset-0 z-0 pointer-events-none opacity-[0.2]"
-                style={{ backgroundImage: 'linear-gradient(to right, #1F1F1F 1px, transparent 1px), linear-gradient(to bottom, #1F1F1F 1px, transparent 1px)', backgroundSize: '64px 64px' }}>
-            </div>
+        <div className="h-full flex flex-col bg-[#F8FAFC] overflow-hidden relative">
+            <div className="absolute inset-0 z-0 pointer-events-none opacity-[0.25] report-paper"></div>
 
-            <header className="p-10 border-b border-[#1F1F1F] bg-[#0F0F0F]/50 backdrop-blur-3xl z-10 flex justify-between items-end">
-                <div>
-                    <div className="flex items-center gap-3 mb-2">
-                        <div className="p-2 bg-[#FFD54F]/10 rounded-lg">
-                            <Clock className="text-[#FFD54F]" size={20} />
-                        </div>
-                        <h2 className="text-xl font-black text-white tracking-tighter uppercase italic">Chronologie Forensic</h2>
+            <header className="px-6 lg:px-12 h-16 lg:h-20 border-b border-slate-100 bg-white/90 backdrop-blur-xl z-10 flex justify-between items-center shadow-sm relative overflow-hidden">
+                <div className="absolute top-0 right-0 h-full w-1/3 bg-gradient-to-l from-[#F8FAFC] to-transparent pointer-events-none opacity-50"></div>
+
+                <div className="flex items-center gap-6 relative z-10">
+                    <div className="w-10 h-10 bg-[#B91C1C] rounded-[1rem] flex items-center justify-center shadow-xl shadow-red-900/10">
+                        <Clock className="text-white" size={18} />
                     </div>
-                    <p className="text-[#757775] text-[12px] font-bold uppercase tracking-widest pl-12 flex items-center gap-2">
-                        <Activity size={12} className="text-[#6DD58C]" />
-                        {events.length} Data Points Syncronisés
-                    </p>
+                    <div>
+                        <h2 className="text-lg lg:text-xl font-black text-[#0F172A] uppercase italic font-serif-legal tracking-tight leading-tight">Chronologie <span className="text-[#B91C1C]">Analytique</span></h2>
+                        <div className="flex items-center gap-3 mt-0.5">
+                            <Zap size={10} className="text-emerald-500 animate-pulse" />
+                            <span className="text-[9px] font-black text-slate-400 uppercase tracking-[0.3em]">
+                                {events.length} Points Temporels Synchronisés
+                            </span>
+                        </div>
+                    </div>
                 </div>
-                <div className="hidden lg:block text-right pb-1">
-                    <div className="text-[11px] font-black text-[#444746] uppercase tracking-[0.2em] mb-1">Time Range</div>
-                    <div className="text-lg font-mono font-black text-[#FFD54F]">
-                        {events.length > 0 ? `${events[events.length - 1].dateStr} — ${events[0].dateStr}` : 'N/A'}
+
+                <div className="hidden lg:flex items-center gap-6 text-right relative z-10">
+                    <div>
+                        <div className="text-[8px] font-black text-slate-300 uppercase tracking-[0.2em] mb-1">Période d'Investigation</div>
+                        <div className="text-sm font-mono-data font-black text-[#B91C1C] bg-white px-4 py-1.5 border border-slate-100 rounded-xl shadow-sm">
+                            {events.length > 0 ? `${events[events.length - 1].dateStr} — ${events[0].dateStr}` : 'STDBY'}
+                        </div>
+                    </div>
+                    <div className="h-8 w-px bg-slate-100"></div>
+                    <div className="flex items-center gap-2">
+                        <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full shadow-[0_0_8px_rgba(16,185,129,0.5)]"></div>
+                        <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none">Live Order</span>
                     </div>
                 </div>
             </header>
 
-            <div className="flex-1 overflow-y-auto p-12 custom-scrollbar z-10">
-                <div className="max-w-5xl mx-auto relative border-l-2 border-[#1F1F1F] pl-12 space-y-16 pb-32">
+            <div className="flex-1 overflow-y-auto p-8 lg:p-16 custom-scrollbar z-10 scroll-smooth">
+                <div className="max-w-5xl mx-auto relative border-l-2 border-slate-100 pl-8 lg:pl-16 space-y-12 pb-40">
+                    {/* Vertical line glow */}
+                    <div className="absolute -left-[2px] top-0 bottom-40 w-[2px] bg-gradient-to-b from-[#B91C1C]/20 via-slate-100 to-transparent"></div>
+
                     {events.map((event, idx) => (
-                        <div key={idx} className="relative animate-in slide-in-from-left-8 duration-700" style={{ animationDelay: `${idx * 100}ms` }}>
-                            {/* Technical Dot */}
-                            <div className="absolute -left-[55px] top-4 flex items-center justify-center">
-                                <div className="absolute inset-0 bg-[#FFD54F] blur-md opacity-20 animate-pulse"></div>
-                                <div className="relative w-3.5 h-3.5 rounded-full bg-[#0A0A0A] border-[3px] border-[#FFD54F] shadow-2xl"></div>
+                        <div key={idx} className="relative animate-pro-reveal group" style={{ animationDelay: `${idx * 0.05}s` }}>
+                            {/* Marker - Enhanced Pro Style */}
+                            <div className="absolute -left-[41px] lg:-left-[73px] top-4 flex items-center justify-center">
+                                <div className="absolute inset-0 bg-[#B91C1C] blur-lg opacity-0 group-hover:opacity-40 transition-all duration-500 scale-150"></div>
+                                <div className="relative w-4 h-4 rounded-full bg-white border-4 border-slate-100 group-hover:border-[#B91C1C] shadow-lg transition-all duration-500 group-hover:scale-125 z-20"></div>
+                                <div className="absolute left-6 h-px w-6 bg-slate-50 group-hover:bg-[#B91C1C]/20 transition-all"></div>
                             </div>
 
-                            <div className="flex flex-col lg:grid lg:grid-cols-12 gap-8 group">
+                            <div className="flex flex-col xl:grid xl:grid-cols-12 gap-8">
                                 {/* Date Side */}
-                                <div className="lg:col-span-2 pt-2">
-                                    <div className="text-xl font-black text-[#FFD54F] tracking-tighter leading-none mb-2 tabular-nums">
+                                <div className="xl:col-span-2 pt-2">
+                                    <div className="text-xl font-serif-legal font-black text-[#B91C1C] italic tracking-tighter leading-none mb-3 tabular-nums group-hover:scale-110 origin-left transition-transform duration-500">
                                         {event.dateStr}
                                     </div>
-                                    <div className="flex items-center gap-2">
-                                        <span className="w-4 h-[1px] bg-[#1F1F1F]"></span>
-                                        <span className="text-[10px] font-black text-[#757775] uppercase tracking-widest truncate">
+                                    <div className="flex items-center gap-3">
+                                        <div className="h-1 w-1 bg-slate-200 rounded-full"></div>
+                                        <span className="text-[9px] font-black text-slate-300 uppercase tracking-[0.2em] group-hover:text-slate-500 transition-colors">
                                             {event.type}
                                         </span>
                                     </div>
                                 </div>
 
                                 {/* Content Side */}
-                                <div className="lg:col-span-10">
-                                    <div className="bg-[#161616] p-8 rounded-[40px] border border-[#1F1F1F] group-hover:border-[#FFD54F]/30 transition-all shadow-xl hover:shadow-2xl relative overflow-hidden">
-                                        <div className="absolute top-0 right-0 p-8 opacity-[0.03] text-white">
-                                            <div className="text-8xl font-black">{idx + 1}</div>
+                                <div className="xl:col-span-10">
+                                    <div className="bg-white p-6 lg:p-8 rounded-[2.5rem] border border-slate-100 group-hover:border-[#B91C1C]/10 transition-all duration-700 shadow-sm hover:shadow-2xl hover:shadow-slate-200/50 relative overflow-hidden">
+                                        {/* Background ID Marker */}
+                                        <div className="absolute top-0 right-0 p-8 opacity-[0.02] group-hover:opacity-[0.05] transition-opacity pointer-events-none">
+                                            <div className="text-[100px] font-black italic select-none">{String(idx + 1).padStart(2, '0')}</div>
                                         </div>
 
                                         <div className="relative z-10">
-                                            <h3 className="text-white font-black text-lg mb-4 italic tracking-tight flex items-center gap-3">
+                                            <h3 className="text-[#0F172A] font-black text-lg mb-4 italic tracking-tight flex items-center gap-4 group-hover:text-[#B91C1C] transition-colors font-serif-legal leading-tight">
                                                 {event.title}
                                             </h3>
-                                            <p className="text-[#C4C7C5] text-[13px] leading-relaxed mb-8 italic border-l-2 border-[#FFD54F]/20 pl-6">
-                                                "{event.description}"
-                                            </p>
 
-                                            <div className="flex items-center justify-between border-t border-[#1F1F1F] pt-6">
+                                            <div className="bg-[#FFFFF0]/40 p-6 rounded-[1.5rem] border border-slate-50 mb-6 relative group-hover:bg-[#FFFFF0] transition-colors backdrop-blur-sm">
+                                                <div className="absolute left-0 top-0 bottom-0 w-1 bg-[#B91C1C]/10 rounded-full group-hover:bg-[#B91C1C] transition-all"></div>
+                                                <p className="text-slate-600 text-sm lg:text-[15px] leading-[1.6] italic font-medium selection:bg-yellow-100">
+                                                    "{event.description}"
+                                                </p>
+                                            </div>
+
+                                            <div className="flex flex-wrap items-center justify-between gap-4 pt-6 border-t border-slate-50">
                                                 <div className="flex items-center gap-4">
-                                                    <div className="text-[11px] bg-[#0A0A0A] border border-[#2D2D2D] px-3 py-1.5 rounded-xl font-mono text-[#757775]">
-                                                        ID: {event.sourceId}
+                                                    <div className="flex items-center gap-2 text-[9px] font-mono-data font-black text-slate-300 bg-white border border-slate-50 px-3 py-1.5 rounded-lg shadow-sm">
+                                                        <FileText size={10} />
+                                                        REF: {event.sourceId.slice(0, 8)}
                                                     </div>
-                                                    <div className="flex items-center gap-1 text-[11px] font-black text-[#FFD54F] uppercase tracking-widest opacity-60">
-                                                        <CornerDownRight size={12} /> Source Verified
+                                                    <div className="h-4 w-px bg-slate-100"></div>
+                                                    <div className="flex items-center gap-2 text-[9px] font-black text-emerald-600 uppercase tracking-widest bg-emerald-50 px-3 py-1.5 rounded-lg border border-emerald-100/50 shadow-sm group-hover:bg-emerald-100 transition-colors">
+                                                        <ShieldCheck size={12} /> SECURE LOG
                                                     </div>
                                                 </div>
                                                 <button
                                                     onClick={() => onDeepDive(event.title, 'standard')}
-                                                    className="flex items-center gap-2 text-[11px] font-black uppercase text-white hover:text-[#FFD54F] transition-colors tracking-[0.1em]"
+                                                    className="flex items-center gap-2 text-[10px] font-black uppercase text-[#0F172A] hover:text-[#B91C1C] transition-all tracking-[0.15em] group/btn bg-slate-50 hover:bg-white px-5 py-2 rounded-xl border border-transparent hover:border-slate-100 shadow-sm hover:shadow-md"
                                                 >
-                                                    Inspect Deep Dive <ChevronRight size={14} />
+                                                    Visualiser Dossier <ChevronRight size={16} className="group-hover:translate-x-1.5 transition-transform duration-500" />
                                                 </button>
                                             </div>
                                         </div>
@@ -176,17 +203,40 @@ export const TimelineView: React.FC<TimelineViewProps> = ({ onDeepDive }) => {
                     ))}
 
                     {events.length === 0 && (
-                        <div className="text-center py-40">
-                            <div className="w-24 h-24 bg-[#161616] rounded-[40px] flex items-center justify-center mx-auto mb-6 border border-[#1F1F1F]">
-                                <Calendar size={40} className="text-[#757775] opacity-20" />
+                        <div className="text-center py-40 animate-pro-reveal">
+                            <div className="w-24 h-24 bg-white rounded-[2rem] flex items-center justify-center mx-auto mb-6 shadow-xl border border-slate-50 relative overflow-hidden group">
+                                <div className="absolute inset-0 bg-[#B91C1C]/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                                <Calendar size={40} className="text-slate-200 group-hover:text-[#B91C1C] transition-all duration-700" />
                             </div>
-                            <p className="text-[#757775] font-bold uppercase tracking-[0.2em] text-xs">
-                                Aucun marqueur temporel détecté dans le cloud
-                            </p>
+                            <h3 className="text-lg font-black text-[#0F172A] uppercase tracking-[0.4em] mb-3 font-serif-legal italic">Flux Temporel Vide</h3>
+                            <div className="flex items-center justify-center gap-3">
+                                <div className="h-px w-10 bg-slate-100"></div>
+                                <p className="text-slate-300 font-black uppercase tracking-[0.2em] text-[9px]">
+                                    Séquenceur en attente de données qualifiées
+                                </p>
+                                <div className="h-px w-10 bg-slate-100"></div>
+                            </div>
                         </div>
                     )}
                 </div>
             </div>
+
+            {/* Legend / Status Bar */}
+            <footer className="px-6 py-3 bg-white border-t border-slate-50 flex justify-between items-center z-20">
+                <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-2">
+                        <div className="w-2 h-2 rounded-full border border-slate-200"></div>
+                        <span className="text-[8px] font-black text-slate-300 uppercase tracking-[0.2em]">Marker Standby</span>
+                    </div>
+                    <div className="flex items-center gap-2">
+                        <div className="w-2 h-2 rounded-full bg-[#B91C1C]"></div>
+                        <span className="text-[8px] font-black text-slate-300 uppercase tracking-[0.2em]">Verified Proof</span>
+                    </div>
+                </div>
+                <div>
+                    <span className="text-[8px] font-black text-slate-200 uppercase tracking-[0.5em] italic">Unit-01 Temporal Processor</span>
+                </div>
+            </footer>
         </div>
     );
 };
