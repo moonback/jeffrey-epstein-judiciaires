@@ -3,6 +3,8 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
+import { FileProcessingService } from './services/fileProcessingService';
+
 import React, { useState, useEffect, useRef } from 'react';
 import { generateInputData } from './constants';
 import { InputData, ProcessedResult } from './types';
@@ -51,6 +53,7 @@ const App: React.FC = () => {
   const [viewMode, setViewMode] = useState<ViewType>('lab');
   const [showPlanner, setShowPlanner] = useState(false);
   const [showLogs, setShowLogs] = useState(false);
+  const [logs, setLogs] = useState<string[]>([]); // Added for file processing logs
 
   const queueRef = useRef<InputData[]>([]);
 
@@ -78,20 +81,50 @@ const App: React.FC = () => {
     queueRef.current = [];
   }, []);
 
-  const handleStartInvestigation = (query: string, sourceName: string) => {
-    const newId = `ANALYSE-${Date.now().toString().slice(-6)}`;
-    const newQuery: InputData = {
+  const handleStartInvestigation = async (query: string, sourceLabel: string, file?: File) => {
+    const newId = `CASE-${Date.now().toString().slice(-4)}`;
+
+    // Log extraction start
+    let extractionLogs = [];
+    let fileContent = '';
+
+    if (file) {
+      try {
+        const processed = await FileProcessingService.processFile(file);
+        fileContent = processed.content;
+        extractionLogs.push(`[SYSTEM] Fichier chargé : ${file.name} (${(file.size / 1024).toFixed(2)} KB)`);
+        extractionLogs.push(`[SYSTEM] Extraction textuelle terminée : ${fileContent.length} caractères identifiés.`);
+      } catch (error) {
+        console.error("File processing error", error);
+        alert("Erreur lors de la lecture du fichier : " + (error instanceof Error ? error.message : "Erreur inconnue"));
+        return;
+      }
+    }
+
+    const inputData: InputData = {
       id: newId,
       query: query,
-      targetUrl: `Source : ${sourceName}`,
+      targetUrl: file ? `DOC: ${file.name}` : `DOJ ARCHIVE : ${sourceLabel}`,
       timestamp: Date.now()
     };
 
-    setQueue(prev => [newQuery, ...prev]);
-    queueRef.current = [newQuery, ...queueRef.current];
-    setShowPlanner(false);
-    setViewMode('lab');
+    // If we have file content, we might want to attach it to the inputData or store it temporarily mostly for the AI processing
+    // For now, we'll append it to the query for the AI context if it's not too huge, or handle it in the processing logic
+    // Since InputData structure is rigid, we'll append a marker to the query or handle it in processItem
+
+    if (fileContent) {
+      // HACK: We attach the content to the input object dynamically for the processing step
+      (inputData as any).fileContent = fileContent;
+    }
+
+    setQueue(prev => [inputData, ...prev]);
+    queueRef.current = [inputData, ...queueRef.current];
+
+    // Add initial logs if any
+    setLogs(prev => [...prev, ...extractionLogs]);
+
     setActiveTabId(newId);
+    setIsSettingsOpen(false); // Close settings/modal if open (though planner is usually main view)
 
     if (!isProcessing) {
       processQueue();
@@ -500,8 +533,7 @@ const App: React.FC = () => {
                         <div className="flex-1 overflow-y-auto p-4 lg:p-14 custom-scrollbar report-paper relative">
                           <div className="max-w-6xl mx-auto pb-40">
                             <DataCard
-                              data={activeResult.output}
-                              sources={activeResult.sources}
+                              result={activeResult}
                               loading={activeResult.status === 'processing'}
                               onDeepDive={handleDeepDive}
                               onDownload={() => handleDownload(activeResult)}
@@ -511,8 +543,8 @@ const App: React.FC = () => {
                         </div>
                       </div>
                     ) : (
-                      <div className="flex-1 p-8 lg:p-20 animate-pro-reveal duration-1000 overflow-y-auto custom-scrollbar min-h-0 bg-[#F8FAFC]">
-                        <div className="max-w-4xl mx-auto py-20 relative">
+                      <div className="flex-1 p-8 lg:p-2 animate-pro-reveal duration-1000 overflow-y-auto custom-scrollbar min-h-0 bg-[#F8FAFC]">
+                        <div className="max-w-7xl mx-auto py-2 relative">
                           {/* Background Decorative */}
                           <div className="absolute top-0 right-0 w-80 h-80 bg-[#B91C1C] rounded-full blur-[140px] opacity-[0.03]"></div>
                           <div className="absolute bottom-0 left-0 w-80 h-80 bg-[#0F4C81] rounded-full blur-[140px] opacity-[0.03]"></div>

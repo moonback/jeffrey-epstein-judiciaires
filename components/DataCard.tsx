@@ -4,19 +4,21 @@
  */
 
 import React, { useState, useMemo } from 'react';
-import { DisclosureAnalysis } from '../types';
+import { DisclosureAnalysis, ProcessedResult } from '../types';
 import { Search, Calendar, Users, FileText, Link as LinkIcon, ShieldAlert, File, List, Zap, Scale, Download, BookOpen, GraduationCap, ArrowUpRight, Filter, Gavel, Award, Box, ShieldCheck } from 'lucide-react';
+import { ExportMenu } from './ExportMenu';
 
 interface DataCardProps {
-    data: DisclosureAnalysis | null;
-    sources: { title: string; uri: string }[];
+    result: ProcessedResult;
     loading: boolean;
     onDeepDive: (docTitle: string, style: 'standard' | 'simple' | 'technical') => void;
     onDownload: () => void;
     onEntityClick: (entityName: string) => void;
 }
 
-export const DataCard: React.FC<DataCardProps> = ({ data, sources, loading, onDeepDive, onDownload, onEntityClick }) => {
+export const DataCard: React.FC<DataCardProps> = ({ result, loading, onDeepDive, onDownload, onEntityClick }) => {
+    const data = result.output;
+    const sources = result.sources;
     const [activeFilter, setActiveFilter] = useState<string>('ALL');
 
     const availableTypes = useMemo(() => {
@@ -102,13 +104,7 @@ export const DataCard: React.FC<DataCardProps> = ({ data, sources, loading, onDe
                             <span className="text-[10px] font-black text-emerald-600 uppercase">Verified</span>
                         </div>
                     </div>
-                    <button
-                        onClick={onDownload}
-                        className="group flex items-center gap-3 bg-white hover:bg-[#0F172A] hover:text-white px-5 py-3 rounded-xl text-[10px] uppercase font-black tracking-widest transition-all border border-slate-100 shadow-sm active:scale-95"
-                    >
-                        <Download size={14} className="group-hover:translate-y-0.5 transition-transform" />
-                        EXPORT
-                    </button>
+                    <ExportMenu result={result} />
                     <div className="h-8 w-[1px] bg-slate-100"></div>
                     <div className="bg-[#F8FAFC] border border-slate-50 px-4 py-2 rounded-xl">
                         <span className="text-slate-400 font-mono-data text-sm font-black uppercase tracking-tighter">{data.contexte_juridique || 'LITIGATION'}</span>

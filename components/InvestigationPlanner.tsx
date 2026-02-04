@@ -3,12 +3,12 @@
  * SPDX-License-Identifier: Apache-2.0
  */
 
-import React, { useState } from 'react';
-import { Folder, FileSearch, Database, Shield, FileText, ChevronRight, Play, Info, Cpu, Zap, ShieldCheck } from 'lucide-react';
+import React, { useState, useRef } from 'react';
+import { Folder, FileSearch, Database, Shield, FileText, ChevronRight, Play, Info, Cpu, Zap, ShieldCheck, Upload, X, File as FileIcon } from 'lucide-react';
 import { InputData } from '../types';
 
 interface InvestigationPlannerProps {
-    onStartInvestigation: (query: string, source: string) => void;
+    onStartInvestigation: (query: string, source: string, file?: File) => void;
 }
 
 const DOJ_SOURCES = [
@@ -29,15 +29,40 @@ const QUICK_QUERIES = [
 export const InvestigationPlanner: React.FC<InvestigationPlannerProps> = ({ onStartInvestigation }) => {
     const [selectedSource, setSelectedSource] = useState(DOJ_SOURCES[0].id);
     const [customQuery, setCustomQuery] = useState('');
-    const [activeTab, setActiveTab] = useState<'dataset' | 'custom'>('dataset');
+    const [activeTab, setActiveTab] = useState<'dataset' | 'custom' | 'upload'>('dataset');
+    const [uploadedFile, setUploadedFile] = useState<File | null>(null);
+    const fileInputRef = useRef<HTMLInputElement>(null);
 
     const handleStart = () => {
-        const finalQuery = customQuery || (activeTab === 'dataset' ? "Synthèse générale du dossier sélectionné." : "");
-        if (!finalQuery && activeTab === 'custom') return;
+        let finalQuery = customQuery;
+        let sourceLabel = DOJ_SOURCES.find(s => s.id === selectedSource)?.name || "DOJ Archive";
 
-        const sourceLabel = DOJ_SOURCES.find(s => s.id === selectedSource)?.name || "DOJ Archive";
-        onStartInvestigation(finalQuery, sourceLabel);
+        if (activeTab === 'dataset') {
+            finalQuery = finalQuery || "Synthèse générale du dossier sélectionné.";
+        } else if (activeTab === 'upload') {
+            if (!uploadedFile) return;
+            finalQuery = finalQuery || `Analyse complète du document importé : ${uploadedFile.name}`;
+            sourceLabel = "Local Import";
+        } else {
+            if (!finalQuery) return;
+        }
+
+        onStartInvestigation(finalQuery, sourceLabel, uploadedFile || undefined);
         setCustomQuery('');
+        setUploadedFile(null);
+    };
+
+    const handleFileChange = (e: React.ChangeEvent<HTMLInputElement>) => {
+        if (e.target.files && e.target.files[0]) {
+            setUploadedFile(e.target.files[0]);
+        }
+    };
+
+    const handleDrop = (e: React.DragEvent) => {
+        e.preventDefault();
+        if (e.dataTransfer.files && e.dataTransfer.files[0]) {
+            setUploadedFile(e.dataTransfer.files[0]);
+        }
     };
 
     return (
@@ -62,41 +87,45 @@ export const InvestigationPlanner: React.FC<InvestigationPlannerProps> = ({ onSt
             </div>
 
             <div className="flex-1 overflow-y-auto p-8 lg:p-10 space-y-12 custom-scrollbar relative z-10">
-                {/* Source Selection */}
-                <section className="space-y-6">
-                    <div className="flex items-center gap-4 mb-6">
-                        <div className="h-[1px] w-8 bg-[#B91C1C]"></div>
-                        <h3 className="text-[10px] font-black uppercase tracking-[0.4em] text-[#B91C1C]">01. Périmètre de Recherche</h3>
-                    </div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
-                        {DOJ_SOURCES.map((source) => (
-                            <button
-                                key={source.id}
-                                onClick={() => setSelectedSource(source.id)}
-                                className={`flex flex-col p-5 rounded-2xl border transition-all text-left relative group/source ${selectedSource === source.id
-                                    ? 'bg-white border-[#B91C1C] shadow-xl shadow-red-900/5 ring-1 ring-[#B91C1C]/10'
-                                    : 'bg-white border-slate-100 hover:bg-[#F8FAFC] hover:border-slate-300'
-                                    }`}
-                            >
-                                {selectedSource === source.id && (
-                                    <div className="absolute top-4 right-4 animate-in fade-in zoom-in">
-                                        <div className="w-2.5 h-2.5 rounded-full bg-[#B91C1C] shadow-[0_0_12px_rgba(185,28,28,0.4)]"></div>
+                {/* Source Selection - ONLY IF NOT UPLOAD MODE */}
+                {activeTab !== 'upload' && (
+                    <section className="space-y-6 animate-in slide-in-from-left-4 duration-500">
+                        <div className="flex items-center gap-4 mb-6">
+                            <div className="h-[1px] w-8 bg-[#B91C1C]"></div>
+                            <h3 className="text-[10px] font-black uppercase tracking-[0.4em] text-[#B91C1C]">01. Périmètre de Recherche</h3>
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
+                            {DOJ_SOURCES.map((source) => (
+                                <button
+                                    key={source.id}
+                                    onClick={() => setSelectedSource(source.id)}
+                                    className={`flex flex-col p-5 rounded-2xl border transition-all text-left relative group/source ${selectedSource === source.id
+                                        ? 'bg-white border-[#B91C1C] shadow-xl shadow-red-900/5 ring-1 ring-[#B91C1C]/10'
+                                        : 'bg-white border-slate-100 hover:bg-[#F8FAFC] hover:border-slate-300'
+                                        }`}
+                                >
+                                    {selectedSource === source.id && (
+                                        <div className="absolute top-4 right-4 animate-in fade-in zoom-in">
+                                            <div className="w-2.5 h-2.5 rounded-full bg-[#B91C1C] shadow-[0_0_12px_rgba(185,28,28,0.4)]"></div>
+                                        </div>
+                                    )}
+                                    <div className={`text-[12px] font-black mb-1.5 uppercase tracking-wide transition-colors italic font-serif-legal ${selectedSource === source.id ? 'text-[#B91C1C]' : 'text-[#0F172A]'}`}>
+                                        {source.name}
                                     </div>
-                                )}
-                                <div className={`text-[12px] font-black mb-1.5 uppercase tracking-wide transition-colors italic font-serif-legal ${selectedSource === source.id ? 'text-[#B91C1C]' : 'text-[#0F172A]'}`}>
-                                    {source.name}
-                                </div>
-                                <span className="text-[10px] text-slate-400 font-bold leading-relaxed">{source.description}</span>
-                            </button>
-                        ))}
-                    </div>
-                </section>
+                                    <span className="text-[10px] text-slate-400 font-bold leading-relaxed">{source.description}</span>
+                                </button>
+                            ))}
+                        </div>
+                    </section>
+                )}
 
                 {/* Query Input */}
                 <section className="space-y-6">
                     <div className="flex items-center gap-4 mb-6">
                         <div className="h-[1px] w-8 bg-[#B91C1C]"></div>
-                        <h3 className="text-[10px] font-black uppercase tracking-[0.4em] text-[#B91C1C]">02. Paramètres du Neural Agent</h3>
+                        <h3 className="text-[10px] font-black uppercase tracking-[0.4em] text-[#B91C1C]">
+                            {activeTab === 'upload' ? '01. Import & Analyse' : '02. Paramètres du Neural Agent'}
+                        </h3>
                     </div>
 
                     <div className="bg-white rounded-[2rem] border border-slate-100 overflow-hidden shadow-sm">
@@ -113,11 +142,17 @@ export const InvestigationPlanner: React.FC<InvestigationPlannerProps> = ({ onSt
                             >
                                 Requête Dynamique
                             </button>
+                            <button
+                                onClick={() => setActiveTab('upload')}
+                                className={`flex-1 py-4 text-[10px] font-black uppercase tracking-[0.3em] transition-all border-b-2 font-serif-legal italic ${activeTab === 'upload' ? 'border-[#B91C1C] text-[#B91C1C] bg-white' : 'border-transparent text-slate-400 hover:text-slate-600'}`}
+                            >
+                                Import Direct PDF
+                            </button>
                         </div>
 
                         <div className="p-8">
                             {activeTab === 'dataset' ? (
-                                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-3 animate-in fade-in duration-300">
                                     {QUICK_QUERIES.map((q, idx) => (
                                         <button
                                             key={idx}
@@ -134,8 +169,66 @@ export const InvestigationPlanner: React.FC<InvestigationPlannerProps> = ({ onSt
                                         </button>
                                     ))}
                                 </div>
+                            ) : activeTab === 'upload' ? (
+                                <div className="space-y-6 animate-in fade-in duration-300">
+                                    <div
+                                        className={`border-2 border-dashed rounded-2xl p-10 flex flex-col items-center justify-center transition-all cursor-pointer ${uploadedFile ? 'border-[#B91C1C] bg-[#FEF2F2]/30' : 'border-slate-200 hover:border-[#B91C1C] hover:bg-slate-50'}`}
+                                        onDragOver={(e) => e.preventDefault()}
+                                        onDrop={handleDrop}
+                                        onClick={() => fileInputRef.current?.click()}
+                                    >
+                                        <input
+                                            type="file"
+                                            ref={fileInputRef}
+                                            className="hidden"
+                                            accept=".pdf,.txt,.md"
+                                            onChange={handleFileChange}
+                                        />
+
+                                        {uploadedFile ? (
+                                            <div className="flex flex-col items-center">
+                                                <div className="w-16 h-16 bg-[#B91C1C] rounded-2xl flex items-center justify-center shadow-lg mb-4">
+                                                    <FileIcon size={32} className="text-white" />
+                                                </div>
+                                                <h3 className="text-lg font-black text-[#0F172A] mb-1">{uploadedFile.name}</h3>
+                                                <div className="flex items-center gap-3 text-xs font-bold text-slate-400">
+                                                    <span>{(uploadedFile.size / 1024 / 1024).toFixed(2)} MB</span>
+                                                    <div className="w-1 h-1 rounded-full bg-slate-300"></div>
+                                                    <span className="uppercase">{uploadedFile.type || 'Fichier Inconnu'}</span>
+                                                </div>
+                                                <button
+                                                    onClick={(e) => { e.stopPropagation(); setUploadedFile(null); }}
+                                                    className="mt-6 px-4 py-2 bg-white border border-slate-200 rounded-lg text-xs font-bold text-slate-500 hover:text-[#B91C1C] hover:border-[#B91C1C] transition-all"
+                                                >
+                                                    Changer de fichier
+                                                </button>
+                                            </div>
+                                        ) : (
+                                            <>
+                                                <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mb-6 group-hover:bg-[#FEF2F2] transition-colors">
+                                                    <Upload size={32} className="text-slate-300 group-hover:text-[#B91C1C] transition-colors" />
+                                                </div>
+                                                <h3 className="text-sm font-black text-[#0F172A] uppercase tracking-wider mb-2">Glisser-déposer le dossier PDF</h3>
+                                                <p className="text-xs text-slate-400 font-bold mb-6">ou cliquer pour parcourir les fichiers locaux</p>
+                                                <div className="flex items-center gap-2 text-[9px] font-black text-slate-300 uppercase tracking-widest border border-slate-100 px-3 py-1.5 rounded-lg bg-white">
+                                                    PDF • TXT • MD SUPPORTED
+                                                </div>
+                                            </>
+                                        )}
+                                    </div>
+
+                                    <div className="relative group/textarea">
+                                        <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2 block ml-2">Instructions d'analyse optionnelles</label>
+                                        <textarea
+                                            value={customQuery}
+                                            onChange={(e) => setCustomQuery(e.target.value)}
+                                            placeholder="Ex: Identifiez toutes les entités mentionnées et les dates clés..."
+                                            className="w-full h-24 bg-[#F8FAFC] rounded-[1.5rem] p-6 text-[14px] text-[#0F172A] border border-slate-100 focus:border-[#B91C1C] focus:bg-white transition-all outline-none resize-none placeholder-slate-300 font-medium leading-relaxed shadow-inner"
+                                        />
+                                    </div>
+                                </div>
                             ) : (
-                                <div className="relative group/textarea">
+                                <div className="relative group/textarea animate-in fade-in duration-300">
                                     <textarea
                                         value={customQuery}
                                         onChange={(e) => setCustomQuery(e.target.value)}
@@ -151,33 +244,35 @@ export const InvestigationPlanner: React.FC<InvestigationPlannerProps> = ({ onSt
                     </div>
                 </section>
 
-                {/* Grounding Info */}
-                <div className="p-5 bg-emerald-50/30 border border-emerald-100/50 rounded-[1.5rem] flex gap-5 items-center">
-                    <div className="w-10 h-10 bg-white rounded-xl border border-emerald-100 shadow-sm text-emerald-600 shrink-0 flex items-center justify-center">
-                        <Zap size={18} fill="currentColor" className="animate-pulse" />
+                {/* Grounding Info - Hide for Upload mode to emphasize local analaysis */}
+                {activeTab !== 'upload' && (
+                    <div className="p-5 bg-emerald-50/30 border border-emerald-100/50 rounded-[1.5rem] flex gap-5 items-center animate-in slide-in-from-bottom-4 duration-500">
+                        <div className="w-10 h-10 bg-white rounded-xl border border-emerald-100 shadow-sm text-emerald-600 shrink-0 flex items-center justify-center">
+                            <Zap size={18} fill="currentColor" className="animate-pulse" />
+                        </div>
+                        <div>
+                            <span className="text-[9px] font-black uppercase tracking-[0.3em] text-emerald-700 block mb-1">Grounding Architecture</span>
+                            <p className="text-[12px] text-emerald-800/80 leading-relaxed font-bold italic">
+                                Les résultats sont systématiquement croisés avec les sources officielles du Department of Justice pour garantir l'intégrité des preuves.
+                            </p>
+                        </div>
                     </div>
-                    <div>
-                        <span className="text-[9px] font-black uppercase tracking-[0.3em] text-emerald-700 block mb-1">Grounding Architecture</span>
-                        <p className="text-[12px] text-emerald-800/80 leading-relaxed font-bold italic">
-                            Les résultats sont systématiquement croisés avec les sources officielles du Department of Justice pour garantir l'intégrité des preuves.
-                        </p>
-                    </div>
-                </div>
+                )}
             </div>
 
             {/* Footer / Submit */}
             <div className="p-8 lg:p-10 bg-[#F8FAFC]/50 border-t border-slate-100 relative z-10 backdrop-blur-sm">
                 <button
                     onClick={handleStart}
-                    disabled={activeTab === 'custom' && !customQuery}
-                    className={`w-full h-14 flex items-center justify-center gap-4 rounded-xl font-black uppercase tracking-[0.3em] text-[11px] transition-all relative overflow-hidden group shadow-xl ${activeTab === 'custom' && !customQuery
+                    disabled={(activeTab === 'custom' && !customQuery) || (activeTab === 'upload' && !uploadedFile)}
+                    className={`w-full h-14 flex items-center justify-center gap-4 rounded-xl font-black uppercase tracking-[0.3em] text-[11px] transition-all relative overflow-hidden group shadow-xl ${((activeTab === 'custom' && !customQuery) || (activeTab === 'upload' && !uploadedFile))
                         ? 'bg-slate-100 text-slate-300 cursor-not-allowed shadow-none'
                         : 'bg-[#0F172A] text-white hover:bg-[#B91C1C] active:scale-[0.98] shadow-red-900/10'
                         }`}
                 >
                     <div className="relative z-10 flex items-center gap-3">
-                        <Cpu size={16} className={`${activeTab === 'custom' && !customQuery ? '' : 'group-hover:rotate-180 transition-transform duration-1000'}`} />
-                        Lancer l'Extraction Dynamique
+                        <Cpu size={16} className={`${((activeTab === 'custom' && !customQuery) || (activeTab === 'upload' && !uploadedFile)) ? '' : 'group-hover:rotate-180 transition-transform duration-1000'}`} />
+                        {activeTab === 'upload' ? 'Lancer l\'Analyse Locale' : 'Lancer l\'Extraction Dynamique'}
                     </div>
                     {(activeTab === 'dataset' || customQuery) && (
                         <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>

@@ -7,7 +7,7 @@ import React, { useState, useEffect, useMemo } from 'react';
 import { storageService } from '../services/storageService';
 import { ProcessedResult, DocumentDetail } from '../types';
 import { AlertTriangle, Users, ArrowLeftRight, Zap, Loader2, CheckCircle2, ShieldAlert, Target, Fingerprint, Shield, Activity, Search, Database, ChevronRight, ArrowUpRight, ShieldCheck, Cpu } from 'lucide-react';
-import { mergeDataWithFlash } from '../services/openRouterService';
+import { mergeDataWithFlash, detectContradictions } from '../services/openRouterService';
 
 interface ContradictionsViewProps {
     onDeepDive: (docTitle: string, style: 'standard' | 'simple' | 'technical') => void;
@@ -21,7 +21,15 @@ export const ContradictionsView: React.FC<ContradictionsViewProps> = ({ onDeepDi
     const [results, setResults] = useState<string | null>(null);
 
     useEffect(() => {
-        storageService.getAllResults().then(setHistory);
+        storageService.getAllResults().then(data => {
+            setHistory(data);
+            // Auto-select the last two documents if available to speed up workflow
+            const allDocs = data.flatMap(h => (h.output?.documents || []).map(d => d.title));
+            if (allDocs.length >= 2) {
+                setDoc1(allDocs[0]); // Most recent usually first or last depending on API, assuming flatMap keeps order
+                setDoc2(allDocs[1]);
+            }
+        });
     }, []);
 
     const allDocs = history.flatMap(h => (h.output?.documents || []).map(d => ({ ...d, investigationId: h.id })));
@@ -33,22 +41,16 @@ export const ContradictionsView: React.FC<ContradictionsViewProps> = ({ onDeepDi
         const d1 = allDocs.find(d => d.title === doc1);
         const d2 = allDocs.find(d => d.title === doc2);
 
-        const prompt = `COMPARAISON FORENSIQUE CRITIQUE : Analysez les divergences factuelles strictes entre ces deux documents.
-        Focus: Dates, montants, noms cités, lieux et actions.
-        
-        DOC A: ${JSON.stringify(d1)}
-        DOC B: ${JSON.stringify(d2)}
-        
-        Identifiez les contradictions logiques ou les changements de version. Soyez précis et implacable.`;
+        if (!d1 || !d2) {
+            setResults("Erreur : Impossible de récupérer le contenu source des documents sélectionnés.");
+            setIsAnalyzing(false);
+            return;
+        }
 
         try {
-            const res = await mergeDataWithFlash({
-                id: 'COMPARE',
-                query: prompt,
-                targetUrl: 'Internal Forensic Comparison Engine',
-                timestamp: Date.now()
-            });
-            setResults(res.logs.join('\n'));
+            // Use specialized contradiction detection service
+            const analysis = await detectContradictions(JSON.stringify(d1), JSON.stringify(d2));
+            setResults(analysis);
         } catch (e) {
             setResults("Erreur critique : Échec de l'accès au moteur neuronal de comparaison.");
         } finally {

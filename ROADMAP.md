@@ -18,11 +18,11 @@ This roadmap outlines the evolution of the platform from its current MVP state t
 - [x] **Entity Profiling**: dedicated view for "who's who" across all indexed documents.
 
 ## 🚀 Phase 3: V1.0 - Forensic Power Tools
-- [ ] **PDF Direct Processing**: Upload local PDFs for AI-assisted extraction (instead of URL-only).
-- [ ] **Export Suite**: Export to PDF, CSV, and Markdown for professional reports.
+- [x] **PDF Direct Processing**: Upload local PDFs for AI-assisted extraction (instead of URL-only).
+- [x] **Export Suite**: Export to PDF, CSV, and Markdown for professional reports.
 - [ ] **Collaboration Mode**: Shared Supabase workspaces for multi-user investigations.
 - [ ] **OCR Integration**: Built-in OCR for scanned legal documents.
-- [ ] **Automatic Conflict Detection**: Flag discrepancies between different source documents.
+- [x] **Automatic Conflict Detection**: Flag discrepancies between different source documents.
 
 ## 🔮 Phase 4: Long-Term Vision
 - [ ] **Custom Model Fine-tuning**: Use extracted data to fine-tune a specialized legal LLM.

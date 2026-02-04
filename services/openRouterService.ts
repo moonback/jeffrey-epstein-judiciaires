@@ -93,7 +93,10 @@ export const mergeDataWithFlash = async (input: InputData): Promise<{ json: Disc
     }
 };
 
+// ... (existing code)
+
 export const askAssistant = async (history: { role: string, text: string }[], message: string): Promise<string> => {
+    // ... (existing code for askAssistant)
     try {
         const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
             method: "POST",
@@ -116,5 +119,39 @@ export const askAssistant = async (history: { role: string, text: string }[], me
         return data.choices[0].message.content;
     } catch (e) {
         return "Désolé, je ne peux pas répondre pour le moment (Erreur OpenRouter).";
+    }
+};
+
+export const detectContradictions = async (doc1: string, doc2: string): Promise<string> => {
+    try {
+        const response = await callWithRetry(async () => {
+            const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+                method: "POST",
+                headers: {
+                    "Authorization": `Bearer ${OPENROUTER_API_KEY}`,
+                    "Content-Type": "application/json",
+                    "HTTP-Referer": "https://github.com/moonback/Analyseur-de-Documents-Judiciaires",
+                    "X-Title": "Analyseur de Documents Judiciaires"
+                },
+                body: JSON.stringify({
+                    model: MODEL_ID,
+                    messages: [
+                        { role: "system", content: "Vous êtes un expert en analyse forensique et détection de fraude. Votre tâche est de comparer deux documents et de signaler toute contradiction, incohérence temporelle, divergence de témoignage ou anomalie factuelle. Répondez sous forme de rapport Markdown structuré." },
+                        { role: "user", content: `DOCUMENT A:\n${doc1}\n\nDOCUMENT B:\n${doc2}\n\nAnalysez les conflits potentiels entre ces deux documents.` }
+                    ]
+                })
+            });
+
+            if (!res.ok) {
+                const err = await res.json();
+                throw { status: res.status, message: err.error?.message || "Unknown error" };
+            }
+            return res.json();
+        });
+
+        return response.choices[0].message.content;
+    } catch (error: any) {
+        console.error("Erreur lors de la détection de contradictions:", error);
+        return "Erreur lors de l'analyse des contradictions. Veuillez réessayer.";
     }
 };
