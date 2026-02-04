@@ -30,7 +30,7 @@ export const EpsteinArchiveView: React.FC = () => {
 
         hoverTimeout.current = setTimeout(() => {
             setHoveredFile({ file, x: clientX, y: clientY });
-        }, 500);
+        }, 200);
     };
 
     const handleMouseLeave = () => {
@@ -262,8 +262,11 @@ export const EpsteinArchiveView: React.FC = () => {
             {/* Floating Preview Portal */}
             {hoveredFile && createPortal(
                 <div
-                    className="fixed z-[100] pointer-events-none transition-all duration-300 opacity-0 animate-in fade-in fill-mode-forwards"
-                    style={getPreviewStyle(hoveredFile.x, hoveredFile.y)}
+                    className="fixed z-[1001] pointer-events-none transition-all duration-300"
+                    style={{
+                        ...getPreviewStyle(hoveredFile.x, hoveredFile.y),
+                        opacity: 1,
+                    }}
                 >
                     <PdfHoverPreview url={hoveredFile.file.path} />
                 </div>,

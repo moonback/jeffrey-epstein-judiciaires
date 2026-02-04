@@ -3,11 +3,7 @@ import React, { useEffect, useRef, useState } from 'react';
 import * as pdfjsLib from 'pdfjs-dist';
 import { Loader2, FileText } from 'lucide-react';
 
-// Configure worker locally if possible or fallback to CDN
-// Note: We use the mjs worker for v5+
-if (!pdfjsLib.GlobalWorkerOptions.workerSrc) {
-    pdfjsLib.GlobalWorkerOptions.workerSrc = `https://cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.mjs`;
-}
+pdfjsLib.GlobalWorkerOptions.workerSrc = `https://unpkg.com/pdfjs-dist@${pdfjsLib.version}/build/pdf.worker.min.mjs`;
 
 interface PdfHoverPreviewProps {
     url: string;
@@ -36,7 +32,10 @@ export const PdfHoverPreview: React.FC<PdfHoverPreviewProps> = ({ url, width = 2
                     ctx?.clearRect(0, 0, canvas.width, canvas.height);
                 }
 
-                const loadingTask = pdfjsLib.getDocument(url);
+                const loadingTask = pdfjsLib.getDocument({
+                    url,
+                    withCredentials: false
+                });
                 pdfDocs = await loadingTask.promise;
 
                 if (isCancelled) return;
