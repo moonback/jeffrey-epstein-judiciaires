@@ -1,38 +1,43 @@
-# 🗺️ Roadmap: DOJ Forensic Analyzer
+# 🗺️ Roadmap : DOJ Forensic Analyzer
 
-This roadmap outlines the evolution of the platform from its current MVP state to a full-featured forensic suite.
+Ce document trace l'évolution de la plateforme, depuis son état actuel de MVP jusqu'à une suite forensique complète et collaborative.
 
-## ✅ Phase 1: MVP (Completed)
-- [x] Functional React 19 / Vite infrastructure.
-- [x] AI analysis engine via OpenRouter (Gemini 2.5 Flash Lite).
-- [x] Local storage with IndexedDB.
-- [x] Multi-tab investigative interface.
-- [x] Dynamic Data Card view for analysis results.
-- [x] Interactive Chat Assistant.
-- [x] Basic Searchable Database view.
+---
 
-## 🚧 Phase 2: Enhanced Visualization (Current)
-- [x] **Network Graph Improvements**: Interactive nodes with entity details on click.
-- [x] **Advanced Timeline v2.0**: Interactive temporal flow with search, type-filtering, and financial transaction integration.
-- [x] **Cross-Document Analysis**: Identify links between different independent analyses.
-- [x] **Entity Profiling**: dedicated view for "who's who" across all indexed documents.
+## ✅ Phase 1 : MVP & Fondations (Terminé)
+- [x] Infrastructure React 19 / Vite réactive.
+- [x] Moteur d'analyse IA via OpenRouter (Gemini 2.0).
+- [x] Stockage Local-First avec IndexedDB.
+- [x] Interface de laboratoire à onglets.
+- [x] Visualisation des résultats via "Data Cards".
+- [x] Assistant interactif (Live Assistant).
 
-## 🚀 Phase 3: V1.0 - Forensic Power Tools
-- [x] **PDF Direct Processing**: Upload local PDFs for AI-assisted extraction (instead of URL-only).
-- [x] **Export Suite**: Export to PDF, CSV, and Markdown for professional reports.
-- [ ] **Collaboration Mode**: Shared Supabase workspaces for multi-user investigations.
-- [ ] **OCR Integration**: Built-in OCR for scanned legal documents.
-- [x] **Automatic Conflict Detection**: Flag discrepancies between different source documents.
+## 🚧 Phase 2 : Visualisation Avancée (En cours)
+- [x] **Neural Network Graph** : Graphe de relations dynamique entre entités.
+- [x] **Timeline Engine** : Chronologie interactive des événements et documents.
+- [x] **Financial Flow Tracker** : Extraction et visualisation des flux monétaires.
+- [x] **Archives Epstein** : Module dédié à l'exploration du dataset de divulgations.
+- [x] **Analyse Multimodale** : Support OCR pour les PDF scannés via Tesseract.js.
 
-## 🔮 Phase 4: Long-Term Vision
-- [ ] **Custom Model Fine-tuning**: Use extracted data to fine-tune a specialized legal LLM.
-- [ ] **Audio/Video Forensics**: Process hearing recordings and video evidence.
-- [ ] **Dark Web Integration**: Link DOJ disclosures with leaked archives or OSINT databases.
-- [ ] **Global Search API**: Connect to other public legal databases (PACER, etc.).
+## 🚀 Phase 3 : V1.0 - Outils Forensiques Professionnels (Q1 2026)
+- [ ] **Export Suite Pro** : Génération de rapports PDF complexes, CSV pour Excel, et Markdown.
+- [ ] **Cross-Document Discovery** : Algorithme pour identifier automatiquement des liens entre deux documents analysés séparément.
+- [ ] **Mode Collaboration** : Espaces de travail partagés (Shared Workspaces) via Supabase.
+- [ ] **Agent Backup** : Sauvegarde granulaire des traces de raisonnement des agents IA.
 
----2
+## 🔮 Phase 4 : Vision Long Terme
+- [ ] **Fine-tuning Juridique** : Entraînement d'un modèle spécifique aux terminologies judiciaires du DOJ.
+- [ ] **OSINT Integration** : Corrélation automatique entre les documents DOJ et les fuites de données (leaks) ou archives du Dark Web.
+- [ ] **Analyse Audio/Vidéo** : Transcription et analyse forensique des enregistrements d'audiences.
+- [ ] **API Publique** : Permettre à des tiers de requêter la base de données indexée.
 
-## 📈 Current Priority
-*   **Performance Optimization**: Reducing latency in the Network Graph.
-*   **UI Polish**: Refining the "Investigation Planner" for better user onboarding.
-*   **Data Integrity**: Improving JSON parsing reliability for complex AI responses.
+---
+
+## 📈 Priorités Actuelles
+1.  **Fiabilité de l'extraction** : Améliorer les prompts pour éliminer les hallucinations sur les dates et montants.
+2.  **Performance du Graphe** : Optimisation du rendu pour les dossiers contenant plus de 200 entités.
+3.  **UI/UX Mobile** : Rendre les outils complexes (Graphe/Timeline) pleinement utilisables sur tablette et mobile.
+
+---
+
+*Dernière mise à jour : Février 2026*

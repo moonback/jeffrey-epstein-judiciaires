@@ -25,6 +25,8 @@ import {
     LayoutGrid,
     AlignLeft
 } from 'lucide-react';
+import jsPDF from 'jspdf';
+import autoTable from 'jspdf-autotable';
 
 export const AssetsView: React.FC = () => {
     const [history, setHistory] = useState<ProcessedResult[]>([]);
@@ -41,14 +43,28 @@ export const AssetsView: React.FC = () => {
     }, []);
 
     const allAssets = useMemo(() => {
-        const list: (AssetDetail & { parentId: string })[] = [];
+        const uniqueMap = new Map<string, AssetDetail & { parentId: string }>();
+
         history.forEach(res => {
             if (res.output?.actifs) {
                 res.output.actifs.forEach(a => {
-                    list.push({ ...a, parentId: res.id });
+                    // Create a unique key for deduplication (Type + Normalised Name)
+                    const key = `${a.type}-${a.nom.toLowerCase().trim()}`;
+
+                    if (!uniqueMap.has(key)) {
+                        uniqueMap.set(key, { ...a, parentId: res.id });
+                    } else {
+                        // Optional: Keep the one with value if the existing one doesn't have it
+                        const existing = uniqueMap.get(key)!;
+                        if (!existing.valeur_estimee && a.valeur_estimee) {
+                            uniqueMap.set(key, { ...a, parentId: res.id });
+                        }
+                    }
                 });
             }
         });
+
+        const list = Array.from(uniqueMap.values());
 
         return list.filter(a => {
             const matchesSearch = a.nom.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -266,7 +282,128 @@ export const AssetsView: React.FC = () => {
                 <div className="flex items-center gap-3">
                     <span className="text-[9px] font-black text-slate-300 uppercase tracking-[0.4em] italic">Forensic-Asset-Scanner // Unit.09</span>
                     <div className="h-4 w-px bg-slate-100"></div>
-                    <button className="text-[10px] font-black text-[#B91C1C] hover:text-[#7F1D1D] transition-colors flex items-center gap-2">
+                    <button
+                        onClick={() => {
+                            const doc = new jsPDF();
+                            const primaryRed: [number, number, number] = [185, 28, 28];
+                            const darkSlate: [number, number, number] = [15, 23, 42];
+                            const lightSlate: [number, number, number] = [100, 116, 139];
+
+                            // 1. HEADER DESIGN
+                            doc.setFillColor(primaryRed[0], primaryRed[1], primaryRed[2]);
+                            doc.rect(0, 0, 210, 15, 'F');
+
+                            doc.setTextColor(255, 255, 255);
+                            doc.setFontSize(8);
+                            doc.setFont("helvetica", "bold");
+                            doc.text("FORENSIC-ASSET-SCANNER // UNIT.09 WEALTH ASSESSMENT", 14, 10);
+
+                            doc.setTextColor(darkSlate[0], darkSlate[1], darkSlate[2]);
+                            doc.setFontSize(28);
+                            doc.setFont("times", "bolditalic");
+                            doc.text("REPORT OF WEALTH ASSETS", 14, 35);
+
+                            doc.setDrawColor(primaryRed[0], primaryRed[1], primaryRed[2]);
+                            doc.setLineWidth(1.5);
+                            doc.line(14, 40, 60, 40);
+
+                            doc.setFontSize(10);
+                            doc.setFont("helvetica", "normal");
+                            doc.setTextColor(lightSlate[0], lightSlate[1], lightSlate[2]);
+                            doc.text(`DATE DE GÉNÉRATION : ${new Date().toLocaleDateString('fr-FR')} ${new Date().toLocaleTimeString('fr-FR')}`, 14, 50);
+                            doc.text(`ID CONTRÔLE : WA-${Math.random().toString(36).substr(2, 9).toUpperCase()}`, 14, 55);
+                            doc.text(`OBJET : INVENTAIRE ET ESTIMATION DU PATRIMOINE RÉPERTORIÉ`, 14, 60);
+
+                            // 2. TOTAL VALUE DASHBOARD
+                            doc.setFillColor(248, 250, 252);
+                            doc.roundedRect(14, 70, 182, 45, 3, 3, 'F');
+
+                            doc.setFontSize(12);
+                            doc.setFont("helvetica", "bold");
+                            doc.setTextColor(darkSlate[0], darkSlate[1], darkSlate[2]);
+                            doc.text("PATRIMOINE TOTAL ESTIMÉ", 20, 80);
+
+                            doc.setFontSize(24);
+                            doc.setTextColor(primaryRed[0], primaryRed[1], primaryRed[2]);
+                            doc.text(formatCurrency(stats.totalValue), 20, 95);
+
+                            doc.setFontSize(9);
+                            doc.setFont("helvetica", "normal");
+                            doc.setTextColor(lightSlate[0], lightSlate[1], lightSlate[2]);
+                            doc.text(`Analyse consolidée de ${stats.count} actifs matériels et financiers identifiés.`, 20, 105);
+
+                            // 3. STATS SUMMARY TABLE
+                            autoTable(doc, {
+                                startY: 125,
+                                head: [['CATÉGORIE D\'ACTIF', 'QUANTITÉ']],
+                                body: [
+                                    ['BIENS IMMOBILIERS (VILLAS, TERRAINS)', (stats.typeCounts['immobilier'] || 0).toString()],
+                                    ['RETOUR SUR CAPITAUX & COMPTES', (stats.typeCounts['compte_bancaire'] || 0).toString()],
+                                    ['SOCIÉTÉS, HOLDINGS & TRUSTS', (stats.typeCounts['societe'] || 0).toString()],
+                                    ['VÉHICULES ET AUTRES BIENS', (stats.typeCounts['vehicule'] || 0).toString()]
+                                ],
+                                theme: 'plain',
+                                headStyles: {
+                                    fillColor: [241, 245, 249],
+                                    textColor: darkSlate,
+                                    fontStyle: 'bold',
+                                    fontSize: 10
+                                },
+                                styles: { fontSize: 9, cellPadding: 4, lineColor: [226, 232, 240], lineWidth: 0.1 }
+                            });
+
+                            // 4. DETAILED INVENTORY
+                            doc.addPage();
+                            doc.setFillColor(primaryRed[0], primaryRed[1], primaryRed[2]);
+                            doc.rect(0, 0, 210, 8, 'F');
+
+                            doc.setTextColor(primaryRed[0], primaryRed[1], primaryRed[2]);
+                            doc.setFontSize(16);
+                            doc.setFont("times", "bolditalic");
+                            doc.text("INVENTAIRE NOMINAL ET LOCALISATION", 14, 25);
+
+                            const tableData = allAssets.map(a => [
+                                a.type.toUpperCase(),
+                                a.nom,
+                                a.proprietaire_declare,
+                                a.localisation || 'N/A',
+                                formatCurrency(a.valeur_estimee || 0, a.devise)
+                            ]);
+
+                            autoTable(doc, {
+                                startY: 35,
+                                head: [['TYPE', 'ACTIF', 'PROPRIÉTAIRE', 'LOCALISATION', 'VALEUR']],
+                                body: tableData,
+                                headStyles: { fillColor: darkSlate, textColor: [255, 255, 255], fontSize: 8 },
+                                alternateRowStyles: { fillColor: [250, 250, 250] },
+                                styles: { fontSize: 7, cellPadding: 3, overflow: 'linebreak' },
+                                columnStyles: {
+                                    4: { halign: 'right', fontStyle: 'bold', textColor: primaryRed }
+                                },
+                                didDrawPage: () => {
+                                    doc.setFontSize(8);
+                                    doc.setTextColor(150);
+                                    doc.text(`CONFIDENTIEL - UNIT-09 ASSET MAPPING - GÉNÉRÉ PAR IA`, 105, 285, { align: 'center' });
+                                }
+                            });
+
+                            // 5. LEGAL NOTICE
+                            const finalY = (doc as any).lastAutoTable.finalY + 20;
+                            if (finalY < 250) {
+                                doc.setFontSize(10);
+                                doc.setTextColor(darkSlate[0], darkSlate[1], darkSlate[2]);
+                                doc.setFont("helvetica", "bold");
+                                doc.text("CLAUSE DE RÉSERVE", 14, finalY);
+                                doc.setFont("helvetica", "normal");
+                                doc.setFontSize(8);
+                                doc.text("Les valeurs estimées sont basées sur les données extraites des documents officiels.", 14, finalY + 8);
+                                doc.text("Ce rapport constitue une base de travail pour l'investigation et n'a pas de valeur d'expertise légale unique.", 14, finalY + 13);
+                            }
+
+                            doc.save(`QUANTUM_ASSET_REPORT_${new Date().getTime()}.pdf`);
+                        }}
+                        className="text-[10px] font-black text-[#B91C1C] hover:text-[#7F1D1D] transition-colors flex items-center gap-2"
+                    >
                         <Download size={12} /> RAPPORT DE PATRIMOINE
                     </button>
                 </div>

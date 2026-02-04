@@ -7,7 +7,11 @@ import React, { useState } from 'react';
 import { supabase } from '../services/supabaseClient';
 import { ShieldCheck, Mail, Lock, Loader2, ArrowRight, Gavel, UserPlus, LogIn } from 'lucide-react';
 
-export const Auth: React.FC = () => {
+interface AuthProps {
+    onGuestAccess?: () => void;
+}
+
+export const Auth: React.FC<AuthProps> = ({ onGuestAccess }) => {
     const [loading, setLoading] = useState(false);
     const [email, setEmail] = useState('');
     const [password, setPassword] = useState('');
@@ -124,6 +128,20 @@ export const Auth: React.FC = () => {
                             {isSignUp ? "Déjà un accès ? Authentification" : "Nouvel agent ? Créer un profil"}
                         </button>
                     </div>
+
+                    {/* Guest Access Option */}
+                    {onGuestAccess && (
+                        <div className="mt-4 text-center">
+                            <button
+                                onClick={onGuestAccess}
+                                className="w-full bg-slate-50 hover:bg-slate-100 text-slate-500 py-3 rounded-2xl font-black uppercase tracking-[0.2em] text-[9px] border border-slate-100 transition-all flex items-center justify-center gap-2 group"
+                            >
+                                <Lock className="text-slate-300 group-hover:text-[#B91C1C] transition-colors" size={14} />
+                                <span>Accéder en Mode Public (Open-Source)</span>
+                            </button>
+                        </div>
+                    )}
+
                 </div>
 
                 {/* Footer Meta */}
