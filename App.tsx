@@ -282,150 +282,154 @@ const App: React.FC = () => {
         onToggleLogs={() => setShowLogs(!showLogs)}
       />
 
-      <div className="flex-1 flex flex-col min-w-0 h-screen overflow-hidden bg-[#0A0A0A]">
+      <div className="flex-1 flex flex-col min-w-0 h-screen overflow-hidden bg-[#050505]">
 
-        {/* 2. PREMIUM MODULE HEADER */}
-        <header className="px-10 h-20 shrink-0 flex justify-between items-center bg-[#0F0F0F]/80 backdrop-blur-3xl border-b border-[#1F1F1F] z-40">
-          <div className="flex gap-8 items-center">
-            <div className="flex items-center gap-2.5 px-4 py-2 bg-gradient-to-r from-[#0F5223]/20 to-transparent border border-[#6DD58C]/20 rounded-xl relative overflow-hidden group">
-              <div className="absolute inset-0 bg-white/5 opacity-0 group-hover:opacity-100 transition-opacity"></div>
+        {/* PREMIUM MODULE HEADER */}
+        <header className="px-8 h-16 shrink-0 flex justify-between items-center bg-[#080808]/90 backdrop-blur-xl border-b border-[#1A1A1A] z-40">
+          <div className="flex gap-6 items-center">
+            <div className="flex items-center gap-2 px-3 py-1.5 bg-[#121212] border border-[#2A2A2A] rounded-lg relative overflow-hidden group hover:border-[#F2B8B5]/30 transition-colors cursor-help">
               <span className="relative flex h-2 w-2">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#6DD58C] opacity-75"></span>
+                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-[#6DD58C] opacity-40"></span>
                 <span className="relative inline-flex rounded-full h-2 w-2 bg-[#6DD58C]"></span>
               </span>
-              <span className="text-[12px] text-[#6DD58C] font-black uppercase tracking-[0.2em] relative">Node Live</span>
+              <span className="text-[10px] text-[#BBB] font-bold uppercase tracking-widest relative">Système Live</span>
             </div>
 
-            <div className="h-6 w-[1px] bg-[#1F1F1F]"></div>
+            <div className="h-4 w-[1px] bg-[#2A2A2A]"></div>
 
-            <div className="flex items-center gap-3">
-              <div className="text-[11px] font-black text-[#757775] uppercase tracking-widest">Database Capacity</div>
-              <div className="flex items-center gap-2">
-                <div className="text-base font-mono font-black text-[#F2B8B5] leading-none">{processedCount}</div>
-                <div className="text-[10px] font-bold text-[#757775] uppercase tracking-tighter self-end mb-0.5">Dossiers Indexés</div>
+            <div className="flex items-center gap-2.5">
+              <div className="text-[9px] font-bold text-[#555] uppercase tracking-[0.2em]">Intel Core</div>
+              <div className="flex items-center gap-1.5">
+                <div className="text-sm font-mono font-bold text-[#F2B8B5] leading-none">{processedCount}</div>
+                <div className="text-[9px] font-bold text-[#444] uppercase tracking-tighter">Hits</div>
               </div>
             </div>
           </div>
 
-          <div className="flex items-center gap-6">
+          <div className="flex items-center gap-5">
             {isProcessing && (
-              <div className="flex gap-3 items-center bg-[#370003] px-5 py-2 rounded-2xl text-[11px] text-[#F2B8B5] border border-[#601410] shadow-[0_0_20px_rgba(96,20,16,0.3)] animate-in fade-in zoom-in slide-in-from-right-4">
-                <Loader2 size={14} className="animate-spin" />
-                <span className="font-black uppercase tracking-[0.2em]">Neural Processing...</span>
+              <div className="flex gap-2.5 items-center bg-[#180808] px-4 py-1.5 rounded-lg text-[10px] text-[#F2B8B5] border border-[#301010] animate-pulse">
+                <Loader2 size={12} className="animate-spin" />
+                <span className="font-bold uppercase tracking-widest">Analyse en cours...</span>
               </div>
             )}
 
-            <div className="hidden xl:flex items-center gap-4 text-[11px] font-bold text-[#444746] uppercase border-l border-[#1F1F1F] pl-6 tracking-widest">
-              <span>LATENCY: 12ms</span>
-              <span className="text-[#F2B8B5]">ENCRYPTION: AES-256</span>
+            <div className="hidden lg:flex items-center gap-5 text-[9px] font-bold text-[#333] uppercase border-l border-[#1A1A1A] pl-5 tracking-[0.2em]">
+              <div className="flex items-center gap-2">
+                <div className="w-1 h-1 rounded-full bg-[#F2B8B5]/40 text-[#BBB]">BIT-SEC</div>
+                <span>AES-256</span>
+              </div>
+              <div className="flex items-center gap-2">
+                <div className="w-1 h-1 rounded-full bg-[#6DD58C]/40 text-[#BBB]">NODE-01</div>
+                <span>STABLE</span>
+              </div>
             </div>
           </div>
         </header>
 
-        {/* 3. Main Viewport */}
+        {/* Main Viewport */}
         <main className="flex-1 overflow-hidden relative">
-
-          {/* Forensic Technical Grid Background */}
-          <div className="absolute inset-0 z-0 pointer-events-none overflow-hidden">
-            <div className="absolute inset-0 bg-[linear-gradient(to_right,#1F1F1F_1px,transparent_1px),linear-gradient(to_bottom,#1F1F1F_1px,transparent_1px)] bg-[size:64px_64px] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_0%,#000_70%,transparent_100%)] opacity-[0.2]"></div>
-            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#0A0A0A]/50 to-[#0A0A0A]"></div>
-          </div>
+          <div className="bg-noise"></div>
 
           <div className="h-full w-full relative z-10 overflow-hidden">
             {viewMode === 'lab' && (
-              <div className="h-full flex flex-col lg:grid lg:grid-cols-12 gap-8 p-10 overflow-hidden animate-in fade-in duration-700">
-                {/* Lab Sidebar: Queue & Logs */}
-                <section className="lg:col-span-3 flex flex-col gap-6 overflow-hidden min-h-0">
-                  <div className="flex flex-col gap-4 flex-1 overflow-hidden min-h-0 pb-10">
-                    <div className="flex justify-between items-center px-1">
-                      <h2 className="text-xs font-bold text-[#8E918F] uppercase tracking-widest flex items-center gap-2">
-                        Inbound Pipeline
-                      </h2>
-                      <span className="text-[11px] bg-[#1E1E1E] text-[#C4C7C5] px-2 py-0.5 rounded-full border border-[#444746]">{queue.length}</span>
-                    </div>
-                    <div className="bg-[#1A1A1A] rounded-3xl p-3 flex-1 border border-[#2D2D2D] overflow-hidden flex flex-col shadow-inner min-h-0">
-                      <div className="flex-1 overflow-y-auto space-y-2 custom-scrollbar pr-1">
-                        {queue.length === 0 && (
-                          <div className="flex flex-col items-center justify-center h-full opacity-20">
-                            <Activity size={32} className="mb-2" />
-                            <span className="text-[11px] uppercase font-bold tracking-tighter">Idle</span>
-                          </div>
-                        )}
-                        {queue.map((item) => (
-                          <div key={item.id} className="bg-[#252525] p-3 rounded-2xl border border-transparent border-l-2 border-l-[#F2B8B5]/30 animate-in slide-in-from-left-2">
-                            <div className="text-[10px] font-mono text-[#757775] mb-1">{item.id}</div>
-                            <div className="text-[13px] text-[#E3E3E3] font-medium truncate">"{item.query}"</div>
-                          </div>
-                        ))}
+              <div className="h-full flex flex-col lg:grid lg:grid-cols-12 overflow-hidden animate-in fade-in duration-700">
+                {/* Lab Sidebar: Queue */}
+                <section className="lg:col-span-3 xl:col-span-2 border-r border-[#1A1A1A] bg-[#080808]/50 flex flex-col overflow-hidden min-h-0">
+                  <div className="p-5 flex justify-between items-center border-b border-[#1A1A1A]">
+                    <h2 className="text-[10px] font-bold text-[#555] uppercase tracking-[0.2em] flex items-center gap-2">
+                      Pipeline
+                    </h2>
+                    <span className="text-[10px] font-mono text-[#F2B8B5] bg-[#F2B8B5]/10 px-1.5 rounded border border-[#F2B8B5]/20">{queue.length}</span>
+                  </div>
+                  <div className="flex-1 overflow-y-auto custom-scrollbar p-4 space-y-3">
+                    {queue.length === 0 && (
+                      <div className="flex flex-col items-center justify-center h-40 opacity-10">
+                        <Activity size={24} className="mb-2" />
+                        <span className="text-[9px] uppercase font-bold tracking-widest">Standby</span>
                       </div>
-                    </div>
+                    )}
+                    {queue.map((item) => (
+                      <div key={item.id} className="bg-[#121212] p-3 rounded-lg border border-[#1A1A1A] border-l-2 border-l-[#F2B8B5]/40 animate-in slide-in-from-left-2 group hover:border-[#F2B8B5]/20 transition-colors">
+                        <div className="text-[9px] font-mono text-[#444] mb-1 group-hover:text-[#F2B8B5]/60 transition-colors">{item.id}</div>
+                        <div className="text-[11px] text-[#888] font-medium line-clamp-2 leading-relaxed">"{item.query}"</div>
+                      </div>
+                    ))}
                   </div>
                 </section>
 
                 {/* Main Lab Area */}
-                <section className="lg:col-span-9 flex flex-col overflow-hidden min-h-0 flex-1">
+                <section className="lg:col-span-9 xl:col-span-10 flex flex-col overflow-hidden min-h-0">
                   {/* Tabs Wrapper */}
-                  <div className="flex items-center gap-1 overflow-x-auto no-scrollbar border-b border-[#2D2D2D] shrink-0">
+                  <div className="flex items-center overflow-x-auto no-scrollbar bg-[#080808] border-b border-[#1A1A1A] h-12 px-4 gap-1">
                     {resolutionHistory.map((res) => (
                       <div
                         key={res.id}
                         onClick={() => setActiveTabId(res.id)}
-                        className={`group flex items-center gap-3 px-6 py-3 rounded-t-2xl border-t border-x border-b-0 cursor-pointer min-w-[180px] transition-all relative ${activeTabId === res.id ? 'bg-[#1A1A1A] border-[#2D2D2D] text-[#E3E3E3] z-10 -mb-[1px]' : 'bg-transparent border-transparent text-[#757775] hover:text-[#E3E3E3]'
+                        className={`group flex items-center gap-3 px-4 h-full cursor-pointer min-w-[140px] max-w-[240px] transition-all relative border-x border-transparent hover:bg-[#121212] ${activeTabId === res.id ? 'bg-[#121212] border-[#1A1A1A] z-10 !border-x-[#1A1A1A]' : 'text-[#555] hover:text-[#888]'
                           }`}
                       >
+                        {activeTabId === res.id && (
+                          <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[#F2B8B5] shadow-[0_-2px_8px_#F2B8B5]"></div>
+                        )}
                         <div className="flex flex-col overflow-hidden">
-                          <span className={`text-[10px] font-mono ${activeTabId === res.id ? 'text-[#F2B8B5]' : ''}`}>{res.id}</span>
-                          <span className="text-[12px] font-bold truncate max-w-[120px]">{res.input.query}</span>
+                          <span className={`text-[8px] font-mono ${activeTabId === res.id ? 'text-[#F2B8B5]' : ''}`}>{res.id}</span>
+                          <span className={`text-[11px] font-bold truncate ${activeTabId === res.id ? 'text-[#EEE]' : ''}`}>{res.input.query}</span>
                         </div>
                         {res.status === 'processing' ? (
-                          <div className="ml-auto w-1.5 h-1.5 rounded-full bg-[#F2B8B5] animate-ping"></div>
+                          <div className="ml-auto w-1 h-1 rounded-full bg-[#F2B8B5] animate-ping"></div>
                         ) : (
                           <XCircle
-                            size={14}
+                            size={12}
                             className="ml-auto opacity-0 group-hover:opacity-100 hover:text-[#F2B8B5] transition-all"
                             onClick={(e) => handleCloseTab(e, res.id)}
                           />
                         )}
                       </div>
                     ))}
-                    {resolutionHistory.length === 0 && <span className="px-6 py-3 text-[11px] text-[#757775] uppercase font-bold pt-6">Dossier Vide</span>}
+                    {resolutionHistory.length === 0 && <span className="text-[10px] text-[#333] uppercase font-bold tracking-widest ml-2">Aucun dossier actif</span>}
                   </div>
 
                   {/* Content Container */}
-                  <div className="flex-1 bg-[#1A1A1A] rounded-b-[40px] rounded-tr-[40px] border border-[#2D2D2D] overflow-hidden relative shadow-2xl flex flex-col min-h-0">
+                  <div className="flex-1 bg-[#0A0A0A] overflow-hidden relative flex flex-col min-h-0">
                     {activeResult && !showPlanner ? (
                       <div className="flex-1 flex flex-col overflow-hidden animate-in fade-in duration-500 min-h-0">
-                        <div className="p-8 border-b border-[#2D2D2D] flex justify-between items-center bg-gradient-to-r from-transparent to-[#252525]/30 shrink-0">
-                          <div>
-                            <div className="flex items-center gap-3 mb-2">
-                              <span className={`px-2.5 py-1 rounded-full text-[10px] font-black uppercase tracking-widest ${activeResult.status === 'completed' ? 'bg-[#0F5223] text-[#6DD58C] border border-[#6DD58C]/20' : 'bg-[#601410] text-[#F2B8B5] animate-pulse'}`}>
-                                {activeResult.status === 'completed' ? 'Evidence Ready' : 'Processing Content'}
+                        <div className="px-8 py-6 border-b border-[#1A1A1A] flex justify-between items-start bg-gradient-to-b from-[#0D0D0D] to-transparent shrink-0">
+                          <div className="max-w-4xl">
+                            <div className="flex items-center gap-3 mb-4">
+                              <span className={`px-2 py-0.5 rounded text-[9px] font-bold uppercase tracking-[0.15em] ${activeResult.status === 'completed' ? 'bg-[#0F3010] text-[#6DD58C] border border-[#6DD58C]/20' : 'bg-[#301010] text-[#F2B8B5] border border-[#F2B8B5]/20 animate-pulse'}`}>
+                                {activeResult.status === 'completed' ? 'Extraction Terminée' : 'Analyse Forensique'}
                               </span>
-                              <span className="text-[11px] text-[#757775] font-mono uppercase">{activeResult.input.targetUrl}</span>
+                              <div className="h-3 w-[1px] bg-[#2A2A2A]"></div>
+                              <span className="text-[10px] text-[#555] font-mono uppercase truncate">{activeResult.input.targetUrl}</span>
                             </div>
-                            <h2 className="text-2xl font-light text-[#E3E3E3] tracking-tight italic">"{activeResult.input.query}"</h2>
+                            <h2 className="text-xl md:text-2xl font-medium text-[#EEE] tracking-tight leading-tight">"{activeResult.input.query}"</h2>
                           </div>
-                          <div className="text-right">
-                            <div className="text-[11px] text-[#757775] uppercase font-bold tracking-widest mb-1">Latency</div>
-                            <div className="text-lg font-mono text-[#F2B8B5]">{activeResult.durationMs ? `${Math.round(activeResult.durationMs)}ms` : '--'}</div>
+                          <div className="text-right hidden sm:block">
+                            <div className="text-[9px] text-[#444] uppercase font-bold tracking-[0.2em] mb-1">Traitement</div>
+                            <div className="text-sm font-mono text-[#F2B8B5]">{activeResult.durationMs ? `${Math.round(activeResult.durationMs)}ms` : '--'}</div>
                           </div>
                         </div>
-                        <div className="flex-1 overflow-y-auto p-8 custom-scrollbar">
-                          <DataCard
-                            data={activeResult.output}
-                            sources={activeResult.sources}
-                            loading={activeResult.status === 'processing'}
-                            onDeepDive={handleDeepDive}
-                            onDownload={() => handleDownload(activeResult)}
-                            onEntityClick={handleEntityClick}
-                          />
+                        <div className="flex-1 overflow-y-auto p-6 md:p-8 custom-scrollbar">
+                          <div className="max-w-6xl mx-auto">
+                            <DataCard
+                              data={activeResult.output}
+                              sources={activeResult.sources}
+                              loading={activeResult.status === 'processing'}
+                              onDeepDive={handleDeepDive}
+                              onDownload={() => handleDownload(activeResult)}
+                              onEntityClick={handleEntityClick}
+                            />
+                          </div>
                         </div>
                       </div>
                     ) : (
-                      <div className="flex-1 p-8 animate-in fade-in zoom-in-95 duration-500 overflow-y-auto custom-scrollbar min-h-0">
-                        <InvestigationPlanner onStartInvestigation={handleStartInvestigation} />
+                      <div className="flex-1 p-8 animate-in fade-in zoom-in-[0.98] duration-500 overflow-y-auto custom-scrollbar min-h-0">
+                        <div className="max-w-5xl mx-auto">
+                          <InvestigationPlanner onStartInvestigation={handleStartInvestigation} />
+                        </div>
                         {showPlanner && activeResult && (
-                          <button onClick={() => setShowPlanner(false)} className="absolute top-8 right-8 p-3 bg-black rounded-full border border-[#2D2D2D] hover:border-[#F2B8B5] transition-all"><XCircle /></button>
+                          <button onClick={() => setShowPlanner(false)} className="absolute top-8 right-8 p-2 bg-[#121212] rounded-lg border border-[#2A2A2A] hover:border-[#F2B8B5] transition-all text-[#666] hover:text-[#EEE] shadow-xl"><X size={18} /></button>
                         )}
                       </div>
                     )}

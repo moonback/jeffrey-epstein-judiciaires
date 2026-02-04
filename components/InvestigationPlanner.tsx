@@ -36,42 +36,50 @@ export const InvestigationPlanner: React.FC<InvestigationPlannerProps> = ({ onSt
     };
 
     return (
-        <div className="bg-[#1E1E1E] rounded-[32px] border border-[#444746] overflow-hidden shadow-2xl flex flex-col h-full">
+        <div className="bg-[#0D0D0D] rounded-xl border border-[#1A1A1A] overflow-hidden shadow-2xl flex flex-col h-full animate-in fade-in zoom-in-[0.99] duration-700">
             {/* Header */}
-            <div className="p-8 bg-gradient-to-br from-[#1E1E1E] to-[#2B2B2B] border-b border-[#444746]">
-                <div className="flex items-center gap-4 mb-2">
-                    <div className="p-3 bg-[#370003] rounded-2xl border border-[#601410]">
-                        <FileSearch className="text-[#F2B8B5]" size={24} />
+            <div className="p-6 md:p-8 bg-[#121212]/50 border-b border-[#1A1A1A]">
+                <div className="flex items-center gap-4 mb-3">
+                    <div className="p-2.5 bg-[#000] rounded-lg border border-[#2A2A2A]">
+                        <FileSearch className="text-[#F2B8B5]" size={20} />
                     </div>
-                    <h2 className="text-xl font-bold text-[#E3E3E3]">Planificateur d'Investigation</h2>
+                    <div>
+                        <h2 className="text-lg font-bold text-[#EEE] tracking-tight uppercase tracking-widest text-sm">Planificateur d'Opération</h2>
+                        <div className="flex items-center gap-2 mt-1">
+                            <div className="w-1 h-1 rounded-full bg-[#6DD58C] animate-pulse"></div>
+                            <span className="text-[10px] font-bold text-[#555] uppercase tracking-widest">Interface Forensique Active</span>
+                        </div>
+                    </div>
                 </div>
-                <p className="text-[#C4C7C5] text-[13px]">Précisez la source et l'objectif de l'analyse IA parmi les 3.5M de documents.</p>
+                <p className="text-[#888] text-[12px] leading-relaxed max-w-2xl font-light">Paramétrez les critères d'extraction pour le moteur de recherche à travers la base de données DOJ (3.5M documents).</p>
             </div>
 
-            <div className="flex-1 overflow-y-auto p-8 space-y-8 custom-scrollbar">
+            <div className="flex-1 overflow-y-auto p-6 md:p-8 space-y-10 custom-scrollbar report-paper">
                 {/* Source Selection */}
                 <section className="space-y-4">
-                    <div className="flex items-center gap-2 mb-4">
-                        <Database size={18} className="text-[#F2B8B5]" />
-                        <h3 className="text-[13px] font-bold uppercase tracking-widest text-[#8E918F]">1. Sélection du Data Set DOJ</h3>
+                    <div className="flex items-center gap-3 mb-6">
+                        <div className="h-[1px] w-8 bg-[#F2B8B5]/40"></div>
+                        <h3 className="text-[9px] font-bold uppercase tracking-[0.3em] text-[#F2B8B5]">01. Source de Données</h3>
                     </div>
-                    <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                         {DOJ_SOURCES.map((source) => (
                             <button
                                 key={source.id}
                                 onClick={() => setSelectedSource(source.id)}
-                                className={`flex flex-col p-4 rounded-2xl border transition-all text-left ${selectedSource === source.id
-                                    ? 'bg-[#370003] border-[#F2B8B5] shadow-lg shadow-[#F2B8B5]/5'
-                                    : 'bg-[#121212] border-[#444746] hover:border-[#F2B8B5]/30'
+                                className={`flex flex-col p-5 rounded-xl border transition-all text-left relative group ${selectedSource === source.id
+                                    ? 'bg-[#121212] border-[#F2B8B5]/40 shadow-xl'
+                                    : 'bg-[#0A0A0A] border-[#1A1A1A] hover:border-[#2A2A2A]'
                                     }`}
                             >
-                                <div className="flex items-center justify-between mb-1">
-                                    <span className={`text-[13px] font-bold ${selectedSource === source.id ? 'text-[#F2B8B5]' : 'text-[#E3E3E3]'}`}>
-                                        {source.name}
-                                    </span>
-                                    {selectedSource === source.id && <Shield size={14} className="text-[#F2B8B5]" />}
+                                {selectedSource === source.id && (
+                                    <div className="absolute top-3 right-3">
+                                        <div className="w-1.5 h-1.5 rounded-full bg-[#F2B8B5] shadow-[0_0_8px_#F2B8B5]"></div>
+                                    </div>
+                                )}
+                                <div className="text-[11px] font-bold text-[#EEE] mb-2 uppercase tracking-wide group-hover:text-[#F2B8B5] transition-colors">
+                                    {source.name}
                                 </div>
-                                <span className="text-[9px] text-[#C4C7C5] leading-relaxed">{source.description}</span>
+                                <span className="text-[10px] text-[#666] leading-relaxed group-hover:text-[#888] transition-colors">{source.description}</span>
                             </button>
                         ))}
                     </div>
@@ -79,77 +87,95 @@ export const InvestigationPlanner: React.FC<InvestigationPlannerProps> = ({ onSt
 
                 {/* Query Input */}
                 <section className="space-y-4">
-                    <div className="flex items-center gap-2 mb-4">
-                        <FileText size={18} className="text-[#F2B8B5]" />
-                        <h3 className="text-[13px] font-bold uppercase tracking-widest text-[#8E918F]">2. Objectif de Recherche</h3>
+                    <div className="flex items-center gap-3 mb-6">
+                        <div className="h-[1px] w-8 bg-[#F2B8B5]/40"></div>
+                        <h3 className="text-[9px] font-bold uppercase tracking-[0.3em] text-[#F2B8B5]">02. Paramètres de Recherche</h3>
                     </div>
 
-                    <div className="bg-[#121212] rounded-2xl border border-[#444746] p-4 space-y-4">
-                        <div className="flex gap-2 p-1 bg-[#1E1E1E] rounded-xl w-fit">
+                    <div className="bg-[#0A0A0A] rounded-xl border border-[#1A1A1A] overflow-hidden">
+                        <div className="flex border-b border-[#1A1A1A]">
                             <button
                                 onClick={() => setActiveTab('dataset')}
-                                className={`px-4 py-2 rounded-lg text-[11px] font-medium transition-all ${activeTab === 'dataset' ? 'bg-[#2B2B2B] text-[#F2B8B5] shadow-sm' : 'text-[#757775] hover:text-[#E3E3E3]'}`}
+                                className={`flex-1 py-4 text-[10px] font-bold uppercase tracking-widest transition-all ${activeTab === 'dataset' ? 'bg-[#121212] text-[#F2B8B5]' : 'text-[#444] hover:text-[#888]'}`}
                             >
-                                Modèles Prédéfinis
+                                Modèles de requête
                             </button>
                             <button
                                 onClick={() => setActiveTab('custom')}
-                                className={`px-4 py-2 rounded-lg text-[11px] font-medium transition-all ${activeTab === 'custom' ? 'bg-[#2B2B2B] text-[#F2B8B5] shadow-sm' : 'text-[#757775] hover:text-[#E3E3E3]'}`}
+                                className={`flex-1 py-4 text-[10px] font-bold uppercase tracking-widest transition-all ${activeTab === 'custom' ? 'bg-[#121212] text-[#F2B8B5]' : 'text-[#444] hover:text-[#888]'}`}
                             >
-                                Requête Libre
+                                Requête sur-mesure
                             </button>
                         </div>
 
-                        {activeTab === 'dataset' ? (
-                            <div className="grid grid-cols-1 gap-2">
-                                {QUERIES_LIST.map((q, idx) => (
-                                    <button
-                                        key={idx}
-                                        onClick={() => setCustomQuery(q.query)}
-                                        className={`flex items-center justify-between p-3 rounded-xl border border-[#444746] text-left transition-all ${customQuery === q.query ? 'bg-[#F2B8B5]/10 border-[#F2B8B5]/50' : 'hover:bg-[#1E1E1E]'
-                                            }`}
-                                    >
-                                        <span className="text-[13px] text-[#E3E3E3]">{q.label}</span>
-                                        <ChevronRight size={14} className="text-[#757775]" />
-                                    </button>
-                                ))}
-                            </div>
-                        ) : (
-                            <textarea
-                                value={customQuery}
-                                onChange={(e) => setCustomQuery(e.target.value)}
-                                placeholder="Ex: 'Listez toutes les mentions de l'île Little St. James entre 2004 et 2006...'"
-                                className="w-full h-32 bg-[#0F0F0F] rounded-xl p-4 text-[13px] text-[#E3E3E3] border border-[#444746] focus:border-[#F2B8B5] transition-all outline-none resize-none placeholder-[#444746]"
-                            />
-                        )}
+                        <div className="p-6">
+                            {activeTab === 'dataset' ? (
+                                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
+                                    {QUERIES_LIST.map((q, idx) => (
+                                        <button
+                                            key={idx}
+                                            onClick={() => setCustomQuery(q.query)}
+                                            className={`flex items-center justify-between p-4 rounded-lg border text-left transition-all group ${customQuery === q.query
+                                                ? 'bg-[#F2B8B5]/5 border-[#F2B8B5]/30'
+                                                : 'bg-[#080808] border-[#1A1A1A] hover:border-[#2A2A2A]'
+                                                }`}
+                                        >
+                                            <span className={`text-[11px] font-medium tracking-tight ${customQuery === q.query ? 'text-[#F2B8B5]' : 'text-[#888] group-hover:text-[#EEE]'}`}>{q.label}</span>
+                                            <ChevronRight size={12} className={customQuery === q.query ? 'text-[#F2B8B5]' : 'text-[#333] group-hover:text-[#F2B8B5]'} />
+                                        </button>
+                                    ))}
+                                </div>
+                            ) : (
+                                <div className="relative">
+                                    <textarea
+                                        value={customQuery}
+                                        onChange={(e) => setCustomQuery(e.target.value)}
+                                        placeholder="Saisissez vos mots-clés, noms de cibles ou dates précises..."
+                                        className="w-full h-40 bg-[#080808] rounded-lg p-5 text-[13px] text-[#EEE] border border-[#1A1A1A] focus:border-[#F2B8B5]/50 transition-all outline-none resize-none placeholder-[#333] font-light leading-relaxed"
+                                    />
+                                    <div className="absolute bottom-4 right-4 opacity-20 pointer-events-none">
+                                        <Shield size={40} className="text-[#333]" />
+                                    </div>
+                                </div>
+                            )}
+                        </div>
                     </div>
                 </section>
 
                 {/* Warning / Info */}
-                <div className="p-4 bg-[#002B55]/20 border border-[#004A77]/50 rounded-2xl flex gap-3">
-                    <Info size={18} className="text-[#8AB4F8] shrink-0 mt-0.5" />
-                    <p className="text-[11px] text-[#D3E3FD] leading-relaxed">
-                        <strong>Note de l'Agent :</strong> L'analyse d'archives massives via Grok/Gemini nécessite des requêtes précises pour éviter la dilution des informations. Privilégiez des noms propres ou des dates spécifiques.
-                    </p>
+                <div className="p-5 bg-[#0A0A0A] border border-[#1A1A1A] rounded-xl flex gap-4">
+                    <div className="p-2 bg-[#8AB4F8]/10 rounded border border-[#8AB4F8]/20 shrink-0 h-fit">
+                        <Info size={14} className="text-[#8AB4F8]" />
+                    </div>
+                    <div>
+                        <span className="text-[9px] font-bold uppercase tracking-[0.2em] text-[#8AB4F8] block mb-1">Observation Intelligence Agent</span>
+                        <p className="text-[11px] text-[#666] leading-relaxed font-light">
+                            L'analyse approfondie nécessite une granularité élevée. Pour des résultats optimaux, spécifiez des entités nommées ou des références de dossiers spécifiques.
+                        </p>
+                    </div>
                 </div>
             </div>
 
             {/* Footer / Submit */}
-            <div className="p-8 bg-[#1E1E1E] border-t border-[#444746]">
+            <div className="p-6 md:p-8 bg-[#0D0D0D] border-t border-[#1A1A1A]">
                 <button
                     onClick={handleStart}
                     disabled={activeTab === 'custom' && !customQuery}
-                    className={`w-full flex items-center justify-center gap-3 py-4 rounded-2xl font-bold uppercase tracking-widest text-[13px] transition-all shadow-xl ${activeTab === 'custom' && !customQuery
-                        ? 'bg-[#2B2B2B] text-[#757775] cursor-not-allowed'
-                        : 'bg-[#F2B8B5] text-[#370003] hover:bg-[#F9DEDC] hover:scale-[1.02] active:scale-95 shadow-[#F2B8B5]/20'
+                    className={`w-full h-14 flex items-center justify-center gap-3 rounded-xl font-bold uppercase tracking-[0.2em] text-[11px] transition-all relative overflow-hidden group ${activeTab === 'custom' && !customQuery
+                        ? 'bg-[#1A1A1A] text-[#444] cursor-not-allowed border border-[#2A2A2A]'
+                        : 'bg-[#F2B8B5] text-[#000] hover:bg-[#EEE] active:scale-[0.98] shadow-2xl shadow-[#F2B8B5]/10'
                         }`}
                 >
-                    <Play size={20} fill="currentColor" />
-                    Lancer l'Analyse du Dossier
+                    <Play size={16} fill="currentColor" />
+                    Initialiser la Requête Forensique
+                    {(!customQuery && activeTab === 'custom') ? null : (
+                        <div className="absolute inset-0 bg-white opacity-0 group-active:opacity-20 transition-opacity"></div>
+                    )}
                 </button>
             </div>
         </div>
     );
 };
+
 
 const QUERIES_LIST = QUICK_QUERIES;

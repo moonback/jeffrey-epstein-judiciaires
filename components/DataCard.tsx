@@ -65,67 +65,71 @@ export const DataCard: React.FC<DataCardProps> = ({ data, sources, loading, onDe
     }
 
     return (
-        <div className="w-full bg-[#1E1E1E] rounded-[40px] overflow-hidden border border-[#444746] shadow-2xl transition-all duration-500 flex flex-col">
+        <div className="w-full bg-[#0D0D0D] border border-[#1A1A1A] rounded-2xl overflow-hidden shadow-2xl transition-all duration-500 flex flex-col">
 
             {/* En-tête Badge */}
-            <div className="bg-[#370003] px-6 py-4 flex justify-between items-center border-b border-[#601410]">
+            <div className="bg-[#121212] px-6 py-4 flex justify-between items-center border-b border-[#1A1A1A]">
                 <div className="flex items-center gap-3">
-                    <ShieldAlert size={20} className="text-[#F2B8B5]" />
-                    <span className="text-[#F2B8B5] font-bold tracking-wide text-sm uppercase">Rapport Forensique</span>
+                    <div className="p-1.5 bg-[#301010] rounded border border-[#F2B8B5]/20">
+                        <ShieldAlert size={14} className="text-[#F2B8B5]" />
+                    </div>
+                    <span className="text-[#EEE] font-bold tracking-widest text-[10px] uppercase">Rapport de Forensic Numérique</span>
                 </div>
-                <div className="flex items-center gap-2">
+                <div className="flex items-center gap-3">
                     <button
                         onClick={onDownload}
-                        className="flex items-center gap-1.5 bg-[#444746]/50 hover:bg-[#F2B8B5] hover:text-[#370003] text-[#E3E3E3] px-3 py-1.5 rounded-lg text-[11px] uppercase font-bold tracking-wide transition-all border border-[#444746]"
-                        title="Télécharger les données au format JSON"
+                        className="flex items-center gap-1.5 bg-[#1A1A1A] hover:bg-[#F2B8B5] hover:text-[#370003] text-[#888] px-3 py-1.5 rounded-md text-[10px] uppercase font-bold tracking-wider transition-all border border-[#2A2A2A]"
                     >
-                        <Download size={12} /> Sauvegarder JSON
+                        <Download size={11} /> Export JSON
                     </button>
-                    <span className="text-[#F2B8B5] font-mono text-[13px] opacity-80 px-2 py-1 bg-[#601410] rounded">{data.contexte_juridique || 'DOSSIER CLASSIFIÉ'}</span>
+                    <div className="h-4 w-[1px] bg-[#2A2A2A]"></div>
+                    <span className="text-[#F2B8B5] font-mono text-[11px] font-bold opacity-90 px-2 py-0.5 bg-[#F2B8B5]/10 rounded border border-[#F2B8B5]/20 uppercase">{data.contexte_juridique || 'CLASSIFIED'}</span>
                 </div>
             </div>
 
-            <div className="p-8 flex flex-col gap-8 flex-1">
+            <div className="p-6 md:p-10 flex flex-col gap-10 flex-1 report-paper">
 
                 {/* Résumé Global */}
                 <div className="animate-in fade-in slide-in-from-top-4 duration-700">
-                    <label className="text-[11px] uppercase font-black tracking-[0.2em] text-[#F2B8B5] mb-4 flex items-center gap-2">
-                        <div className="w-1.5 h-1.5 rounded-full bg-[#F2B8B5] animate-pulse"></div>
-                        Synthèse de l'Investigation
-                    </label>
-                    <div className="text-[#E3E3E3] leading-relaxed text-base bg-[#121212] p-8 rounded-[32px] border border-[#2D2D2D] italic relative overflow-hidden group">
-                        <div className="absolute top-0 left-0 w-1.5 h-full bg-gradient-to-b from-[#F2B8B5] to-[#601410]"></div>
-                        <p className="relative z-10">{data.context_general}</p>
+                    <div className="flex items-center gap-4 mb-6">
+                        <div className="h-[1px] flex-1 bg-gradient-to-r from-transparent via-[#2A2A2A] to-[#2A2A2A]"></div>
+                        <label className="text-[10px] uppercase font-bold tracking-[0.3em] text-[#F2B8B5] flex items-center gap-2 px-2">
+                            Synthèse de l'Affaire
+                        </label>
+                        <div className="h-[1px] flex-1 bg-gradient-to-l from-transparent via-[#2A2A2A] to-[#2A2A2A]"></div>
+                    </div>
+                    <div className="text-[#BBB] leading-relaxed text-base bg-[#0A0A0A]/60 backdrop-blur-sm p-8 rounded-xl border border-[#1A1A1A] relative group">
+                        <div className="absolute top-0 left-0 w-[2px] h-full bg-[#F2B8B5]/40 group-hover:bg-[#F2B8B5] transition-colors"></div>
+                        <p className="relative z-10 font-light italic leading-loose text-lg text-[#EEE]">{data.context_general}</p>
                     </div>
                 </div>
 
                 {/* Section Documents Détaillés */}
                 <div>
-                    <div className="flex flex-wrap items-center justify-between mb-3 gap-3">
-                        <label className="text-[12px] uppercase tracking-widest text-[#8E918F] flex items-center gap-2">
-                            <File size={12} /> Documents & Preuves
+                    <div className="flex flex-wrap items-center justify-between mb-6 gap-4">
+                        <label className="text-[10px] uppercase font-bold tracking-[0.3em] text-[#555] flex items-center gap-2">
+                            <File size={12} /> Éléments de Preuve
                         </label>
 
                         {/* Barre de Filtres */}
                         {availableTypes.length > 0 && (
                             <div className="flex items-center gap-2 overflow-x-auto pb-1 max-w-full no-scrollbar">
-                                <Filter size={12} className="text-[#444746] shrink-0" />
                                 <button
                                     onClick={() => setActiveFilter('ALL')}
-                                    className={`px-2.5 py-1 rounded-md text-[11px] uppercase font-bold tracking-wide transition-colors border ${activeFilter === 'ALL'
-                                        ? 'bg-[#E3E3E3] text-[#1E1E1E] border-[#E3E3E3]'
-                                        : 'bg-[#1E1E1E] text-[#757775] border-[#444746] hover:border-[#757775]'
+                                    className={`px-3 py-1 rounded text-[9px] uppercase font-bold tracking-widest transition-all border ${activeFilter === 'ALL'
+                                        ? 'bg-[#EEE] text-[#000] border-[#EEE]'
+                                        : 'bg-[#121212] text-[#555] border-[#1A1A1A] hover:border-[#F2B8B5]/40 hover:text-[#888]'
                                         }`}
                                 >
-                                    TOUS
+                                    ALL
                                 </button>
                                 {availableTypes.map((type) => (
                                     <button
                                         key={type}
                                         onClick={() => setActiveFilter(type)}
-                                        className={`px-2.5 py-1 rounded-md text-[11px] uppercase font-bold tracking-wide transition-colors border whitespace-nowrap ${activeFilter === type
-                                            ? 'bg-[#004A77] text-[#D3E3FD] border-[#004A77]'
-                                            : 'bg-[#1E1E1E] text-[#757775] border-[#444746] hover:border-[#8AB4F8] hover:text-[#8AB4F8]'
+                                        className={`px-3 py-1 rounded text-[9px] uppercase font-bold tracking-widest transition-all border whitespace-nowrap ${activeFilter === type
+                                            ? 'bg-[#F2B8B5]/20 text-[#F2B8B5] border-[#F2B8B5]/40'
+                                            : 'bg-[#121212] text-[#555] border-[#1A1A1A] hover:border-[#F2B8B5]/40 hover:text-[#888]'
                                             }`}
                                     >
                                         {type}
@@ -135,60 +139,56 @@ export const DataCard: React.FC<DataCardProps> = ({ data, sources, loading, onDe
                         )}
                     </div>
 
-                    <div className="space-y-4">
+                    <div className="grid grid-cols-1 gap-6">
                         {filteredDocuments && filteredDocuments.length > 0 ? (
                             filteredDocuments.map((doc, idx) => (
-                                <div key={idx} className="bg-[#2B2B2B] rounded-xl border border-[#444746] overflow-hidden hover:border-[#F2B8B5]/50 transition-colors group">
+                                <div key={idx} className="bg-[#0D0D0D] rounded-xl border border-[#1A1A1A] overflow-hidden hover:border-[#F2B8B5]/30 transition-all group flex flex-col md:flex-row">
 
-                                    {/* Doc Header */}
-                                    <div className="bg-[#1E1E1E] p-3 border-b border-[#444746] flex flex-col md:flex-row justify-between items-start md:items-center gap-4">
-                                        <div>
-                                            <div className="flex items-center gap-2 mb-1">
-                                                <span className="text-[11px] font-bold uppercase text-[#004A77] bg-[#D3E3FD] px-1.5 rounded">{doc.type || 'DOCUMENT'}</span>
-                                                <span className="text-[10px] font-mono text-[#C4C7C5]">{doc.date}</span>
+                                    {/* Sidebar de la carte document */}
+                                    <div className="w-full md:w-64 bg-[#121212]/50 p-5 border-b md:border-b-0 md:border-r border-[#1A1A1A] shrink-0">
+                                        <div className="flex flex-col h-full">
+                                            <div className="mb-4">
+                                                <div className="text-[8px] font-bold text-[#F2B8B5] uppercase tracking-[0.3em] mb-1">Type de Document</div>
+                                                <span className="text-[10px] font-bold uppercase text-[#EEE] bg-[#F2B8B5]/10 px-2 py-0.5 rounded-sm border border-[#F2B8B5]/20 block w-fit">{doc.type || 'SOURCE'}</span>
                                             </div>
-                                            <h4 className="text-[#E3E3E3] font-bold text-sm leading-tight">{doc.title}</h4>
-                                        </div>
-                                        <div className="flex items-center gap-1">
-                                            <button
-                                                onClick={() => onDeepDive(doc.title, 'simple')}
-                                                className="flex items-center gap-1 bg-[#1E1E1E] hover:bg-[#F2B8B5] hover:text-[#370003] text-[#F2B8B5] px-2 py-1.5 rounded-lg border border-[#F2B8B5]/30 transition-all text-[11px] uppercase font-bold"
-                                                title="Vulgariser (Expliquer simplement)"
-                                            >
-                                                <BookOpen size={12} /> Simple
-                                            </button>
-                                            <button
-                                                onClick={() => onDeepDive(doc.title, 'technical')}
-                                                className="flex items-center gap-1 bg-[#1E1E1E] hover:bg-[#8AB4F8] hover:text-[#004A77] text-[#8AB4F8] px-2 py-1.5 rounded-lg border border-[#8AB4F8]/30 transition-all text-[11px] uppercase font-bold"
-                                                title="Analyse Technique Juridique"
-                                            >
-                                                <GraduationCap size={12} /> Technique
-                                            </button>
-                                            <button
-                                                onClick={() => onDeepDive(doc.title, 'standard')}
-                                                className="flex items-center gap-1 bg-[#370003] hover:bg-[#601410] text-[#F2B8B5] px-2 py-1.5 rounded-lg border border-[#601410] transition-all text-[11px] uppercase font-bold"
-                                                title="Analyse Approfondie Standard"
-                                            >
-                                                <Zap size={12} /> Profond
-                                            </button>
+                                            <div className="mb-6">
+                                                <div className="text-[8px] font-bold text-[#555] uppercase tracking-[0.3em] mb-1">Datation</div>
+                                                <span className="text-[10px] font-mono text-[#888]">{doc.date}</span>
+                                            </div>
+
+                                            <div className="mt-auto flex flex-col gap-2">
+                                                <button
+                                                    onClick={() => onDeepDive(doc.title, 'simple')}
+                                                    className="w-full flex items-center justify-center gap-2 bg-[#0A0A0A] hover:bg-[#F2B8B5] hover:text-[#000] text-[#888] py-2 rounded border border-[#1A1A1A] transition-all text-[9px] font-bold uppercase tracking-widest"
+                                                >
+                                                    <BookOpen size={10} /> Expliquer
+                                                </button>
+                                                <button
+                                                    onClick={() => onDeepDive(doc.title, 'technical')}
+                                                    className="w-full flex items-center justify-center gap-2 bg-[#0A0A0A] hover:bg-[#8AB4F8] hover:text-[#000] text-[#888] py-2 rounded border border-[#1A1A1A] transition-all text-[9px] font-bold uppercase tracking-widest"
+                                                >
+                                                    <GraduationCap size={10} /> Forensic
+                                                </button>
+                                            </div>
                                         </div>
                                     </div>
 
-                                    {/* Doc Body */}
-                                    <div className="p-4 space-y-4">
-                                        <p className="text-[#C4C7C5] text-[13px] leading-relaxed border-l-2 border-[#444746] pl-3">
+                                    {/* Contenu de la carte document */}
+                                    <div className="flex-1 p-6 flex flex-col gap-5">
+                                        <h4 className="text-[#EEE] font-bold text-lg leading-tight group-hover:text-[#F2B8B5] transition-colors">{doc.title}</h4>
+                                        <p className="text-[#888] text-[13px] leading-relaxed font-light italic">
                                             {doc.description}
                                         </p>
 
                                         {doc.key_facts && doc.key_facts.length > 0 && (
-                                            <div className="bg-[#121212] rounded-lg p-3">
-                                                <label className="text-[11px] uppercase tracking-widest text-[#8E918F] mb-2 flex items-center gap-1.5">
-                                                    <List size={10} /> Faits Clés Extraits
+                                            <div className="bg-[#0A0A0A] rounded-lg p-5 border border-[#1A1A1A]">
+                                                <label className="text-[9px] font-bold uppercase tracking-[0.2em] text-[#444] mb-3 flex items-center gap-2">
+                                                    <List size={10} /> Faits Extraits
                                                 </label>
-                                                <ul className="space-y-1.5">
+                                                <ul className="space-y-3">
                                                     {doc.key_facts.map((fact, k) => (
-                                                        <li key={k} className="text-[#E3E3E3] text-[13px] flex items-start gap-2">
-                                                            <span className="text-[#F2B8B5] mt-1 text-[8px]">●</span>
+                                                        <li key={k} className="text-[#BBB] text-[12px] flex items-start gap-3 group/fact">
+                                                            <span className="text-[#F2B8B5] mt-1 text-[10px] font-bold opacity-40 group-hover/fact:opacity-100 transition-opacity">0{k + 1}</span>
                                                             <span className="leading-snug">{fact}</span>
                                                         </li>
                                                     ))}
@@ -197,27 +197,28 @@ export const DataCard: React.FC<DataCardProps> = ({ data, sources, loading, onDe
                                         )}
 
                                         {doc.legal_implications && (
-                                            <div className="flex items-start gap-2 text-[13px] text-[#A8C7FA] bg-[#004A77]/20 p-2 rounded border border-[#004A77]/30">
-                                                <Scale size={14} className="shrink-0 mt-0.5" />
-                                                <span><strong className="font-semibold">Implication :</strong> {doc.legal_implications}</span>
+                                            <div className="flex items-start gap-3 text-[11px] text-[#8AB4F8] bg-[#8AB4F8]/5 p-3 rounded border border-[#8AB4F8]/10 group-hover:border-[#8AB4F8]/30 transition-colors">
+                                                <Scale size={14} className="shrink-0 mt-0.5 opacity-60" />
+                                                <span className="font-light leading-relaxed"><strong className="font-bold uppercase tracking-widest text-[9px] mr-2">Portée Juridique :</strong> {doc.legal_implications}</span>
                                             </div>
                                         )}
                                     </div>
                                 </div>
                             ))
                         ) : (
-                            <div className="text-[#757775] text-xs italic p-4 bg-[#121212] rounded-lg border border-[#444746] border-dashed text-center">
-                                Aucun document ne correspond au filtre "{activeFilter}".
+                            <div className="text-[#444] text-[10px] uppercase font-bold tracking-[0.2em] py-12 bg-[#0A0A0A] rounded-xl border border-[#1A1A1A] border-dashed text-center">
+                                Aucune donnée filtrée
                             </div>
                         )}
                     </div>
                 </div>
 
-                <div className="grid grid-cols-1 gap-8 pt-4 border-t border-[#444746]/50">
+                {/* Section Pied de Page: Entités & Sources */}
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-10 pt-10 border-t border-[#1A1A1A]">
                     {/* Entités Globales */}
                     <div>
-                        <label className="text-[12px] uppercase tracking-widest text-[#8E918F] mb-2 flex items-center gap-2">
-                            <Users size={12} /> Entités Globales Identifiées
+                        <label className="text-[10px] uppercase font-bold tracking-[0.3em] text-[#555] mb-4 flex items-center gap-2">
+                            <Users size={12} /> Réseau de Personnes Morales & Physiques
                         </label>
                         <div className="flex flex-wrap gap-2">
                             {data.entites_cles && data.entites_cles.length > 0 ? (
@@ -225,42 +226,41 @@ export const DataCard: React.FC<DataCardProps> = ({ data, sources, loading, onDe
                                     <button
                                         key={i}
                                         onClick={() => onEntityClick(entity)}
-                                        className="group flex items-center gap-2 px-3 py-1.5 rounded-lg bg-[#2B2B2B] text-[#E3E3E3] text-[12px] border border-[#444746] hover:border-[#F2B8B5] hover:bg-[#370003] transition-all cursor-pointer"
-                                        title={`Lancer une recherche spécifique sur ${entity}`}
+                                        className="group flex items-center gap-3 px-3 py-2 rounded-md bg-[#121212] text-[#888] text-[11px] border border-[#1A1A1A] hover:border-[#F2B8B5]/40 hover:bg-[#1A1A1A] transition-all"
                                     >
-                                        <span>{entity}</span>
-                                        <ArrowUpRight size={10} className="text-[#F2B8B5] opacity-0 group-hover:opacity-100 transition-opacity" />
+                                        <span className="font-medium group-hover:text-[#EEE] transition-colors">{entity}</span>
+                                        <ArrowUpRight size={10} className="text-[#F2B8B5] opacity-20 group-hover:opacity-100 transition-all" />
                                     </button>
                                 ))
                             ) : (
-                                <span className="text-[#757775] text-xs italic">Aucune entité détectée</span>
+                                <span className="text-[#333] text-[10px] uppercase font-bold italic tracking-widest">Inconnu</span>
                             )}
                         </div>
                     </div>
-                </div>
 
-                {/* Sources Section */}
-                <div className="mt-auto pt-6 border-t border-[#444746]">
-                    <label className="text-[12px] uppercase tracking-widest text-[#8E918F] mb-3 flex items-center gap-2">
-                        <LinkIcon size={12} /> Sources de Données (Grounding)
-                    </label>
-                    <div className="space-y-2">
-                        {sources.length > 0 ? (
-                            sources.map((source, i) => (
-                                <a
-                                    key={i}
-                                    href={source.uri}
-                                    target="_blank"
-                                    rel="noopener noreferrer"
-                                    className="flex items-center justify-between group p-2 rounded-lg hover:bg-[#2B2B2B] transition-colors cursor-pointer"
-                                >
-                                    <span className="text-[13px] text-[#8AB4F8] truncate max-w-[80%] group-hover:underline">{source.title}</span>
-                                    <span className="text-[11px] text-[#444746] font-mono group-hover:text-[#C4C7C5]">LIEN EXT ↗</span>
-                                </a>
-                            ))
-                        ) : (
-                            <div className="text-[11px] text-[#757775] italic">Aucune source externe citée.</div>
-                        )}
+                    {/* Sources Section */}
+                    <div>
+                        <label className="text-[10px] uppercase font-bold tracking-[0.3em] text-[#555] mb-4 flex items-center gap-2">
+                            <LinkIcon size={12} /> Sources Authentifiées (Grounding)
+                        </label>
+                        <div className="space-y-1">
+                            {sources.length > 0 ? (
+                                sources.map((source, i) => (
+                                    <a
+                                        key={i}
+                                        href={source.uri}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="flex items-center justify-between group p-2 rounded hover:bg-[#121212] transition-all"
+                                    >
+                                        <span className="text-[12px] text-[#555] group-hover:text-[#8AB4F8] transition-colors truncate max-w-[85%]">{source.title}</span>
+                                        <span className="text-[8px] font-bold text-[#333] group-hover:text-[#F2B8B5] transition-colors font-mono">LINK-EXT</span>
+                                    </a>
+                                ))
+                            ) : (
+                                <div className="text-[9px] text-[#333] uppercase font-bold italic tracking-widest">Aucune source listée</div>
+                            )}
+                        </div>
                     </div>
                 </div>
 
