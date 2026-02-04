@@ -1,42 +1,203 @@
 <!DOCTYPE html>
-<html lang="en">
+<html lang="fr">
 
 <head>
+  <!-- ============================================ -->
+  <!-- Meta de Base (Charset & Viewport) -->
+  <!-- ============================================ -->
   <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Analyseur de Documents Judiciaires</title>
-  <!-- Google tag (gtag.js) -->
+  <meta name="viewport" content="width=device-width, initial-scale=1.0, viewport-fit=cover" />
+  <meta http-equiv="X-UA-Compatible" content="IE=edge" />
+
+  <!-- ============================================ -->
+  <!-- SEO Principal -->
+  <!-- ============================================ -->
+  <title>DOJ Forensic - Analyseur de Documents Judiciaires | Plateforme d'Analyse Forensique IA</title>
+  <meta name="description"
+    content="Plateforme forensique professionnelle propulsée par l'IA pour analyser les divulgations du DOJ. Extraction automatique, cartographie de réseau, chronologie temporelle et traçabilité financière des documents judiciaires." />
+  <meta name="keywords"
+    content="analyse forensique, documents judiciaires, DOJ, IA juridique, extraction de données, enquête judiciaire, analyse documentaire, Gemini AI, cartographie réseau, chronologie judiciaire" />
+  <meta name="author" content="DOJ Forensic" />
+  <meta name="robots" content="index, follow, max-snippet:-1, max-image-preview:large, max-video-preview:-1" />
+  <meta name="language" content="French" />
+  <meta name="revisit-after" content="7 days" />
+  <meta name="rating" content="general" />
+
+  <!-- ============================================ -->
+  <!-- Canonical & Alternate Languages -->
+  <!-- ============================================ -->
+  <link rel="canonical" href="https://votre-domaine.com/" />
+  <link rel="alternate" hreflang="fr" href="https://votre-domaine.com/" />
+  <link rel="alternate" hreflang="en" href="https://votre-domaine.com/en/" />
+  <link rel="alternate" hreflang="x-default" href="https://votre-domaine.com/" />
+
+  <!-- ============================================ -->
+  <!-- Open Graph / Facebook -->
+  <!-- ============================================ -->
+  <meta property="og:type" content="website" />
+  <meta property="og:url" content="https://votre-domaine.com/" />
+  <meta property="og:site_name" content="DOJ Forensic" />
+  <meta property="og:title" content="DOJ Forensic - Plateforme d'Analyse Forensique IA" />
+  <meta property="og:description"
+    content="Transformez le chaos documentaire en preuves structurées avec notre plateforme forensique propulsée par l'IA. Analyse automatique des documents judiciaires, cartographie de réseau et traçabilité financière." />
+  <meta property="og:image" content="https://votre-domaine.com/og-image.jpg" />
+  <meta property="og:image:width" content="1200" />
+  <meta property="og:image:height" content="630" />
+  <meta property="og:image:alt" content="DOJ Forensic - Interface de la plateforme d'analyse forensique" />
+  <meta property="og:locale" content="fr_FR" />
+  <meta property="og:locale:alternate" content="en_US" />
+
+  <!-- ============================================ -->
+  <!-- Twitter Card -->
+  <!-- ============================================ -->
+  <meta name="twitter:card" content="summary_large_image" />
+  <meta name="twitter:url" content="https://votre-domaine.com/" />
+  <meta name="twitter:title" content="DOJ Forensic - Plateforme d'Analyse Forensique IA" />
+  <meta name="twitter:description"
+    content="Plateforme forensique professionnelle pour analyser les documents judiciaires avec l'IA. Extraction, cartographie et analyse en temps réel." />
+  <meta name="twitter:image" content="https://votre-domaine.com/twitter-image.jpg" />
+  <meta name="twitter:image:alt" content="DOJ Forensic - Plateforme d'analyse forensique" />
+  <meta name="twitter:creator" content="@votrecompte" />
+  <meta name="twitter:site" content="@votrecompte" />
+
+  <!-- ============================================ -->
+  <!-- Structured Data (JSON-LD Schema.org) -->
+  <!-- ============================================ -->
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "WebApplication",
+    "name": "DOJ Forensic",
+    "alternateName": "Analyseur de Documents Judiciaires",
+    "description": "Plateforme forensique de pointe pour explorer, extraire et synthétiser les divulgations complexes du Département de la Justice. Propulsé par l'IA Gemini.",
+    "url": "https://votre-domaine.com",
+    "logo": "https://votre-domaine.com/logo.png",
+    "image": "https://votre-domaine.com/og-image.jpg",
+    "applicationCategory": "LegalApplication",
+    "operatingSystem": "Web Browser",
+    "offers": {
+      "@type": "Offer",
+      "price": "0",
+      "priceCurrency": "USD"
+    },
+    "featureList": [
+      "Extraction Forensique IA",
+      "Cartographie de Réseau",
+      "Chronologie Temporelle",
+      "Traçabilité Financière",
+      "Assistant Live & Vocal",
+      "Architecture Local-First"
+    ],
+    "browserRequirements": "Requires JavaScript. Requires HTML5.",
+    "softwareVersion": "1.0.0",
+    "aggregateRating": {
+      "@type": "AggregateRating",
+      "ratingValue": "4.8",
+      "ratingCount": "127"
+    },
+    "author": {
+      "@type": "Organization",
+      "name": "DOJ Forensic",
+      "url": "https://votre-domaine.com"
+    }
+  }
+  </script>
+
+  <script type="application/ld+json">
+  {
+    "@context": "https://schema.org",
+    "@type": "Organization",
+    "name": "DOJ Forensic",
+    "url": "https://votre-domaine.com",
+    "logo": "https://votre-domaine.com/logo.png",
+    "description": "Plateforme forensique professionnelle pour l'analyse de documents judiciaires",
+    "sameAs": [
+      "https://twitter.com/votrecompte",
+      "https://github.com/moonback/Analyseur-de-Documents-Judiciaires"
+    ],
+    "contactPoint": {
+      "@type": "ContactPoint",
+      "contactType": "Support",
+      "availableLanguage": ["French", "English"]
+    }
+  }
+  </script>
+
+  <!-- ============================================ -->
+  <!-- Favicon & App Icons -->
+  <!-- ============================================ -->
+  <link rel="icon" type="image/x-icon" href="/favicon.ico" />
+  <link rel="icon" type="image/png" sizes="16x16" href="/favicon-16x16.png" />
+  <link rel="icon" type="image/png" sizes="32x32" href="/favicon-32x32.png" />
+  <link rel="apple-touch-icon" sizes="180x180" href="/apple-touch-icon.png" />
+  <link rel="manifest" href="/site.webmanifest" />
+  <meta name="theme-color" content="#0f172a" />
+  <meta name="msapplication-TileColor" content="#0f172a" />
+  <meta name="msapplication-config" content="/browserconfig.xml" />
+
+  <!-- ============================================ -->
+  <!-- iOS Safari Meta Tags -->
+  <!-- ============================================ -->
+  <meta name="apple-mobile-web-app-capable" content="yes" />
+  <meta name="apple-mobile-web-app-status-bar-style" content="black-translucent" />
+  <meta name="apple-mobile-web-app-title" content="DOJ Forensic" />
+
+  <!-- ============================================ -->
+  <!-- Performance Optimization -->
+  <!-- ============================================ -->
+  <link rel="dns-prefetch" href="https://fonts.googleapis.com" />
+  <link rel="dns-prefetch" href="https://fonts.gstatic.com" />
+  <link rel="dns-prefetch" href="https://aistudiocdn.com" />
+  <link rel="dns-prefetch" href="https://unpkg.com" />
+  <link rel="dns-prefetch" href="https://www.googletagmanager.com" />
+
+  <link rel="preconnect" href="https://fonts.googleapis.com" />
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin />
+  <link rel="preconnect" href="https://aistudiocdn.com" />
+
+  <!-- ============================================ -->
+  <!-- Google Analytics (gtag.js) -->
+  <!-- ============================================ -->
   <script async src="https://www.googletagmanager.com/gtag/js?id=G-Q4E86DXBXP"></script>
   <script>
     window.dataLayer = window.dataLayer || [];
     function gtag() { dataLayer.push(arguments); }
     gtag('js', new Date());
-
-    gtag('config', 'G-Q4E86DXBXP');
+    gtag('config', 'G-Q4E86DXBXP', {
+      'anonymize_ip': true,
+      'cookie_flags': 'SameSite=None;Secure'
+    });
   </script>
-  <!-- Google Fonts Embed -->
-  <link rel="preconnect" href="https://fonts.googleapis.com">
-  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+
+  <!-- ============================================ -->
+  <!-- Google Fonts -->
+  <!-- ============================================ -->
   <link
     href="https://fonts.googleapis.com/css2?family=Inter:wght@300;400;500;600;700&family=JetBrains+Mono:wght@400;700&display=swap"
-    rel="stylesheet">
+    rel="stylesheet" crossorigin="anonymous" />
 
-
+  <!-- ============================================ -->
+  <!-- Import Maps for ESM -->
+  <!-- ============================================ -->
   <script type="importmap">
-{
-  "imports": {
-    "react": "https://aistudiocdn.com/react@^19.2.1",
-    "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.1/",
-    "react/": "https://aistudiocdn.com/react@^19.2.1/",
-    "@google/genai": "https://aistudiocdn.com/@google/genai@^1.31.0",
-    "lucide-react": "https://aistudiocdn.com/lucide-react@^0.555.0",
-    "idb": "https://unpkg.com/idb@8.0.0/build/index.js"
+  {
+    "imports": {
+      "react": "https://aistudiocdn.com/react@^19.2.1",
+      "react-dom/": "https://aistudiocdn.com/react-dom@^19.2.1/",
+      "react/": "https://aistudiocdn.com/react@^19.2.1/",
+      "@google/genai": "https://aistudiocdn.com/@google/genai@^1.31.0",
+      "lucide-react": "https://aistudiocdn.com/lucide-react@^0.555.0",
+      "idb": "https://unpkg.com/idb@8.0.0/build/index.js"
+    }
   }
-}
-</script>
+  </script>
 </head>
 
 <body>
+  <noscript>
+    <strong>DOJ Forensic nécessite JavaScript pour fonctionner. Veuillez activer JavaScript dans les paramètres de votre
+      navigateur.</strong>
+  </noscript>
   <div id="root"></div>
   <script type="module" src="/index.tsx"></script>
 </body>

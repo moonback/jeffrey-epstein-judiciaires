@@ -83,6 +83,7 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ history, onD
               placeholder="Rechercher une déposition ou un indice..."
               value={searchTerm}
               onChange={(e) => setSearchTerm(e.target.value)}
+              aria-label="Rechercher dans les documents"
               className="bg-[#F8FAFC] border border-slate-100 rounded-2xl py-3 pl-14 pr-6 text-sm text-[#0F172A] w-full focus:bg-white focus:border-[#B91C1C] focus:ring-4 focus:ring-red-900/5 outline-none transition-all shadow-inner placeholder-slate-300 font-medium"
             />
           </div>

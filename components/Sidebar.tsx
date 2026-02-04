@@ -116,7 +116,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 )}
 
                 {/* NAVIGATION */}
-                <nav className="space-y-1 pb-2">
+                <nav className="space-y-1 pb-2" aria-label="Menu principal d'investigation">
                     <div className={`text-[8px] font-black text-slate-200 uppercase tracking-[0.5em] mb-2 ml-4 ${isCollapsed ? 'hidden' : 'hidden lg:block'}`}>Investigation Suite</div>
                     {menuItems.map((item) => {
                         const isActive = currentView === item.id;
@@ -128,6 +128,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
                                     ? 'bg-[#F8FAFC] text-[#0F172A] shadow-inner border border-slate-50'
                                     : 'text-slate-400 hover:text-[#B91C1C] hover:bg-slate-50/50'}`}
                                 title={isCollapsed ? item.label : ''}
+                                aria-label={item.label}
+                                aria-current={isActive ? 'page' : undefined}
                             >
                                 {isActive && (
                                     <div className="absolute left-0 w-1 h-5 bg-[#B91C1C] rounded-r-full shadow-[0_0_8px_rgba(185,28,28,0.3)]"></div>
@@ -135,6 +137,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                                 <item.icon
                                     size={18}
                                     className={`shrink-0 transition-all duration-500 ${isActive ? item.color : 'group-hover:scale-110 opacity-70 group-hover:opacity-100'}`}
+                                    aria-hidden="true"
                                 />
                                 {!isCollapsed && (
                                     <span className={`hidden lg:block text-[13px] font-black tracking-tight ml-4 transition-all duration-300 font-serif-legal italic ${isActive ? 'translate-x-1' : 'opacity-60 group-hover:opacity-100'}`}>
