@@ -7,7 +7,9 @@ import { SYSTEM_INSTRUCTION_DISCLOSURE } from "../constants";
 import { InputData, DisclosureAnalysis } from "../types";
 import { extractStructuredJson } from "./utils";
 
-const OPENROUTER_API_KEY = import.meta.env.VITE_OPENROUTER_API_KEY || "your_key_here";
+const getApiKey = () => {
+    return localStorage.getItem('OPENROUTER_API_KEY') || import.meta.env.VITE_OPENROUTER_API_KEY || "";
+};
 
 const getModelId = () => {
     return localStorage.getItem('SELECTED_AI_MODEL') || "google/gemini-2.0-flash-lite-preview-02-05";
@@ -55,10 +57,16 @@ export const mergeDataWithFlash = async (input: InputData): Promise<{ json: Disc
     `;
 
         const response = await callWithRetry(async () => {
+            const key = getApiKey();
+            if (!key) throw { status: 401, message: "Clé API OpenRouter manquante. Veuillez la configurer dans les paramètres." };
+
+            const keySource = localStorage.getItem('OPENROUTER_API_KEY') ? "LocalStorage" : "Environment Variable";
+            console.log(`[Forensic Engine] Using API Key from: ${keySource}`);
+
             const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
                 method: "POST",
                 headers: {
-                    "Authorization": `Bearer ${OPENROUTER_API_KEY}`,
+                    "Authorization": `Bearer ${key}`,
                     "Content-Type": "application/json",
                     "HTTP-Referer": "https://github.com/moonback/Analyseur-de-Documents-Judiciaires",
                     "X-Title": "DOJ Forensic Analyzer"
@@ -75,7 +83,14 @@ export const mergeDataWithFlash = async (input: InputData): Promise<{ json: Disc
 
             if (!res.ok) {
                 const err = await res.json();
-                throw { status: res.status, message: err.error?.message || "Unknown error" };
+                const errorMessage = err.error?.message || "Unknown error";
+                if (res.status === 401) {
+                    throw {
+                        status: 401,
+                        message: `Authentification Échouée : ${errorMessage}. Vérifiez votre clé API dans les paramètres.`
+                    };
+                }
+                throw { status: res.status, message: errorMessage };
             }
 
             return res.json();
@@ -111,7 +126,7 @@ export const askAssistant = async (history: { role: string, text: string }[], me
         const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
             method: "POST",
             headers: {
-                "Authorization": `Bearer ${OPENROUTER_API_KEY}`,
+                "Authorization": `Bearer ${getApiKey()}`,
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
@@ -138,7 +153,7 @@ export const detectContradictions = async (doc1: string, doc2: string): Promise<
             const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
                 method: "POST",
                 headers: {
-                    "Authorization": `Bearer ${OPENROUTER_API_KEY}`,
+                    "Authorization": `Bearer ${getApiKey()}`,
                     "Content-Type": "application/json",
                     "HTTP-Referer": "https://github.com/moonback/Analyseur-de-Documents-Judiciaires",
                     "X-Title": "DOJ Forensic Analyzer"

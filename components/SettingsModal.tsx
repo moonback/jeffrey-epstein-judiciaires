@@ -4,7 +4,7 @@
  */
 
 import React from 'react';
-import { X, Database, Download, ShieldCheck, Trash2, ArrowUpRight, Cpu, Cloud, CloudOff, Lock, Server, Shield, Sparkles, ChevronDown } from 'lucide-react';
+import { X, Database, Download, ShieldCheck, Trash2, ArrowUpRight, Cpu, Cloud, CloudOff, Lock, Server, Shield, Sparkles, ChevronDown, Key } from 'lucide-react';
 import { isSupabaseConfigured } from '../services/supabaseClient';
 import { AI_MODELS } from '../constants';
 
@@ -16,9 +16,11 @@ interface SettingsModalProps {
   dbSize: number;
   selectedModel: string;
   onModelChange: (modelId: string) => void;
+  openRouterKey: string;
+  onKeyChange: (key: string) => void;
 }
 
-export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, onClearData, onExportData, dbSize, selectedModel, onModelChange }) => {
+export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, onClearData, onExportData, dbSize, selectedModel, onModelChange, openRouterKey, onKeyChange }) => {
   if (!isOpen) return null;
 
   return (
@@ -95,17 +97,27 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, o
                   </div>
                 </div>
 
-                <div className="bg-[#F8FAFC] rounded-[1.5rem] p-6 border border-slate-100 relative group overflow-hidden">
+                <div className="bg-[#F8FAFC] rounded-[1.5rem] p-6 border border-slate-100 relative group overflow-hidden md:col-span-2">
                   <div className="absolute top-0 right-0 p-3 opacity-[0.05] group-hover:scale-110 transition-transform">
-                    <Cloud size={32} className="text-black" />
+                    <Lock size={32} className="text-black" />
                   </div>
-                  <span className="text-[#0F172A] text-[13px] font-black uppercase tracking-tight block mb-3">Cloud Sync</span>
-                  <div className="flex items-center justify-between">
-                    <span className={`text-[9px] font-black px-3 py-1.5 rounded-lg flex items-center gap-2 border shadow-sm tracking-widest ${isSupabaseConfigured ? 'bg-white text-emerald-600 border-emerald-100' : 'bg-white text-[#B91C1C] border-red-100'}`}>
-                      {isSupabaseConfigured ? <Cloud size={12} /> : <CloudOff size={12} />}
-                      {isSupabaseConfigured ? 'SYNC' : 'LOCAL'}
-                    </span>
-                    <div className={`w-1.5 h-1.5 rounded-full ${isSupabaseConfigured ? 'bg-emerald-500' : 'bg-[#B91C1C]'} shadow-sm`}></div>
+                  <span className="text-[#0F172A] text-[13px] font-black uppercase tracking-tight block mb-3">OpenRouter API Access</span>
+                  <div className="flex flex-col gap-3">
+                    <div className="relative">
+                      <input
+                        type="password"
+                        value={openRouterKey}
+                        onChange={(e) => onKeyChange(e.target.value)}
+                        placeholder="sk-or-v1-..."
+                        className="w-full bg-white text-[#0F172A] text-[11px] font-mono-data px-4 py-2.5 rounded-xl border border-slate-100 shadow-sm outline-none focus:ring-1 focus:ring-[#B91C1C] transition-all"
+                      />
+                      <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-slate-300">
+                        <Key size={12} />
+                      </div>
+                    </div>
+                    <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest pl-1">
+                      {openRouterKey ? "Clé personnalisée active (Primeur sur .env)" : "Utilisation de la clé d'infrastructure par défaut."}
+                    </p>
                   </div>
                 </div>
               </div>

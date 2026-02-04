@@ -77,11 +77,19 @@ const App: React.FC = () => {
   const [selectedAiModel, setSelectedAiModel] = useState<string>(
     localStorage.getItem('SELECTED_AI_MODEL') || 'google/gemini-2.0-flash-lite-preview-02-05'
   );
+  const [openRouterKey, setOpenRouterKey] = useState<string>(
+    localStorage.getItem('OPENROUTER_API_KEY') || ''
+  );
   const [isPending, startTransition] = useTransition();
 
   const handleModelChange = (modelId: string) => {
     setSelectedAiModel(modelId);
     localStorage.setItem('SELECTED_AI_MODEL', modelId);
+  };
+
+  const handleKeyChange = (key: string) => {
+    setOpenRouterKey(key);
+    localStorage.setItem('OPENROUTER_API_KEY', key);
   };
 
   const isMounted = useRef(true);
@@ -777,9 +785,11 @@ const App: React.FC = () => {
         onClose={() => setIsSettingsOpen(false)}
         onClearData={handleClearHistory}
         onExportData={handleExportAll}
-        dbSize={resolutionHistory.length}
+        dbSize={processedCount}
         selectedModel={selectedAiModel}
         onModelChange={handleModelChange}
+        openRouterKey={openRouterKey}
+        onKeyChange={handleKeyChange}
       />
 
     </div >
