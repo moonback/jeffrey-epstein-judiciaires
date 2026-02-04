@@ -45,6 +45,7 @@ import { FinancialFlowView } from './components/FinancialFlowView';
 import { AssetsView } from './components/AssetsView';
 import { CrossSessionView } from './components/CrossSessionView';
 import { VoiceAssistant } from './components/VoiceAssistant';
+import { DOJPdfExplorer } from './components/DOJPdfExplorer';
 import { Auth } from './components/Auth';
 import { supabase, isSupabaseConfigured } from './services/supabaseClient';
 
@@ -758,6 +759,7 @@ const App: React.FC = () => {
             {viewMode === 'assets' && <AssetsView />}
             {viewMode === 'cross' && <CrossSessionView onNavigateToInvestigation={handleOpenInvestigation} />}
             {viewMode === 'voice' && <VoiceAssistant />}
+            {viewMode === 'dojexplorer' && <DOJPdfExplorer />}
           </div>
         </main >
 
