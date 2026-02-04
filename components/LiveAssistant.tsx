@@ -43,7 +43,7 @@ export const LiveAssistant: React.FC = () => {
   };
 
   return (
-    <div className="fixed bottom-6 right-6 z-50 flex flex-col items-end">
+    <div className="fixed bottom-[108px] lg:bottom-6 right-6 z-50 flex flex-col items-end">
       {/* Chat Window */}
       {isOpen && (
         <div className="mb-4 w-[350px] md:w-[400px] h-[500px] bg-[#1E1E1E] rounded-2xl border border-[#444746] shadow-2xl flex flex-col overflow-hidden animate-in slide-in-from-bottom-5 fade-in duration-300">
@@ -76,8 +76,8 @@ export const LiveAssistant: React.FC = () => {
               <div key={idx} className={`flex ${msg.role === 'user' ? 'justify-end' : 'justify-start'}`}>
                 <div
                   className={`max-w-[85%] rounded-2xl p-3 text-xs leading-relaxed ${msg.role === 'user'
-                      ? 'bg-[#370003] text-[#F2B8B5] rounded-br-none border border-[#601410]'
-                      : 'bg-[#2B2B2B] text-[#E3E3E3] rounded-bl-none border border-[#444746]'
+                    ? 'bg-[#370003] text-[#F2B8B5] rounded-br-none border border-[#601410]'
+                    : 'bg-[#2B2B2B] text-[#E3E3E3] rounded-bl-none border border-[#444746]'
                     }`}
                 >
                   {msg.text}
