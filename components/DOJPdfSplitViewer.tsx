@@ -172,8 +172,8 @@ export const DOJPdfSplitViewer: React.FC = () => {
                     const fileName = `${batesNumber}.pdf`;
 
                     // URL Construction:
-                    // https://www.justice.gov/epstein/files/{DataSet URL Segment}/{FileName}
-                    const fullUrl = `https://www.justice.gov/epstein/files/${selectedDataSet.urlSegment}/${fileName}`;
+                    // Use local proxy /api/doj to forward to justice.gov and bypass X-Frame-Options
+                    const fullUrl = `/api/doj/epstein/files/${selectedDataSet.urlSegment}/${fileName}`;
 
                     return {
                         id: batesNumber,
