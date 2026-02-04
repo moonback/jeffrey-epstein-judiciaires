@@ -54,7 +54,7 @@ const DOJ_DATA_SETS: DataSet[] = [
         description: 'Deuxième série de documents',
         baseUrl: 'https://www.justice.gov/epstein/doj-disclosures/data-set-2-files',
         fileCount: 50,
-        startIndex: 3150,
+        startIndex: 3159,
         urlSegment: 'DataSet%202'
     },
     {
@@ -63,7 +63,7 @@ const DOJ_DATA_SETS: DataSet[] = [
         description: 'Troisième série de documents',
         baseUrl: 'https://www.justice.gov/epstein/doj-disclosures/data-set-3-files',
         fileCount: 50,
-        startIndex: 4500,
+        startIndex: 3858,
         urlSegment: 'DataSet%203'
     },
     {
@@ -72,7 +72,7 @@ const DOJ_DATA_SETS: DataSet[] = [
         description: 'Quatrième série de documents',
         baseUrl: 'https://www.justice.gov/epstein/doj-disclosures/data-set-4-files',
         fileCount: 45,
-        startIndex: 5200,
+        startIndex: 5705,
         urlSegment: 'DataSet%204'
     },
     {
@@ -81,7 +81,7 @@ const DOJ_DATA_SETS: DataSet[] = [
         description: 'Cinquième série de documents',
         baseUrl: 'https://www.justice.gov/epstein/doj-disclosures/data-set-5-files',
         fileCount: 120,
-        startIndex: 6000,
+        startIndex: 8409,
         urlSegment: 'DataSet%205'
     },
     {
@@ -90,7 +90,7 @@ const DOJ_DATA_SETS: DataSet[] = [
         description: 'Sixième série de documents',
         baseUrl: 'https://www.justice.gov/epstein/doj-disclosures/data-set-6-files',
         fileCount: 67,
-        startIndex: 7500,
+        startIndex: 8529,
         urlSegment: 'DataSet%206'
     },
     {
@@ -99,7 +99,7 @@ const DOJ_DATA_SETS: DataSet[] = [
         description: 'Septième série de documents',
         baseUrl: 'https://www.justice.gov/epstein/doj-disclosures/data-set-7-files',
         fileCount: 90,
-        startIndex: 8200,
+        startIndex: 9016,
         urlSegment: 'DataSet%207'
     },
     {
