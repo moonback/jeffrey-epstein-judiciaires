@@ -14,9 +14,28 @@ export class FileProcessingService {
      * Extract text from a PDF file
      */
     static async extractTextFromPDF(file: File, onProgress?: (msg: string) => void): Promise<string> {
+        const arrayBuffer = await file.arrayBuffer();
+        return this.extractFromBuffer(arrayBuffer, file.name, onProgress);
+    }
+
+    /**
+     * Extract text from a PDF URL
+     */
+    static async extractTextFromPDFUrl(url: string, fileName: string, onProgress?: (msg: string) => void): Promise<string> {
         try {
-            onProgress?.(`[PDF] Lecture du document : ${file.name}`);
-            const arrayBuffer = await file.arrayBuffer();
+            onProgress?.(`[PDF] Récupération du document via URL...`);
+            const response = await fetch(url);
+            const arrayBuffer = await response.arrayBuffer();
+            return this.extractFromBuffer(arrayBuffer, fileName, onProgress);
+        } catch (error) {
+            console.error('Error fetching/extracting PDF from URL:', error);
+            throw new Error('Impossible de récupérer ou lire le fichier PDF distant.');
+        }
+    }
+
+    private static async extractFromBuffer(arrayBuffer: ArrayBuffer, fileName: string, onProgress?: (msg: string) => void): Promise<string> {
+        try {
+            onProgress?.(`[PDF] Lecture du document : ${fileName}`);
             const pdf = await pdfjsLib.getDocument({ data: arrayBuffer }).promise;
             let fullText = '';
 
@@ -30,13 +49,13 @@ export class FileProcessingService {
                     .map((item: any) => item.str)
                     .join(' ');
 
-                fullText += `[PIÈCE JOINTE - PAGE ${i}]\n${pageText}\n[FIN DE PAGE ${i}]\n\n`;
+                fullText += `[DOCUMENT ARCHIVE - PAGE ${i}]\n${pageText}\n[FIN DE PAGE ${i}]\n\n`;
             }
 
             onProgress?.(`[PDF] Extraction terminée. ${fullText.length} caractères extraits.`);
             return fullText;
         } catch (error) {
-            console.error('Error extracting text from PDF:', error);
+            console.error('Error extracting text from PDF buffer:', error);
             throw new Error('Impossible de lire le fichier PDF. Vérifiez qu\'il ne soit pas protégé.');
         }
     }

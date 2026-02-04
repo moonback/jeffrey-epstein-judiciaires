@@ -5,7 +5,7 @@
 
 import { FileProcessingService } from './services/fileProcessingService';
 
-import React, { useState, useEffect, useRef } from 'react';
+import React, { useState, useEffect, useRef, useMemo } from 'react';
 import { generateInputData } from './constants';
 import { InputData, ProcessedResult } from './types';
 import { mergeDataWithFlash } from './services/openRouterService';
@@ -261,6 +261,75 @@ const App: React.FC = () => {
     processItem();
 
   }, [queue, isProcessing, addOptimisticHistory, isMounted, startTransition]);
+
+  const analyzedFilePaths = useMemo(() => {
+    return new Set(
+      resolutionHistory
+        .filter(r => r.input.targetUrl.startsWith('/epstein/') && r.status === 'completed')
+        .map(r => r.input.targetUrl)
+    );
+  }, [resolutionHistory]);
+
+  const handleOpenAnalysis = (path: string) => {
+    const existing = resolutionHistory.find(r => r.input.targetUrl === path && r.status === 'completed');
+    if (existing) {
+      setActiveTabId(existing.id);
+      setViewMode('lab');
+    }
+  };
+
+  const handleAnalyzeFile = async (file: { name: string, path: string }) => {
+    const existing = resolutionHistory.find(r => r.input.targetUrl === file.path);
+    if (existing) {
+      handleOpenAnalysis(file.path);
+      return;
+    }
+    const newId = `FILE-${Date.now().toString().slice(-4)}`;
+
+    // Create optimistic pending result
+    const placeholder: ProcessedResult = {
+      id: newId,
+      input: {
+        id: newId,
+        query: `ANALYSE DOC : ${file.name}`,
+        targetUrl: file.path,
+        timestamp: Date.now()
+      } as any,
+      output: null,
+      logs: ["Préparation de l'extraction forensique...", `Cible : ${file.name}`],
+      sources: [],
+      durationMs: 0,
+      status: 'processing',
+    };
+
+    startTransition(() => {
+      addOptimisticHistory(placeholder);
+      setViewMode('lab');
+      setActiveTabId(newId);
+    });
+
+    try {
+      // Extract text from the PDF file in the archive
+      const fileContent = await FileProcessingService.extractTextFromPDFUrl(file.path, file.name, (msg) => {
+        setLogs(prev => [...prev, msg]);
+        setResolutionHistory(prev => prev.map(r => r.id === newId ? { ...r, logs: [...(r.logs || []), msg] } : r));
+      });
+
+      const inputData: InputData = {
+        id: newId,
+        query: `ANALYSE DE DOCUMENT : Effectue une analyse exhaustive du document judiciaire "${file.name}". Identifie les parties prenantes, les accusations, les dates clés et les éventuelles contradictions ou éléments suspects.`,
+        targetUrl: file.path,
+        timestamp: Date.now(),
+        fileContent: fileContent
+      } as any;
+
+      // Add to queue for LLM processing
+      setQueue(prev => [inputData, ...prev]);
+    } catch (error) {
+      console.error("Archive analysis failed", error);
+      alert("Erreur lors de l'analyse du document archive.");
+    }
+  };
 
   const handleEntityClick = (entityName: string) => {
     const newId = `ENTITY-${Date.now().toString().slice(-4)}`;
@@ -759,7 +828,13 @@ const App: React.FC = () => {
             {viewMode === 'assets' && <AssetsView />}
             {viewMode === 'cross' && <CrossSessionView onNavigateToInvestigation={handleOpenInvestigation} />}
             {viewMode === 'voice' && <VoiceAssistant />}
-            {viewMode === 'epstein_docs' && <EpsteinArchiveView />}
+            {viewMode === 'epstein_docs' && (
+              <EpsteinArchiveView
+                onAnalyze={handleAnalyzeFile}
+                onOpenAnalysis={handleOpenAnalysis}
+                analyzedFilePaths={analyzedFilePaths}
+              />
+            )}
           </div>
         </main >
 
