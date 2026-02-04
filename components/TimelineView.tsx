@@ -175,7 +175,7 @@ export const TimelineView: React.FC<TimelineViewProps> = ({ onDeepDive }) => {
             <div className="absolute inset-0 z-0 pointer-events-none opacity-[0.25] report-paper"></div>
 
             <header className="px-6 lg:px-10 py-5 bg-white border-b border-slate-100 z-20 shadow-sm relative shrink-0">
-                <div className="max-w-7xl mx-auto flex flex-col lg:flex-row lg:items-center justify-between gap-6">
+                <div className="max-w-12xl mx-auto flex flex-col lg:flex-row lg:items-center justify-between gap-6">
                     <div className="flex items-center gap-5">
                         <div className="w-12 h-12 bg-gradient-to-br from-[#B91C1C] to-[#7F1D1D] rounded-2xl flex items-center justify-center shadow-xl shadow-red-900/10 rotate-3">
                             <Clock className="text-white" size={24} />

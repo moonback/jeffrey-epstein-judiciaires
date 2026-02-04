@@ -706,7 +706,7 @@ const App: React.FC = () => {
                       </div>
                     ) : (
                       <div className="flex-1 p-8 lg:p-2 animate-pro-reveal duration-1000 overflow-y-auto custom-scrollbar min-h-0 bg-[#F8FAFC]">
-                        <div className="max-w-7xl mx-auto py-2 relative">
+                        <div className="max-w-12xl mx-auto py-2 relative">
                           {/* Background Decorative */}
                           <div className="absolute top-0 right-0 w-80 h-80 bg-[#B91C1C] rounded-full blur-[140px] opacity-[0.03]"></div>
                           <div className="absolute bottom-0 left-0 w-80 h-80 bg-[#0F4C81] rounded-full blur-[140px] opacity-[0.03]"></div>

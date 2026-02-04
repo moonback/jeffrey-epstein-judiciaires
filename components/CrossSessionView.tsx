@@ -77,7 +77,7 @@ export const CrossSessionView: React.FC<CrossSessionViewProps> = ({ onNavigateTo
             </header>
 
             <div className="flex-1 overflow-y-auto p-6 lg:p-10 custom-scrollbar z-10">
-                <div className="max-w-7xl mx-auto space-y-8 pb-20">
+                <div className="max-w-12xl mx-auto space-y-8 pb-20">
 
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {filtered.map((c, i) => (

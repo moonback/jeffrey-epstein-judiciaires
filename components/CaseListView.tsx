@@ -75,7 +75,7 @@ export const CaseListView: React.FC<CaseListViewProps> = ({ history, onOpenInves
             </header>
 
             <div className="flex-1 overflow-y-auto p-8 lg:p-12 custom-scrollbar z-10">
-                <div className="max-w-7xl mx-auto pb-40">
+                <div className="max-w-12xl mx-auto pb-40">
                     {filteredCases.length > 0 ? (
                         <div className={viewLayout === 'grid' ? "grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8" : "space-y-4"}>
                             {filteredCases.map((res, idx) => (
