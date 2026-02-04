@@ -119,7 +119,8 @@ export const Auth: React.FC<AuthProps> = ({ onGuestAccess }) => {
                         </button>
                     </form>
 
-                    {/* Toggle */}
+                    {/* Inscription désactivée pour le moment */}
+                    {/* 
                     <div className="mt-8 pt-8 border-t border-slate-50 text-center">
                         <button
                             onClick={() => setIsSignUp(!isSignUp)}
@@ -128,6 +129,7 @@ export const Auth: React.FC<AuthProps> = ({ onGuestAccess }) => {
                             {isSignUp ? "Déjà un accès ? Authentification" : "Nouvel agent ? Créer un profil"}
                         </button>
                     </div>
+                    */}
 
                     {/* Guest Access Option */}
                     {onGuestAccess && (
