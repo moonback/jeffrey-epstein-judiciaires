@@ -8,7 +8,10 @@ import { InputData, DisclosureAnalysis } from "../types";
 import { extractStructuredJson } from "./utils";
 
 const OPENROUTER_API_KEY = import.meta.env.VITE_OPENROUTER_API_KEY || "your_key_here";
-const MODEL_ID = "google/gemini-2.5-flash-lite";
+
+const getModelId = () => {
+    return localStorage.getItem('SELECTED_AI_MODEL') || "google/gemini-2.0-flash-lite-preview-02-05";
+};
 
 // Helper function to delay execution
 const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
@@ -61,7 +64,7 @@ export const mergeDataWithFlash = async (input: InputData): Promise<{ json: Disc
                     "X-Title": "DOJ Forensic Analyzer"
                 },
                 body: JSON.stringify({
-                    model: MODEL_ID,
+                    model: getModelId(),
                     messages: [
                         { role: "system", content: SYSTEM_INSTRUCTION_DISCLOSURE },
                         { role: "user", content: prompt }
@@ -84,7 +87,7 @@ export const mergeDataWithFlash = async (input: InputData): Promise<{ json: Disc
         return {
             json: jsonResult,
             logs: [
-                `Moteur : OpenRouter (${MODEL_ID})`,
+                `Moteur : OpenRouter (${getModelId()})`,
                 `Status : Analyse structurelle terminée`,
                 `Tokens : ${response.usage?.total_tokens || 'N/A'}`,
                 `Vérification d'hallucination effectuée.`
@@ -112,7 +115,7 @@ export const askAssistant = async (history: { role: string, text: string }[], me
                 "Content-Type": "application/json"
             },
             body: JSON.stringify({
-                model: MODEL_ID,
+                model: getModelId(),
                 messages: [
                     { role: "system", content: "Vous êtes un assistant juridique spécialisé dans les 'DOJ Epstein Disclosures'. Répondez en français de manière précise et factuelle." },
                     ...history.map(h => ({ role: h.role === "user" ? "user" : "assistant", content: h.text })),
@@ -141,7 +144,7 @@ export const detectContradictions = async (doc1: string, doc2: string): Promise<
                     "X-Title": "DOJ Forensic Analyzer"
                 },
                 body: JSON.stringify({
-                    model: MODEL_ID,
+                    model: getModelId(),
                     messages: [
                         { role: "system", content: "Vous êtes un expert en analyse forensique et détection de fraude. Votre tâche est de comparer deux documents et de signaler toute contradiction, incohérence temporelle, divergence de témoignage ou anomalie factuelle. Répondez sous forme de rapport Markdown structuré." },
                         { role: "user", content: `DOCUMENT A:\n${doc1}\n\nDOCUMENT B:\n${doc2}\n\nAnalysez les conflits potentiels entre ces deux documents.` }

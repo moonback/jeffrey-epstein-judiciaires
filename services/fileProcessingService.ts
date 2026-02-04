@@ -4,6 +4,7 @@
  */
 
 import * as pdfjsLib from 'pdfjs-dist';
+import Tesseract from 'tesseract.js';
 
 // Configure worker
 pdfjsLib.GlobalWorkerOptions.workerSrc = `//cdnjs.cloudflare.com/ajax/libs/pdf.js/${pdfjsLib.version}/pdf.worker.min.js`;
@@ -41,6 +42,31 @@ export class FileProcessingService {
     }
 
     /**
+     * Extract text from an image using OCR
+     */
+    static async extractTextFromImage(file: File, onProgress?: (msg: string) => void): Promise<string> {
+        try {
+            onProgress?.(`[OCR] Initialisation du moteur Tesseract...`);
+            const { data: { text } } = await Tesseract.recognize(
+                file,
+                'fra+eng',
+                {
+                    logger: m => {
+                        if (m.status === 'recognizing text') {
+                            onProgress?.(`[OCR] Analyse : ${Math.round(m.progress * 100)}%`);
+                        }
+                    }
+                }
+            );
+            onProgress?.(`[OCR] Décodage terminé.`);
+            return `[DOCUMENT SCANNÉ - OCR]\n${text}\n[FIN DU DOCUMENT SCANNÉ]`;
+        } catch (error) {
+            console.error('OCR Error:', error);
+            throw new Error('Échec du moteur OCR. Vérifiez que l\'image est lisible.');
+        }
+    }
+
+    /**
      * Process an uploaded file and prepare it for analysis
      */
     static async processFile(file: File, onProgress?: (msg: string) => void): Promise<{ content: string; metadata: any }> {
@@ -69,8 +95,20 @@ export class FileProcessingService {
                     source: 'TEXT_UPLOAD'
                 }
             };
+        } else if (file.type.startsWith('image/')) {
+            const text = await this.extractTextFromImage(file, onProgress);
+            return {
+                content: text,
+                metadata: {
+                    name: file.name,
+                    size: file.size,
+                    type: file.type,
+                    lastModified: file.lastModified,
+                    source: 'IMAGE_OCR'
+                }
+            };
         } else {
-            throw new Error(`Format non supporté: ${file.type}`);
+            throw new Error(`Format non supporté: ${file.type}. Veuillez utiliser PDF, IMAGE (JPG/PNG), TXT ou MD.`);
         }
     }
 }

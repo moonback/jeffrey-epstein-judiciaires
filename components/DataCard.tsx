@@ -5,7 +5,7 @@
 
 import React, { useState, useMemo } from 'react';
 import { DisclosureAnalysis, ProcessedResult } from '../types';
-import { Search, Calendar, Users, FileText, Link as LinkIcon, ShieldAlert, File, List, Zap, Scale, Download, BookOpen, GraduationCap, ArrowUpRight, Filter, Gavel, Award, Box, ShieldCheck } from 'lucide-react';
+import { Search, Calendar, Users, FileText, Link as LinkIcon, ShieldAlert, File, List, Zap, Scale, Download, BookOpen, GraduationCap, ArrowUpRight, Filter, Gavel, Award, Box, ShieldCheck, DollarSign, ArrowRightLeft } from 'lucide-react';
 import { ExportMenu } from './ExportMenu';
 
 interface DataCardProps {
@@ -267,6 +267,40 @@ export const DataCard: React.FC<DataCardProps> = ({ result, loading, onDeepDive,
                         ))}
                     </div>
                 </div>
+
+                {/* Financial Flows Section */}
+                {data.transactions_financieres && data.transactions_financieres.length > 0 && (
+                    <div className="space-y-8 animate-pro-reveal mt-10">
+                        <div className="flex items-center gap-4 mb-4">
+                            <DollarSign size={16} className="text-[#B91C1C]" />
+                            <h5 className="text-[10px] font-black uppercase tracking-[0.4em] text-slate-300">Resonance Monétaire</h5>
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-6">
+                            {data.transactions_financieres.map((t, idx) => (
+                                <div key={idx} className="bg-[#F8FAFC] p-6 rounded-[2rem] border border-slate-50 hover:bg-white hover:shadow-xl transition-all group">
+                                    <div className="flex justify-between items-start mb-4">
+                                        <div className="bg-white px-3 py-1 rounded-lg border border-slate-100 shadow-sm text-[12px] font-mono-data font-black text-[#B91C1C]">
+                                            {t.montant} {t.devise}
+                                        </div>
+                                        <span className="text-[8px] font-black text-slate-300 uppercase tracking-widest">{t.date}</span>
+                                    </div>
+                                    <div className="flex items-center gap-4 mb-4">
+                                        <div className="flex-1 min-w-0">
+                                            <div className="text-[8px] font-black text-slate-300 uppercase tracking-widest leading-none mb-1">From</div>
+                                            <div className="text-[11px] font-black text-[#0F172A] truncate italic font-serif-legal">{t.source}</div>
+                                        </div>
+                                        <ArrowRightLeft size={10} className="text-[#B91C1C] opacity-30" />
+                                        <div className="flex-1 min-w-0 text-right">
+                                            <div className="text-[8px] font-black text-slate-300 uppercase tracking-widest leading-none mb-1">To</div>
+                                            <div className="text-[11px] font-black text-[#0F172A] truncate italic font-serif-legal">{t.destination}</div>
+                                        </div>
+                                    </div>
+                                    <p className="text-[11px] text-slate-500 font-medium italic border-t border-slate-100 pt-3">"{t.description}"</p>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                )}
 
                 {/* Footer Intelligence Sections */}
                 <div className="grid grid-cols-1 lg:grid-cols-2 gap-12 pt-12 border-t border-slate-50">

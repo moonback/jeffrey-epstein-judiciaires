@@ -27,11 +27,21 @@ export interface EntityDetail {
   influence: number;
 }
 
+export interface TransactionDetail {
+  source: string;
+  destination: string;
+  montant: number;
+  devise: string;
+  date: string;
+  description: string;
+}
+
 export interface DisclosureAnalysis {
   context_general: string;
   documents: DocumentDetail[];
   entites_cles: string[];
   entites_details?: EntityDetail[];
+  transactions_financieres?: TransactionDetail[];
   contexte_juridique: string;
 }
 

@@ -14,6 +14,7 @@ import { DataCard } from './components/DataCard';
 import { LogTerminal } from './components/LogTerminal';
 import { LiveAssistant } from './components/LiveAssistant';
 import { SettingsModal } from './components/SettingsModal';
+import { AI_MODELS } from './constants';
 import { ResultsDashboard } from './components/ResultsDashboard';
 import { InvestigationPlanner } from './components/InvestigationPlanner';
 import {
@@ -39,6 +40,9 @@ import { Sidebar, ViewType } from './components/Sidebar';
 import { NetworkGraphView } from './components/NetworkGraphView';
 import { TimelineView } from './components/TimelineView';
 import { ContradictionsView, POIView } from './components/AdvancedModules';
+import { FinancialFlowView } from './components/FinancialFlowView';
+import { CrossSessionView } from './components/CrossSessionView';
+import { VoiceAssistant } from './components/VoiceAssistant';
 
 import { useOptimistic, useTransition } from 'react';
 
@@ -70,7 +74,15 @@ const App: React.FC = () => {
   const [showLogs, setShowLogs] = useState(false);
   const [logs, setLogs] = useState<string[]>([]);
   const [showTabsDropdown, setShowTabsDropdown] = useState(false);
+  const [selectedAiModel, setSelectedAiModel] = useState<string>(
+    localStorage.getItem('SELECTED_AI_MODEL') || 'google/gemini-2.0-flash-lite-preview-02-05'
+  );
   const [isPending, startTransition] = useTransition();
+
+  const handleModelChange = (modelId: string) => {
+    setSelectedAiModel(modelId);
+    localStorage.setItem('SELECTED_AI_MODEL', modelId);
+  };
 
   const isMounted = useRef(true);
   useEffect(() => {
@@ -670,6 +682,9 @@ const App: React.FC = () => {
             {viewMode === 'timeline' && <TimelineView onDeepDive={handleDeepDive} />}
             {viewMode === 'contradictions' && <ContradictionsView onDeepDive={handleDeepDive} />}
             {viewMode === 'poi' && <POIView onDeepDive={handleDeepDive} />}
+            {viewMode === 'finance' && <FinancialFlowView />}
+            {viewMode === 'cross' && <CrossSessionView />}
+            {viewMode === 'voice' && <VoiceAssistant />}
           </div>
         </main >
 
@@ -763,6 +778,8 @@ const App: React.FC = () => {
         onClearData={handleClearHistory}
         onExportData={handleExportAll}
         dbSize={resolutionHistory.length}
+        selectedModel={selectedAiModel}
+        onModelChange={handleModelChange}
       />
 
     </div >

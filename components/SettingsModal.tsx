@@ -4,8 +4,9 @@
  */
 
 import React from 'react';
-import { X, Database, Download, ShieldCheck, Trash2, ArrowUpRight, Cpu, Cloud, CloudOff, Lock, Server, Shield } from 'lucide-react';
+import { X, Database, Download, ShieldCheck, Trash2, ArrowUpRight, Cpu, Cloud, CloudOff, Lock, Server, Shield, Sparkles, ChevronDown } from 'lucide-react';
 import { isSupabaseConfigured } from '../services/supabaseClient';
+import { AI_MODELS } from '../constants';
 
 interface SettingsModalProps {
   isOpen: boolean;
@@ -13,9 +14,11 @@ interface SettingsModalProps {
   onClearData: () => void;
   onExportData: () => void;
   dbSize: number;
+  selectedModel: string;
+  onModelChange: (modelId: string) => void;
 }
 
-export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, onClearData, onExportData, dbSize }) => {
+export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, onClearData, onExportData, dbSize, selectedModel, onModelChange }) => {
   if (!isOpen) return null;
 
   return (
@@ -73,8 +76,22 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, o
                   </div>
                   <span className="text-[#0F172A] text-[13px] font-black uppercase tracking-tight block mb-3">Neural Engine</span>
                   <div className="flex items-center justify-between">
-                    <span className="text-[9px] font-black text-[#B91C1C] bg-white px-3 py-1.5 rounded-lg border border-slate-100 shadow-sm tracking-widest uppercase italic">Gemini Flash 1.5</span>
-                    <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.5)]"></div>
+                    <div className="relative w-full">
+                      <select
+                        value={selectedModel}
+                        onChange={(e) => onModelChange(e.target.value)}
+                        className="w-full bg-white text-[#B91C1C] text-[10px] font-black px-3 py-1.5 rounded-lg border border-slate-100 shadow-sm tracking-tight uppercase italic appearance-none cursor-pointer focus:ring-1 focus:ring-[#B91C1C] outline-none"
+                      >
+                        {AI_MODELS.map(model => (
+                          <option key={model.id} value={model.id}>
+                            {model.name} ({model.speed})
+                          </option>
+                        ))}
+                      </select>
+                      <div className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none text-[#B91C1C]">
+                        <ChevronDown size={10} />
+                      </div>
+                    </div>
                   </div>
                 </div>
 

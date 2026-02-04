@@ -185,7 +185,7 @@ export const InvestigationPlanner: React.FC<InvestigationPlannerProps> = ({ onSt
                                             type="file"
                                             ref={fileInputRef}
                                             className="hidden"
-                                            accept=".pdf,.txt,.md"
+                                            accept=".pdf,.txt,.md,.jpg,.jpeg,.png"
                                             onChange={handleFileChange}
                                         />
 
@@ -215,7 +215,7 @@ export const InvestigationPlanner: React.FC<InvestigationPlannerProps> = ({ onSt
                                                 <h3 className="text-sm font-black text-[#0F172A] uppercase tracking-wider mb-2">Glisser-déposer le dossier PDF</h3>
                                                 <p className="text-xs text-slate-400 font-bold mb-6">ou cliquer pour parcourir les fichiers locaux</p>
                                                 <div className="flex items-center gap-2 text-[9px] font-black text-slate-300 uppercase tracking-widest border border-slate-100 px-3 py-1.5 rounded-lg bg-white">
-                                                    PDF • TXT • MD SUPPORTED
+                                                    PDF • IMG • TXT • MD SUPPORTED
                                                 </div>
                                             </>
                                         )}

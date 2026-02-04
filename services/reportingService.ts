@@ -95,6 +95,34 @@ export class ReportingService {
             y = (doc as any).lastAutoTable.finalY + 15;
         }
 
+        // 5b. Financial Transactions (Table)
+        if (result.output.transactions_financieres && result.output.transactions_financieres.length > 0) {
+            if (y > 230) { doc.addPage(); y = 20; }
+            doc.setFont('helvetica', 'bold');
+            doc.setFontSize(14);
+            doc.text('FLUX FINANCIERS ET MOUVEMENTS MONÉTAIRES', 20, y);
+            y += 5;
+
+            doc.autoTable({
+                startY: y,
+                head: [['Source', 'Destination', 'Montant', 'Date', 'Description']],
+                body: result.output.transactions_financieres.map(t => [
+                    t.source,
+                    t.destination,
+                    `${t.montant} ${t.devise}`,
+                    t.date,
+                    t.description
+                ]),
+                theme: 'grid',
+                headStyles: { fillColor: [185, 28, 28] }, // Red for finance
+                columnStyles: {
+                    4: { cellWidth: 60 } // Description column wider
+                },
+                margin: { left: 20, right: 20 }
+            });
+            y = (doc as any).lastAutoTable.finalY + 15;
+        }
+
         // 6. Documents List
         if (result.output.documents && result.output.documents.length > 0) {
             if (y > 220) { doc.addPage(); y = 20; }

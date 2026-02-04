@@ -22,10 +22,13 @@ import {
     Archive,
     Lock,
     Cpu,
-    ShieldAlert
+    ShieldAlert,
+    DollarSign,
+    Link2,
+    Mic
 } from 'lucide-react';
 
-export type ViewType = 'lab' | 'database' | 'network' | 'timeline' | 'contradictions' | 'poi';
+export type ViewType = 'lab' | 'database' | 'network' | 'timeline' | 'contradictions' | 'poi' | 'finance' | 'cross' | 'voice';
 
 interface SidebarProps {
     currentView: ViewType;
@@ -49,8 +52,11 @@ export const Sidebar: React.FC<SidebarProps> = ({
         { id: 'database', label: 'Archives Centrales', icon: Database, color: 'text-[#0F4C81]' },
         { id: 'network', label: 'Cartographie', icon: Share2, color: 'text-[#0F4C81]' },
         { id: 'timeline', label: 'Chronologie', icon: Clock, color: 'text-[#B91C1C]' },
+        { id: 'finance', label: 'Flux Financiers', icon: DollarSign, color: 'text-[#B91C1C]' },
+        { id: 'cross', label: 'Intelligence Croisée', icon: Link2, color: 'text-[#0F4C81]' },
         { id: 'contradictions', label: 'Contradictions', icon: ShieldAlert, color: 'text-[#0F4C81]' },
         { id: 'poi', label: 'Index des Cibles', icon: Users, color: 'text-[#B91C1C]' },
+        { id: 'voice', label: 'Assistant Vocal', icon: Mic, color: 'text-[#B91C1C]' },
     ];
 
     return (
