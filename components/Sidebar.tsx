@@ -48,7 +48,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
     const [isCollapsed, setIsCollapsed] = useState(false);
 
     const menuItems = [
-        { id: 'lab', label: 'Laboratoire Central', icon: Terminal, color: 'text-[#B91C1C]' },
+        { id: 'lab', label: 'Laboratoire', icon: Terminal, color: 'text-[#B91C1C]' },
         { id: 'database', label: 'Archives Centrales', icon: Database, color: 'text-[#0F4C81]' },
         { id: 'network', label: 'Cartographie', icon: Share2, color: 'text-[#0F4C81]' },
         { id: 'timeline', label: 'Chronologie', icon: Clock, color: 'text-[#B91C1C]' },
@@ -61,7 +61,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
     return (
         <aside
-            className={`bg-white border-r border-slate-100 flex flex-col h-screen sticky top-0 z-50 transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] shadow-2xl relative ${isCollapsed ? 'w-24' : 'w-24 lg:w-[280px]'
+            className={`bg-white border-r border-slate-100 flex flex-col h-screen sticky top-0 z-50 transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] shadow-2xl relative ${isCollapsed ? 'w-16' : 'w-16 lg:w-[240px]'
                 }`}
         >
             {/* COLLAPSE TOGGLE */}
@@ -73,7 +73,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
             </button>
 
             {/* SCROLLABLE AREA: LOGO + ACTION + NAV */}
-            <div className={`flex-1 overflow-y-auto custom-scrollbar pt-6 pb-2 transition-all duration-500 ${isCollapsed ? 'px-4' : 'px-8'}`}>
+            <div className={`flex-1 overflow-y-auto custom-scrollbar pt-4 pb-2 transition-all duration-500 ${isCollapsed ? 'px-3' : 'px-5'}`}>
                 <div className="flex items-center gap-4 mb-6 group cursor-pointer whitespace-nowrap" onClick={() => onViewChange('lab')}>
                     <div className="relative shrink-0">
                         <div className="absolute inset-0 bg-[#B91C1C] blur-xl opacity-0 group-hover:opacity-20 transition-opacity"></div>
@@ -108,7 +108,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
                 {/* NAVIGATION */}
                 <nav className="space-y-1 pb-2">
-                    <div className={`text-[8px] font-black text-slate-200 uppercase tracking-[0.5em] mb-2 ml-5 ${isCollapsed ? 'hidden' : 'hidden lg:block'}`}>Investigation Suite</div>
+                    <div className={`text-[8px] font-black text-slate-200 uppercase tracking-[0.5em] mb-2 ml-4 ${isCollapsed ? 'hidden' : 'hidden lg:block'}`}>Investigation Suite</div>
                     {menuItems.map((item) => {
                         const isActive = currentView === item.id;
                         return (

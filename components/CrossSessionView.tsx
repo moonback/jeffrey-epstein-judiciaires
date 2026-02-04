@@ -5,9 +5,13 @@
 
 import React, { useState, useEffect, useMemo } from 'react';
 import { CorrelationService, Correlation } from '../services/correlationService';
-import { Network, Link2, AlertTriangle, Search, Fingerprint, Activity, Layers, Repeat, ShieldAlert, Zap } from 'lucide-react';
+import { Network, Link2, AlertTriangle, Search, Fingerprint, Activity, Layers, Repeat, ShieldAlert, Zap, DollarSign, ArrowUpRight } from 'lucide-react';
 
-export const CrossSessionView: React.FC = () => {
+interface CrossSessionViewProps {
+    onNavigateToInvestigation?: (id: string) => void;
+}
+
+export const CrossSessionView: React.FC<CrossSessionViewProps> = ({ onNavigateToInvestigation }) => {
     const [correlations, setCorrelations] = useState<Correlation[]>([]);
     const [loading, setLoading] = useState(true);
     const [searchQuery, setSearchQuery] = useState('');
@@ -73,11 +77,11 @@ export const CrossSessionView: React.FC = () => {
             </header>
 
             <div className="flex-1 overflow-y-auto p-6 lg:p-10 custom-scrollbar z-10">
-                <div className="max-w-5xl mx-auto space-y-8 pb-20">
+                <div className="max-w-7xl mx-auto space-y-8 pb-20">
 
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                         {filtered.map((c, i) => (
-                            <div key={i} className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm hover:shadow-2xl transition-all duration-500 group relative overflow-hidden">
+                            <div key={i} className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm hover:shadow-2xl transition-all duration-500 group relative overflow-hidden flex flex-col">
                                 {/* Risk Gradient Glow */}
                                 <div className={`absolute top-0 right-0 w-32 h-32 blur-[60px] opacity-10 transition-opacity group-hover:opacity-20 ${c.riskScore > 7 ? 'bg-[#B91C1C]' : 'bg-[#0F4C81]'}`}></div>
 
@@ -93,46 +97,70 @@ export const CrossSessionView: React.FC = () => {
                                     </div>
                                 </div>
 
-                                <h3 className="text-2xl font-black text-[#0F172A] italic font-serif-legal mb-4 group-hover:text-[#B91C1C] transition-colors line-clamp-1">{c.entity}</h3>
+                                <h3 className="text-2xl font-black text-[#0F172A] italic font-serif-legal mb-6 group-hover:text-[#B91C1C] transition-colors line-clamp-1 truncate">{c.entity}</h3>
 
-                                <div className="space-y-4 mb-6 relative z-10">
-                                    <div className="flex items-center gap-3">
-                                        <div className="w-8 h-8 rounded-lg bg-emerald-50 border border-emerald-100 flex items-center justify-center">
-                                            <Link2 size={14} className="text-emerald-500" />
+                                <div className="space-y-4 mb-8 relative z-10 flex-1">
+                                    <div className="flex items-center gap-4">
+                                        <div className="w-9 h-9 rounded-xl bg-slate-50 border border-slate-100 flex items-center justify-center group-hover:bg-white transition-colors">
+                                            <Link2 size={16} className="text-[#0F4C81]" />
                                         </div>
                                         <div>
-                                            <div className="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none">Récurrences détectées</div>
-                                            <div className="text-[13px] font-black text-slate-700 italic font-serif-legal">{c.occurrences} Investigations distinctes</div>
+                                            <div className="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">Dossiers de Référence</div>
+                                            <div className="text-[13px] font-black text-slate-700 italic font-serif-legal">{c.occurrences} Investigations</div>
                                         </div>
                                     </div>
+
+                                    {(c.totalAmountSent! > 0 || c.totalAmountReceived! > 0) && (
+                                        <div className="flex items-center gap-4">
+                                            <div className="w-9 h-9 rounded-xl bg-red-50 border border-red-100 flex items-center justify-center group-hover:bg-white transition-colors">
+                                                <DollarSign size={16} className="text-red-600" />
+                                            </div>
+                                            <div>
+                                                <div className="text-[9px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">Volume Monétaire Croisé</div>
+                                                <div className="text-[13px] font-black text-[#B91C1C] italic font-serif-legal">
+                                                    {(c.totalAmountSent! + c.totalAmountReceived!).toLocaleString('fr-FR')} USD
+                                                </div>
+                                            </div>
+                                        </div>
+                                    )}
                                 </div>
 
-                                <div className="bg-[#F8FAFC] p-5 rounded-2xl border border-slate-50 relative z-10 group-hover:bg-white transition-colors">
-                                    <h4 className="text-[8px] font-black text-slate-400 uppercase tracking-[0.3em] mb-4 flex items-center gap-2">
-                                        <Activity size={10} /> Cluster d'Enquêtes liées
+                                <div className="bg-[#F8FAFC] p-6 rounded-3xl border border-slate-50 relative z-10 group-hover:bg-white transition-colors mb-6">
+                                    <h4 className="text-[9px] font-black text-slate-400 uppercase tracking-[0.3em] mb-4 flex items-center gap-2">
+                                        <Activity size={12} /> Cluster d'Enquêtes liées
                                     </h4>
                                     <div className="space-y-3">
-                                        {c.relatedInvestigations.map((inv, idx) => (
-                                            <div key={idx} className="text-[11px] font-medium text-slate-600 italic border-l-2 border-slate-50 pl-3 group-hover:border-[#B91C1C]/20 transition-colors line-clamp-1">
-                                                "{inv}"
-                                            </div>
+                                        {c.relatedInvestigations.slice(0, 3).map((invId, idx) => (
+                                            <button
+                                                key={invId}
+                                                onClick={() => onNavigateToInvestigation?.(invId)}
+                                                className="w-full text-left flex items-center group/inv cursor-pointer"
+                                            >
+                                                <div className="text-[11px] font-medium text-slate-600 italic border-l-2 border-slate-200 pl-4 group-hover/inv:border-[#B91C1C] group-hover/inv:text-[#B91C1C] transition-colors line-clamp-1 flex-1 py-1">
+                                                    Dossier #{invId}
+                                                </div>
+                                                <ArrowUpRight size={12} className="text-slate-200 opacity-0 group-hover/inv:opacity-100 transition-all shrink-0 ml-2" />
+                                            </button>
                                         ))}
+                                        {c.relatedInvestigations.length > 3 && (
+                                            <div className="text-[9px] font-black text-slate-300 uppercase italic pl-4">+{c.relatedInvestigations.length - 3} autres dossiers</div>
+                                        )}
                                     </div>
                                 </div>
 
-                                <div className="mt-8 flex items-center justify-between text-[9px] font-black uppercase tracking-widest text-slate-300 group-hover:text-[#B91C1C] transition-colors relative z-10">
+                                <div className="mt-auto flex items-center justify-between text-[9px] font-black uppercase tracking-widest text-slate-300 group-hover:text-[#B91C1C] transition-colors relative z-10">
                                     <div className="flex items-center gap-2">
-                                        <ShieldAlert size={12} /> ALERTE CORRÉLATION
+                                        <ShieldAlert size={14} /> ALERTE CORRÉLATION
                                     </div>
-                                    <Zap size={12} className="opacity-0 group-hover:opacity-100 transition-opacity animate-pulse" />
+                                    <Zap size={14} className="opacity-0 group-hover:opacity-100 transition-opacity animate-pulse" />
                                 </div>
                             </div>
                         ))}
                     </div>
 
-                    {correlations.length === 0 && (
+                    {filtered.length === 0 && (
                         <div className="text-center py-40 opacity-30 italic text-[11px] font-black uppercase tracking-widest animate-pro-reveal">
-                            Aucun point de divergence ou de convergence transversale détecté
+                            Aucune convergence transversale détectée pour cette recherche
                         </div>
                     )}
                 </div>
@@ -140,7 +168,7 @@ export const CrossSessionView: React.FC = () => {
 
             {/* Label */}
             <div className="fixed bottom-10 right-10 rotate-90 origin-right pointer-events-none opacity-[0.02] z-0">
-                <span className="text-[10px] font-black text-black uppercase tracking-[1.5em] whitespace-nowrap">CROSS-SESSION INTELLIGENCE UNIT // PROTOCOL 9</span>
+                <span className="text-[10px] font-black text-black uppercase tracking-[1.5em] whitespace-nowrap italic">CROSS-SESSION INTELLIGENCE UNIT // PROTOCOL 9</span>
             </div>
         </div>
     );

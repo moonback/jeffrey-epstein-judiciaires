@@ -73,7 +73,7 @@ export const NetworkGraphView: React.FC<NetworkGraphViewProps> = ({ onDeepDive, 
 
     const graphData = useMemo(() => {
         const nodesMap: Map<string, GraphNode> = new Map();
-        const links: GraphLink[] = [];
+        const links: (GraphLink & { type?: 'CONNECTION' | 'TRANSACTION', amount?: number, currency?: string })[] = [];
 
         history.forEach(res => {
             if (!res.output) return;
@@ -84,7 +84,7 @@ export const NetworkGraphView: React.FC<NetworkGraphViewProps> = ({ onDeepDive, 
                 name: res.input.query,
                 val: 28,
                 type: 'INVESTIGATION',
-                color: '#B91C1C', // Professional Red
+                color: '#B91C1C',
                 neighbors: [],
                 links: []
             };
@@ -92,21 +92,22 @@ export const NetworkGraphView: React.FC<NetworkGraphViewProps> = ({ onDeepDive, 
 
             const entities = res.output.entites_cles || [];
             const entDetails = res.output.entites_details || [];
+            const transactions = res.output.transactions_financieres || [];
 
+            // Add Entity-to-Investigation Links
             entities.forEach(ent => {
                 let entNode = nodesMap.get(ent);
                 const detail = entDetails.find(d => d.nom === ent);
                 const risk = detail?.risk_level || 5;
                 const influence = detail?.influence || 5;
 
-                // Professional color mapping (Blue-to-Red gradient for risk)
                 const riskColor = risk > 7 ? '#B91C1C' : risk > 4 ? '#0F4C81' : '#64748B';
 
                 if (!entNode) {
                     entNode = {
                         id: ent,
                         name: ent,
-                        val: influence * 3, // influence affects size
+                        val: influence * 3,
                         type: 'PERSON',
                         color: riskColor,
                         neighbors: [],
@@ -117,13 +118,36 @@ export const NetworkGraphView: React.FC<NetworkGraphViewProps> = ({ onDeepDive, 
                     entNode.val += 2;
                 }
 
-                const link: GraphLink = { source: invId, target: ent, value: 1 };
+                const link: any = { source: invId, target: ent, value: 1, type: 'CONNECTION' };
                 links.push(link);
 
                 invNode.neighbors!.push(entNode);
                 entNode.neighbors!.push(invNode);
                 invNode.links!.push(link);
                 entNode.links!.push(link);
+            });
+
+            // Add Entity-to-Entity Transactional Links
+            transactions.forEach(t => {
+                if (!nodesMap.has(t.source) || !nodesMap.has(t.destination)) return;
+
+                const sourceNode = nodesMap.get(t.source)!;
+                const destNode = nodesMap.get(t.destination)!;
+
+                const transLink: any = {
+                    source: t.source,
+                    target: t.destination,
+                    value: Math.log10(t.montant + 1) * 2,
+                    type: 'TRANSACTION',
+                    amount: t.montant,
+                    currency: t.devise
+                };
+                links.push(transLink);
+
+                sourceNode.neighbors!.push(destNode);
+                destNode.neighbors!.push(sourceNode);
+                sourceNode.links!.push(transLink);
+                destNode.links!.push(transLink);
             });
         });
 
@@ -392,8 +416,19 @@ export const NetworkGraphView: React.FC<NetworkGraphViewProps> = ({ onDeepDive, 
                         nodeLabel={() => ""}
                         nodeRelSize={1}
                         nodeVal={(node: any) => node.val}
-                        linkColor={(link: any) => highlightLinks.has(link) ? '#B91C1C' : '#F1F5F9'}
-                        linkWidth={(link: any) => highlightLinks.has(link) ? 2.5 : 1}
+                        linkColor={(link: any) => {
+                            if (highlightLinks.has(link)) return '#B91C1C';
+                            return link.type === 'TRANSACTION' ? 'rgba(239, 68, 68, 0.4)' : '#F1F5F9';
+                        }}
+                        linkWidth={(link: any) => {
+                            if (highlightLinks.has(link)) return 3;
+                            return link.type === 'TRANSACTION' ? 2 : 1;
+                        }}
+                        linkDirectionalArrowLength={(link: any) => link.type === 'TRANSACTION' ? 6 : 0}
+                        linkDirectionalArrowRelPos={1}
+                        linkDirectionalParticles={(link: any) => link.type === 'TRANSACTION' && highlightLinks.has(link) ? 4 : 0}
+                        linkDirectionalParticleWidth={2}
+                        linkDirectionalParticleSpeed={0.01}
                         backgroundColor="transparent"
                         onNodeHover={handleNodeHover}
                         onNodeClick={(node: any) => {

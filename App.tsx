@@ -373,7 +373,7 @@ const App: React.FC = () => {
       <div className="flex-1 flex flex-col min-w-0 h-screen overflow-hidden bg-[#F8FAFC]">
 
         {/* PREMIUM MODULE HEADER - Pro Light Theme */}
-        <header className="px-4 lg:px-8 h-14 lg:h-16 shrink-0 flex justify-between items-center bg-white border-b border-slate-100 z-40 shadow-sm relative">
+        <header className="px-4 lg:px-6 h-12 lg:h-14 shrink-0 flex justify-between items-center bg-white border-b border-slate-100 z-40 shadow-sm relative">
           <div className="flex gap-3 lg:gap-8 items-center">
             {/* Mobile Logo */}
             <div className="lg:hidden flex items-center gap-2.5">
@@ -452,7 +452,7 @@ const App: React.FC = () => {
                   <section className="hidden lg:flex lg:col-span-3 xl:col-span-2 border-r border-slate-100 bg-white flex-col overflow-hidden min-h-0 relative">
                     <div className="absolute top-0 right-0 h-full w-1/4 bg-gradient-to-l from-[#F8FAFC] to-transparent pointer-events-none opacity-50"></div>
 
-                    <div className="p-8 flex justify-between items-center border-b border-slate-100 bg-white/50 backdrop-blur-md relative z-10">
+                    <div className="p-5 flex justify-between items-center border-b border-slate-100 bg-white/50 backdrop-blur-md relative z-10">
                       <div className="flex flex-col">
                         <span className="text-[9px] font-black text-slate-300 uppercase tracking-[0.3em] mb-1">Queue d'Analyse</span>
                         <h2 className="text-[12px] font-black text-[#0F172A] uppercase tracking-[0.2em] flex items-center gap-2">
@@ -481,7 +481,7 @@ const App: React.FC = () => {
                 {/* Main Lab Area */}
                 <section className={`${queue.length > 0 ? 'lg:col-span-9 xl:col-span-10' : 'lg:col-span-12'} flex flex-col overflow-hidden min-h-0 bg-[#F8FAFC]`}>
                   {/* Tabs Wrapper - Pro Tabs */}
-                  <div className="flex bg-[#F1F5F9] border-b border-slate-200 h-12 shrink-0 pt-2 relative z-20">
+                  <div className="flex bg-[#F1F5F9] border-b border-slate-200 h-10 shrink-0 pt-1.5 relative z-20">
                     <div className="flex-1 flex items-center overflow-x-auto no-scrollbar px-2 gap-1">
                       {optimisticHistory.length > 0 && (
                         <button
@@ -503,7 +503,7 @@ const App: React.FC = () => {
                             setActiveTabId(res.id);
                             setShowPlanner(false);
                           }}
-                          className={`group flex items-center gap-4 px-5 h-10 cursor-pointer min-w-[180px] max-w-[280px] transition-all duration-200 relative rounded-t-lg border-t-2 border-x border-b-0 select-none ${activeTabId === res.id && !showPlanner
+                          className={`group flex items-center gap-3 px-4 h-8.5 cursor-pointer min-w-[150px] max-w-[240px] transition-all duration-200 relative rounded-t-lg border-t-2 border-x border-b-0 select-none ${activeTabId === res.id && !showPlanner
                             ? 'bg-white border-t-[#B91C1C] border-x-slate-200 text-[#0F172A] z-10 shadow-[0_-4px_12px_rgba(0,0,0,0.02)]'
                             : 'bg-slate-100/50 border-t-transparent border-x-transparent text-slate-400 hover:bg-white/50 hover:text-slate-600'
                             }`}
@@ -543,7 +543,7 @@ const App: React.FC = () => {
                       <div className="flex items-center px-2 relative h-full mb-2 bg-[#F1F5F9] z-20 pl-4 border-l border-slate-200 shadow-[-10px_0_20px_#F1F5F9]">
                         <button
                           onClick={() => setShowTabsDropdown(!showTabsDropdown)}
-                          className={`w-8 h-8 flex items-center justify-center rounded-lg transition-all border border-transparent shadow-sm ${showTabsDropdown ? 'bg-[#0F172A] text-white' : 'hover:bg-white text-slate-400 hover:text-[#0F172A] hover:border-slate-200'}`}
+                          className={`w-7 h-7 flex items-center justify-center rounded-lg transition-all border border-transparent shadow-sm ${showTabsDropdown ? 'bg-[#0F172A] text-white' : 'hover:bg-white text-slate-400 hover:text-[#0F172A] hover:border-slate-200'}`}
                         >
                           <ChevronDown size={14} className={`transition-transform duration-300 ${showTabsDropdown ? 'rotate-180' : ''}`} />
                         </button>
@@ -624,8 +624,8 @@ const App: React.FC = () => {
                         </div>
 
                         {/* Analysis Body */}
-                        <div className="flex-1 overflow-y-auto p-4 lg:p-14 custom-scrollbar report-paper relative">
-                          <div className="max-w-6xl mx-auto pb-40">
+                        <div className="flex-1 overflow-y-auto p-2 lg:p-2 custom-scrollbar report-paper relative">
+                          <div className="max-w-12xl mx-auto pb-40">
                             <DataCard
                               result={activeResult}
                               loading={activeResult.status === 'processing'}
@@ -683,7 +683,7 @@ const App: React.FC = () => {
             {viewMode === 'contradictions' && <ContradictionsView onDeepDive={handleDeepDive} />}
             {viewMode === 'poi' && <POIView onDeepDive={handleDeepDive} />}
             {viewMode === 'finance' && <FinancialFlowView />}
-            {viewMode === 'cross' && <CrossSessionView />}
+            {viewMode === 'cross' && <CrossSessionView onNavigateToInvestigation={handleOpenInvestigation} />}
             {viewMode === 'voice' && <VoiceAssistant />}
           </div>
         </main >
