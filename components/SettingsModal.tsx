@@ -18,9 +18,10 @@ interface SettingsModalProps {
   onModelChange: (modelId: string) => void;
   openRouterKey: string;
   onKeyChange: (key: string) => void;
+  onLogout: () => void;
 }
 
-export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, onClearData, onExportData, dbSize, selectedModel, onModelChange, openRouterKey, onKeyChange }) => {
+export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, onClearData, onExportData, dbSize, selectedModel, onModelChange, openRouterKey, onKeyChange, onLogout }) => {
   if (!isOpen) return null;
 
   return (
@@ -176,6 +177,24 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, o
                   <div className="px-3 py-1.5 bg-red-100/50 rounded-lg text-[#B91C1C] text-[8px] font-black uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity">
                     Execute
                   </div>
+                </button>
+
+                <div className="h-px bg-slate-50 mx-6 my-1"></div>
+
+                <button
+                  onClick={onLogout}
+                  className="w-full flex items-center justify-between p-5 hover:bg-slate-50 rounded-[1.5rem] transition-all group"
+                >
+                  <div className="flex items-center gap-4">
+                    <div className="w-11 h-11 bg-black rounded-xl text-white flex items-center justify-center shadow-lg group-hover:bg-[#B91C1C] transition-all">
+                      <Lock size={20} />
+                    </div>
+                    <div className="text-left">
+                      <div className="text-[#0F172A] text-base font-black uppercase tracking-tight italic font-serif-legal leading-none">Terminer la Session</div>
+                      <div className="text-slate-400 text-[9px] font-black uppercase tracking-widest mt-1">Déconnexion Sécurisée</div>
+                    </div>
+                  </div>
+                  <ArrowUpRight size={16} className="text-slate-300 group-hover:text-[#B91C1C] transition-colors" />
                 </button>
               </div>
             </div>

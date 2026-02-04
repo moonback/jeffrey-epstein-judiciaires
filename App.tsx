@@ -44,10 +44,15 @@ import { ContradictionsView, POIView } from './components/AdvancedModules';
 import { FinancialFlowView } from './components/FinancialFlowView';
 import { CrossSessionView } from './components/CrossSessionView';
 import { VoiceAssistant } from './components/VoiceAssistant';
+import { Auth } from './components/Auth';
+import { supabase, isSupabaseConfigured } from './services/supabaseClient';
 
 import { useOptimistic, useTransition } from 'react';
 
 const App: React.FC = () => {
+  const [session, setSession] = useState<any>(null);
+  const [isAuthLoading, setIsAuthLoading] = useState(true);
+
   const [queue, setQueue] = useState<InputData[]>([]);
   const [resolutionHistory, setResolutionHistory] = useState<ProcessedResult[]>([]);
   const [optimisticHistory, addOptimisticHistory] = useOptimistic<ProcessedResult[], ProcessedResult>(
@@ -93,10 +98,35 @@ const App: React.FC = () => {
     localStorage.setItem('OPENROUTER_API_KEY', key);
   };
 
+  const handleLogout = async () => {
+    if (isSupabaseConfigured) {
+      await supabase!.auth.signOut();
+    }
+  };
+
   const isMounted = useRef(true);
   useEffect(() => {
     isMounted.current = true;
     return () => { isMounted.current = false; };
+  }, []);
+
+  // Supabase Auth Listener
+  useEffect(() => {
+    if (!isSupabaseConfigured) {
+      setIsAuthLoading(false);
+      return;
+    }
+
+    supabase!.auth.getSession().then(({ data: { session } }) => {
+      setSession(session);
+      setIsAuthLoading(false);
+    });
+
+    const { data: { subscription } } = supabase!.auth.onAuthStateChange((_event, session) => {
+      setSession(session);
+    });
+
+    return () => subscription.unsubscribe();
   }, []);
 
   // Load History from IndexedDB on Mount
@@ -361,6 +391,24 @@ const App: React.FC = () => {
   const activeResult = optimisticHistory.find(r => r.id === activeTabId);
   const activeLogs = activeResult ? activeResult.logs : [];
 
+  if (isAuthLoading) {
+    return (
+      <div className="min-h-screen flex items-center justify-center bg-[#F8FAFC]">
+        <div className="flex flex-col items-center gap-6">
+          <div className="relative w-16 h-16">
+            <div className="absolute inset-0 border-4 border-slate-100 rounded-full"></div>
+            <div className="absolute inset-0 border-t-4 border-[#B91C1C] rounded-full animate-spin"></div>
+          </div>
+          <span className="text-[10px] font-black text-slate-300 uppercase tracking-[0.4em]">Chargement des Protocoles...</span>
+        </div>
+      </div>
+    );
+  }
+
+  if (isSupabaseConfigured && !session) {
+    return <Auth />;
+  }
+
   return (
     <div className="flex flex-col lg:flex-row bg-[#F8FAFC] text-[#0F172A] min-h-screen overflow-hidden font-sans">
 
@@ -424,6 +472,17 @@ const App: React.FC = () => {
             )}
 
             <div className="hidden lg:flex items-center gap-6 text-[9px] font-black text-slate-400 uppercase border-l border-slate-100 pl-6 tracking-[0.15em]">
+              {session?.user?.email && (
+                <div className="flex flex-col items-start pr-6 border-r border-slate-100">
+                  <span className="text-slate-300 text-[7px] mb-0.5 uppercase">Agent Identifié</span>
+                  <div className="flex items-center gap-1.5 text-[#0F172A] font-bold">
+                    <div className="w-4 h-4 rounded-md bg-slate-900 flex items-center justify-center">
+                      <ShieldCheck size={10} className="text-white" />
+                    </div>
+                    <span>{session.user.email}</span>
+                  </div>
+                </div>
+              )}
               <div className="flex flex-col items-start">
                 <span className="text-slate-300 text-[7px] mb-0.5 uppercase">Cryptage</span>
                 <div className="flex items-center gap-1.5 text-slate-600">
@@ -794,6 +853,7 @@ const App: React.FC = () => {
         onModelChange={handleModelChange}
         openRouterKey={openRouterKey}
         onKeyChange={handleKeyChange}
+        onLogout={handleLogout}
       />
 
     </div >
