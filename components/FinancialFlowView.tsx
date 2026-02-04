@@ -205,7 +205,7 @@ export const FinancialFlowView: React.FC = () => {
                             <div className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] mb-3 flex items-center gap-2">
                                 <div className="w-1.5 h-1.5 rounded-full bg-[#B91C1C]"></div> Flux Total Détecté
                             </div>
-                            <div className="text-4xl font-mono-data font-black text-slate-900 leading-none mb-3">
+                            <div className="text-2xl font-mono-data font-black text-slate-900 leading-none mb-3">
                                 {formatCurrency(analytics.totalVolume, 'USD')}
                             </div>
                             <div className="flex items-center gap-2 text-[10px] font-bold text-red-600 uppercase bg-red-50 w-fit px-3 py-1 rounded-full border border-red-100">
@@ -220,7 +220,7 @@ export const FinancialFlowView: React.FC = () => {
                             <div className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] mb-3 flex items-center gap-2">
                                 <div className="w-1.5 h-1.5 rounded-full bg-slate-900"></div> Masse Transactionnelle
                             </div>
-                            <div className="text-4xl font-mono-data font-black text-slate-900 leading-none mb-3">{analytics.count}</div>
+                            <div className="text-2xl font-mono-data font-black text-slate-900 leading-none mb-3">{analytics.count}</div>
                             <div className="flex items-center gap-2 text-[10px] font-bold text-slate-500 uppercase">
                                 <FileText size={10} /> {analytics.uniqueEntities} Entités de Référence
                             </div>
@@ -233,7 +233,7 @@ export const FinancialFlowView: React.FC = () => {
                             <div className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em] mb-3 flex items-center gap-2">
                                 <div className="w-1.5 h-1.5 rounded-full bg-red-500 animate-ping"></div> Alertes Forensiques
                             </div>
-                            <div className="text-4xl font-mono-data font-black text-white leading-none mb-3">{analytics.suspiciousCount}</div>
+                            <div className="text-2xl font-mono-data font-black text-white leading-none mb-3">{analytics.suspiciousCount}</div>
                             <div className="flex items-center gap-2 text-[10px] font-bold text-red-400 uppercase">
                                 <Fingerprint size={12} /> Analyse de Comportements Atypiques
                             </div>
@@ -250,7 +250,7 @@ export const FinancialFlowView: React.FC = () => {
                             {analytics.topEntities.map(([name, data], idx) => (
                                 <div key={idx} className="group cursor-pointer">
                                     <div className="flex justify-between items-end mb-1.5">
-                                        <span className="text-[11px] font-black text-slate-700 truncate max-w-[120px] group-hover:text-[#B91C1C] transition-colors">{name}</span>
+                                        <span className="text-[10px] font-black text-slate-700 truncate max-w-[120px] group-hover:text-[#B91C1C] transition-colors">{name}</span>
                                         <span className="text-[9px] font-mono-data font-bold text-slate-400">{Math.round((data.sent + data.received) / analytics.totalVolume * 100)}%</span>
                                     </div>
                                     <div className="h-1.5 w-full bg-slate-50 rounded-full overflow-hidden flex shadow-inner">
@@ -273,7 +273,7 @@ export const FinancialFlowView: React.FC = () => {
                 <div className="max-w-[1400px] mx-auto mb-10">
                     <div className="flex items-center gap-4 mb-8">
                         <div className="h-px flex-1 bg-slate-200"></div>
-                        <span className="text-[11px] font-black text-slate-300 uppercase tracking-[0.5em] italic">Grand Livre de l'Investigation</span>
+                        <span className="text-[10px] font-black text-slate-300 uppercase tracking-[0.5em] italic">Grand Livre de l'Investigation</span>
                         <div className="h-px flex-1 bg-slate-200"></div>
                     </div>
 
@@ -289,13 +289,13 @@ export const FinancialFlowView: React.FC = () => {
                                 {/* Left: ID & Amount */}
                                 <div className="flex items-center gap-6 xl:w-1/4 shrink-0 relative z-10">
                                     <div className={`
-                                        w-14 h-14 rounded-2xl flex items-center justify-center transition-all duration-500 group-hover:rotate-6
+                                        w-10 h-10 rounded-2xl flex items-center justify-center transition-all duration-500 group-hover:rotate-6
                                         ${t.montant > 500000 ? 'bg-red-600 text-white shadow-xl shadow-red-600/20' : 'bg-slate-900 text-white shadow-lg'}
                                     `}>
-                                        <DollarSign size={24} strokeWidth={2.5} />
+                                        <DollarSign size={20} strokeWidth={2.5} />
                                     </div>
                                     <div className="min-w-0">
-                                        <div className="text-[18px] font-black text-slate-900 truncate italic font-serif-legal leading-none mb-1.5">
+                                        <div className="text-[16px] font-black text-slate-900 truncate italic font-serif-legal leading-none mb-1.5">
                                             {formatCurrency(t.montant, t.devise)}
                                         </div>
                                         <div className="flex items-center gap-2">
@@ -315,7 +315,7 @@ export const FinancialFlowView: React.FC = () => {
                                         <div className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-2 flex items-center gap-2">
                                             <ArrowUpRight size={12} strokeWidth={3} className="text-slate-300" /> Origine
                                         </div>
-                                        <div className="text-[14px] font-black text-slate-700 truncate italic font-serif-legal group-hover:text-slate-900 transition-colors">{t.source}</div>
+                                        <div className="text-[12px] font-black text-slate-700 truncate italic font-serif-legal group-hover:text-slate-900 transition-colors">{t.source}</div>
                                     </div>
 
                                     <div className="flex flex-col items-center shrink-0">
@@ -329,7 +329,7 @@ export const FinancialFlowView: React.FC = () => {
                                         <div className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-2 flex items-center gap-2 justify-end">
                                             Cible <ArrowDownLeft size={12} strokeWidth={3} className="text-red-300" />
                                         </div>
-                                        <div className="text-[14px] font-black text-red-700 truncate italic font-serif-legal group-hover:text-[#B91C1C] transition-colors">{t.destination}</div>
+                                        <div className="text-[12px] font-black text-red-700 truncate italic font-serif-legal group-hover:text-[#B91C1C] transition-colors">{t.destination}</div>
                                     </div>
                                 </div>
 
