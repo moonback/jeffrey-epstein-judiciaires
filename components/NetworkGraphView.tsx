@@ -173,116 +173,118 @@ export const NetworkGraphView: React.FC<NetworkGraphViewProps> = ({ onDeepDive }
             )}
 
             {/* PROFESSIONAL SIDEBAR - Forensic Asset Panel */}
-            <aside className={`${isSidebarOpen ? 'w-[360px] lg:w-[400px]' : 'w-0 opacity-0 pointer-events-none'} border-r border-slate-100 bg-white/95 backdrop-blur-3xl z-20 flex flex-col p-8 lg:p-10 transition-all duration-500 relative overflow-hidden shrink-0 shadow-2xl`}>
-                <div className="absolute top-0 right-0 h-full w-1/4 bg-gradient-to-l from-[#F8FAFC] to-transparent pointer-events-none opacity-50"></div>
+            <aside className={`${isSidebarOpen ? 'w-[360px] lg:w-[400px]' : 'w-0'} border-r border-slate-100 bg-white/95 backdrop-blur-3xl z-20 flex flex-col transition-all duration-500 relative overflow-hidden shadow-2xl`}>
+                <div className={`${isSidebarOpen ? 'opacity-100' : 'opacity-0'} transition-opacity duration-300 h-full flex flex-col p-8 lg:p-10`}>
+                    <div className="absolute top-0 right-0 h-full w-1/4 bg-gradient-to-l from-[#F8FAFC] to-transparent pointer-events-none opacity-50"></div>
 
-                <button
-                    onClick={() => setIsSidebarOpen(false)}
-                    className="absolute top-8 right-8 text-slate-300 hover:text-[#0F172A] transition-colors p-2 hover:bg-slate-50 rounded-xl"
-                >
-                    <PanelLeftClose size={18} />
-                </button>
+                    <button
+                        onClick={() => setIsSidebarOpen(false)}
+                        className="absolute top-8 right-8 text-slate-300 hover:text-[#0F172A] transition-colors p-2 hover:bg-slate-50 rounded-xl z-10"
+                    >
+                        <PanelLeftClose size={18} />
+                    </button>
 
-                <div className="mb-10 relative z-10">
-                    <div className="flex items-center gap-5 mb-4">
-                        <div className="w-12 h-12 bg-[#B91C1C] rounded-[1rem] flex items-center justify-center shadow-xl shadow-red-900/10 transition-transform hover:rotate-6">
-                            <Share2 size={22} className="text-white" />
-                        </div>
-                        <div>
-                            <h2 className="text-xl font-black tracking-tight text-[#0F172A] uppercase italic font-serif-legal leading-tight">Cartographie <span className="text-[#B91C1C]">Relationnelle</span></h2>
-                            <div className="flex items-center gap-2 mt-1">
-                                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                                <span className="text-[9px] font-black text-slate-300 uppercase tracking-[0.3em]">Neural Link v4.2 Trace</span>
+                    <div className="mb-10 relative z-10">
+                        <div className="flex items-center gap-5 mb-4">
+                            <div className="w-12 h-12 bg-[#B91C1C] rounded-[1rem] flex items-center justify-center shadow-xl shadow-red-900/10 transition-transform hover:rotate-6">
+                                <Share2 size={22} className="text-white" />
+                            </div>
+                            <div>
+                                <h2 className="text-xl font-black tracking-tight text-[#0F172A] uppercase italic font-serif-legal leading-tight">Cartographie <span className="text-[#B91C1C]">Relationnelle</span></h2>
+                                <div className="flex items-center gap-2 mt-1">
+                                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
+                                    <span className="text-[9px] font-black text-slate-300 uppercase tracking-[0.3em]">Neural Link v4.2 Trace</span>
+                                </div>
                             </div>
                         </div>
                     </div>
-                </div>
 
-                {/* Stats Grid */}
-                <div className="grid grid-cols-2 gap-4 mb-10 relative z-10">
-                    <div className="bg-[#F8FAFC] p-6 rounded-[2rem] border border-slate-100 relative overflow-hidden group shadow-sm transition-all hover:bg-white hover:shadow-xl">
-                        <div className="absolute top-0 right-0 p-4 opacity-[0.03] group-hover:scale-110 transition-transform">
-                            <Target size={40} className="text-[#B91C1C]" />
+                    {/* Stats Grid */}
+                    <div className="grid grid-cols-2 gap-4 mb-10 relative z-10">
+                        <div className="bg-[#F8FAFC] p-6 rounded-[2rem] border border-slate-100 relative overflow-hidden group shadow-sm transition-all hover:bg-white hover:shadow-xl">
+                            <div className="absolute top-0 right-0 p-4 opacity-[0.03] group-hover:scale-110 transition-transform">
+                                <Target size={40} className="text-[#B91C1C]" />
+                            </div>
+                            <div className="text-[9px] font-black text-slate-400 uppercase mb-1 tracking-widest">Entités Identifiées</div>
+                            <div className="text-2xl font-mono-data font-black text-[#B91C1C] leading-none">{graphData.nodes.length}</div>
                         </div>
-                        <div className="text-[9px] font-black text-slate-400 uppercase mb-1 tracking-widest">Entités Identifiées</div>
-                        <div className="text-2xl font-mono-data font-black text-[#B91C1C] leading-none">{graphData.nodes.length}</div>
-                    </div>
-                    <div className="bg-[#F8FAFC] p-6 rounded-[2rem] border border-slate-100 relative overflow-hidden group shadow-sm transition-all hover:bg-white hover:shadow-xl">
-                        <div className="absolute top-0 right-0 p-4 opacity-[0.03] group-hover:scale-110 transition-transform">
-                            <Link2 size={40} className="text-[#0F4C81]" />
+                        <div className="bg-[#F8FAFC] p-6 rounded-[2rem] border border-slate-100 relative overflow-hidden group shadow-sm transition-all hover:bg-white hover:shadow-xl">
+                            <div className="absolute top-0 right-0 p-4 opacity-[0.03] group-hover:scale-110 transition-transform">
+                                <Link2 size={40} className="text-[#0F4C81]" />
+                            </div>
+                            <div className="text-[9px] font-black text-slate-400 uppercase mb-1 tracking-widest">Liens Détectés</div>
+                            <div className="text-2xl font-mono-data font-black text-[#0F4C81] leading-none">{graphData.links.length}</div>
                         </div>
-                        <div className="text-[9px] font-black text-slate-400 uppercase mb-1 tracking-widest">Liens Détectés</div>
-                        <div className="text-2xl font-mono-data font-black text-[#0F4C81] leading-none">{graphData.links.length}</div>
                     </div>
-                </div>
 
-                {/* Search & Filters */}
-                <div className="space-y-4 mb-10 relative z-10">
-                    <div className="relative group">
-                        <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-[#B91C1C] transition-colors" size={16} />
-                        <input
-                            type="text"
-                            placeholder="Rechercher une cible..."
-                            value={searchQuery}
-                            onChange={e => setSearchQuery(e.target.value)}
-                            className="w-full bg-[#F8FAFC] border border-slate-100 rounded-xl py-3 pl-12 pr-6 text-[13px] focus:border-[#B91C1C] focus:bg-white outline-none transition-all placeholder:text-slate-300 font-medium"
-                        />
+                    {/* Search & Filters */}
+                    <div className="space-y-4 mb-10 relative z-10">
+                        <div className="relative group">
+                            <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-[#B91C1C] transition-colors" size={16} />
+                            <input
+                                type="text"
+                                placeholder="Rechercher une cible..."
+                                value={searchQuery}
+                                onChange={e => setSearchQuery(e.target.value)}
+                                className="w-full bg-[#F8FAFC] border border-slate-100 rounded-xl py-3 pl-12 pr-6 text-[13px] focus:border-[#B91C1C] focus:bg-white outline-none transition-all placeholder:text-slate-300 font-medium"
+                            />
+                        </div>
+                        <div className="flex gap-2 p-1.5 bg-[#F8FAFC] border border-slate-50 rounded-xl">
+                            {(['ALL', 'PERSON', 'INVESTIGATION'] as const).map(t => (
+                                <button
+                                    key={t}
+                                    onClick={() => setFilterType(t)}
+                                    className={`flex-1 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all ${filterType === t ? 'bg-white text-[#B91C1C] shadow-sm border border-slate-100' : 'text-slate-400 hover:text-slate-600'}`}
+                                >
+                                    {t === 'ALL' ? 'Tous' : t === 'PERSON' ? 'Cibles' : 'Affaires'}
+                                </button>
+                            ))}
+                        </div>
                     </div>
-                    <div className="flex gap-2 p-1.5 bg-[#F8FAFC] border border-slate-50 rounded-xl">
-                        {(['ALL', 'PERSON', 'INVESTIGATION'] as const).map(t => (
-                            <button
-                                key={t}
-                                onClick={() => setFilterType(t)}
-                                className={`flex-1 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all ${filterType === t ? 'bg-white text-[#B91C1C] shadow-sm border border-slate-100' : 'text-slate-400 hover:text-slate-600'}`}
-                            >
-                                {t === 'ALL' ? 'Tous' : t === 'PERSON' ? 'Cibles' : 'Affaires'}
-                            </button>
-                        ))}
-                    </div>
-                </div>
 
-                {/* Influencers */}
-                <div className="flex-1 overflow-y-auto custom-scrollbar pr-2 relative z-10">
-                    <h3 className="text-[9px] font-black text-slate-300 uppercase tracking-[0.4em] mb-6 flex items-center gap-4">
-                        <Zap size={14} className="text-[#B91C1C]" /> Forensic Integrity Feed
-                    </h3>
-                    <div className="space-y-3 pb-8">
-                        {topInfluencers.map((inf, i) => (
-                            <div
-                                key={inf.id}
-                                className="group relative flex items-center gap-4 p-4 bg-white hover:bg-slate-50 rounded-[1.5rem] border border-slate-100 hover:border-[#B91C1C]/10 transition-all cursor-pointer shadow-sm hover:shadow-md"
-                                onClick={() => {
-                                    fgRef.current?.centerAt(inf.x, inf.y, 800);
-                                    fgRef.current?.zoom(3, 800);
-                                    handleNodeHover(inf);
-                                }}
-                            >
-                                <div className="w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center text-[10px] font-black text-[#B91C1C] border border-slate-100 group-hover:bg-white group-hover:border-[#B91C1C] transition-all shrink-0 font-serif-legal italic">
-                                    {String(i + 1).padStart(2, '0')}
-                                </div>
-                                <div className="flex-1 min-w-0">
-                                    <div className="flex items-center justify-between gap-3">
-                                        <div className="text-[13px] font-black text-[#0F172A] truncate group-hover:text-[#B91C1C] transition-colors font-serif-legal italic">{inf.name}</div>
-                                        <ArrowUpRight size={12} className="text-slate-300 opacity-0 group-hover:opacity-100 transition-all shrink-0" />
+                    {/* Influencers */}
+                    <div className="flex-1 overflow-y-auto custom-scrollbar pr-2 relative z-10">
+                        <h3 className="text-[9px] font-black text-slate-300 uppercase tracking-[0.4em] mb-6 flex items-center gap-4">
+                            <Zap size={14} className="text-[#B91C1C]" /> Forensic Integrity Feed
+                        </h3>
+                        <div className="space-y-3 pb-8">
+                            {topInfluencers.map((inf, i) => (
+                                <div
+                                    key={inf.id}
+                                    className="group relative flex items-center gap-4 p-4 bg-white hover:bg-slate-50 rounded-[1.5rem] border border-slate-100 hover:border-[#B91C1C]/10 transition-all cursor-pointer shadow-sm hover:shadow-md"
+                                    onClick={() => {
+                                        fgRef.current?.centerAt(inf.x, inf.y, 800);
+                                        fgRef.current?.zoom(3, 800);
+                                        handleNodeHover(inf);
+                                    }}
+                                >
+                                    <div className="w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center text-[10px] font-black text-[#B91C1C] border border-slate-100 group-hover:bg-white group-hover:border-[#B91C1C] transition-all shrink-0 font-serif-legal italic">
+                                        {String(i + 1).padStart(2, '0')}
                                     </div>
-                                    <div className="flex items-center gap-3 mt-1.5">
-                                        <div className="flex-1 h-1 bg-slate-100 rounded-full overflow-hidden">
-                                            <div className="h-full bg-[#B91C1C] opacity-80" style={{ width: `${Math.min(100, (inf.val / 50) * 100)}%` }}></div>
+                                    <div className="flex-1 min-w-0">
+                                        <div className="flex items-center justify-between gap-3">
+                                            <div className="text-[13px] font-black text-[#0F172A] truncate group-hover:text-[#B91C1C] transition-colors font-serif-legal italic">{inf.name}</div>
+                                            <ArrowUpRight size={12} className="text-slate-300 opacity-0 group-hover:opacity-100 transition-all shrink-0" />
                                         </div>
-                                        <span className="text-[9px] font-mono-data font-black text-slate-300 uppercase shrink-0">RI: {inf.val}</span>
+                                        <div className="flex items-center gap-3 mt-1.5">
+                                            <div className="flex-1 h-1 bg-slate-100 rounded-full overflow-hidden">
+                                                <div className="h-full bg-[#B91C1C] opacity-80" style={{ width: `${Math.min(100, (inf.val / 50) * 100)}%` }}></div>
+                                            </div>
+                                            <span className="text-[9px] font-mono-data font-black text-slate-300 uppercase shrink-0">RI: {inf.val}</span>
+                                        </div>
                                     </div>
                                 </div>
-                            </div>
-                        ))}
+                            ))}
+                        </div>
                     </div>
-                </div>
 
-                <div className="pt-8 border-t border-slate-50 mt-4 relative z-10">
-                    <div className="p-5 bg-[#F8FAFC] border border-slate-50 rounded-2xl flex items-start gap-4">
-                        <ShieldCheck size={18} className="text-[#B5965D] shrink-0 mt-0.5" />
-                        <p className="text-[10px] text-slate-500 leading-relaxed font-bold italic">
-                            Le RI-Score calcule l'indice de résonance transversale au sein des archives judiciaires compilées.
-                        </p>
+                    <div className="pt-8 border-t border-slate-50 mt-4 relative z-10">
+                        <div className="p-5 bg-[#F8FAFC] border border-slate-50 rounded-2xl flex items-start gap-4">
+                            <ShieldCheck size={18} className="text-[#B5965D] shrink-0 mt-0.5" />
+                            <p className="text-[10px] text-slate-500 leading-relaxed font-bold italic">
+                                Le RI-Score calcule l'indice de résonance transversale au sein des archives judiciaires compilées.
+                            </p>
+                        </div>
                     </div>
                 </div>
             </aside>
