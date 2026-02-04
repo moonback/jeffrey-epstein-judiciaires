@@ -34,7 +34,8 @@ import {
   Monitor,
   Cpu,
   Layers,
-  ArrowUpRight
+  ArrowUpRight,
+  Lock
 } from 'lucide-react';
 import { Sidebar, ViewType } from './components/Sidebar';
 import { CaseListView } from './components/CaseListView';
@@ -504,6 +505,7 @@ const App: React.FC = () => {
             setActiveTabId(null);
           }}
           onToggleLogs={() => setShowLogs(!showLogs)}
+          onLogout={handleLogout}
           isGuestMode={isGuestMode}
         />
       </div>
@@ -891,6 +893,19 @@ const App: React.FC = () => {
               </button>
             </>
           )}
+
+          <div className="h-10 w-px bg-slate-100 mx-2"></div>
+          <button
+            onClick={handleLogout}
+            className={`flex flex-col items-center justify-center gap-2 transition-all w-16 ${isGuestMode ? 'text-[#B91C1C]' : 'text-slate-400'}`}
+          >
+            <div className={`p-3 rounded-2xl transition-all ${isGuestMode ? 'bg-red-50' : 'hover:bg-slate-50'}`}>
+              <Lock size={20} />
+            </div>
+            <span className="text-[10px] font-black uppercase tracking-widest leading-none">
+              {isGuestMode ? 'Login' : 'Out'}
+            </span>
+          </button>
         </nav >
       </div >
 

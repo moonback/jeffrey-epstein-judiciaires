@@ -37,6 +37,7 @@ interface SidebarProps {
     onOpenSettings: () => void;
     onNewAnalysis: () => void;
     onToggleLogs: () => void;
+    onLogout: () => void;
     isGuestMode?: boolean;
 }
 
@@ -46,6 +47,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
     onOpenSettings,
     onNewAnalysis,
     onToggleLogs,
+    onLogout,
     isGuestMode
 }) => {
     const [isCollapsed, setIsCollapsed] = useState(false);
@@ -170,6 +172,25 @@ export const Sidebar: React.FC<SidebarProps> = ({
                             className="group-hover:rotate-180 transition-transform duration-700 shrink-0"
                         />
                         {!isCollapsed && <span className="hidden lg:block text-[9px] font-black uppercase tracking-[0.3em] ml-3 transition-all duration-300">Protocole Config</span>}
+                    </button>
+
+                    {/* NEW LOGIN/LOGOUT BUTTON */}
+                    <button
+                        onClick={onLogout}
+                        className={`w-full mt-2 flex items-center justify-center ${isCollapsed ? '' : 'lg:justify-start lg:px-4'} h-10 rounded-xl transition-all group border ${isGuestMode
+                            ? 'bg-[#B91C1C] text-white border-red-700 shadow-lg shadow-red-900/20 hover:bg-[#0F172A]'
+                            : 'bg-white text-slate-400 border-slate-100 hover:text-[#B91C1C] hover:border-[#B91C1C]'}`}
+                        title={isCollapsed ? (isGuestMode ? 'Connexion' : 'Déconnexion') : ''}
+                    >
+                        <Lock
+                            size={16}
+                            className={`${isGuestMode ? 'text-white' : 'group-hover:text-[#B91C1C]'} transition-colors shrink-0`}
+                        />
+                        {!isCollapsed && (
+                            <span className={`hidden lg:block text-[10px] font-black uppercase tracking-[0.3em] ml-3 transition-all duration-300 ${isGuestMode ? 'text-white' : ''}`}>
+                                {isGuestMode ? 'Connexion Analyste' : 'Clôturer Session'}
+                            </span>
+                        )}
                     </button>
                 </div>
 
