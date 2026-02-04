@@ -6,6 +6,7 @@
 import React, { useMemo, useState, useEffect, useCallback } from 'react';
 import { storageService } from '../services/storageService';
 import { ProcessedResult, DocumentDetail, PhotoDetail } from '../types';
+import { DOJImportService } from '../services/dojImportService';
 import {
     FileText,
     Image as ImageIcon,
@@ -22,7 +23,11 @@ import {
     Grid,
     Layout,
     Archive,
-    X
+    X,
+    Upload,
+    AlertCircle,
+    CheckCircle2,
+    Loader2
 } from 'lucide-react';
 
 interface EvidenceItem {
@@ -36,6 +41,7 @@ interface EvidenceItem {
     location?: string;
     tags?: string[];
     rawType?: string;
+    isDOJ?: boolean;
 }
 
 export const EvidenceGalleryView: React.FC = () => {
@@ -45,12 +51,76 @@ export const EvidenceGalleryView: React.FC = () => {
     const [filterType, setFilterType] = useState<'ALL' | 'DOCUMENT' | 'PHOTO'>('ALL');
     const [selectedItem, setSelectedItem] = useState<EvidenceItem | null>(null);
 
-    useEffect(() => {
+    // DOJ Import states
+    const [showDOJImport, setShowDOJImport] = useState(false);
+    const [dojUrl, setDojUrl] = useState('');
+    const [ageVerified, setAgeVerified] = useState(false);
+    const [analyzeWithAI, setAnalyzeWithAI] = useState(true);
+    const [importProgress, setImportProgress] = useState('');
+    const [importing, setImporting] = useState(false);
+    const [importError, setImportError] = useState('');
+    const [importSuccess, setImportSuccess] = useState(false);
+
+    const refreshHistory = useCallback(() => {
         storageService.getAllResults().then(data => {
             setHistory(data);
             setLoading(false);
         });
     }, []);
+
+    useEffect(() => {
+        refreshHistory();
+    }, [refreshHistory]);
+
+    const handleDOJImport = useCallback(async () => {
+        if (!ageVerified) {
+            setImportError('Vous devez confirmer avoir 18 ans ou plus.');
+            return;
+        }
+
+        if (!dojUrl.trim()) {
+            setImportError('Veuillez entrer une URL de document DOJ.');
+            return;
+        }
+
+        if (!DOJImportService.isValidDOJUrl(dojUrl)) {
+            setImportError('L\'URL doit être un document PDF du site justice.gov');
+            return;
+        }
+
+        setImporting(true);
+        setImportError('');
+        setImportSuccess(false);
+        setImportProgress('Démarrage de l\'importation...');
+
+        try {
+            await DOJImportService.importDOJDocument(dojUrl, {
+                analyzeWithAI,
+                onProgress: (msg) => setImportProgress(msg),
+                onError: (err) => setImportError(err)
+            });
+
+            setImportSuccess(true);
+            setImportProgress('✅ Importation réussie!');
+
+            // Refresh the gallery
+            setTimeout(() => {
+                refreshHistory();
+                // Reset form after 2 seconds
+                setTimeout(() => {
+                    setShowDOJImport(false);
+                    setDojUrl('');
+                    setAgeVerified(false);
+                    setImportProgress('');
+                    setImportSuccess(false);
+                }, 2000);
+            }, 500);
+        } catch (error) {
+            setImportError(error instanceof Error ? error.message : 'Erreur lors de l\'importation');
+        } finally {
+            setImporting(false);
+        }
+    }, [dojUrl, ageVerified, analyzeWithAI, refreshHistory]);
 
     const allEvidence = useMemo(() => {
         const list: EvidenceItem[] = [];
@@ -61,6 +131,9 @@ export const EvidenceGalleryView: React.FC = () => {
             // Add Documents
             if (res.output.documents) {
                 res.output.documents.forEach((doc, idx) => {
+                    // Detect DOJ imports by checking ID prefix or document type
+                    const isDOJ = res.id.startsWith('doj-') || doc.type === 'DOJ_DISCLOSURE';
+
                     list.push({
                         id: `${res.id}-doc-${idx}`,
                         parentId: res.id,
@@ -69,7 +142,8 @@ export const EvidenceGalleryView: React.FC = () => {
                         title: doc.title,
                         description: doc.description,
                         date: doc.date,
-                        rawType: doc.type
+                        rawType: doc.type,
+                        isDOJ
                     });
                 });
             }
@@ -160,6 +234,177 @@ Généré le: ${new Date().toLocaleString()}
     return (
         <div className="h-full flex flex-col bg-[#F8FAFC] overflow-hidden relative font-sans">
             <div className="absolute inset-0 z-0 pointer-events-none opacity-[0.25] report-paper"></div>
+
+            {/* DOJ IMPORT MODAL */}
+            {showDOJImport && (
+                <div className="fixed inset-0 z-[110] flex items-center justify-center p-4 lg:p-20">
+                    <div className="absolute inset-0 bg-[#0F172A]/80 backdrop-blur-md animate-in fade-in duration-300" onClick={() => !importing && setShowDOJImport(false)}></div>
+                    <div className="bg-white w-full max-w-3xl rounded-[2rem] shadow-2xl relative z-10 overflow-hidden flex flex-col animate-in zoom-in-95 duration-300">
+                        <button
+                            onClick={() => !importing && setShowDOJImport(false)}
+                            disabled={importing}
+                            className="absolute top-6 right-6 w-12 h-12 bg-white rounded-full flex items-center justify-center text-slate-400 hover:text-[#B91C1C] transition-all z-20 shadow-xl border border-slate-100 active:scale-95 disabled:opacity-50"
+                        >
+                            <X size={24} />
+                        </button>
+
+                        <div className="p-8 lg:p-12">
+                            <div className="flex items-center gap-4 mb-8">
+                                <div className="w-14 h-14 bg-gradient-to-br from-[#B91C1C] to-red-800 rounded-2xl flex items-center justify-center shadow-xl">
+                                    <Upload className="text-white" size={28} />
+                                </div>
+                                <div>
+                                    <h2 className="text-2xl lg:text-3xl font-black text-[#0F172A] uppercase italic font-serif-legal">
+                                        Import DOJ <span className="text-[#B91C1C]">Epstein</span>
+                                    </h2>
+                                    <p className="text-[10px] text-slate-400 font-black uppercase tracking-wider mt-1">Department of Justice • Public Disclosures</p>
+                                </div>
+                            </div>
+
+                            {/* Age Verification */}
+                            <div className="bg-amber-50 border-2 border-amber-200 rounded-2xl p-6 mb-6">
+                                <div className="flex items-start gap-4">
+                                    <AlertCircle className="text-amber-600 mt-1 flex-shrink-0" size={24} />
+                                    <div className="flex-1">
+                                        <h3 className="text-sm font-black text-amber-900 uppercase tracking-wide mb-2">Vérification d'âge requise</h3>
+                                        <p className="text-xs text-amber-800 mb-4 leading-relaxed">
+                                            Ce contenu provient des divulgations DOJ relatives à l'affaire Epstein.
+                                            Vous devez avoir 18 ans ou plus pour accéder à ces documents.
+                                        </p>
+                                        <label className="flex items-center gap-3 cursor-pointer group">
+                                            <input
+                                                type="checkbox"
+                                                checked={ageVerified}
+                                                onChange={(e) => setAgeVerified(e.target.checked)}
+                                                disabled={importing}
+                                                className="w-5 h-5 rounded border-2 border-amber-400 text-[#B91C1C] focus:ring-2 focus:ring-[#B91C1C] disabled:opacity-50"
+                                            />
+                                            <span className="text-xs font-bold text-amber-900 group-hover:text-amber-700 transition-colors">
+                                                Je confirme avoir 18 ans ou plus
+                                            </span>
+                                        </label>
+                                    </div>
+                                </div>
+                            </div>
+
+                            {/* URL Input */}
+                            <div className="mb-6">
+                                <label className="block text-xs font-black text-slate-700 uppercase tracking-wide mb-3">
+                                    URL du Document PDF
+                                </label>
+                                <input
+                                    type="url"
+                                    value={dojUrl}
+                                    onChange={(e) => setDojUrl(e.target.value)}
+                                    disabled={importing}
+                                    placeholder="https://www.justice.gov/d9/2025-01/EFTA00005386.pdf"
+                                    className="w-full px-5 py-4 bg-slate-50 border-2 border-slate-200 rounded-xl text-sm font-medium focus:border-[#B91C1C] focus:bg-white transition-all outline-none disabled:opacity-50"
+                                />
+                                <p className="text-[10px] text-slate-400 mt-2 font-medium">
+                                    Exemple: https://www.justice.gov/d9/2025-01/EFTA00005386.pdf
+                                </p>
+                            </div>
+
+                            {/* Alternative: Manual File Upload */}
+                            <div className="mb-6">
+                                <div className="flex items-center gap-3 mb-3">
+                                    <div className="h-px flex-1 bg-slate-200"></div>
+                                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-wider">Ou</span>
+                                    <div className="h-px flex-1 bg-slate-200"></div>
+                                </div>
+                                <div className="bg-slate-50 border-2 border-dashed border-slate-200 rounded-xl p-6 text-center">
+                                    <p className="text-xs text-slate-600 font-bold mb-3">
+                                        Si le téléchargement automatique échoue (CORS), vous pouvez:
+                                    </p>
+                                    <ol className="text-[10px] text-slate-500 text-left space-y-1 mb-4 max-w-md mx-auto">
+                                        <li>1. Ouvrir l'URL dans un nouvel onglet</li>
+                                        <li>2. Télécharger le PDF manuellement</li>
+                                        <li>3. Utiliser l'onglet "Lab" pour importer le fichier téléchargé</li>
+                                    </ol>
+                                    <a
+                                        href={dojUrl}
+                                        target="_blank"
+                                        rel="noopener noreferrer"
+                                        className="inline-flex items-center gap-2 px-4 py-2 bg-blue-500 hover:bg-blue-600 text-white text-xs font-black uppercase tracking-wider rounded-lg transition-colors"
+                                    >
+                                        <ExternalLink size={14} />
+                                        Ouvrir dans un nouvel onglet
+                                    </a>
+                                </div>
+                            </div>
+
+                            {/* AI Analysis Option */}
+                            <div className="mb-6">
+                                <label className="flex items-center gap-3 cursor-pointer group p-4 bg-slate-50 rounded-xl hover:bg-slate-100 transition-colors">
+                                    <input
+                                        type="checkbox"
+                                        checked={analyzeWithAI}
+                                        onChange={(e) => setAnalyzeWithAI(e.target.checked)}
+                                        disabled={importing}
+                                        className="w-5 h-5 rounded border-2 border-slate-300 text-[#B91C1C] focus:ring-2 focus:ring-[#B91C1C] disabled:opacity-50"
+                                    />
+                                    <div className="flex-1">
+                                        <span className="text-sm font-black text-slate-700 block">Analyser avec IA</span>
+                                        <span className="text-[10px] text-slate-500 font-medium">Extraction automatique des entités, transactions et contexte juridique</span>
+                                    </div>
+                                </label>
+                            </div>
+
+                            {/* Progress */}
+                            {importProgress && (
+                                <div className="mb-6 p-4 bg-blue-50 border border-blue-200 rounded-xl">
+                                    <div className="flex items-center gap-3">
+                                        {importing ? (
+                                            <Loader2 className="text-blue-600 animate-spin" size={20} />
+                                        ) : importSuccess ? (
+                                            <CheckCircle2 className="text-emerald-600" size={20} />
+                                        ) : null}
+                                        <span className="text-xs font-bold text-blue-900">{importProgress}</span>
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* Error */}
+                            {importError && (
+                                <div className="mb-6 p-4 bg-red-50 border-2 border-red-200 rounded-xl">
+                                    <div className="flex items-start gap-3">
+                                        <AlertCircle className="text-red-600 flex-shrink-0 mt-0.5" size={20} />
+                                        <span className="text-xs font-bold text-red-900">{importError}</span>
+                                    </div>
+                                </div>
+                            )}
+
+                            {/* Action Buttons */}
+                            <div className="flex gap-4">
+                                <button
+                                    onClick={() => setShowDOJImport(false)}
+                                    disabled={importing}
+                                    className="flex-1 py-4 bg-slate-100 hover:bg-slate-200 text-slate-700 rounded-2xl text-xs font-black uppercase tracking-wider transition-all active:scale-[0.98] disabled:opacity-50"
+                                >
+                                    Annuler
+                                </button>
+                                <button
+                                    onClick={handleDOJImport}
+                                    disabled={importing || !ageVerified || !dojUrl.trim()}
+                                    className="flex-1 py-4 bg-[#B91C1C] hover:bg-[#7F1D1D] text-white rounded-2xl text-xs font-black uppercase tracking-wider transition-all shadow-xl active:scale-[0.98] disabled:opacity-50 disabled:cursor-not-allowed flex items-center justify-center gap-3"
+                                >
+                                    {importing ? (
+                                        <>
+                                            <Loader2 size={16} className="animate-spin" />
+                                            Importation...
+                                        </>
+                                    ) : (
+                                        <>
+                                            <Download size={16} />
+                                            Importer le Document
+                                        </>
+                                    )}
+                                </button>
+                            </div>
+                        </div>
+                    </div>
+                </div>
+            )}
 
             {/* DETAIL MODAL */}
             {selectedItem && (
@@ -321,6 +566,17 @@ Généré le: ${new Date().toLocaleString()}
                                 className="pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-100 rounded-xl text-xs font-medium w-64 focus:w-80 transition-all duration-300 outline-none"
                             />
                         </div>
+
+                        <div className="h-8 w-px bg-slate-100 hidden sm:block"></div>
+
+                        {/* DOJ Import Button */}
+                        <button
+                            onClick={() => setShowDOJImport(true)}
+                            className="px-4 py-2.5 bg-gradient-to-r from-[#B91C1C] to-red-800 hover:from-[#7F1D1D] hover:to-red-900 text-white rounded-xl text-[10px] font-black uppercase tracking-wider transition-all shadow-lg hover:shadow-xl active:scale-[0.98] flex items-center gap-2"
+                        >
+                            <Upload size={14} />
+                            <span className="hidden sm:inline">Importer DOJ</span>
+                        </button>
                     </div>
                 </div>
             </header>
@@ -409,6 +665,11 @@ const EvidenceCard: React.FC<{ item: EvidenceItem, onOpen: () => void }> = ({ it
                     <span className={`text-[8px] font-black px-2 py-0.5 rounded-full border ${item.type === 'DOCUMENT' ? 'text-blue-500 bg-blue-50 border-blue-100' : 'text-amber-500 bg-amber-50 border-amber-100'} uppercase tracking-widest`}>
                         {item.type}
                     </span>
+                    {item.isDOJ && (
+                        <span className="text-[8px] font-black px-2 py-0.5 rounded-full bg-[#B91C1C] text-white uppercase tracking-widest">
+                            DOJ
+                        </span>
+                    )}
                     <span className="text-[8px] font-black text-slate-300 uppercase tracking-widest truncate flex-1">
                         Ref: {item.id.split('-').pop()}
                     </span>

@@ -18,6 +18,12 @@ export interface DocumentDetail {
   key_facts: string[];
   legal_implications: string;
   date: string;
+  doj_metadata?: {
+    original_url: string;
+    doj_filename: string;
+    import_date: string;
+    file_size_bytes: number;
+  };
 }
 
 export interface EntityDetail {
