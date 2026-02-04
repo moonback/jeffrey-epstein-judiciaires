@@ -37,6 +37,7 @@ import {
   ArrowUpRight
 } from 'lucide-react';
 import { Sidebar, ViewType } from './components/Sidebar';
+import { CaseListView } from './components/CaseListView';
 import { NetworkGraphView } from './components/NetworkGraphView';
 import { TimelineView } from './components/TimelineView';
 import { ContradictionsView, POIView } from './components/AdvancedModules';
@@ -669,11 +670,14 @@ const App: React.FC = () => {
             )}
 
             {viewMode === 'database' && (
-              <div className="h-full overflow-y-auto custom-scrollbar bg-white">
-                <ResultsDashboard
+              <div className="h-full overflow-hidden bg-white">
+                <CaseListView
                   history={optimisticHistory}
-                  onDeepDive={handleDeepDive}
-                  onOpenInvestigation={handleOpenInvestigation}
+                  onOpenInvestigation={(id) => {
+                    setActiveTabId(id);
+                    setViewMode('lab');
+                    setShowPlanner(false);
+                  }}
                 />
               </div>
             )}
