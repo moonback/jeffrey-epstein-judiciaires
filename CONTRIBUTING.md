@@ -1,42 +1,51 @@
-# 🤝 Contributing to DOJ Forensic Analyzer
+# 🤝 Contribuer au projet DOJ Forensic
 
-First off, thank you for considering contributing to the **Analyseur de Documents Judiciaires**! It's people like you that make investigative tools better for everyone.
-
-## 📜 Code of Conduct
-By participating in this project, you agree to abide by our Code of Conduct. Be respectful, professional, and ethical in your investigations and interactions.
-
-## 🚀 How Can I Contribute?
-
-### Reporting Bugs
-- Check the [Issues](https://github.com/moonback/Analyseur-de-Documents-Judiciaires/issues) to see if the bug has already been reported.
-- If not, open a new issue. Include steps to reproduce, expected vs. actual behavior, and environment details.
-
-### Suggesting Enhancements
-- Open an issue with the tag `enhancement`.
-- Describe the feature, why it's needed, and how it fits into the forensic workflow.
-
-### Pull Requests
-1. **Fork the repo** and create your branch from `main`.
-2. **Setup your environment**:
-   ```bash
-   npm install
-   cp .env.example .env # Add your keys
-   ```
-3. **Make your changes**: Ensure your code follows the project's style (React 19, TypeScript, Tailwind).
-4. **Test your changes**: Run `npm run dev` and verify functionality.
-5. **Update documentation**: If you're adding a feature, update the relevant `.md` files.
-6. **Submit the PR**: Provide a clear description of what you've done.
-
-## 🛠️ Development Standards
-
-- **TypeScript**: All new code must be typed. Avoid `any`.
-- **UI/UX**: Maintain the "Premium Dark Mode" aesthetic. Use Tailwind CSS for consistency.
-- **Services**: Keep business logic in `services/`. Components should only handle presentation.
-- **Commits**: Use conventional commits (e.g., `feat: add network zoom`, `fix: parsing error`).
-
-## ⚖️ Ethical Considerations
-This tool is designed for analyzing public legal documents. Please ensure all contributions maintain data integrity and avoid spreading misinformation.
+Merci de l'intérêt que vous portez à **DOJ Forensic** ! Vos contributions aident à rendre les outils d'investigation plus accessibles et transparents.
 
 ---
 
-Questions? Open an issue or contact the maintainers. Happy investigating!
+## 📜 Code de Conduite
+
+En participant à ce projet, vous vous engagez à agir de manière éthique, professionnelle et respectueuse. L'objectif est la recherche de la vérité basée sur des données publiques et vérifiables.
+
+---
+
+## 🚀 Comment contribuer ?
+
+### 1. Signaler des bugs
+- Vérifiez d'abord si le bug a déjà été signalé dans les **Issues**.
+- Si non, ouvrez une nouvelle issue en fournissant :
+  - Le comportement attendu vs constaté.
+  - La console log (si applicable).
+  - Les étapes pour reproduire.
+
+### 2. Proposer des fonctionnalités
+- Marquez vos suggestions avec le tag `enhancement`.
+- Expliquez l'utilité forensique de la fonctionnalité proposée.
+
+### 3. Pull Requests (PR)
+1. **Forkez** le dépôt.
+2. Créez votre branche : `git checkout -b feature/nom-de-la-feature`.
+3. Configurez votre environnement (`npm install`, `.env`).
+4. **Commitez** vos changements avec des messages explicites.
+5. **Testez** via `npm run dev`.
+6. Soumettez votre PR vers la branche `main`.
+
+---
+
+## 🛠️ Standards de Développement
+
+- **TypeScript** : Typage strict obligatoire (pas de `any`). Réutiliser les interfaces de `types.ts`.
+- **UI/UX** : Respectez l'esthétique "Premium Dark Mode". Utilisez les utilitaires Tailwind définis.
+- **Logique** : La logique d'API et de stockage doit rester dans `services/`. Les composants traitent uniquement l'affichage.
+- **Commits** : Préférez les commits conventionnels (ex: `feat: add ocr support`, `fix: graph rendering bug`).
+
+---
+
+## ⚖️ Considérations Éthiques
+
+Cet outil traite des documents sensibles et publics. Les contributeurs doivent s'assurer de ne pas introduire de biais ou d'outils permettant la manipulation malveillante des données extraites.
+
+---
+
+*Des questions ? Ouvrez une discussion ou contactez les mainteneurs. Bonne investigation !* 🕵️‍♀️

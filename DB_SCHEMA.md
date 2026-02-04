@@ -1,53 +1,83 @@
-# 🗄️ Database Schema
+# 🗄️ Schéma de la Base de Données
 
-The **Analyseur de Documents Judiciaires** uses a dual-layer storage strategy: a local cache for speed and offline availability, and a remote database for synchronization and persistence.
+L'application **DOJ Forensic** utilise une stratégie de stockage hybride pour garantir performance locale et persistance globale.
 
-## 1. Supabase (Remote)
-The remote database is used to persist investigations across sessions and devices.
+---
 
-### Table: `analysis_results`
-Stores the results of AI investigations.
+## 1. IndexedDB (Couche Locale)
 
-| Column | Type | Description |
+Le stockage local est le "Source of Truth" immédiat. Il est géré via la bibliothèque `idb`.
+
+### Base : `doj_forensic_vector_store`
+
+#### Object Store : `analysis_results`
+Contient l'historique complet des investigations de l'utilisateur.
+
+- **Clé primaire** : `id` (ex: `CASE-4821`)
+- **Index** :
+  - `by-date` : Trié sur `input.timestamp`.
+
+**Structure d'un enregistrement :**
+```json
+{
+  "id": "string",
+  "status": "pending | processing | completed | error",
+  "input": {
+    "id": "string",
+    "query": "string",
+    "targetUrl": "string",
+    "timestamp": "number",
+    "fileContent": "string (optional)"
+  },
+  "output": {
+    "context_general": "string",
+    "documents": "Array<DocumentDetail>",
+    "entites_cles": "Array<string>",
+    "transactions_financieres": "Array<TransactionDetail>",
+    "contexte_juridique": "string"
+  },
+  "logs": "Array<string>",
+  "sources": "Array<{title, uri}>",
+  "durationMs": "number",
+  "timestamp": "number"
+}
+```
+
+---
+
+## 2. Supabase (Couche Remote)
+
+Supabase est utilisé pour la synchronisation persistante et, à terme, la collaboration.
+
+### Table : `analysis_results`
+
+| Colonne | Type | Description |
 | :--- | :--- | :--- |
-| `id` | `TEXT` (PK) | Unique analysis identifier (e.g., `ANALYSE-123456`) |
-| `status` | `TEXT` | Status: `processing`, `completed`, `error` |
-| `input` | `JSONB` | Original query data (`id`, `query`, `targetUrl`, `timestamp`) |
-| `output` | `JSONB` | Structured AI output (entities, facts, implications, etc.) |
-| `logs` | `JSONB` | Array of forensic trace logs |
-| `sources` | `JSONB` | List of source documents referenced |
-| `duration_ms` | `INTEGER` | Time taken for analysis in milliseconds |
-| `created_at` | `TIMESTAMPTZ` | Auto-generated timestamp |
+| `id` | `TEXT` (PK) | Identifiant unique de l'analyse |
+| `status` | `TEXT` | État du traitement |
+| `input` | `JSONB` | Copie de l'objet input |
+| `output` | `JSONB` | Copie de l'objet output (analyse IA) |
+| `logs` | `JSONB` | Historique des logs système |
+| `sources` | `JSONB` | Sources documentaires |
+| `duration_ms`| `INTEGER` | Latence de traitement |
+| `created_at` | `TIMESTAMPTZ` | Horodatage automatique |
 
 ---
 
-## 2. IndexedDB (Local)
-Local storage is managed via the `idb` library. It acts as a vector for the "Local-First" architecture.
+## 3. Flux de Synchronisation
 
-### Object Store: `analysis_results`
-Mirrors the Supabase table structure for immediate UI responsiveness.
-
-- **DB Name**: `doj_forensic_vector_store`
-- **Key Path**: `id`
-- **Indexes**:
-  - `by-date`: Indexed on `input.timestamp` for chronological sorting.
+1. **Écriture** : Toute nouvelle analyse est immédiatement écrite dans **IndexedDB**.
+2. **Synchronisation** : Une fois écrite localement, le `storageService` tente un `upsert` (mise à jour ou insertion) vers Supabase.
+3. **Récupération** : Au chargement de l'application, les données locales sont chargées, puis fusionnées avec les données récupérées depuis Supabase pour garantir que l'utilisateur retrouve son travail sur un nouvel appareil.
 
 ---
 
-## 3. Data Flow & Sync Logic
-1. **Creation**: When an investigation starts, a placeholder item is added to IndexedDB and the UI state.
-2. **Analysis**: AI processes the request.
-3. **Save**: The completed `ProcessedResult` is saved to IndexedDB first.
-4. **Sync**: If `VITE_SUPABASE_URL` and `VITE_SUPABASE_ANON_KEY` are provided, the service attempts an `upsert` to the Supabase `analysis_results` table.
-5. **Load**: On application startup, the service fetches all results from Supabase, merges them with local IndexedDB data (remote wins in case of conflict), and populates the UI.
+## 4. SQL d'Initialisation (Supabase)
 
----
-
-## 4. How to Initialize Supabase
-To use the remote sync, run the following SQL in your Supabase SQL Editor:
+Pour configurer une nouvelle instance Supabase compatible, exécutez ce script dans l'éditeur SQL de votre dashboard :
 
 ```sql
--- Create the analysis_results table
+-- Création de la table principale
 CREATE TABLE analysis_results (
   id TEXT PRIMARY KEY,
   status TEXT NOT NULL,
@@ -59,10 +89,10 @@ CREATE TABLE analysis_results (
   created_at TIMESTAMPTZ DEFAULT NOW()
 );
 
--- Enable Row Level Security (RLS)
+-- Activation de la Row Level Security (RLS)
 ALTER TABLE analysis_results ENABLE ROW LEVEL SECURITY;
 
--- Create policy to allow all actions (Development mode)
--- Note: Replace with specific user policies for production
-CREATE POLICY "Allow public access" ON analysis_results FOR ALL USING (true);
+-- Politique d'accès public (Initialisation/Dev)
+-- À resserrer en production avec auth.uid()
+CREATE POLICY "Allow public all access" ON analysis_results FOR ALL USING (true);
 ```

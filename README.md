@@ -3,42 +3,47 @@
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![React](https://img.shields.io/badge/React-19-blue.svg)](https://react.dev/)
 [![Vite](https://img.shields.io/badge/Vite-6-purple.svg)](https://vitejs.dev/)
+[![Tailwind](https://img.shields.io/badge/Tailwind-4-38B2AC.svg)](https://tailwindcss.com/)
 
-**Analyseur de Documents Judiciaires** est une plateforme forensic de pointe conçue pour explorer, extraire et synthétiser les divulgations complexes du Département de la Justice (DOJ). Propulsé par l'IA (Gemini 2.5 via OpenRouter), l'outil transforme des archives et documents judiciaires denses en une base de données structurée, visuelle et interrogeable en temps réel.
+**DOJ Forensic** est une plateforme forensic de pointe conçue pour explorer, extraire et synthétiser les divulgations complexes du Département de la Justice (DOJ). Propulsé par l'IA (Gemini via OpenRouter), l'outil transforme des archives et documents judiciaires denses en une base de données structurée, visuelle et interrogeable en temps réel.
 
-> "Transformer le chaos documentaire en preuves structurées."
+> "Transformer le chaos documentaire en preuves structurées et exploitables."
 
 ---
 
 ## 🌟 Fonctionnalités Clés
 
 - **🕵️ Extraction Forensique IA** : Analyse automatique des sources pour extraire les faits, dates, entités et implications juridiques complexes.
-- **🌐 Visualisation de Réseaux** : Graphe interactif pour identifier les connexions entre individus, organisations et lieux.
-- **⏳ Analyse Temporelle** : Timeline chronologique pour reconstituer les fils des événements.
-- **🤖 Assistant Intelligent** : Chat contextuel capable de répondre à des questions précises sur la base de données indexée.
+- **🌐 Cartographie de Réseau (Neural Graph)** : Graphe interactif 2D pour identifier les connexions entre individus, organisations et flux financiers.
+- **📊 Chronologie Temporelle (Timeline)** : Vue chronologique avancée permettant de reconstituer la séquence précise des événements.
+- **💰 Traçabilité Financière** : Module dédié à l'analyse des flux monétaires et du patrimoine (Assets).
+- **🤖 Assistant Live & Vocal** : Co-pilote intelligent capable de répondre aux questions complexes et de naviguer via commandes vocales.
 - **💾 Architecture Local-First** : Persistance ultra-rapide via IndexedDB avec synchronisation optionnelle vers **Supabase**.
-- **📁 Gestion Multitâche** : Système d'onglets permettant de mener plusieurs investigations de front.
-- **📤 Export Professionnel** : Exportation des analyses au format JSON (support PDF/CSV à venir).
+- **📁 Gestion Multitâche** : Système d'onglets de laboratoire permettant de mener plusieurs investigations simultanément.
+- **📥 Dossier Archive Epstein** : Accès direct et indexé aux divulgations spécifiques concernant l'affaire Jeffrey Epstein.
 
 ---
 
 ## 🛠️ Stack Technique
 
-- **Frontend** : React 19, TypeScript, Vite.
-- **Styling** : Tailwind CSS (Design Premium Lab Dark Mode).
-- **Intelligence Artificielle** : OpenRouter API (Moteur : Gemini 2.5 Flash Lite).
-- **Base de Données** : IndexedDB (`idb`) + Supabase (Remote Sync).
-- **Visualisation** : `react-force-graph-2d`.
-- **Icons** : Lucide React.
+- **Core** : React 19, TypeScript, Vite.
+- **Styling** : Tailwind CSS 4 (Theme Luxury Forensic / Dark Mode).
+- **Intelligence Artificielle** : 
+  - **Models** : Gemini 2.0 Flash / Pro (via OpenRouter).
+  - **Vision/OCR** : Tesseract.js & PDF.js pour l'analyse de documents scannés.
+- **Base de Données** : IndexedDB (`idb`) pour le cache local + Supabase pour la persistance Cloud.
+- **Visualisation** : `react-force-graph-2d` (Graphes de relations).
+- **Export** : `jspdf`, `jspdf-autotable` (Génération de rapports PDF).
 
 ---
 
 ## 📦 Installation & Configuration
 
 ### Prérequis
-- [Node.js](https://nodejs.org/) (v18+)
-- Clé API [OpenRouter](https://openrouter.ai/)
-- Projet [Supabase](https://supabase.com/) (Optionnel pour le cloud sync)
+- **Node.js** (v18.0.0+)
+- **NPM** (v9.0.0+)
+- Une clé API **OpenRouter** (pour l'intelligence artificielle)
+- Un projet **Supabase** (optionnel, pour la synchronisation cloud)
 
 ### Guide de démarrage rapide
 
@@ -57,59 +62,63 @@
    Créez un fichier `.env` à la racine :
    ```env
    VITE_OPENROUTER_API_KEY=votre_cle_ici
-   # Optionnel :
+   # Optionnel pour la persistance Cloud :
    VITE_SUPABASE_URL=votre_url_supabase
    VITE_SUPABASE_ANON_KEY=votre_cle_anon_supabase
    ```
 
-4. **Lancez l'application**
+4. **Lancez le serveur de développement**
    ```bash
    npm run dev
    ```
-   *Accédez à `http://localhost:5173` (ou le port affiché par Vite).*
+   *Accédez à `http://localhost:5173`.*
 
 ---
 
 ## 📂 Documentation Complète
 
-Pour approfondir vos connaissances sur le projet, consultez les guides suivants :
-
-- 🏗️ **[ARCHITECTURE.md](./ARCHITECTURE.md)** : Schémas techniques et fonctionnement du système.
-- 🗄️ **[DB_SCHEMA.md](./DB_SCHEMA.md)** : Structure des données Supabase et IndexedDB.
-- 🔌 **[API_DOCS.md](./API_DOCS.md)** : Référence des services et intégrations IA.
-- 🗺️ **[ROADMAP.md](./ROADMAP.md)** : Évolutions futures et backlog.
-- 🤝 **[CONTRIBUTING.md](./CONTRIBUTING.md)** : Comment participer au développement.
+- 🏗️ **[ARCHITECTURE.md](./ARCHITECTURE.md)** : Schémas techniques et flux de données.
+- 🔌 **[API_DOCS.md](./API_DOCS.md)** : Référence des services IA et stockage.
+- 🗺️ **[ROADMAP.md](./ROADMAP.md)** : Prochaines étapes et backlog.
+- 🤝 **[CONTRIBUTING.md](./CONTRIBUTING.md)** : Guide pour les contributeurs.
+- 🗄️ **[DB_SCHEMA.md](./DB_SCHEMA.md)** : Structure détaillée des données.
 
 ---
 
 ## 🏛️ Structure du Projet
 
 ```text
-├── components/       # UI atomique et modules de visualisation
-├── services/         # Orchestration API, IA et Storage
-├── types.ts          # Définitions strictes TypeScript
-├── constants.ts      # Configuration des prompts forensiques
-├── App.tsx           # Chef d'orchestre de l'application
-├── index.css         # Design system et thèmes premium
-└── ...
+├── components/       # Composants UI React (Vues, Cartes, Modales)
+├── services/         # Logique métier (IA, Storage, Export, OCR)
+├── public/           # Assets statiques et archives PDF
+├── types.ts          # Interfaces TypeScript globales
+├── constants.ts      # Configuration des prompts et constantes
+├── index.css         # Thème global et design system
+└── App.tsx           # Routeur et état global de la session
 ```
 
 ---
 
 ## ⚙️ Variables d'Environnement
 
-| Variable | Description | Obligatoire |
+| Variable | Description | Requis |
 | :--- | :--- | :--- |
-| `VITE_OPENROUTER_API_KEY` | Clé pour l'analyse IA | **Oui** |
-| `VITE_SUPABASE_URL` | Endpoint de votre base Supabase | Non |
-| `VITE_SUPABASE_ANON_KEY` | Clé publique Supabase | Non |
+| `VITE_OPENROUTER_API_KEY` | Clé API pour les modèles LLM (Gemini/Claude) | **OUI** |
+| `VITE_SUPABASE_URL` | Endpoint API de votre projet Supabase | Non |
+| `VITE_SUPABASE_ANON_KEY` | Clé publique anonyme Supabase | Non |
+
+---
+
+## 🤝 Contribution
+
+Les contributions sont les bienvenues ! Veuillez consulter le fichier [CONTRIBUTING.md](CONTRIBUTING.md) pour connaître les standards de codage et le processus de soumission de Pull Request.
 
 ---
 
 ## ⚖️ Licence
 
-Distribué sous la licence **MIT**. Voir le fichier `LICENSE` pour plus de détails.
+Ce projet est sous licence **MIT**. Voir le fichier [LICENSE](LICENSE) pour plus d'informations.
 
 ---
 
-Développé pour la recherche de vérité et la clarté judiciaire. 🕵️‍♂️⚖️
+*Développé pour la transparence judiciaire et l'analyse forensique de données publiques.* 🕵️‍♂️⚖️
