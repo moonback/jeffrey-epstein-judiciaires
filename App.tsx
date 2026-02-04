@@ -438,7 +438,7 @@ const App: React.FC = () => {
                 {/* Main Lab Area */}
                 <section className={`${queue.length > 0 ? 'lg:col-span-9 xl:col-span-10' : 'lg:col-span-12'} flex flex-col overflow-hidden min-h-0 bg-[#F8FAFC]`}>
                   {/* Tabs Wrapper - Pro Tabs */}
-                  <div className="flex items-center overflow-x-auto no-scrollbar bg-white border-b border-slate-100 h-14 lg:h-16 px-6 gap-2 shrink-0">
+                  <div className="flex items-center overflow-x-auto no-scrollbar bg-[#F1F5F9] border-b border-slate-200 h-12 px-2 gap-1 shrink-0 pt-2">
                     {resolutionHistory.length > 0 && (
                       <button
                         onClick={() => {
@@ -446,9 +446,9 @@ const App: React.FC = () => {
                           setShowPlanner(true);
                           setActiveTabId(null);
                         }}
-                        className="flex items-center justify-center w-12 lg:w-14 h-10 lg:h-12 bg-[#B91C1C] text-white rounded-2xl hover:bg-black transition-all shadow-lg shadow-red-900/10 active:scale-90 shrink-0"
+                        className="flex items-center justify-center w-10 h-10 bg-white hover:bg-[#B91C1C] text-slate-400 hover:text-white rounded-t-lg transition-all shadow-sm border border-b-0 border-slate-200 hover:border-[#B91C1C] shrink-0 group ml-2"
                       >
-                        <Plus size={22} />
+                        <Plus size={18} className="group-hover:rotate-90 transition-transform" />
                       </button>
                     )}
                     {resolutionHistory.map((res) => (
@@ -458,24 +458,26 @@ const App: React.FC = () => {
                           setActiveTabId(res.id);
                           setShowPlanner(false);
                         }}
-                        className={`group flex items-center gap-6 px-8 h-10 lg:h-12 border border-slate-100 cursor-pointer min-w-[200px] lg:min-w-[240px] max-w-[320px] transition-all duration-500 relative rounded-2xl ${activeTabId === res.id && !showPlanner
-                          ? 'bg-[#0F172A] border-[#0F172A] text-white shadow-2xl scale-105 z-10'
-                          : 'bg-white text-slate-400 hover:bg-slate-50 hover:border-slate-200'
+                        className={`group flex items-center gap-4 px-5 h-10 cursor-pointer min-w-[180px] max-w-[280px] transition-all duration-200 relative rounded-t-lg border-t-2 border-x border-b-0 select-none ${activeTabId === res.id && !showPlanner
+                          ? 'bg-white border-t-[#B91C1C] border-x-slate-200 text-[#0F172A] z-10 shadow-[0_-4px_12px_rgba(0,0,0,0.02)]'
+                          : 'bg-slate-100/50 border-t-transparent border-x-transparent text-slate-400 hover:bg-white/50 hover:text-slate-600'
                           }`}
                       >
                         <div className="flex flex-col overflow-hidden flex-1">
-                          <span className={`text-[9px] font-mono-data font-black tracking-widest ${activeTabId === res.id && !showPlanner ? 'text-[#B91C1C]' : 'text-slate-300'}`}>{res.id}</span>
-                          <span className={`text-[12px] font-black truncate italic ${activeTabId === res.id && !showPlanner ? 'text-white' : 'text-slate-500'}`}>{res.input.query}</span>
+                          <span className={`text-[8px] font-mono-data font-bold tracking-wider leading-none mb-0.5 ${activeTabId === res.id && !showPlanner ? 'text-[#B91C1C]' : 'opacity-70'}`}>{res.id}</span>
+                          <span className={`text-[11px] font-bold truncate font-serif-legal ${activeTabId === res.id && !showPlanner ? 'text-[#0F172A]' : 'opacity-80'}`}>{res.input?.query || 'Nouvelle Analyse'}</span>
                         </div>
-                        <div className="flex items-center gap-3">
+                        <div className="flex items-center gap-2 pl-2">
                           {res.status === 'processing' ? (
-                            <div className="w-2 h-2 rounded-full bg-[#B91C1C] animate-ping shadow-[0_0_8px_rgba(185,28,28,0.5)]"></div>
+                            <Loader2 size={12} className="text-[#B91C1C] animate-spin" />
                           ) : (
-                            <XCircle
-                              size={16}
-                              className={`opacity-0 group-hover:opacity-100 transition-all ${activeTabId === res.id && !showPlanner ? 'text-white/40 hover:text-[#B91C1C]' : 'text-slate-300 hover:text-[#B91C1C]'}`}
+                            <div
+                              role="button"
                               onClick={(e) => handleCloseTab(e, res.id)}
-                            />
+                              className={`p-1 rounded-md transition-colors ${activeTabId === res.id && !showPlanner ? 'hover:bg-slate-100 text-slate-400 hover:text-[#B91C1C]' : 'hover:bg-slate-200 text-slate-400 hover:text-[#B91C1C] opacity-0 group-hover:opacity-100'}`}
+                            >
+                              <X size={12} />
+                            </div>
                           )}
                         </div>
                       </div>
