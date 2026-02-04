@@ -247,29 +247,29 @@ export const POIView: React.FC<POIViewProps> = ({ onDeepDive }) => {
         <div className="h-full flex flex-col bg-[#F8FAFC] overflow-hidden relative font-sans">
             <div className="absolute inset-0 z-0 pointer-events-none opacity-[0.25] report-paper"></div>
 
-            <header className="px-6 lg:px-12 py-6 lg:py-8 border-b border-slate-100 bg-white/90 backdrop-blur-xl z-30 shrink-0 shadow-sm relative">
+            <header className="px-6 lg:px-8 py-4 lg:py-5 border-b border-slate-100 bg-white/90 backdrop-blur-xl z-30 shrink-0 shadow-sm relative">
                 <div className="absolute top-0 right-0 h-full w-1/4 bg-gradient-to-l from-[#F8FAFC] to-transparent pointer-events-none opacity-50"></div>
-                <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8 relative z-10">
-                    <div className="flex items-center gap-5">
-                        <div className="w-12 h-12 bg-black rounded-[1.2rem] flex items-center justify-center shadow-xl group transition-all">
-                            <Users size={22} className="text-white group-hover:scale-110 transition-transform" />
+                <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 relative z-10">
+                    <div className="flex items-center gap-4">
+                        <div className="w-10 h-10 bg-black rounded-xl flex items-center justify-center shadow-lg group transition-all">
+                            <Users size={18} className="text-white group-hover:scale-110 transition-transform" />
                         </div>
                         <div>
-                            <h2 className="text-xl font-black text-[#0F172A] tracking-tight uppercase italic font-serif-legal leading-tight">Index des <span className="text-[#B91C1C]">Cibles</span></h2>
-                            <div className="flex items-center gap-3 mt-1">
-                                <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                                <span className="text-[10px] font-black text-slate-300 uppercase tracking-[0.3em]">{entities.length} Profils Répertoriés</span>
+                            <h2 className="text-lg font-black text-[#0F172A] tracking-tight uppercase italic font-serif-legal leading-tight">Index des <span className="text-[#B91C1C]">Cibles</span></h2>
+                            <div className="flex items-center gap-2 mt-0.5">
+                                <span className="w-1 h-1 rounded-full bg-emerald-500 animate-pulse"></span>
+                                <span className="text-[9px] font-black text-slate-300 uppercase tracking-[0.2em]">{entities.length} Profils</span>
                             </div>
                         </div>
                     </div>
-                    <div className="relative group w-full lg:w-96">
-                        <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-[#B91C1C] transition-colors" size={18} />
+                    <div className="relative group w-full lg:w-72">
+                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-[#B91C1C] transition-colors" size={14} />
                         <input
                             type="text"
-                            placeholder="Rechercher un profil..."
+                            placeholder="Rechercher..."
                             value={searchQuery}
                             onChange={e => setSearchQuery(e.target.value)}
-                            className="bg-[#F8FAFC] border border-slate-100 rounded-2xl py-3 pl-14 pr-6 text-[13px] text-[#0F172A] focus:border-[#B91C1C] focus:bg-white outline-none transition-all w-full shadow-inner placeholder-slate-300 font-medium"
+                            className="bg-[#F8FAFC] border border-slate-100 rounded-xl py-2 pl-10 pr-4 text-[12px] text-[#0F172A] focus:border-[#B91C1C] focus:bg-white outline-none transition-all w-full shadow-inner placeholder-slate-300 font-medium"
                         />
                     </div>
                 </div>
@@ -277,26 +277,26 @@ export const POIView: React.FC<POIViewProps> = ({ onDeepDive }) => {
 
             <div className="flex-1 overflow-hidden flex flex-col lg:flex-row z-20">
                 {/* Entity List Sidebar */}
-                <div className="w-full lg:w-[360px] lg:w-[400px] border-r border-slate-100 bg-white/60 backdrop-blur-xl overflow-y-auto custom-scrollbar shadow-xl z-20 transition-all">
-                    <div className="p-8 lg:p-10 space-y-4">
-                        <div className="text-[9px] font-black text-slate-300 uppercase tracking-[0.4em] mb-4 ml-4">Classification Criminelle</div>
+                <div className="w-full lg:w-[280px] lg:w-[320px] border-r border-slate-100 bg-white/60 backdrop-blur-xl overflow-y-auto custom-scrollbar shadow-xl z-20 transition-all">
+                    <div className="p-4 lg:p-6 space-y-2">
+                        <div className="text-[8px] font-black text-slate-300 uppercase tracking-[0.3em] mb-2 ml-2">Cibles Identifiées</div>
                         {entities.map(([name, stats]) => (
                             <button
                                 key={name}
                                 onClick={() => setSelectedEntity(name)}
-                                className={`w-full text-left p-6 rounded-[2rem] transition-all duration-500 relative overflow-hidden group border ${selectedEntity === name
-                                    ? 'bg-[#0F172A] border-[#0F172A] text-white shadow-2xl'
+                                className={`w-full text-left p-4 rounded-xl transition-all duration-300 relative overflow-hidden group border ${selectedEntity === name
+                                    ? 'bg-[#0F172A] border-[#0F172A] text-white shadow-lg'
                                     : 'bg-white border-slate-50 text-slate-400 hover:bg-slate-50 hover:border-slate-200 shadow-sm'
                                     }`}
                             >
-                                <div className="relative z-10 font-black text-[14px] mb-2 truncate italic font-serif-legal group-hover:text-[#B91C1C] transition-colors">{name}</div>
-                                <div className={`relative z-10 text-[9px] flex gap-5 uppercase font-black tracking-[0.2em] font-mono-data ${selectedEntity === name ? 'opacity-80' : 'opacity-40'}`}>
-                                    <span className="flex items-center gap-1.5"><Database size={10} /> {stats.docs} DOCS</span>
-                                    <span className="flex items-center gap-1.5"><Activity size={10} /> {stats.events} EVENTS</span>
+                                <div className="relative z-10 font-black text-[13px] mb-1 truncate italic font-serif-legal group-hover:text-[#B91C1C] transition-colors">{name}</div>
+                                <div className={`relative z-10 text-[8px] flex gap-3 uppercase font-black tracking-[0.1em] font-mono-data ${selectedEntity === name ? 'opacity-80' : 'opacity-40'}`}>
+                                    <span className="flex items-center gap-1"><Database size={8} /> {stats.docs} D</span>
+                                    <span className="flex items-center gap-1"><Activity size={8} /> {stats.events} E</span>
                                 </div>
                                 {selectedEntity === name && (
-                                    <div className="absolute right-6 top-1/2 -translate-y-1/2 text-white/10 animate-pulse">
-                                        <ChevronRight size={24} />
+                                    <div className="absolute right-4 top-1/2 -translate-y-1/2 text-white/10 animate-pulse">
+                                        <ChevronRight size={18} />
                                     </div>
                                 )}
                             </button>
@@ -309,21 +309,21 @@ export const POIView: React.FC<POIViewProps> = ({ onDeepDive }) => {
                 </div>
 
                 {/* Profiling Detail */}
-                <div className="flex-1 overflow-y-auto p-8 lg:p-16 custom-scrollbar bg-[#F8FAFC]/50 scroll-smooth">
+                <div className="flex-1 overflow-y-auto p-6 lg:p-10 custom-scrollbar bg-[#F8FAFC]/50 scroll-smooth">
                     {selectedEntity ? (
-                        <div className="animate-pro-reveal max-w-5xl mx-auto pb-20">
-                            <div className="flex flex-col lg:flex-row lg:items-center gap-10 mb-16 bg-white p-10 lg:p-12 rounded-[3.5rem] border border-slate-100 shadow-2xl shadow-slate-200/50 relative overflow-hidden">
-                                <div className="absolute top-0 right-0 p-12 opacity-[0.02] pointer-events-none">
-                                    <Fingerprint size={180} className="text-black" />
+                        <div className="animate-pro-reveal max-w-4xl mx-auto pb-10">
+                            <div className="flex flex-col lg:flex-row lg:items-center gap-8 mb-10 bg-white p-8 lg:p-10 rounded-[2.5rem] border border-slate-100 shadow-xl shadow-slate-200/50 relative overflow-hidden">
+                                <div className="absolute top-0 right-0 p-8 opacity-[0.01] pointer-events-none">
+                                    <Fingerprint size={120} className="text-black" />
                                 </div>
                                 <div className="relative group shrink-0 z-10">
-                                    <div className="absolute inset-0 bg-[#B91C1C] blur-[50px] opacity-10 group-hover:opacity-20 transition-opacity"></div>
-                                    <div className="relative w-32 h-32 rounded-[2.5rem] bg-gradient-to-br from-[#0F172A] to-black flex items-center justify-center text-5xl font-black text-white shadow-2xl border-[3px] border-white transform rotate-3 group-hover:rotate-0 transition-all duration-700 font-serif-legal italic">
+                                    <div className="absolute inset-0 bg-[#B91C1C] blur-[30px] opacity-10 group-hover:opacity-20 transition-opacity"></div>
+                                    <div className="relative w-20 h-20 rounded-2xl bg-gradient-to-br from-[#0F172A] to-black flex items-center justify-center text-3xl font-black text-white shadow-xl border-2 border-white transform rotate-2 group-hover:rotate-0 transition-all duration-700 font-serif-legal italic">
                                         {selectedEntity[0]}
                                     </div>
                                 </div>
-                                <div className="space-y-4 flex-1 z-10">
-                                    <h3 className="text-4xl lg:text-5xl font-black text-[#0F172A] tracking-tighter italic font-serif-legal mb-2 selection:bg-red-50 leading-tight">{selectedEntity}</h3>
+                                <div className="space-y-2 flex-1 z-10">
+                                    <h3 className="text-3xl lg:text-4xl font-black text-[#0F172A] tracking-tighter italic font-serif-legal mb-1 selection:bg-red-50 leading-tight">{selectedEntity}</h3>
                                     <div className="flex flex-wrap gap-4">
                                         <span className="flex items-center gap-2.5 px-4 py-2 bg-red-50 border border-red-100 rounded-xl text-[10px] text-[#B91C1C] font-black uppercase tracking-[0.2em] shadow-sm">
                                             <Target size={14} className="animate-pulse" /> High Priority Target
@@ -336,15 +336,15 @@ export const POIView: React.FC<POIViewProps> = ({ onDeepDive }) => {
                             </div>
 
                             <div className="grid grid-cols-1 xl:grid-cols-2 gap-10">
-                                <div className="bg-white rounded-[3rem] p-10 border border-slate-100 shadow-xl relative overflow-hidden group">
-                                    <div className="absolute top-0 right-0 p-8 opacity-[0.02] transition-transform group-hover:scale-110 duration-1000">
-                                        <Database size={100} />
+                                <div className="bg-white rounded-[2rem] p-6 lg:p-8 border border-slate-100 shadow-lg relative overflow-hidden group">
+                                    <div className="absolute top-0 right-0 p-6 opacity-[0.02] transition-transform group-hover:scale-110 duration-1000">
+                                        <Database size={80} />
                                     </div>
-                                    <div className="flex items-center justify-between mb-8 border-b border-slate-50 pb-6 relative z-10">
-                                        <h4 className="text-[10px] font-black text-[#B91C1C] uppercase tracking-[0.4em] flex items-center gap-3">
-                                            <Activity size={16} /> Archive Resonance
+                                    <div className="flex items-center justify-between mb-6 border-b border-slate-50 pb-4 relative z-10">
+                                        <h4 className="text-[9px] font-black text-[#B91C1C] uppercase tracking-[0.3em] flex items-center gap-2">
+                                            <Activity size={14} /> Archive Resilience
                                         </h4>
-                                        <span className="px-3 py-1 bg-slate-50 text-slate-400 text-[9px] font-black rounded-lg border border-slate-100 font-mono-data">{history.filter(h => h.output?.entites_cles?.includes(selectedEntity)).length} REF</span>
+                                        <span className="px-2 py-0.5 bg-slate-50 text-slate-400 text-[8px] font-black rounded text-[8px] border border-slate-100 font-mono-data">{history.filter(h => h.output?.entites_cles?.includes(selectedEntity)).length} REF</span>
                                     </div>
                                     <div className="space-y-4 relative z-10">
                                         {history.filter(h => h.output?.entites_cles?.includes(selectedEntity)).slice(0, 5).map((h, i) => (
@@ -356,13 +356,13 @@ export const POIView: React.FC<POIViewProps> = ({ onDeepDive }) => {
                                     </div>
                                 </div>
 
-                                <div className="bg-white rounded-[3rem] p-10 border border-slate-100 shadow-xl relative overflow-hidden group">
-                                    <div className="absolute top-0 right-0 p-8 opacity-[0.02] transition-transform group-hover:scale-110 duration-1000">
-                                        <CheckCircle2 size={100} />
+                                <div className="bg-white rounded-[2rem] p-6 lg:p-8 border border-slate-100 shadow-lg relative overflow-hidden group">
+                                    <div className="absolute top-0 right-0 p-6 opacity-[0.02] transition-transform group-hover:scale-110 duration-1000">
+                                        <CheckCircle2 size={80} />
                                     </div>
-                                    <div className="flex items-center justify-between mb-8 border-b border-slate-50 pb-6 relative z-10">
-                                        <h4 className="text-[10px] font-black text-[#0F4C81] uppercase tracking-[0.4em] flex items-center gap-3">
-                                            <Shield size={16} /> Action History
+                                    <div className="flex items-center justify-between mb-6 border-b border-slate-50 pb-4 relative z-10">
+                                        <h4 className="text-[9px] font-black text-[#0F4C81] uppercase tracking-[0.3em] flex items-center gap-2">
+                                            <Shield size={14} /> Action History
                                         </h4>
                                     </div>
                                     <div className="space-y-6 relative z-10">

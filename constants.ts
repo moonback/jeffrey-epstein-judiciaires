@@ -25,12 +25,20 @@ Format de sortie JSON STRICT :
       "title": string (Titre exact du document),
       "type": string (Ex: "Déposition", "Pièce à conviction", "Email"),
       "description": string (Résumé dense du contenu),
-      "key_facts": string[] (Liste de 3 à 5 points clés : faits, noms, allégations spécifiques trouvés dans ce document),
-      "legal_implications": string (Analyse de l'importance de ce document),
-      "date": string (Date précise ou "Non daté")
+      "key_facts": string[] (Liste de faits précis),
+      "legal_implications": string,
+      "date": string
     }
   ],
-  "entites_cles": string[] (Liste globale des protagonistes majeurs),
+  "entites_cles": string[],
+  "entites_details": [
+    {
+      "nom": string,
+      "role": string,
+      "risk_level": number (1 à 10, 10 = implication directe/critique),
+      "influence": number (1 à 10, 10 = pivot central du réseau)
+    }
+  ],
   "contexte_juridique": string
 }
 `;

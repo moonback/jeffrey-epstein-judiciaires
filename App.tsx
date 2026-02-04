@@ -40,9 +40,24 @@ import { NetworkGraphView } from './components/NetworkGraphView';
 import { TimelineView } from './components/TimelineView';
 import { ContradictionsView, POIView } from './components/AdvancedModules';
 
+import { useOptimistic, useTransition } from 'react';
+
 const App: React.FC = () => {
   const [queue, setQueue] = useState<InputData[]>([]);
   const [resolutionHistory, setResolutionHistory] = useState<ProcessedResult[]>([]);
+  const [optimisticHistory, addOptimisticHistory] = useOptimistic<ProcessedResult[], ProcessedResult>(
+    resolutionHistory,
+    (state, newResult) => {
+      const index = state.findIndex(r => r.id === newResult.id);
+      if (index >= 0) {
+        const updated = [...state];
+        updated[index] = newResult;
+        return updated;
+      }
+      return [...state, newResult];
+    }
+  );
+
   const [activeTabId, setActiveTabId] = useState<string | null>(null);
   const [isLoadingHistory, setIsLoadingHistory] = useState(true);
 
@@ -53,10 +68,15 @@ const App: React.FC = () => {
   const [viewMode, setViewMode] = useState<ViewType>('lab');
   const [showPlanner, setShowPlanner] = useState(false);
   const [showLogs, setShowLogs] = useState(false);
-  const [logs, setLogs] = useState<string[]>([]); // Added for file processing logs
-  const [showTabsDropdown, setShowTabsDropdown] = useState(false); // New state for tabs menu
+  const [logs, setLogs] = useState<string[]>([]);
+  const [showTabsDropdown, setShowTabsDropdown] = useState(false);
+  const [isPending, startTransition] = useTransition();
 
-  const queueRef = useRef<InputData[]>([]);
+  const isMounted = useRef(true);
+  useEffect(() => {
+    isMounted.current = true;
+    return () => { isMounted.current = false; };
+  }, []);
 
   // Load History from IndexedDB on Mount
   useEffect(() => {
@@ -79,25 +99,21 @@ const App: React.FC = () => {
 
   useEffect(() => {
     setQueue([]);
-    queueRef.current = [];
   }, []);
 
   const handleStartInvestigation = async (query: string, sourceLabel: string, file?: File) => {
     const newId = `CASE-${Date.now().toString().slice(-4)}`;
-
-    // Log extraction start
-    let extractionLogs = [];
     let fileContent = '';
 
     if (file) {
       try {
-        const processed = await FileProcessingService.processFile(file);
+        const processed = await FileProcessingService.processFile(file, (msg) => {
+          setLogs(prev => [...prev, msg]);
+        });
         fileContent = processed.content;
-        extractionLogs.push(`[SYSTEM] Fichier chargé : ${file.name} (${(file.size / 1024).toFixed(2)} KB)`);
-        extractionLogs.push(`[SYSTEM] Extraction textuelle terminée : ${fileContent.length} caractères identifiés.`);
       } catch (error) {
         console.error("File processing error", error);
-        alert("Erreur lors de la lecture du fichier : " + (error instanceof Error ? error.message : "Erreur inconnue"));
+        alert("Erreur lors de la lecture du fichier");
         return;
       }
     }
@@ -106,96 +122,92 @@ const App: React.FC = () => {
       id: newId,
       query: query,
       targetUrl: file ? `DOC: ${file.name}` : `DOJ ARCHIVE : ${sourceLabel}`,
-      timestamp: Date.now()
+      timestamp: Date.now(),
+      ...(fileContent ? { fileContent } : {})
+    } as any;
+
+    const placeholderResult: ProcessedResult = {
+      id: newId,
+      input: inputData,
+      output: null,
+      logs: ["Préparation de la requête..."],
+      sources: [],
+      durationMs: 0,
+      status: 'processing',
     };
 
-    // If we have file content, we might want to attach it to the inputData or store it temporarily mostly for the AI processing
-    // For now, we'll append it to the query for the AI context if it's not too huge, or handle it in the processing logic
-    // Since InputData structure is rigid, we'll append a marker to the query or handle it in processItem
+    startTransition(() => {
+      addOptimisticHistory(placeholderResult);
+      setQueue(prev => [inputData, ...prev]);
+      setActiveTabId(newId);
+    });
 
-    if (fileContent) {
-      // HACK: We attach the content to the input object dynamically for the processing step
-      (inputData as any).fileContent = fileContent;
-    }
-
-    setQueue(prev => [inputData, ...prev]);
-    queueRef.current = [inputData, ...queueRef.current];
-
-    // Add initial logs if any
-    setLogs(prev => [...prev, ...extractionLogs]);
-
-    setActiveTabId(newId);
-    setIsSettingsOpen(false); // Close settings/modal if open (though planner is usually main view)
-
-    if (!isProcessing) {
-      processQueue();
-    }
+    setIsSettingsOpen(false);
   };
 
-  const processQueue = async () => {
-    if (isProcessing || queueRef.current.length === 0) return;
-    setIsProcessing(true);
+  // Dedicated Effect for Queue Processing (Avoids Memory Leaks and closure stales)
+  useEffect(() => {
+    if (isProcessing || queue.length === 0) return;
 
+    let timeoutId: any;
     const processItem = async () => {
-      if (queueRef.current.length === 0) {
+      if (!isMounted.current) return;
+
+      setIsProcessing(true);
+      const currentQueue = [...queue];
+      const item = currentQueue.shift();
+
+      if (!item) {
         setIsProcessing(false);
         return;
       }
 
-      const item = queueRef.current.shift();
-      setQueue([...queueRef.current]);
-
-      if (!item) return;
+      setQueue(currentQueue);
 
       const tempResult: ProcessedResult = {
         id: item.id,
         input: item,
         output: null,
-        logs: ["Initialisation de l'agent de recherche approfondie..."],
+        logs: ["Initialisation de l'agent forensique..."],
         sources: [],
         durationMs: 0,
         status: 'processing',
       };
 
-      setResolutionHistory(prev => {
-        const index = prev.findIndex(r => r.id === item.id);
-        if (index >= 0) {
-          const updated = [...prev];
-          updated[index] = tempResult;
-          return updated;
-        }
-        return [...prev, tempResult];
-      });
-
+      setResolutionHistory(prev => [...prev.filter(r => r.id !== item.id), tempResult]);
       await storageService.saveResult(tempResult);
-      setActiveTabId(tempResult.id);
 
-      const start = performance.now();
-      const result = await mergeDataWithFlash(item);
-      const duration = performance.now() - start;
+      try {
+        const start = performance.now();
+        const result = await mergeDataWithFlash(item);
+        const duration = performance.now() - start;
 
-      const completedResult: ProcessedResult = {
-        ...tempResult,
-        output: result.json,
-        logs: result.logs,
-        sources: result.sources,
-        durationMs: duration,
-        status: 'completed'
-      };
+        if (!isMounted.current) return;
 
-      await storageService.saveResult(completedResult);
-      setResolutionHistory(prev => prev.map(r => r.id === item.id ? completedResult : r));
-      setProcessedCount(prev => prev + 1);
+        const completedResult: ProcessedResult = {
+          ...tempResult,
+          output: result.json,
+          logs: result.logs,
+          sources: result.sources,
+          durationMs: duration,
+          status: 'completed'
+        };
 
-      if (queueRef.current.length > 0) {
-        setTimeout(processItem, 2500);
-      } else {
-        setIsProcessing(false);
+        await storageService.saveResult(completedResult);
+        setResolutionHistory(prev => prev.map(r => r.id === item.id ? completedResult : r));
+        setProcessedCount(prev => prev + 1);
+      } catch (error) {
+        console.error("Processing failed", error);
+      } finally {
+        if (isMounted.current) {
+          setIsProcessing(false);
+        }
       }
     };
 
     processItem();
-  };
+
+  }, [queue, isProcessing, addOptimisticHistory, isMounted, startTransition]);
 
   const handleEntityClick = (entityName: string) => {
     const newId = `ENTITY-${Date.now().toString().slice(-4)}`;
@@ -206,13 +218,22 @@ const App: React.FC = () => {
       timestamp: Date.now()
     };
 
-    setQueue(prev => [entityQuery, ...prev]);
-    queueRef.current = [entityQuery, ...queueRef.current];
-    setViewMode('lab');
+    const placeholder: ProcessedResult = {
+      id: newId,
+      input: entityQuery,
+      output: null,
+      logs: ["Ciblage de l'entité en cours..."],
+      sources: [],
+      durationMs: 0,
+      status: 'processing',
+    };
 
-    if (!isProcessing) {
-      processQueue();
-    }
+    startTransition(() => {
+      addOptimisticHistory(placeholder);
+      setQueue(prev => [entityQuery, ...prev]);
+      setViewMode('lab');
+      setActiveTabId(newId);
+    });
   };
 
   const handleDownload = (result: ProcessedResult) => {
@@ -293,13 +314,22 @@ const App: React.FC = () => {
       timestamp: Date.now()
     };
 
-    setQueue(prev => [deepQuery, ...prev]);
-    queueRef.current = [deepQuery, ...queueRef.current];
-    setViewMode('lab');
+    const placeholder: ProcessedResult = {
+      id: newId,
+      input: deepQuery,
+      output: null,
+      logs: ["Immersion profonde dans le document..."],
+      sources: [],
+      durationMs: 0,
+      status: 'processing',
+    };
 
-    if (!isProcessing) {
-      processQueue();
-    }
+    startTransition(() => {
+      addOptimisticHistory(placeholder);
+      setQueue(prev => [deepQuery, ...prev]);
+      setViewMode('lab');
+      setActiveTabId(newId);
+    });
   };
 
   const handleOpenInvestigation = (id: string) => {
@@ -307,7 +337,7 @@ const App: React.FC = () => {
     setViewMode('lab');
   };
 
-  const activeResult = resolutionHistory.find(r => r.id === activeTabId);
+  const activeResult = optimisticHistory.find(r => r.id === activeTabId);
   const activeLogs = activeResult ? activeResult.logs : [];
 
   return (
@@ -441,7 +471,7 @@ const App: React.FC = () => {
                   {/* Tabs Wrapper - Pro Tabs */}
                   <div className="flex bg-[#F1F5F9] border-b border-slate-200 h-12 shrink-0 pt-2 relative z-20">
                     <div className="flex-1 flex items-center overflow-x-auto no-scrollbar px-2 gap-1">
-                      {resolutionHistory.length > 0 && (
+                      {optimisticHistory.length > 0 && (
                         <button
                           onClick={() => {
                             setViewMode('lab');
@@ -454,7 +484,7 @@ const App: React.FC = () => {
                         </button>
                       )}
 
-                      {resolutionHistory.map((res) => (
+                      {optimisticHistory.map((res) => (
                         <div
                           key={res.id}
                           onClick={() => {
@@ -486,7 +516,7 @@ const App: React.FC = () => {
                         </div>
                       ))}
 
-                      {resolutionHistory.length === 0 && (
+                      {optimisticHistory.length === 0 && (
                         <div className="flex items-center gap-4 ml-4">
                           <span className="text-[11px] text-slate-300 uppercase font-black tracking-[0.5em]">Archives Standby</span>
                           <div className="h-1 w-20 bg-slate-50 rounded-full overflow-hidden">
@@ -497,7 +527,7 @@ const App: React.FC = () => {
                     </div>
 
                     {/* Tabs Menu Button - Only show if we have tabs */}
-                    {resolutionHistory.length > 0 && (
+                    {optimisticHistory.length > 0 && (
                       <div className="flex items-center px-2 relative h-full mb-2 bg-[#F1F5F9] z-20 pl-4 border-l border-slate-200 shadow-[-10px_0_20px_#F1F5F9]">
                         <button
                           onClick={() => setShowTabsDropdown(!showTabsDropdown)}
@@ -513,10 +543,10 @@ const App: React.FC = () => {
                             <div className="absolute right-2 top-full mt-2 w-72 bg-white rounded-2xl shadow-2xl border border-slate-100 p-2 z-40 animate-in fade-in zoom-in-95 duration-200 origin-top-right overflow-hidden ring-1 ring-slate-900/5">
                               <div className="text-[9px] font-black text-slate-300 uppercase tracking-[0.3em] px-4 py-3 border-b border-slate-50 mb-2 flex items-center justify-between">
                                 <span>Index des Dossiers</span>
-                                <span className="bg-slate-100 text-slate-500 px-1.5 py-0.5 rounded text-[8px]">{resolutionHistory.length}</span>
+                                <span className="bg-slate-100 text-slate-500 px-1.5 py-0.5 rounded text-[8px]">{optimisticHistory.length}</span>
                               </div>
                               <div className="max-h-[300px] overflow-y-auto custom-scrollbar space-y-1">
-                                {resolutionHistory.map((res) => (
+                                {optimisticHistory.map((res) => (
                                   <button
                                     key={res.id}
                                     onClick={() => {
@@ -621,7 +651,7 @@ const App: React.FC = () => {
             {viewMode === 'database' && (
               <div className="h-full overflow-y-auto custom-scrollbar bg-white">
                 <ResultsDashboard
-                  history={resolutionHistory}
+                  history={optimisticHistory}
                   onDeepDive={handleDeepDive}
                   onOpenInvestigation={handleOpenInvestigation}
                 />

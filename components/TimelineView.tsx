@@ -96,19 +96,18 @@ export const TimelineView: React.FC<TimelineViewProps> = ({ onDeepDive }) => {
         <div className="h-full flex flex-col bg-[#F8FAFC] overflow-hidden relative">
             <div className="absolute inset-0 z-0 pointer-events-none opacity-[0.25] report-paper"></div>
 
-            <header className="px-6 lg:px-12 h-16 lg:h-20 border-b border-slate-100 bg-white/90 backdrop-blur-xl z-10 flex justify-between items-center shadow-sm relative overflow-hidden">
+            <header className="px-6 lg:px-8 h-14 lg:h-16 border-b border-slate-100 bg-white/90 backdrop-blur-xl z-20 flex justify-between items-center shadow-sm relative overflow-hidden shrink-0">
                 <div className="absolute top-0 right-0 h-full w-1/3 bg-gradient-to-l from-[#F8FAFC] to-transparent pointer-events-none opacity-50"></div>
-
-                <div className="flex items-center gap-6 relative z-10">
-                    <div className="w-10 h-10 bg-[#B91C1C] rounded-[1rem] flex items-center justify-center shadow-xl shadow-red-900/10">
-                        <Clock className="text-white" size={18} />
+                <div className="flex items-center gap-4 relative z-10">
+                    <div className="w-9 h-9 bg-[#B91C1C] rounded-xl flex items-center justify-center shadow-lg shadow-red-900/10">
+                        <Clock className="text-white" size={16} />
                     </div>
                     <div>
-                        <h2 className="text-lg lg:text-xl font-black text-[#0F172A] uppercase italic font-serif-legal tracking-tight leading-tight">Chronologie <span className="text-[#B91C1C]">Analytique</span></h2>
-                        <div className="flex items-center gap-3 mt-0.5">
-                            <Zap size={10} className="text-emerald-500 animate-pulse" />
-                            <span className="text-[9px] font-black text-slate-400 uppercase tracking-[0.3em]">
-                                {events.length} Points Temporels Synchronisés
+                        <h2 className="text-base lg:text-lg font-black text-[#0F172A] uppercase italic font-serif-legal tracking-tight leading-tight">Chronologie <span className="text-[#B91C1C]">Analytique</span></h2>
+                        <div className="flex items-center gap-2 mt-0.5">
+                            <Zap size={8} className="text-emerald-500 animate-pulse" />
+                            <span className="text-[8px] font-black text-slate-400 uppercase tracking-[0.2em]">
+                                {events.length} Points Synchronisés
                             </span>
                         </div>
                     </div>
@@ -129,18 +128,18 @@ export const TimelineView: React.FC<TimelineViewProps> = ({ onDeepDive }) => {
                 </div>
             </header>
 
-            <div className="flex-1 overflow-y-auto p-8 lg:p-16 custom-scrollbar z-10 scroll-smooth">
-                <div className="max-w-5xl mx-auto relative border-l-2 border-slate-100 pl-8 lg:pl-16 space-y-12 pb-40">
+            <div className="flex-1 overflow-y-auto p-6 lg:p-10 custom-scrollbar z-10 scroll-smooth">
+                <div className="max-w-4xl mx-auto relative border-l border-slate-100 pl-6 lg:pl-10 space-y-8 pb-20">
                     {/* Vertical line glow */}
-                    <div className="absolute -left-[2px] top-0 bottom-40 w-[2px] bg-gradient-to-b from-[#B91C1C]/20 via-slate-100 to-transparent"></div>
+                    <div className="absolute -left-[1px] top-0 bottom-20 w-[1px] bg-gradient-to-b from-[#B91C1C]/20 via-slate-100 to-transparent"></div>
 
                     {events.map((event, idx) => (
                         <div key={idx} className="relative animate-pro-reveal group" style={{ animationDelay: `${idx * 0.05}s` }}>
-                            {/* Marker - Enhanced Pro Style */}
-                            <div className="absolute -left-[41px] lg:-left-[73px] top-4 flex items-center justify-center">
-                                <div className="absolute inset-0 bg-[#B91C1C] blur-lg opacity-0 group-hover:opacity-40 transition-all duration-500 scale-150"></div>
-                                <div className="relative w-4 h-4 rounded-full bg-white border-4 border-slate-100 group-hover:border-[#B91C1C] shadow-lg transition-all duration-500 group-hover:scale-125 z-20"></div>
-                                <div className="absolute left-6 h-px w-6 bg-slate-50 group-hover:bg-[#B91C1C]/20 transition-all"></div>
+                            {/* Marker - Compact Style */}
+                            <div className="absolute -left-[28px] lg:-left-[44px] top-3 flex items-center justify-center">
+                                <div className="absolute inset-0 bg-[#B91C1C] blur-md opacity-0 group-hover:opacity-40 transition-all duration-500 scale-125"></div>
+                                <div className="relative w-3 h-3 rounded-full bg-white border-2 border-slate-100 group-hover:border-[#B91C1C] shadow-md transition-all duration-300 group-hover:scale-110 z-20"></div>
+                                <div className="absolute left-4 h-px w-4 bg-slate-50 group-hover:bg-[#B91C1C]/20 transition-all"></div>
                             </div>
 
                             <div className="flex flex-col xl:grid xl:grid-cols-12 gap-8">
@@ -159,40 +158,40 @@ export const TimelineView: React.FC<TimelineViewProps> = ({ onDeepDive }) => {
 
                                 {/* Content Side */}
                                 <div className="xl:col-span-10">
-                                    <div className="bg-white p-6 lg:p-8 rounded-[2.5rem] border border-slate-100 group-hover:border-[#B91C1C]/10 transition-all duration-700 shadow-sm hover:shadow-2xl hover:shadow-slate-200/50 relative overflow-hidden">
+                                    <div className="bg-white p-5 lg:p-6 rounded-[1.5rem] border border-slate-100 group-hover:border-[#B91C1C]/10 transition-all duration-500 shadow-sm hover:shadow-xl hover:shadow-slate-200/40 relative overflow-hidden">
                                         {/* Background ID Marker */}
-                                        <div className="absolute top-0 right-0 p-8 opacity-[0.02] group-hover:opacity-[0.05] transition-opacity pointer-events-none">
-                                            <div className="text-[100px] font-black italic select-none">{String(idx + 1).padStart(2, '0')}</div>
+                                        <div className="absolute top-0 right-0 p-4 opacity-[0.01] group-hover:opacity-[0.03] transition-opacity pointer-events-none">
+                                            <div className="text-[60px] font-black italic select-none">{String(idx + 1).padStart(2, '0')}</div>
                                         </div>
 
                                         <div className="relative z-10">
-                                            <h3 className="text-[#0F172A] font-black text-lg mb-4 italic tracking-tight flex items-center gap-4 group-hover:text-[#B91C1C] transition-colors font-serif-legal leading-tight">
+                                            <h3 className="text-[#0F172A] font-black text-base mb-3 italic tracking-tight flex items-center gap-3 group-hover:text-[#B91C1C] transition-colors font-serif-legal leading-tight">
                                                 {event.title}
                                             </h3>
 
-                                            <div className="bg-[#FFFFF0]/40 p-6 rounded-[1.5rem] border border-slate-50 mb-6 relative group-hover:bg-[#FFFFF0] transition-colors backdrop-blur-sm">
+                                            <div className="bg-[#FFFFF0]/40 p-4 rounded-xl border border-slate-50 mb-4 relative group-hover:bg-[#FFFFF0] transition-colors backdrop-blur-sm">
                                                 <div className="absolute left-0 top-0 bottom-0 w-1 bg-[#B91C1C]/10 rounded-full group-hover:bg-[#B91C1C] transition-all"></div>
-                                                <p className="text-slate-600 text-sm lg:text-[15px] leading-[1.6] italic font-medium selection:bg-yellow-100">
+                                                <p className="text-slate-600 text-xs lg:text-[13px] leading-relaxed italic font-medium selection:bg-yellow-100">
                                                     "{event.description}"
                                                 </p>
                                             </div>
 
-                                            <div className="flex flex-wrap items-center justify-between gap-4 pt-6 border-t border-slate-50">
-                                                <div className="flex items-center gap-4">
-                                                    <div className="flex items-center gap-2 text-[9px] font-mono-data font-black text-slate-300 bg-white border border-slate-50 px-3 py-1.5 rounded-lg shadow-sm">
-                                                        <FileText size={10} />
+                                            <div className="flex flex-wrap items-center justify-between gap-3 pt-4 border-t border-slate-50">
+                                                <div className="flex items-center gap-3">
+                                                    <div className="flex items-center gap-2 text-[8px] font-mono-data font-black text-slate-300 bg-white border border-slate-50 px-2 py-1 rounded shadow-sm">
+                                                        <FileText size={8} />
                                                         REF: {event.sourceId.slice(0, 8)}
                                                     </div>
-                                                    <div className="h-4 w-px bg-slate-100"></div>
-                                                    <div className="flex items-center gap-2 text-[9px] font-black text-emerald-600 uppercase tracking-widest bg-emerald-50 px-3 py-1.5 rounded-lg border border-emerald-100/50 shadow-sm group-hover:bg-emerald-100 transition-colors">
-                                                        <ShieldCheck size={12} /> SECURE LOG
+                                                    <div className="h-3 w-px bg-slate-100"></div>
+                                                    <div className="flex items-center gap-2 text-[8px] font-black text-emerald-600 uppercase tracking-widest bg-emerald-50 px-2 py-1 rounded border border-emerald-100/50 shadow-sm group-hover:bg-emerald-100 transition-colors">
+                                                        <ShieldCheck size={10} /> SECURE LOG
                                                     </div>
                                                 </div>
                                                 <button
                                                     onClick={() => onDeepDive(event.title, 'standard')}
-                                                    className="flex items-center gap-2 text-[10px] font-black uppercase text-[#0F172A] hover:text-[#B91C1C] transition-all tracking-[0.15em] group/btn bg-slate-50 hover:bg-white px-5 py-2 rounded-xl border border-transparent hover:border-slate-100 shadow-sm hover:shadow-md"
+                                                    className="flex items-center gap-1.5 text-[9px] font-black uppercase text-[#0F172A] hover:text-[#B91C1C] transition-all tracking-[0.1em] group/btn bg-slate-50 hover:bg-white px-3 py-1.5 rounded-lg border border-transparent hover:border-slate-100 shadow-sm hover:shadow-md"
                                                 >
-                                                    Visualiser Dossier <ChevronRight size={16} className="group-hover:translate-x-1.5 transition-transform duration-500" />
+                                                    Ouvrir <ChevronRight size={14} className="group-hover:translate-x-1.5 transition-transform duration-500" />
                                                 </button>
                                             </div>
                                         </div>

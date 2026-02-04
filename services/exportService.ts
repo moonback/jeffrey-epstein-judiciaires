@@ -311,18 +311,10 @@ export class ExportService {
     }
 
     /**
-     * Export to PDF (via print dialog)
+     * Export to PDF (Professional Forensic Report)
      */
-    static downloadPDF(result: ProcessedResult) {
-        const html = this.exportToPDFHTML(result);
-        const printWindow = window.open('', '_blank');
-        if (printWindow) {
-            printWindow.document.write(html);
-            printWindow.document.close();
-            printWindow.focus();
-            setTimeout(() => {
-                printWindow.print();
-            }, 500);
-        }
+    static async downloadPDF(result: ProcessedResult) {
+        const { ReportingService } = await import('./reportingService');
+        await ReportingService.generateInvestigationReport(result);
     }
 }

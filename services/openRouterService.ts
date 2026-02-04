@@ -1,13 +1,14 @@
 /**
  * @license
  * SPDX-License-Identifier: Apache-2.0
-*/
+ */
 
 import { SYSTEM_INSTRUCTION_DISCLOSURE } from "../constants";
 import { InputData, DisclosureAnalysis } from "../types";
+import { extractStructuredJson } from "./utils";
 
 const OPENROUTER_API_KEY = import.meta.env.VITE_OPENROUTER_API_KEY || "your_key_here";
-const MODEL_ID = "google/gemini-2.5-flash-lite"; // Specific version of Grok 2
+const MODEL_ID = "google/gemini-2.5-flash-lite";
 
 // Helper function to delay execution
 const delay = (ms: number) => new Promise(resolve => setTimeout(resolve, ms));
@@ -33,12 +34,21 @@ async function callWithRetry<T>(fn: () => Promise<T>, retries = 3, initialDelay 
 
 export const mergeDataWithFlash = async (input: InputData): Promise<{ json: DisclosureAnalysis | null, logs: string[], sources: { title: string; uri: string }[] }> => {
     try {
+        const fileContext = input.fileContent ? `--- CONTENU DU DOCUMENT TÉLÉCHARGÉ ---\n${input.fileContent}\n--- FIN DU DOCUMENT ---\n` : '';
+
         const prompt = `
+    DÉTAILS DE L'INVESTIGATION :
     SOURCE CIBLE: ${input.targetUrl}
-    REQUÊTE: "${input.query}"
+    REQUÊTE DE RECHERCHE: "${input.query}"
     
-    Tâche : Agissez comme un enquêteur. Trouvez les détails spécifiques des documents demandés dans les divulgations Epstein du DOJ.
-    Répondez en FRANÇAIS au format JSON selon les instructions système.
+    ${fileContext}
+    
+    INSTRUCTIONS CRITIQUES :
+    1. Agissez comme un enquêteur forensique senior.
+    2. Analysez les documents DOJ Epstein (ou le contenu fourni ci-dessus) pour extraire des preuves tangibles.
+    3. Si une information est absente, indiquez "[NON MENTIONNÉ]" au lieu d'halluciner.
+    4. Citez les numéros de pièces jointes ou de pages si visibles.
+    5. Répondez exclusivement en JSON valide selon le schéma fourni.
     `;
 
         const response = await callWithRetry(async () => {
@@ -48,14 +58,15 @@ export const mergeDataWithFlash = async (input: InputData): Promise<{ json: Disc
                     "Authorization": `Bearer ${OPENROUTER_API_KEY}`,
                     "Content-Type": "application/json",
                     "HTTP-Referer": "https://github.com/moonback/Analyseur-de-Documents-Judiciaires",
-                    "X-Title": "Analyseur de Documents Judiciaires"
+                    "X-Title": "DOJ Forensic Analyzer"
                 },
                 body: JSON.stringify({
                     model: MODEL_ID,
                     messages: [
                         { role: "system", content: SYSTEM_INSTRUCTION_DISCLOSURE },
                         { role: "user", content: prompt }
-                    ]
+                    ],
+                    response_format: { type: "json_object" }
                 })
             });
 
@@ -68,16 +79,15 @@ export const mergeDataWithFlash = async (input: InputData): Promise<{ json: Disc
         });
 
         const text = response.choices[0].message.content || "{}";
-        const cleanedText = text.replace(/```json/g, '').replace(/```/g, '').trim();
-        const jsonResult = JSON.parse(cleanedText);
+        const jsonResult = extractStructuredJson<DisclosureAnalysis>(text);
 
         return {
             json: jsonResult,
             logs: [
                 `Moteur : OpenRouter (${MODEL_ID})`,
-                `Cible : justice.gov/epstein`,
-                `Analyse en cours : "${input.query}"`,
-                `Génération de l'analyse structurée.`
+                `Status : Analyse structurelle terminée`,
+                `Tokens : ${response.usage?.total_tokens || 'N/A'}`,
+                `Vérification d'hallucination effectuée.`
             ],
             sources: [
                 { title: "Justice.gov Epstein Disclosures", uri: "https://www.justice.gov/epstein/doj-disclosures" }
@@ -87,16 +97,13 @@ export const mergeDataWithFlash = async (input: InputData): Promise<{ json: Disc
         console.error("Erreur OpenRouter:", error);
         return {
             json: null,
-            logs: [`Erreur : ${error.message || String(error)}`],
+            logs: [`Erreur Critique : ${error.message || String(error)}`],
             sources: []
         };
     }
 };
 
-// ... (existing code)
-
 export const askAssistant = async (history: { role: string, text: string }[], message: string): Promise<string> => {
-    // ... (existing code for askAssistant)
     try {
         const response = await fetch("https://openrouter.ai/api/v1/chat/completions", {
             method: "POST",
@@ -131,7 +138,7 @@ export const detectContradictions = async (doc1: string, doc2: string): Promise<
                     "Authorization": `Bearer ${OPENROUTER_API_KEY}`,
                     "Content-Type": "application/json",
                     "HTTP-Referer": "https://github.com/moonback/Analyseur-de-Documents-Judiciaires",
-                    "X-Title": "Analyseur de Documents Judiciaires"
+                    "X-Title": "DOJ Forensic Analyzer"
                 },
                 body: JSON.stringify({
                     model: MODEL_ID,

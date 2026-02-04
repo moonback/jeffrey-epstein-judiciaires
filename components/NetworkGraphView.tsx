@@ -91,21 +91,30 @@ export const NetworkGraphView: React.FC<NetworkGraphViewProps> = ({ onDeepDive, 
             nodesMap.set(invId, invNode);
 
             const entities = res.output.entites_cles || [];
+            const entDetails = res.output.entites_details || [];
+
             entities.forEach(ent => {
                 let entNode = nodesMap.get(ent);
+                const detail = entDetails.find(d => d.nom === ent);
+                const risk = detail?.risk_level || 5;
+                const influence = detail?.influence || 5;
+
+                // Professional color mapping (Blue-to-Red gradient for risk)
+                const riskColor = risk > 7 ? '#B91C1C' : risk > 4 ? '#0F4C81' : '#64748B';
+
                 if (!entNode) {
                     entNode = {
                         id: ent,
                         name: ent,
-                        val: 12,
+                        val: influence * 3, // influence affects size
                         type: 'PERSON',
-                        color: '#0F4C81', // Classic Blue
+                        color: riskColor,
                         neighbors: [],
                         links: []
                     };
                     nodesMap.set(ent, entNode);
                 } else {
-                    entNode.val += 4;
+                    entNode.val += 2;
                 }
 
                 const link: GraphLink = { source: invId, target: ent, value: 1 };
