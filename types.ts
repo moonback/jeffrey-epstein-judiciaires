@@ -18,6 +18,12 @@ export interface DocumentDetail {
   key_facts: string[];
   legal_implications: string;
   date: string;
+  doj_metadata?: {
+    original_url: string;
+    doj_filename: string;
+    import_date: string;
+    file_size_bytes: number;
+  };
 }
 
 export interface EntityDetail {
@@ -46,6 +52,13 @@ export interface AssetDetail {
   description: string;
 }
 
+export interface PhotoDetail {
+  titre: string;
+  description: string;
+  localisation?: string;
+  date?: string;
+}
+
 export interface DisclosureAnalysis {
   context_general: string;
   documents: DocumentDetail[];
@@ -53,6 +66,7 @@ export interface DisclosureAnalysis {
   entites_details?: EntityDetail[];
   transactions_financieres?: TransactionDetail[];
   actifs?: AssetDetail[];
+  photos?: PhotoDetail[];
   contexte_juridique: string;
 }
 

@@ -26,10 +26,11 @@ import {
     DollarSign,
     Link2,
     Mic,
-    Briefcase
+    Briefcase,
+    Image
 } from 'lucide-react';
 
-export type ViewType = 'lab' | 'database' | 'network' | 'timeline' | 'contradictions' | 'poi' | 'finance' | 'assets' | 'cross' | 'voice';
+export type ViewType = 'lab' | 'database' | 'network' | 'timeline' | 'contradictions' | 'poi' | 'finance' | 'assets' | 'cross' | 'voice' | 'evidence';
 
 interface SidebarProps {
     currentView: ViewType;
@@ -51,10 +52,11 @@ export const Sidebar: React.FC<SidebarProps> = ({
     const menuItems = [
         { id: 'lab', label: 'Laboratoire', icon: Terminal, color: 'text-[#B91C1C]' },
         { id: 'database', label: 'Archives Centrales', icon: Database, color: 'text-[#0F4C81]' },
+        { id: 'evidence', label: 'Médiathèque', icon: Image, color: 'text-[#B91C1C]' },
         { id: 'network', label: 'Cartographie', icon: Share2, color: 'text-[#0F4C81]' },
         { id: 'timeline', label: 'Chronologie', icon: Clock, color: 'text-[#B91C1C]' },
         { id: 'finance', label: 'Flux Financiers', icon: DollarSign, color: 'text-[#B91C1C]' },
-        { id: 'assets', label: 'Patrimoine', icon: Archive, color: 'text-[#B91C1C]' },
+        { id: 'assets', label: 'Patrimoine', icon: Briefcase, color: 'text-[#B91C1C]' },
         { id: 'cross', label: 'Intelligence Croisée', icon: Link2, color: 'text-[#0F4C81]' },
         { id: 'contradictions', label: 'Contradictions', icon: ShieldAlert, color: 'text-[#0F4C81]' },
         { id: 'poi', label: 'Index des Cibles', icon: Users, color: 'text-[#B91C1C]' },

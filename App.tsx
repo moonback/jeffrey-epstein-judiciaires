@@ -43,6 +43,7 @@ import { TimelineView } from './components/TimelineView';
 import { ContradictionsView, POIView } from './components/AdvancedModules';
 import { FinancialFlowView } from './components/FinancialFlowView';
 import { AssetsView } from './components/AssetsView';
+import { EvidenceGalleryView } from './components/EvidenceGalleryView';
 import { CrossSessionView } from './components/CrossSessionView';
 import { VoiceAssistant } from './components/VoiceAssistant';
 import { Auth } from './components/Auth';
@@ -756,6 +757,7 @@ const App: React.FC = () => {
             {viewMode === 'poi' && <POIView onDeepDive={handleDeepDive} />}
             {viewMode === 'finance' && <FinancialFlowView />}
             {viewMode === 'assets' && <AssetsView />}
+            {viewMode === 'evidence' && <EvidenceGalleryView />}
             {viewMode === 'cross' && <CrossSessionView onNavigateToInvestigation={handleOpenInvestigation} />}
             {viewMode === 'voice' && <VoiceAssistant />}
           </div>
