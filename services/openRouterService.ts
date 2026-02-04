@@ -12,7 +12,7 @@ const getApiKey = () => {
 };
 
 const getModelId = () => {
-    return localStorage.getItem('SELECTED_AI_MODEL') || "google/gemini-2.0-flash-lite-preview-02-05";
+    return localStorage.getItem('SELECTED_AI_MODEL') || "google/gemini-2.0-flash-exp:free";
 };
 
 // Helper function to delay execution

@@ -165,79 +165,79 @@ export const EpsteinArchiveView: React.FC<EpsteinArchiveViewProps> = ({ onAnalyz
     return (
         <div className="flex flex-col h-full bg-[#F8FAFC] overflow-hidden">
             {/* Header */}
-            <header className="px-8 py-6 bg-white border-b border-slate-200 z-10 shadow-sm shrink-0">
-                <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-                    <div>
-                        <h2 className="text-2xl font-black text-[#0F172A] uppercase italic font-serif-legal">
+            <header className="px-6 py-3 bg-white border-b border-slate-200 z-10 shadow-sm shrink-0">
+                <div className="flex flex-col md:flex-row md:items-center justify-between gap-4">
+                    <div className="flex items-center gap-4">
+                        <h2 className="text-lg font-black text-[#0F172A] uppercase italic font-serif-legal whitespace-nowrap">
                             Archives <span className="text-[#B91C1C]">Epstein</span>
                         </h2>
-                        <div className="flex items-center gap-2 mt-2">
-                            <span className="bg-slate-100 text-slate-500 px-2 py-0.5 rounded text-[10px] font-bold uppercase tracking-wider">
-                                {files.length} Documents Indexés
+                        <div className="hidden sm:flex items-center gap-2">
+                            <span className="bg-slate-100 text-slate-500 px-2 py-0.5 rounded text-[9px] font-bold uppercase tracking-wider">
+                                {files.length} Docs
                             </span>
                             {selectedPaths.size > 0 && (
-                                <span className="bg-red-100 text-[#B91C1C] px-2 py-0.5 rounded text-[10px] font-black uppercase tracking-wider animate-pulse">
-                                    {selectedPaths.size} Sélectionnés
+                                <span className="bg-red-100 text-[#B91C1C] px-2 py-0.5 rounded text-[9px] font-black uppercase tracking-wider animate-pulse">
+                                    {selectedPaths.size} Sél.
                                 </span>
                             )}
                         </div>
                     </div>
 
-                    <div className="flex flex-col sm:flex-row gap-4">
-                        <div className="relative group min-w-[300px]">
-                            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-[#B91C1C] transition-colors" size={16} />
+                    <div className="flex flex-col sm:flex-row items-center gap-3">
+                        <div className="relative group w-full sm:w-64">
+                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-[#B91C1C] transition-colors" size={14} />
                             <input
                                 type="text"
-                                placeholder="Rechercher un document..."
+                                placeholder="Rechercher..."
                                 value={searchTerm}
                                 onChange={e => { setSearchTerm(e.target.value); setCurrentPage(1); }}
-                                className="w-full bg-slate-50 border border-slate-200 rounded-xl py-2.5 pl-10 pr-4 text-sm font-medium focus:outline-none focus:border-[#B91C1C] transition-all"
+                                className="w-full bg-slate-50 border border-slate-200 rounded-lg py-1.5 pl-9 pr-3 text-xs font-medium focus:outline-none focus:border-[#B91C1C] transition-all"
                             />
                         </div>
 
-                        <div className="flex items-center gap-2">
+                        <div className="flex items-center gap-2 w-full sm:w-auto">
                             <select
-                                className="bg-slate-50 border border-slate-200 rounded-xl py-2.5 px-4 text-sm font-bold text-slate-700 focus:outline-none"
+                                className="bg-slate-50 border border-slate-200 rounded-lg py-1.5 px-3 text-xs font-bold text-slate-700 focus:outline-none appearance-none cursor-pointer hover:bg-slate-100 transition-colors"
                                 value={selectedDir}
                                 onChange={(e) => { setSelectedDir(e.target.value); setCurrentPage(1); }}
                             >
-                                <option value="all">Tous les dossiers</option>
+                                <option value="all">Dossiers</option>
                                 {directories.map(dir => (
                                     <option key={dir} value={dir}>{dir}</option>
                                 ))}
                             </select>
 
                             <select
-                                className="bg-slate-50 border border-slate-200 rounded-xl py-2.5 px-4 text-sm font-bold text-slate-700 focus:outline-none"
+                                className="bg-slate-50 border border-slate-200 rounded-lg py-1.5 px-3 text-xs font-bold text-slate-700 focus:outline-none appearance-none cursor-pointer hover:bg-slate-100 transition-colors"
                                 value={typeFilter}
                                 onChange={(e) => { setTypeFilter(e.target.value as any); setCurrentPage(1); }}
                             >
                                 <option value="all">Tous types</option>
-                                <option value="doc">Documents PDF</option>
-                                <option value="image">Images / Scans</option>
+                                <option value="doc">PDF</option>
+                                <option value="image">Images</option>
                             </select>
 
-                            <div className="flex bg-slate-100 p-1 rounded-xl border border-slate-200">
+                            <div className="flex bg-slate-100 p-0.5 rounded-lg border border-slate-200">
                                 <button
                                     onClick={() => setHideAnalyzed(!hideAnalyzed)}
-                                    className={`flex items-center gap-2 px-3 py-2 rounded-lg transition-all text-[10px] font-black uppercase tracking-widest ${hideAnalyzed ? 'bg-[#B91C1C] text-white shadow-lg' : 'text-slate-400 hover:text-slate-600'}`}
+                                    className={`flex items-center gap-1.5 px-2.5 py-1.5 rounded-md transition-all text-[9px] font-black uppercase tracking-widest ${hideAnalyzed ? 'bg-[#B91C1C] text-white shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
                                     title={hideAnalyzed ? "Afficher les documents analysés" : "Cacher les documents analysés"}
                                 >
-                                    {hideAnalyzed ? <Eye size={14} /> : <EyeOff size={14} />}
-                                    <span className="hidden xl:inline">{hideAnalyzed ? "Voir Analysés" : "Cacher Analysés"}</span>
+                                    {hideAnalyzed ? <Eye size={12} /> : <EyeOff size={12} />}
+                                    <span className="hidden lg:inline">{hideAnalyzed ? "Voir Analysés" : "Cacher Analysés"}</span>
                                 </button>
-                                <div className="w-px h-6 bg-slate-200 mx-1 self-center"></div>
+                                <div className="w-px h-4 bg-slate-200 mx-0.5 self-center"></div>
                                 <button
                                     onClick={() => setViewMode('grid')}
-                                    className={`p-2 rounded-lg transition-all ${viewMode === 'grid' ? 'bg-white text-[#B91C1C] shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
+                                    className={`p-1.5 rounded-md transition-all ${viewMode === 'grid' ? 'bg-white text-[#B91C1C] shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
                                 >
-                                    <Grid size={18} />
+                                    <Grid size={14} />
                                 </button>
                                 <button
                                     onClick={() => setViewMode('list')}
-                                    className={`p-2 rounded-lg transition-all ${viewMode === 'list' ? 'bg-white text-[#B91C1C] shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
+                                    className={`p-1.5 rounded-md transition-all ${viewMode === 'list' ? 'bg-white text-[#B91C1C] shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
                                 >
-                                    <List size={18} />
+                                    <List size={14} />
                                 </button>
                             </div>
                         </div>
@@ -254,9 +254,9 @@ export const EpsteinArchiveView: React.FC<EpsteinArchiveViewProps> = ({ onAnalyz
                     </div>
                 ) : viewMode === 'grid' ? (
                     <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-6 gap-6">
-                        {currentFiles.map((file, idx) => (
+                        {currentFiles.map((file) => (
                             <a
-                                key={idx}
+                                key={file.path}
                                 href={file.path}
                                 target="_blank"
                                 rel="noreferrer"
@@ -334,8 +334,9 @@ export const EpsteinArchiveView: React.FC<EpsteinArchiveViewProps> = ({ onAnalyz
                     </div>
                 ) : (
                     <div className="space-y-2">
-                        {currentFiles.map((file, idx) => (
+                        {currentFiles.map((file) => (
                             <div
+                                key={file.path}
                                 className="flex items-center p-4 bg-white rounded-xl border border-slate-100 hover:border-[#B91C1C] hover:shadow-md transition-all group"
                                 onMouseEnter={(e) => handleMouseEnter(e, file)}
                                 onMouseLeave={handleMouseLeave}
