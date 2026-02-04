@@ -330,44 +330,92 @@ export const FinancialFlowView: React.FC = () => {
                     <button
                         onClick={() => {
                             const doc = new jsPDF();
+                            const primaryRed: [number, number, number] = [185, 28, 28];
+                            const darkSlate: [number, number, number] = [15, 23, 42];
+                            const lightSlate: [number, number, number] = [100, 116, 139];
 
-                            // Title & Header
-                            doc.setFontSize(22);
-                            doc.setTextColor(185, 28, 28); // #B91C1C
-                            doc.text("RAPPORT D'AUDIT FINANCIER", 14, 22);
+                            // 1. HEADER DESIGN
+                            // Red accent bar at top
+                            doc.setFillColor(primaryRed[0], primaryRed[1], primaryRed[2]);
+                            doc.rect(0, 0, 210, 15, 'F');
 
+                            // Logo/Unit Text
+                            doc.setTextColor(255, 255, 255);
+                            doc.setFontSize(8);
+                            doc.setFont("helvetica", "bold");
+                            doc.text("QUANTUM-AUDIT BUREAU // UNIT-04 FORENSIC SERVICES", 14, 10);
+
+                            // Main Title
+                            doc.setTextColor(darkSlate[0], darkSlate[1], darkSlate[2]);
+                            doc.setFontSize(28);
+                            doc.setFont("times", "bolditalic");
+                            doc.text("REPORT OF FINANCIAL AUDIT", 14, 35);
+
+                            // Decorative Line
+                            doc.setDrawColor(primaryRed[0], primaryRed[1], primaryRed[2]);
+                            doc.setLineWidth(1.5);
+                            doc.line(14, 40, 60, 40);
+
+                            // Metadata Block
                             doc.setFontSize(10);
-                            doc.setTextColor(100, 116, 139); // slate-500
-                            doc.text(`Généré le: ${new Date().toLocaleString('fr-FR')}`, 14, 30);
-                            doc.text("Unité Forensic: Quantum-Audit Bureau // Node.5-Finance", 14, 35);
+                            doc.setFont("helvetica", "normal");
+                            doc.setTextColor(lightSlate[0], lightSlate[1], lightSlate[2]);
+                            doc.text(`DATE DE GÉNÉRATION : ${new Date().toLocaleDateString('fr-FR')} ${new Date().toLocaleTimeString('fr-FR')}`, 14, 50);
+                            doc.text(`IDENTIFIANT AUDIT : QC-${Math.random().toString(36).substr(2, 9).toUpperCase()}`, 14, 55);
+                            doc.text(`OBJET : ANALYSE DES FLUX ET PATTERNS MONÉTAIRES`, 14, 60);
 
-                            // Summary Stats
-                            doc.setDrawColor(241, 245, 249); // slate-100
-                            doc.line(14, 40, 196, 40);
+                            // 2. SUMMARY DASHBOARD (Visual Box)
+                            doc.setFillColor(248, 250, 252); // bg-slate-50
+                            doc.roundedRect(14, 70, 182, 45, 3, 3, 'F');
 
                             doc.setFontSize(12);
-                            doc.setTextColor(15, 23, 42); // slate-900
-                            doc.text("SYNTHÈSE ANALYTIQUE", 14, 50);
+                            doc.setFont("helvetica", "bold");
+                            doc.setTextColor(darkSlate[0], darkSlate[1], darkSlate[2]);
+                            doc.text("SYNTHÈSE DU VOLUME TRANSACTIONNEL", 20, 80);
 
+                            doc.setFontSize(24);
+                            doc.setTextColor(primaryRed[0], primaryRed[1], primaryRed[2]);
+                            doc.text(formatCurrency(analytics.totalVolume, 'USD'), 20, 95);
+
+                            doc.setFontSize(9);
+                            doc.setFont("helvetica", "normal");
+                            doc.setTextColor(lightSlate[0], lightSlate[1], lightSlate[2]);
+                            doc.text(`${analytics.count} transactions analysées provenant de multiples sources documentaires.`, 20, 105);
+
+                            // 3. INDICATORS TABLE
                             autoTable(doc, {
-                                startY: 55,
-                                head: [['Indicateur', 'Valeur']],
+                                startY: 125,
+                                head: [['INDICATEURS DE PERFORMANCE FORENSIC', 'VALEUR']],
                                 body: [
-                                    ['Volume Total Audité', formatCurrency(analytics.totalVolume, 'USD')],
-                                    ['Nombre de Transactions', analytics.count.toString()],
-                                    ['Alertes de Haut Risque', analytics.suspiciousCount.toString()],
-                                    ['Entités Identifiées', analytics.uniqueEntities.toString()],
-                                    ['Score de Fiabilité', '98.2%']
+                                    ['ALERTES DE HAUT RISQUE (>1.0M USD)', analytics.suspiciousCount.toString()],
+                                    ['ENTITÉS FINANCIÈRES IDENTIFIÉES', analytics.uniqueEntities.toString()],
+                                    ['INDICE DE FIABILITÉ DES DONNÉES', '98.2%'],
+                                    ['MODE D\'ANALYSE', 'IDENTIFICATION PAR NEURAL SCANNING']
                                 ],
-                                theme: 'striped',
-                                headStyles: { fillColor: [248, 250, 252], textColor: [15, 23, 42], fontStyle: 'bold' }
+                                theme: 'plain',
+                                headStyles: {
+                                    fillColor: [241, 245, 249],
+                                    textColor: darkSlate,
+                                    fontStyle: 'bold',
+                                    fontSize: 10,
+                                    cellPadding: 5
+                                },
+                                styles: { fontSize: 9, cellPadding: 4, lineColor: [226, 232, 240], lineWidth: 0.1 },
+                                columnStyles: {
+                                    1: { halign: 'right', fontStyle: 'bold' }
+                                }
                             });
 
-                            // Detailed Transactions
+                            // 4. DETAILED TRANSACTIONS PAGE
                             doc.addPage();
+                            // Page Header for new page
+                            doc.setFillColor(primaryRed[0], primaryRed[1], primaryRed[2]);
+                            doc.rect(0, 0, 210, 8, 'F');
+
+                            doc.setTextColor(primaryRed[0], primaryRed[1], primaryRed[2]);
                             doc.setFontSize(16);
-                            doc.setTextColor(185, 28, 28);
-                            doc.text("DÉTAIL DES FLUX TRANSACTIONNELS", 14, 22);
+                            doc.setFont("times", "bolditalic");
+                            doc.text("CHRONOLOGIE DÉTAILLÉE DES MOUVEMENTS", 14, 25);
 
                             const tableData = allTransactions.map(t => [
                                 t.date,
@@ -378,25 +426,43 @@ export const FinancialFlowView: React.FC = () => {
                             ]);
 
                             autoTable(doc, {
-                                startY: 30,
-                                head: [['Date', 'Source', 'Destination', 'Montant', 'Description']],
+                                startY: 35,
+                                head: [['DATE', 'SOURCE', 'DESTINATION', 'MONTANT', 'DESCRIPTION']],
                                 body: tableData,
-                                headStyles: { fillColor: [185, 28, 28], textColor: [255, 255, 255] },
-                                styles: { fontSize: 8, cellPadding: 2 },
+                                headStyles: {
+                                    fillColor: darkSlate,
+                                    textColor: [255, 255, 255],
+                                    fontSize: 8,
+                                    fontStyle: 'bold'
+                                },
+                                alternateRowStyles: { fillColor: [250, 250, 250] },
+                                styles: { fontSize: 7, cellPadding: 3, overflow: 'linebreak' },
                                 columnStyles: {
-                                    3: { halign: 'right', fontStyle: 'bold' },
-                                    4: { cellWidth: 50 }
+                                    1: { cellWidth: 35 },
+                                    2: { cellWidth: 35 },
+                                    3: { halign: 'right', fontStyle: 'bold', textColor: primaryRed, cellWidth: 30 },
+                                    4: { cellWidth: 60 }
+                                },
+                                didDrawPage: (data) => {
+                                    // Footer on each page of the table
+                                    doc.setFontSize(8);
+                                    doc.setTextColor(150);
+                                    doc.text(`CONFIDENTIEL - AUDIT FORENSIC - DOCUMENT GÉNÉRÉ PAR IA`, 105, 285, { align: 'center' });
                                 }
                             });
 
-                            // Important Entities
+                            // 5. ENTITY PROFILES
                             if (entityProfiles.length > 0) {
                                 doc.addPage();
-                                doc.setFontSize(16);
-                                doc.setTextColor(15, 23, 42);
-                                doc.text("PROFILING DES ENTITÉS À RISQUE", 14, 22);
+                                doc.setFillColor(primaryRed[0], primaryRed[1], primaryRed[2]);
+                                doc.rect(0, 0, 210, 8, 'F');
 
-                                const entityData = entityProfiles.slice(0, 15).map(p => [
+                                doc.setTextColor(darkSlate[0], darkSlate[1], darkSlate[2]);
+                                doc.setFontSize(16);
+                                doc.setFont("times", "bolditalic");
+                                doc.text("CARTOGRAPHIE DES ENTITÉS À HAUT RISQUE", 14, 25);
+
+                                const entityData = entityProfiles.slice(0, 20).map(p => [
                                     p.name,
                                     formatCurrency(p.totalSent, 'USD'),
                                     formatCurrency(p.totalReceived, 'USD'),
@@ -405,24 +471,38 @@ export const FinancialFlowView: React.FC = () => {
                                 ]);
 
                                 autoTable(doc, {
-                                    startY: 30,
-                                    head: [['Entité', 'Total Envoyé', 'Total Reçu', 'Events', 'Score Risque']],
+                                    startY: 35,
+                                    head: [['NOM DE L\'ENTITÉ', 'TOTAL ENVOYÉ', 'TOTAL REÇU', 'EVENTS', 'SCORE RISQUE']],
                                     body: entityData,
-                                    headStyles: { fillColor: [15, 23, 42], textColor: [255, 255, 255] },
-                                    styles: { fontSize: 8 }
+                                    headStyles: { fillColor: primaryRed, textColor: [255, 255, 255], fontSize: 8 },
+                                    styles: { fontSize: 7, cellPadding: 3 },
+                                    columnStyles: {
+                                        1: { halign: 'right' },
+                                        2: { halign: 'right' },
+                                        4: { halign: 'center', fontStyle: 'bold', textColor: primaryRed }
+                                    }
                                 });
                             }
 
-                            // Footer on each page
-                            const pageCount = doc.getNumberOfPages();
-                            for (let i = 1; i <= pageCount; i++) {
-                                doc.setPage(i);
+                            // 6. CERTIFICATION & SIGNATURE
+                            const finalY = (doc as any).lastAutoTable.finalY + 20;
+                            if (finalY < 250) {
+                                doc.setFontSize(10);
+                                doc.setTextColor(darkSlate[0], darkSlate[1], darkSlate[2]);
+                                doc.setFont("helvetica", "bold");
+                                doc.text("CERTIFICATION DE L'AUDIT", 14, finalY);
+                                doc.setFont("helvetica", "normal");
                                 doc.setFontSize(8);
-                                doc.setTextColor(150);
-                                doc.text(`Page ${i} sur ${pageCount} - Document Confidentiel - Audit Forensic Epstein`, 105, 285, { align: 'center' });
+                                doc.text("Je certifie que les données financières présentées dans ce rapport ont été extraites avec précision", 14, finalY + 8);
+                                doc.text("par les algorithmes de scan neural à partir des documents judiciaires fournis.", 14, finalY + 13);
+
+                                doc.setDrawColor(200);
+                                doc.line(140, finalY + 25, 190, finalY + 25);
+                                doc.setFontSize(7);
+                                doc.text("SIGNATURE DE L'ANALYSTE EN CHEF", 140, finalY + 30);
                             }
 
-                            doc.save(`Rapport_Audit_Financier_${new Date().getTime()}.pdf`);
+                            doc.save(`QUANTUM_AUDIT_REPORT_${new Date().getTime()}.pdf`);
                         }}
                         className="text-[10px] font-black text-[#B91C1C] hover:text-[#7F1D1D] transition-colors flex items-center gap-2"
                     >

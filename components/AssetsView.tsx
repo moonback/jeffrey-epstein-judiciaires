@@ -271,45 +271,82 @@ export const AssetsView: React.FC = () => {
                     <button
                         onClick={() => {
                             const doc = new jsPDF();
+                            const primaryRed: [number, number, number] = [185, 28, 28];
+                            const darkSlate: [number, number, number] = [15, 23, 42];
+                            const lightSlate: [number, number, number] = [100, 116, 139];
 
-                            // Title & Header
-                            doc.setFontSize(22);
-                            doc.setTextColor(185, 28, 28); // #B91C1C
-                            doc.text("RAPPORT D'INVENTAIRE PATRIMONIAL", 14, 22);
+                            // 1. HEADER DESIGN
+                            doc.setFillColor(primaryRed[0], primaryRed[1], primaryRed[2]);
+                            doc.rect(0, 0, 210, 15, 'F');
+
+                            doc.setTextColor(255, 255, 255);
+                            doc.setFontSize(8);
+                            doc.setFont("helvetica", "bold");
+                            doc.text("FORENSIC-ASSET-SCANNER // UNIT.09 WEALTH ASSESSMENT", 14, 10);
+
+                            doc.setTextColor(darkSlate[0], darkSlate[1], darkSlate[2]);
+                            doc.setFontSize(28);
+                            doc.setFont("times", "bolditalic");
+                            doc.text("REPORT OF WEALTH ASSETS", 14, 35);
+
+                            doc.setDrawColor(primaryRed[0], primaryRed[1], primaryRed[2]);
+                            doc.setLineWidth(1.5);
+                            doc.line(14, 40, 60, 40);
 
                             doc.setFontSize(10);
-                            doc.setTextColor(100, 116, 139); // slate-500
-                            doc.text(`Généré le: ${new Date().toLocaleString('fr-FR')}`, 14, 30);
-                            doc.text("Unité Forensic: Forensic-Asset-Scanner // Unit.09", 14, 35);
+                            doc.setFont("helvetica", "normal");
+                            doc.setTextColor(lightSlate[0], lightSlate[1], lightSlate[2]);
+                            doc.text(`DATE DE GÉNÉRATION : ${new Date().toLocaleDateString('fr-FR')} ${new Date().toLocaleTimeString('fr-FR')}`, 14, 50);
+                            doc.text(`ID CONTRÔLE : WA-${Math.random().toString(36).substr(2, 9).toUpperCase()}`, 14, 55);
+                            doc.text(`OBJET : INVENTAIRE ET ESTIMATION DU PATRIMOINE RÉPERTORIÉ`, 14, 60);
 
-                            // Summary Stats
-                            doc.setDrawColor(241, 245, 249); // slate-100
-                            doc.line(14, 40, 196, 40);
+                            // 2. TOTAL VALUE DASHBOARD
+                            doc.setFillColor(248, 250, 252);
+                            doc.roundedRect(14, 70, 182, 45, 3, 3, 'F');
 
                             doc.setFontSize(12);
-                            doc.setTextColor(15, 23, 42); // slate-900
-                            doc.text("RÉSUMÉ DES ACTIFS", 14, 50);
+                            doc.setFont("helvetica", "bold");
+                            doc.setTextColor(darkSlate[0], darkSlate[1], darkSlate[2]);
+                            doc.text("PATRIMOINE TOTAL ESTIMÉ", 20, 80);
 
+                            doc.setFontSize(24);
+                            doc.setTextColor(primaryRed[0], primaryRed[1], primaryRed[2]);
+                            doc.text(formatCurrency(stats.totalValue), 20, 95);
+
+                            doc.setFontSize(9);
+                            doc.setFont("helvetica", "normal");
+                            doc.setTextColor(lightSlate[0], lightSlate[1], lightSlate[2]);
+                            doc.text(`Analyse consolidée de ${stats.count} actifs matériels et financiers identifiés.`, 20, 105);
+
+                            // 3. STATS SUMMARY TABLE
                             autoTable(doc, {
-                                startY: 55,
-                                head: [['Catégorie', 'Valeur / Nombre']],
+                                startY: 125,
+                                head: [['CATÉGORIE D\'ACTIF', 'QUANTITÉ']],
                                 body: [
-                                    ['Patrimoine Total Estimé', formatCurrency(stats.totalValue)],
-                                    ['Nombre d\'Actifs Identifiés', stats.count.toString()],
-                                    ['Immobilier', (stats.typeCounts['immobilier'] || 0).toString()],
-                                    ['Comptes Bancaires', (stats.typeCounts['compte_bancaire'] || 0).toString()],
-                                    ['Sociétés / Holdings', (stats.typeCounts['societe'] || 0).toString()],
-                                    ['Véhicules', (stats.typeCounts['vehicule'] || 0).toString()]
+                                    ['BIENS IMMOBILIERS (VILLAS, TERRAINS)', (stats.typeCounts['immobilier'] || 0).toString()],
+                                    ['RETOUR SUR CAPITAUX & COMPTES', (stats.typeCounts['compte_bancaire'] || 0).toString()],
+                                    ['SOCIÉTÉS, HOLDINGS & TRUSTS', (stats.typeCounts['societe'] || 0).toString()],
+                                    ['VÉHICULES ET AUTRES BIENS', (stats.typeCounts['vehicule'] || 0).toString()]
                                 ],
-                                theme: 'striped',
-                                headStyles: { fillColor: [248, 250, 252], textColor: [15, 23, 42], fontStyle: 'bold' }
+                                theme: 'plain',
+                                headStyles: {
+                                    fillColor: [241, 245, 249],
+                                    textColor: darkSlate,
+                                    fontStyle: 'bold',
+                                    fontSize: 10
+                                },
+                                styles: { fontSize: 9, cellPadding: 4, lineColor: [226, 232, 240], lineWidth: 0.1 }
                             });
 
-                            // Detailed Assets
+                            // 4. DETAILED INVENTORY
                             doc.addPage();
+                            doc.setFillColor(primaryRed[0], primaryRed[1], primaryRed[2]);
+                            doc.rect(0, 0, 210, 8, 'F');
+
+                            doc.setTextColor(primaryRed[0], primaryRed[1], primaryRed[2]);
                             doc.setFontSize(16);
-                            doc.setTextColor(185, 28, 28);
-                            doc.text("INVENTAIRE DÉTAILLÉ DES BIENS", 14, 22);
+                            doc.setFont("times", "bolditalic");
+                            doc.text("INVENTAIRE NOMINAL ET LOCALISATION", 14, 25);
 
                             const tableData = allAssets.map(a => [
                                 a.type.toUpperCase(),
@@ -320,26 +357,36 @@ export const AssetsView: React.FC = () => {
                             ]);
 
                             autoTable(doc, {
-                                startY: 30,
-                                head: [['Type', 'Nom de l\'Actif', 'Propriétaire', 'Localisation', 'Valeur']],
+                                startY: 35,
+                                head: [['TYPE', 'ACTIF', 'PROPRIÉTAIRE', 'LOCALISATION', 'VALEUR']],
                                 body: tableData,
-                                headStyles: { fillColor: [185, 28, 28], textColor: [255, 255, 255] },
-                                styles: { fontSize: 8, cellPadding: 2 },
+                                headStyles: { fillColor: darkSlate, textColor: [255, 255, 255], fontSize: 8 },
+                                alternateRowStyles: { fillColor: [250, 250, 250] },
+                                styles: { fontSize: 7, cellPadding: 3, overflow: 'linebreak' },
                                 columnStyles: {
-                                    4: { halign: 'right', fontStyle: 'bold' }
+                                    4: { halign: 'right', fontStyle: 'bold', textColor: primaryRed }
+                                },
+                                didDrawPage: () => {
+                                    doc.setFontSize(8);
+                                    doc.setTextColor(150);
+                                    doc.text(`CONFIDENTIEL - UNIT-09 ASSET MAPPING - GÉNÉRÉ PAR IA`, 105, 285, { align: 'center' });
                                 }
                             });
 
-                            // Footer on each page
-                            const pageCount = doc.getNumberOfPages();
-                            for (let i = 1; i <= pageCount; i++) {
-                                doc.setPage(i);
+                            // 5. LEGAL NOTICE
+                            const finalY = (doc as any).lastAutoTable.finalY + 20;
+                            if (finalY < 250) {
+                                doc.setFontSize(10);
+                                doc.setTextColor(darkSlate[0], darkSlate[1], darkSlate[2]);
+                                doc.setFont("helvetica", "bold");
+                                doc.text("CLAUSE DE RÉSERVE", 14, finalY);
+                                doc.setFont("helvetica", "normal");
                                 doc.setFontSize(8);
-                                doc.setTextColor(150);
-                                doc.text(`Page ${i} sur ${pageCount} - Document Confidentiel - Audit Patrimonial Epstein`, 105, 285, { align: 'center' });
+                                doc.text("Les valeurs estimées sont basées sur les données extraites des documents officiels.", 14, finalY + 8);
+                                doc.text("Ce rapport constitue une base de travail pour l'investigation et n'a pas de valeur d'expertise légale unique.", 14, finalY + 13);
                             }
 
-                            doc.save(`Rapport_Patrimoine_${new Date().getTime()}.pdf`);
+                            doc.save(`QUANTUM_ASSET_REPORT_${new Date().getTime()}.pdf`);
                         }}
                         className="text-[10px] font-black text-[#B91C1C] hover:text-[#7F1D1D] transition-colors flex items-center gap-2"
                     >
