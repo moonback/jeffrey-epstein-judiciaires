@@ -46,6 +46,7 @@ import { AssetsView } from './components/AssetsView';
 import { CrossSessionView } from './components/CrossSessionView';
 import { VoiceAssistant } from './components/VoiceAssistant';
 import { Auth } from './components/Auth';
+import { EpsteinArchiveView } from './components/EpsteinArchiveView';
 import { supabase, isSupabaseConfigured } from './services/supabaseClient';
 
 import { useOptimistic, useTransition } from 'react';
@@ -758,6 +759,7 @@ const App: React.FC = () => {
             {viewMode === 'assets' && <AssetsView />}
             {viewMode === 'cross' && <CrossSessionView onNavigateToInvestigation={handleOpenInvestigation} />}
             {viewMode === 'voice' && <VoiceAssistant />}
+            {viewMode === 'epstein_docs' && <EpsteinArchiveView />}
           </div>
         </main >
 
