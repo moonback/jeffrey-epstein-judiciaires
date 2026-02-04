@@ -11,9 +11,10 @@ interface ResultsDashboardProps {
   history: ProcessedResult[];
   onDeepDive: (docTitle: string, style: 'standard' | 'simple' | 'technical') => void;
   onOpenInvestigation: (id: string) => void;
+  isGuestMode?: boolean;
 }
 
-export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ history, onDeepDive, onOpenInvestigation }) => {
+export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ history, onDeepDive, onOpenInvestigation, isGuestMode }) => {
   const [searchTerm, setSearchTerm] = useState('');
   const [activeType, setActiveType] = useState<string>('ALL');
 
@@ -186,26 +187,28 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ history, onD
                 </div>
 
                 <div className="p-8 pt-0">
-                  <div className="grid grid-cols-3 gap-3 p-2 bg-[#F8FAFC] rounded-[2rem] border border-slate-50 shadow-inner">
-                    <button
-                      onClick={() => onDeepDive(item.doc.title, 'simple')}
-                      className="flex items-center justify-center gap-2 py-3 bg-white hover:bg-black hover:text-white text-slate-500 border border-slate-100 shadow-sm rounded-2xl text-[9px] font-black uppercase tracking-widest transition-all group/btn"
-                    >
-                      <BookOpen size={14} className="group-hover/btn:scale-110 transition-transform" /> Summary
-                    </button>
-                    <button
-                      onClick={() => onDeepDive(item.doc.title, 'technical')}
-                      className="flex items-center justify-center gap-2 py-3 bg-white hover:bg-[#0F4C81] hover:text-white text-slate-500 border border-slate-100 shadow-sm rounded-2xl text-[9px] font-black uppercase tracking-widest transition-all group/btn"
-                    >
-                      <Shield size={14} className="group-hover/btn:scale-110 transition-transform" /> Expert
-                    </button>
-                    <button
-                      onClick={() => onDeepDive(item.doc.title, 'standard')}
-                      className="flex items-center justify-center gap-2 py-3 bg-[#B91C1C] hover:bg-black text-white rounded-2xl text-[9px] font-black uppercase tracking-widest transition-all shadow-lg shadow-red-900/10 active:scale-95 group/btn"
-                    >
-                      <Zap size={14} className="group-hover/btn:rotate-12 transition-transform" /> Neural
-                    </button>
-                  </div>
+                  {!isGuestMode && (
+                    <div className="grid grid-cols-3 gap-3 p-2 bg-[#F8FAFC] rounded-[2rem] border border-slate-50 shadow-inner">
+                      <button
+                        onClick={() => onDeepDive(item.doc.title, 'simple')}
+                        className="flex items-center justify-center gap-2 py-3 bg-white hover:bg-black hover:text-white text-slate-500 border border-slate-100 shadow-sm rounded-2xl text-[9px] font-black uppercase tracking-widest transition-all group/btn"
+                      >
+                        <BookOpen size={14} className="group-hover/btn:scale-110 transition-transform" /> Summary
+                      </button>
+                      <button
+                        onClick={() => onDeepDive(item.doc.title, 'technical')}
+                        className="flex items-center justify-center gap-2 py-3 bg-white hover:bg-[#0F4C81] hover:text-white text-slate-500 border border-slate-100 shadow-sm rounded-2xl text-[9px] font-black uppercase tracking-widest transition-all group/btn"
+                      >
+                        <Shield size={14} className="group-hover/btn:scale-110 transition-transform" /> Expert
+                      </button>
+                      <button
+                        onClick={() => onDeepDive(item.doc.title, 'standard')}
+                        className="flex items-center justify-center gap-2 py-3 bg-[#B91C1C] hover:bg-black text-white rounded-2xl text-[9px] font-black uppercase tracking-widest transition-all shadow-lg shadow-red-900/10 active:scale-95 group/btn"
+                      >
+                        <Zap size={14} className="group-hover/btn:rotate-12 transition-transform" /> Neural
+                      </button>
+                    </div>
+                  )}
 
                   <div className="flex items-center justify-center mt-6 gap-2 opacity-0 group-hover:opacity-100 transition-all duration-700">
                     <span className="text-[8px] font-black text-slate-300 uppercase tracking-widest italic">Source Link Synchronized</span>

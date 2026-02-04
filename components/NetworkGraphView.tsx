@@ -31,9 +31,10 @@ interface GraphLink {
 interface NetworkGraphViewProps {
     onDeepDive?: (docTitle: string, style: 'standard' | 'simple' | 'technical') => void;
     onNavigateToInvestigation?: (investigationId: string) => void;
+    isGuestMode?: boolean;
 }
 
-export const NetworkGraphView: React.FC<NetworkGraphViewProps> = ({ onDeepDive, onNavigateToInvestigation }) => {
+export const NetworkGraphView: React.FC<NetworkGraphViewProps> = ({ onDeepDive, onNavigateToInvestigation, isGuestMode }) => {
     const fgRef = useRef<ForceGraphMethods>();
     const containerRef = useRef<HTMLDivElement>(null);
     const [history, setHistory] = useState<ProcessedResult[]>([]);

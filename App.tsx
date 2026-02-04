@@ -53,6 +53,7 @@ import { useOptimistic, useTransition } from 'react';
 
 const App: React.FC = () => {
   const [session, setSession] = useState<any>(null);
+  const [isGuestMode, setIsGuestMode] = useState<boolean>(localStorage.getItem('GUEST_MODE') === 'true');
   const [isAuthLoading, setIsAuthLoading] = useState(true);
 
   const [queue, setQueue] = useState<InputData[]>([]);
@@ -77,7 +78,9 @@ const App: React.FC = () => {
   const [processedCount, setProcessedCount] = useState(0);
 
   const [isSettingsOpen, setIsSettingsOpen] = useState(false);
-  const [viewMode, setViewMode] = useState<ViewType>('lab');
+  const [viewMode, setViewMode] = useState<ViewType>(
+    localStorage.getItem('GUEST_MODE') === 'true' ? 'database' : 'lab'
+  );
   const [showPlanner, setShowPlanner] = useState(false);
   const [showLogs, setShowLogs] = useState(false);
   const [logs, setLogs] = useState<string[]>([]);
@@ -101,6 +104,8 @@ const App: React.FC = () => {
   };
 
   const handleLogout = async () => {
+    setIsGuestMode(false);
+    localStorage.removeItem('GUEST_MODE');
     if (isSupabaseConfigured) {
       await supabase!.auth.signOut();
     }
@@ -476,8 +481,12 @@ const App: React.FC = () => {
     );
   }
 
-  if (isSupabaseConfigured && !session) {
-    return <Auth />;
+  if (isSupabaseConfigured && !session && !isGuestMode) {
+    return <Auth onGuestAccess={() => {
+      setIsGuestMode(true);
+      localStorage.setItem('GUEST_MODE', 'true');
+      setViewMode('database');
+    }} />;
   }
 
   return (
@@ -495,6 +504,7 @@ const App: React.FC = () => {
             setActiveTabId(null);
           }}
           onToggleLogs={() => setShowLogs(!showLogs)}
+          isGuestMode={isGuestMode}
         />
       </div>
 
@@ -771,6 +781,7 @@ const App: React.FC = () => {
                               onDeepDive={handleDeepDive}
                               onDownload={() => handleDownload(activeResult)}
                               onEntityClick={handleEntityClick}
+                              isGuestMode={isGuestMode}
                             />
                           </div>
                         </div>
@@ -801,13 +812,11 @@ const App: React.FC = () => {
 
             {viewMode === 'database' && (
               <div className="h-full overflow-hidden bg-white">
-                <CaseListView
+                <ResultsDashboard
                   history={optimisticHistory}
-                  onOpenInvestigation={(id) => {
-                    setActiveTabId(id);
-                    setViewMode('lab');
-                    setShowPlanner(false);
-                  }}
+                  onDeepDive={handleDeepDive}
+                  onOpenInvestigation={handleOpenInvestigation}
+                  isGuestMode={isGuestMode}
                 />
               </div>
             )}
@@ -817,13 +826,14 @@ const App: React.FC = () => {
                 <NetworkGraphView
                   onDeepDive={handleDeepDive}
                   onNavigateToInvestigation={handleOpenInvestigation}
+                  isGuestMode={isGuestMode}
                 />
               </div>
             )}
 
-            {viewMode === 'timeline' && <TimelineView onDeepDive={handleDeepDive} />}
-            {viewMode === 'contradictions' && <ContradictionsView onDeepDive={handleDeepDive} />}
-            {viewMode === 'poi' && <POIView onDeepDive={handleDeepDive} />}
+            {viewMode === 'timeline' && <TimelineView onDeepDive={handleDeepDive} isGuestMode={isGuestMode} />}
+            {viewMode === 'contradictions' && <ContradictionsView onDeepDive={handleDeepDive} isGuestMode={isGuestMode} />}
+            {viewMode === 'poi' && <POIView onDeepDive={handleDeepDive} isGuestMode={isGuestMode} />}
             {viewMode === 'finance' && <FinancialFlowView />}
             {viewMode === 'assets' && <AssetsView />}
             {viewMode === 'cross' && <CrossSessionView onNavigateToInvestigation={handleOpenInvestigation} />}
@@ -833,6 +843,7 @@ const App: React.FC = () => {
                 onAnalyze={handleAnalyzeFile}
                 onOpenAnalysis={handleOpenAnalysis}
                 analyzedFilePaths={analyzedFilePaths}
+                isGuestMode={isGuestMode}
               />
             )}
           </div>
@@ -840,12 +851,14 @@ const App: React.FC = () => {
 
         {/* MOBILE BOTTOM NAVIGATION - PREMIUM PRO LIGHT */}
         < nav className="lg:hidden fixed bottom-0 left-0 right-0 h-20 bg-white/90 border-t border-slate-100 flex items-center justify-around px-4 z-50 backdrop-blur-3xl shadow-[0_-20px_50px_rgba(0,0,0,0.05)]" >
-          <MobileNavItem
-            icon={Terminal}
-            label="Lab"
-            isActive={viewMode === 'lab'}
-            onClick={() => setViewMode('lab')}
-          />
+          {!isGuestMode && (
+            <MobileNavItem
+              icon={Terminal}
+              label="Lab"
+              isActive={viewMode === 'lab'}
+              onClick={() => setViewMode('lab')}
+            />
+          )}
           <MobileNavItem
             icon={Database}
             label="Archives"
@@ -864,24 +877,28 @@ const App: React.FC = () => {
             isActive={viewMode === 'timeline'}
             onClick={() => setViewMode('timeline')}
           />
-          <div className="h-10 w-px bg-slate-100 mx-2"></div>
-          <button
-            onClick={() => setShowLogs(!showLogs)}
-            className={`flex flex-col items-center justify-center gap-2 transition-all w-16 ${showLogs ? 'text-[#B91C1C]' : 'text-slate-400'}`}
-          >
-            <div className={`p-3 rounded-2xl transition-all ${showLogs ? 'bg-red-50 shadow-inner' : 'hover:bg-slate-50'}`}>
-              <Activity size={20} className={showLogs ? 'animate-pulse' : ''} />
-            </div>
-            <span className="text-[10px] font-black uppercase tracking-widest leading-none">Logs</span>
-          </button>
+          {!isGuestMode && (
+            <>
+              <div className="h-10 w-px bg-slate-100 mx-2"></div>
+              <button
+                onClick={() => setShowLogs(!showLogs)}
+                className={`flex flex-col items-center justify-center gap-2 transition-all w-16 ${showLogs ? 'text-[#B91C1C]' : 'text-slate-400'}`}
+              >
+                <div className={`p-3 rounded-2xl transition-all ${showLogs ? 'bg-red-50 shadow-inner' : 'hover:bg-slate-50'}`}>
+                  <Activity size={20} className={showLogs ? 'animate-pulse' : ''} />
+                </div>
+                <span className="text-[10px] font-black uppercase tracking-widest leading-none">Logs</span>
+              </button>
+            </>
+          )}
         </nav >
       </div >
 
-      <LiveAssistant />
+      {!isGuestMode && <LiveAssistant />}
 
       {/* LOGS OVERLAY - PRO STYLE */}
       {
-        showLogs && (
+        !isGuestMode && showLogs && (
           <div className="fixed bottom-24 lg:bottom-12 right-6 lg:right-12 left-6 lg:left-auto lg:w-[600px] h-[500px] lg:h-[600px] z-[100] animate-in slide-in-from-bottom-12 fade-in duration-700">
             <div className="absolute inset-0 bg-white border border-slate-100 shadow-[0_40px_100px_rgba(0,0,0,0.15)] rounded-[3rem] overflow-hidden flex flex-col scale-100">
               <div className="px-10 py-8 border-b border-slate-50 flex justify-between items-center bg-[#F8FAFC]">
@@ -933,6 +950,7 @@ const App: React.FC = () => {
         openRouterKey={openRouterKey}
         onKeyChange={handleKeyChange}
         onLogout={handleLogout}
+        isGuestMode={isGuestMode}
       />
 
     </div >

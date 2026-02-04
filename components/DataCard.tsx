@@ -14,9 +14,10 @@ interface DataCardProps {
     onDeepDive: (docTitle: string, style: 'standard' | 'simple' | 'technical') => void;
     onDownload: () => void;
     onEntityClick: (entityName: string) => void;
+    isGuestMode?: boolean;
 }
 
-export const DataCard: React.FC<DataCardProps> = ({ result, loading, onDeepDive, onDownload, onEntityClick }) => {
+export const DataCard: React.FC<DataCardProps> = ({ result, loading, onDeepDive, onDownload, onEntityClick, isGuestMode }) => {
     const data = result.output;
     const sources = result.sources;
     const [activeFilter, setActiveFilter] = useState<string>('ALL');
@@ -210,20 +211,22 @@ export const DataCard: React.FC<DataCardProps> = ({ result, loading, onDeepDive,
                                             </div>
                                         </div>
 
-                                        <div className="mt-auto space-y-3">
-                                            <button
-                                                onClick={() => onDeepDive(doc.title, 'simple')}
-                                                className="w-full flex items-center justify-center gap-3 bg-white hover:bg-[#F8FAFC] text-slate-600 py-3.5 rounded-2xl border border-slate-200 transition-all text-[10px] font-black uppercase tracking-widest shadow-sm active:scale-95 group/btn"
-                                            >
-                                                <BookOpen size={16} className="text-[#B91C1C]" /> Synthèse
-                                            </button>
-                                            <button
-                                                onClick={() => onDeepDive(doc.title, 'technical')}
-                                                className="w-full flex items-center justify-center gap-3 bg-[#0F172A] hover:bg-[#B91C1C] text-white py-3.5 rounded-2xl transition-all text-[10px] font-black uppercase tracking-widest shadow-xl active:scale-95 group/btn border border-slate-800"
-                                            >
-                                                <Zap size={16} className="text-yellow-400" /> Deep Dive
-                                            </button>
-                                        </div>
+                                        {!isGuestMode && (
+                                            <div className="mt-auto space-y-3">
+                                                <button
+                                                    onClick={() => onDeepDive(doc.title, 'simple')}
+                                                    className="w-full flex items-center justify-center gap-3 bg-white hover:bg-[#F8FAFC] text-slate-600 py-3.5 rounded-2xl border border-slate-200 transition-all text-[10px] font-black uppercase tracking-widest shadow-sm active:scale-95 group/btn"
+                                                >
+                                                    <BookOpen size={16} className="text-[#B91C1C]" /> Synthèse
+                                                </button>
+                                                <button
+                                                    onClick={() => onDeepDive(doc.title, 'technical')}
+                                                    className="w-full flex items-center justify-center gap-3 bg-[#0F172A] hover:bg-[#B91C1C] text-white py-3.5 rounded-2xl transition-all text-[10px] font-black uppercase tracking-widest shadow-xl active:scale-95 group/btn border border-slate-800"
+                                                >
+                                                    <Zap size={16} className="text-yellow-400" /> Deep Dive
+                                                </button>
+                                            </div>
+                                        )}
                                     </div>
 
                                     {/* Main Doc Body */}

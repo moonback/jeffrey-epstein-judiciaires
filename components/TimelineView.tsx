@@ -25,9 +25,10 @@ interface TimelineEvent {
 
 interface TimelineViewProps {
     onDeepDive: (docTitle: string, style: 'standard' | 'simple' | 'technical') => void;
+    isGuestMode?: boolean;
 }
 
-export const TimelineView: React.FC<TimelineViewProps> = ({ onDeepDive }) => {
+export const TimelineView: React.FC<TimelineViewProps> = ({ onDeepDive, isGuestMode }) => {
     const [history, setHistory] = useState<ProcessedResult[]>([]);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
@@ -353,15 +354,17 @@ export const TimelineView: React.FC<TimelineViewProps> = ({ onDeepDive }) => {
                                                                     <ShieldCheck size={12} /> SECURE
                                                                 </div>
                                                             </div>
-                                                            <button
-                                                                onClick={(e) => {
-                                                                    e.stopPropagation();
-                                                                    onDeepDive(event.title, 'standard');
-                                                                }}
-                                                                className="flex items-center gap-2 text-[10px] font-black uppercase text-[#0F172A] hover:text-[#B91C1C] transition-all tracking-wider group/btn bg-white hover:bg-slate-50 px-4 py-2 rounded-xl border border-slate-100 shadow-sm hover:shadow-md"
-                                                            >
-                                                                Analyse Profonde <ChevronRight size={14} className="group-hover:translate-x-1.5 transition-transform duration-500" />
-                                                            </button>
+                                                            {!isGuestMode && (
+                                                                <button
+                                                                    onClick={(e) => {
+                                                                        e.stopPropagation();
+                                                                        onDeepDive(event.title, 'standard');
+                                                                    }}
+                                                                    className="flex items-center gap-2 text-[10px] font-black uppercase text-[#0F172A] hover:text-[#B91C1C] transition-all tracking-wider group/btn bg-white hover:bg-slate-50 px-4 py-2 rounded-xl border border-slate-100 shadow-sm hover:shadow-md"
+                                                                >
+                                                                    Analyse Profonde <ChevronRight size={14} className="group-hover:translate-x-1.5 transition-transform duration-500" />
+                                                                </button>
+                                                            )}
                                                         </div>
                                                     </div>
                                                 </div>

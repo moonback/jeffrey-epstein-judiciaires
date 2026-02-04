@@ -37,6 +37,7 @@ interface SidebarProps {
     onOpenSettings: () => void;
     onNewAnalysis: () => void;
     onToggleLogs: () => void;
+    isGuestMode?: boolean;
 }
 
 export const Sidebar: React.FC<SidebarProps> = ({
@@ -44,14 +45,15 @@ export const Sidebar: React.FC<SidebarProps> = ({
     onViewChange,
     onOpenSettings,
     onNewAnalysis,
-    onToggleLogs
+    onToggleLogs,
+    isGuestMode
 }) => {
     const [isCollapsed, setIsCollapsed] = useState(false);
 
     const menuItems = [
-        { id: 'lab', label: 'Laboratoire', icon: Terminal, color: 'text-[#B91C1C]' },
+        { id: 'lab', label: 'Laboratoire', icon: Terminal, color: 'text-[#B91C1C]', adminOnly: true },
         { id: 'database', label: 'Archives Centrales', icon: Database, color: 'text-[#0F4C81]' },
-        { id: 'epstein_docs', label: 'Archives Epstein', icon: Briefcase, color: 'text-[#B91C1C]' },
+        { id: 'epstein_docs', label: 'Archives Epstein', icon: Briefcase, color: 'text-[#B91C1C]', adminOnly: true },
         { id: 'network', label: 'Cartographie', icon: Share2, color: 'text-[#0F4C81]' },
         { id: 'timeline', label: 'Chronologie', icon: Clock, color: 'text-[#B91C1C]' },
         { id: 'finance', label: 'Flux Financiers', icon: DollarSign, color: 'text-[#B91C1C]' },
@@ -59,8 +61,8 @@ export const Sidebar: React.FC<SidebarProps> = ({
         { id: 'cross', label: 'Intelligence Croisée', icon: Link2, color: 'text-[#0F4C81]' },
         { id: 'contradictions', label: 'Contradictions', icon: ShieldAlert, color: 'text-[#0F4C81]' },
         { id: 'poi', label: 'Index des Cibles', icon: Users, color: 'text-[#B91C1C]' },
-        { id: 'voice', label: 'Assistant Vocal', icon: Mic, color: 'text-[#B91C1C]' },
-    ];
+        { id: 'voice', label: 'Assistant Vocal', icon: Mic, color: 'text-[#B91C1C]', adminOnly: true },
+    ].filter(item => !isGuestMode || !item.adminOnly);
 
     return (
         <aside
@@ -77,7 +79,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
             {/* SCROLLABLE AREA: LOGO + ACTION + NAV */}
             <div className={`flex-1 overflow-y-auto custom-scrollbar pt-4 pb-2 transition-all duration-500 ${isCollapsed ? 'px-3' : 'px-5'}`}>
-                <div className="flex items-center gap-4 mb-6 group cursor-pointer whitespace-nowrap" onClick={() => onViewChange('lab')}>
+                <div className="flex items-center gap-4 mb-6 group cursor-pointer whitespace-nowrap" onClick={() => !isGuestMode && onViewChange('lab')}>
                     <div className="relative shrink-0">
                         <div className="absolute inset-0 bg-[#B91C1C] blur-xl opacity-0 group-hover:opacity-20 transition-opacity"></div>
                         <div className="relative w-11 h-11 bg-black rounded-[1rem] flex items-center justify-center shadow-2xl transition-all duration-500 group-hover:bg-[#B91C1C] group-hover:rotate-[360deg]">
@@ -97,17 +99,19 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 </div>
 
                 {/* ACTION BUTTON - PREMIUM */}
-                <button
-                    onClick={onNewAnalysis}
-                    className="w-full mb-6 group relative"
-                >
-                    <div className={`relative w-full flex items-center justify-center ${isCollapsed ? '' : 'lg:justify-start lg:px-5'} h-10 bg-[#B91C1C] hover:bg-[#0F172A] text-white rounded-xl transition-all duration-500 shadow-xl shadow-red-900/10 hover:shadow-slate-900/20 active:scale-95 overflow-hidden`}>
-                        <div className="absolute inset-x-0 h-px top-0 bg-white/20"></div>
-                        <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
-                        <Plus size={18} className="shrink-0 group-hover:rotate-90 transition-transform duration-500" />
-                        {!isCollapsed && <span className="hidden lg:block font-black text-[9px] uppercase tracking-[0.3em] ml-4 transition-all whitespace-nowrap">Nouvelle Investigation</span>}
-                    </div>
-                </button>
+                {!isGuestMode && (
+                    <button
+                        onClick={onNewAnalysis}
+                        className="w-full mb-6 group relative"
+                    >
+                        <div className={`relative w-full flex items-center justify-center ${isCollapsed ? '' : 'lg:justify-start lg:px-5'} h-10 bg-[#B91C1C] hover:bg-[#0F172A] text-white rounded-xl transition-all duration-500 shadow-xl shadow-red-900/10 hover:shadow-slate-900/20 active:scale-95 overflow-hidden`}>
+                            <div className="absolute inset-x-0 h-px top-0 bg-white/20"></div>
+                            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
+                            <Plus size={18} className="shrink-0 group-hover:rotate-90 transition-transform duration-500" />
+                            {!isCollapsed && <span className="hidden lg:block font-black text-[9px] uppercase tracking-[0.3em] ml-4 transition-all whitespace-nowrap">Nouvelle Investigation</span>}
+                        </div>
+                    </button>
+                )}
 
                 {/* NAVIGATION */}
                 <nav className="space-y-1 pb-2">

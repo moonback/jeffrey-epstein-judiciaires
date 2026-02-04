@@ -6,14 +6,15 @@
 import React, { useState, useEffect, useMemo } from 'react';
 import { storageService } from '../services/storageService';
 import { ProcessedResult, DocumentDetail } from '../types';
-import { AlertTriangle, Users, ArrowLeftRight, Zap, Loader2, CheckCircle2, ShieldAlert, Target, Fingerprint, Shield, Activity, Search, Database, ChevronRight, ArrowUpRight, ShieldCheck, Cpu } from 'lucide-react';
+import { AlertTriangle, Users, ArrowLeftRight, Zap, Loader2, CheckCircle2, ShieldAlert, Target, Fingerprint, Shield, Activity, Search, Database, ChevronRight, ArrowUpRight, ShieldCheck, Cpu, Lock } from 'lucide-react';
 import { mergeDataWithFlash, detectContradictions } from '../services/openRouterService';
 
 interface ContradictionsViewProps {
     onDeepDive: (docTitle: string, style: 'standard' | 'simple' | 'technical') => void;
+    isGuestMode?: boolean;
 }
 
-export const ContradictionsView: React.FC<ContradictionsViewProps> = ({ onDeepDive }) => {
+export const ContradictionsView: React.FC<ContradictionsViewProps> = ({ onDeepDive, isGuestMode }) => {
     const [history, setHistory] = useState<ProcessedResult[]>([]);
     const [doc1, setDoc1] = useState<string>('');
     const [doc2, setDoc2] = useState<string>('');
@@ -135,7 +136,7 @@ export const ContradictionsView: React.FC<ContradictionsViewProps> = ({ onDeepDi
 
                         <div className="lg:col-span-12 pt-10">
                             <button
-                                disabled={!doc1 || !doc2 || isAnalyzing}
+                                disabled={!doc1 || !doc2 || isAnalyzing || isGuestMode}
                                 onClick={handleAnalyze}
                                 className="w-full relative group"
                             >
@@ -143,6 +144,11 @@ export const ContradictionsView: React.FC<ContradictionsViewProps> = ({ onDeepDi
                                 <div className="relative flex items-center justify-center gap-4 bg-[#0F172A] hover:bg-[#B91C1C] text-white font-black uppercase tracking-[0.3em] text-[11px] py-6 rounded-2xl shadow-xl transition-all duration-500 transform active:scale-[0.98] disabled:bg-slate-100 disabled:text-slate-300">
                                     {isAnalyzing ? (
                                         <Loader2 className="animate-spin" size={20} />
+                                    ) : isGuestMode ? (
+                                        <div className="flex items-center gap-4">
+                                            <Lock size={20} />
+                                            Analyse Croisée (Mode Public Restreint)
+                                        </div>
                                     ) : (
                                         <div className="flex items-center gap-4">
                                             <Cpu size={20} className="group-hover:rotate-180 transition-transform duration-1000" />
@@ -207,9 +213,10 @@ export const ContradictionsView: React.FC<ContradictionsViewProps> = ({ onDeepDi
 
 interface POIViewProps {
     onDeepDive: (docTitle: string, style: 'standard' | 'simple' | 'technical') => void;
+    isGuestMode?: boolean;
 }
 
-export const POIView: React.FC<POIViewProps> = ({ onDeepDive }) => {
+export const POIView: React.FC<POIViewProps> = ({ onDeepDive, isGuestMode }) => {
     const [history, setHistory] = useState<ProcessedResult[]>([]);
     const [selectedEntity, setSelectedEntity] = useState<string | null>(null);
     const [searchQuery, setSearchQuery] = useState('');
@@ -374,12 +381,14 @@ export const POIView: React.FC<POIViewProps> = ({ onDeepDive }) => {
                                                     <div className="absolute left-0 top-1 w-2 h-2 rounded-full bg-[#0F4C81] shadow-sm animate-pulse"></div>
                                                     <div className="flex flex-wrap items-center justify-between gap-3 mb-2">
                                                         <div className="text-[9px] font-black text-slate-300 uppercase tracking-widest font-mono-data">{d.title}</div>
-                                                        <button
-                                                            onClick={() => onDeepDive(d.title, 'technical')}
-                                                            className="opacity-0 group-hover/item:opacity-100 flex items-center gap-1.5 text-[9px] font-black text-[#0F4C81] uppercase tracking-widest transition-all hover:text-[#B91C1C] bg-blue-50/50 px-3 py-1.5 rounded-lg active:scale-95 shadow-sm"
-                                                        >
-                                                            Deep Dive <ArrowUpRight size={12} />
-                                                        </button>
+                                                        {!isGuestMode && (
+                                                            <button
+                                                                onClick={() => onDeepDive(d.title, 'technical')}
+                                                                className="opacity-0 group-hover/item:opacity-100 flex items-center gap-1.5 text-[9px] font-black text-[#0F4C81] uppercase tracking-widest transition-all hover:text-[#B91C1C] bg-blue-50/50 px-3 py-1.5 rounded-lg active:scale-95 shadow-sm"
+                                                            >
+                                                                Deep Dive <ArrowUpRight size={12} />
+                                                            </button>
+                                                        )}
                                                     </div>
                                                     <div className="italic text-slate-600 leading-relaxed font-serif-legal">"{d.key_facts.find(f => f.includes(selectedEntity!))}"</div>
                                                 </div>

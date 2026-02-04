@@ -1,7 +1,7 @@
 
 import React, { useState, useEffect, useMemo, useRef } from 'react';
 import { createPortal } from 'react-dom';
-import { Search, FileText, Grid, List, ExternalLink, Filter, ChevronLeft, ChevronRight, Folder, Zap, ShieldCheck, EyeOff, Eye, CheckSquare, Square, Image as ImageIcon } from 'lucide-react';
+import { Search, FileText, Grid, List, ExternalLink, Filter, ChevronLeft, ChevronRight, Folder, Zap, ShieldCheck, EyeOff, Eye, CheckSquare, Square, Image as ImageIcon, Lock } from 'lucide-react';
 import { PdfHoverPreview } from './PdfHoverPreview';
 import { storageService } from '../services/storageService';
 
@@ -16,9 +16,10 @@ interface EpsteinArchiveViewProps {
     onAnalyze?: (file: PdfFile) => void;
     onOpenAnalysis?: (path: string) => void;
     analyzedFilePaths?: Set<string>;
+    isGuestMode?: boolean;
 }
 
-export const EpsteinArchiveView: React.FC<EpsteinArchiveViewProps> = ({ onAnalyze, onOpenAnalysis, analyzedFilePaths = new Set() }) => {
+export const EpsteinArchiveView: React.FC<EpsteinArchiveViewProps> = ({ onAnalyze, onOpenAnalysis, analyzedFilePaths = new Set(), isGuestMode }) => {
     const [files, setFiles] = useState<PdfFile[]>([]);
     const [loading, setLoading] = useState(true);
     const [searchTerm, setSearchTerm] = useState('');
@@ -314,7 +315,7 @@ export const EpsteinArchiveView: React.FC<EpsteinArchiveViewProps> = ({ onAnalyz
                                                 <ShieldCheck size={12} className="text-emerald-500" />
                                                 Dossier Existant
                                             </button>
-                                        ) : (
+                                        ) : !isGuestMode ? (
                                             <button
                                                 onClick={(e) => {
                                                     e.preventDefault();
@@ -326,6 +327,11 @@ export const EpsteinArchiveView: React.FC<EpsteinArchiveViewProps> = ({ onAnalyz
                                                 <Zap size={12} className="group-hover/btn:rotate-12 transition-transform" />
                                                 Analyser avec l'IA
                                             </button>
+                                        ) : (
+                                            <div className="w-full flex items-center justify-center gap-2 py-2 bg-slate-50 text-slate-300 rounded-xl text-[9px] font-black uppercase tracking-widest border border-slate-100">
+                                                <Lock size={12} />
+                                                Analyse (Accès Restreint)
+                                            </div>
                                         )
                                     )}
                                 </div>
@@ -388,7 +394,7 @@ export const EpsteinArchiveView: React.FC<EpsteinArchiveViewProps> = ({ onAnalyz
                                                 <ShieldCheck size={12} className="text-emerald-500" />
                                                 <span className="hidden sm:inline">Analysé</span>
                                             </button>
-                                        ) : (
+                                        ) : !isGuestMode ? (
                                             <button
                                                 onClick={(e) => {
                                                     e.preventDefault();
@@ -401,6 +407,11 @@ export const EpsteinArchiveView: React.FC<EpsteinArchiveViewProps> = ({ onAnalyz
                                                 <Zap size={12} />
                                                 <span className="hidden sm:inline">IA</span>
                                             </button>
+                                        ) : (
+                                            <div className="flex items-center gap-2 px-4 py-2 bg-slate-50 text-slate-300 rounded-xl text-[9px] font-black uppercase tracking-widest border border-slate-100" title="Accès Restreint">
+                                                <Lock size={12} />
+                                                <span className="hidden sm:inline">PRO</span>
+                                            </div>
                                         )
                                     )}
                                     <ExternalLink size={16} className="text-slate-300 group-hover:text-[#B91C1C] transition-colors ml-2" />

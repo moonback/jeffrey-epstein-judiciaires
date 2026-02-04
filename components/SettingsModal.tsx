@@ -19,9 +19,10 @@ interface SettingsModalProps {
   openRouterKey: string;
   onKeyChange: (key: string) => void;
   onLogout: () => void;
+  isGuestMode?: boolean;
 }
 
-export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, onClearData, onExportData, dbSize, selectedModel, onModelChange, openRouterKey, onKeyChange, onLogout }) => {
+export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, onClearData, onExportData, dbSize, selectedModel, onModelChange, openRouterKey, onKeyChange, onLogout, isGuestMode }) => {
   if (!isOpen) return null;
 
   return (
@@ -67,117 +68,126 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, o
           <div className="p-8 space-y-8">
 
             {/* Section API & Infrastructure */}
-            <div className="space-y-5">
-              <h3 className="text-[9px] font-black text-slate-300 uppercase tracking-[0.4em] flex items-center gap-3">
-                <Server size={12} className="text-[#B91C1C]" /> Infrastructure Core
-              </h3>
+            {!isGuestMode && (
+              <div className="space-y-5">
+                <h3 className="text-[9px] font-black text-slate-300 uppercase tracking-[0.4em] flex items-center gap-3">
+                  <Server size={12} className="text-[#B91C1C]" /> Infrastructure Core
+                </h3>
 
-              <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                <div className="bg-[#F8FAFC] rounded-[1.5rem] p-6 border border-slate-100 relative group overflow-hidden">
-                  <div className="absolute top-0 right-0 p-3 opacity-[0.05] group-hover:scale-110 transition-transform">
-                    <Cpu size={32} className="text-black" />
-                  </div>
-                  <span className="text-[#0F172A] text-[13px] font-black uppercase tracking-tight block mb-3">Neural Engine</span>
-                  <div className="flex items-center justify-between">
-                    <div className="relative w-full">
-                      <select
-                        value={selectedModel}
-                        onChange={(e) => onModelChange(e.target.value)}
-                        className="w-full bg-white text-[#B91C1C] text-[10px] font-black px-3 py-1.5 rounded-lg border border-slate-100 shadow-sm tracking-tight uppercase italic appearance-none cursor-pointer focus:ring-1 focus:ring-[#B91C1C] outline-none"
-                      >
-                        {AI_MODELS.map(model => (
-                          <option key={model.id} value={model.id}>
-                            {model.name} ({model.speed})
-                          </option>
-                        ))}
-                      </select>
-                      <div className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none text-[#B91C1C]">
-                        <ChevronDown size={10} />
+                <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
+                  <div className="bg-[#F8FAFC] rounded-[1.5rem] p-6 border border-slate-100 relative group overflow-hidden">
+                    <div className="absolute top-0 right-0 p-3 opacity-[0.05] group-hover:scale-110 transition-transform">
+                      <Cpu size={32} className="text-black" />
+                    </div>
+                    <span className="text-[#0F172A] text-[13px] font-black uppercase tracking-tight block mb-3">Neural Engine</span>
+                    <div className="flex items-center justify-between">
+                      <div className="relative w-full">
+                        <select
+                          value={selectedModel}
+                          onChange={(e) => onModelChange(e.target.value)}
+                          className="w-full bg-white text-[#B91C1C] text-[10px] font-black px-3 py-1.5 rounded-lg border border-slate-100 shadow-sm tracking-tight uppercase italic appearance-none cursor-pointer focus:ring-1 focus:ring-[#B91C1C] outline-none"
+                        >
+                          {AI_MODELS.map(model => (
+                            <option key={model.id} value={model.id}>
+                              {model.name} ({model.speed})
+                            </option>
+                          ))}
+                        </select>
+                        <div className="absolute right-2 top-1/2 -translate-y-1/2 pointer-events-none text-[#B91C1C]">
+                          <ChevronDown size={10} />
+                        </div>
                       </div>
+                    </div>
+                  </div>
+
+                  <div className="bg-[#F8FAFC] rounded-[1.5rem] p-6 border border-slate-100 relative group overflow-hidden md:col-span-2">
+                    <div className="absolute top-0 right-0 p-3 opacity-[0.05] group-hover:scale-110 transition-transform">
+                      <Lock size={32} className="text-black" />
+                    </div>
+                    <span className="text-[#0F172A] text-[13px] font-black uppercase tracking-tight block mb-3">OpenRouter API Access</span>
+                    <div className="flex flex-col gap-3">
+                      <div className="relative">
+                        <input
+                          type="password"
+                          value={openRouterKey}
+                          onChange={(e) => onKeyChange(e.target.value)}
+                          placeholder="sk-or-v1-..."
+                          className="w-full bg-white text-[#0F172A] text-[11px] font-mono-data px-4 py-2.5 rounded-xl border border-slate-100 shadow-sm outline-none focus:ring-1 focus:ring-[#B91C1C] transition-all"
+                        />
+                        <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-slate-300">
+                          <Key size={12} />
+                        </div>
+                      </div>
+                      <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest pl-1">
+                        {openRouterKey ? "Clé personnalisée active (Primeur sur .env)" : "Utilisation de la clé d'infrastructure par défaut."}
+                      </p>
                     </div>
                   </div>
                 </div>
 
-                <div className="bg-[#F8FAFC] rounded-[1.5rem] p-6 border border-slate-100 relative group overflow-hidden md:col-span-2">
-                  <div className="absolute top-0 right-0 p-3 opacity-[0.05] group-hover:scale-110 transition-transform">
-                    <Lock size={32} className="text-black" />
-                  </div>
-                  <span className="text-[#0F172A] text-[13px] font-black uppercase tracking-tight block mb-3">OpenRouter API Access</span>
-                  <div className="flex flex-col gap-3">
-                    <div className="relative">
-                      <input
-                        type="password"
-                        value={openRouterKey}
-                        onChange={(e) => onKeyChange(e.target.value)}
-                        placeholder="sk-or-v1-..."
-                        className="w-full bg-white text-[#0F172A] text-[11px] font-mono-data px-4 py-2.5 rounded-xl border border-slate-100 shadow-sm outline-none focus:ring-1 focus:ring-[#B91C1C] transition-all"
-                      />
-                      <div className="absolute right-3 top-1/2 -translate-y-1/2 pointer-events-none text-slate-300">
-                        <Key size={12} />
-                      </div>
-                    </div>
-                    <p className="text-[8px] font-black text-slate-400 uppercase tracking-widest pl-1">
-                      {openRouterKey ? "Clé personnalisée active (Primeur sur .env)" : "Utilisation de la clé d'infrastructure par défaut."}
-                    </p>
-                  </div>
-                </div>
+                <p className="text-[10px] text-slate-400 leading-relaxed text-center font-bold px-4 italic">
+                  {isSupabaseConfigured
+                    ? "Investigations synchronisées en temps réel avec le cluster distant sécurisé."
+                    : "Mode Offline : Données isolées localement. Export manuel recommandé."}
+                </p>
               </div>
-
-              <p className="text-[10px] text-slate-400 leading-relaxed text-center font-bold px-4 italic">
-                {isSupabaseConfigured
-                  ? "Investigations synchronisées en temps réel avec le cluster distant sécurisé."
-                  : "Mode Offline : Données isolées localement. Export manuel recommandé."}
-              </p>
-            </div>
+            )}
 
             {/* Section Hardware & Data */}
             <div className="space-y-5">
-              <h3 className="text-[9px] font-black text-slate-300 uppercase tracking-[0.4em] flex items-center gap-3">
-                <Database size={12} className="text-[#0F4C81]" /> Hardware Maintenance
-              </h3>
+              {!isGuestMode && (
+                <h3 className="text-[9px] font-black text-slate-300 uppercase tracking-[0.4em] flex items-center gap-3">
+                  <Database size={12} className="text-[#0F4C81]" /> Hardware Maintenance
+                </h3>
+              )}
 
               <div className="bg-white rounded-[2rem] p-2 border border-slate-100 shadow-sm overflow-hidden">
-                <button
-                  onClick={onExportData}
-                  className="w-full flex items-center justify-between p-5 hover:bg-[#F8FAFC] rounded-[1.5rem] transition-all group"
-                >
-                  <div className="flex items-center gap-4">
-                    <div className="w-11 h-11 bg-[#0F4C81] rounded-xl text-white flex items-center justify-center shadow-lg group-hover:rotate-12 transition-transform">
-                      <Download size={20} />
-                    </div>
-                    <div className="text-left">
-                      <div className="text-[#0F172A] text-base font-black uppercase tracking-tight italic font-serif-legal leading-none">Snapshot Archive</div>
-                      <div className="text-slate-400 text-[9px] font-black uppercase tracking-widest mt-1 flex items-center gap-2">
-                        {dbSize} Files <div className="w-0.5 h-0.5 bg-slate-200 rounded-full"></div> Qualified
+                {!isGuestMode && (
+                  <>
+                    <button
+                      onClick={onExportData}
+                      className="w-full flex items-center justify-between p-5 hover:bg-[#F8FAFC] rounded-[1.5rem] transition-all group"
+                    >
+                      <div className="flex items-center gap-4">
+                        <div className="w-11 h-11 bg-[#0F4C81] rounded-xl text-white flex items-center justify-center shadow-lg group-hover:rotate-12 transition-transform">
+                          <Download size={20} />
+                        </div>
+                        <div className="text-left">
+                          <div className="text-[#0F172A] text-base font-black uppercase tracking-tight italic font-serif-legal leading-none">Snapshot Archive</div>
+                          <div className="text-slate-400 text-[9px] font-black uppercase tracking-widest mt-1 flex items-center gap-2">
+                            {dbSize} Files <div className="w-0.5 h-0.5 bg-slate-200 rounded-full"></div> Qualified
+                          </div>
+                        </div>
                       </div>
-                    </div>
-                  </div>
-                  <div className="w-8 h-8 rounded-full bg-slate-50 flex items-center justify-center group-hover:bg-[#0F4C81] group-hover:text-white transition-all">
-                    <ArrowUpRight size={16} className="group-hover:scale-110 transition-transform" />
-                  </div>
-                </button>
-
-                <div className="h-px bg-slate-50 mx-6 my-1"></div>
-
-                <button
-                  onClick={onClearData}
-                  className="w-full flex items-center justify-between p-5 hover:bg-red-50 rounded-[1.5rem] transition-all group"
-                >
-                  <div className="flex items-center gap-4">
-                    <div className="w-11 h-11 bg-white border border-red-100 rounded-xl text-[#B91C1C] flex items-center justify-center shadow-lg group-hover:scale-110 transition-all">
-                      <Trash2 size={20} />
-                    </div>
-                    <div className="text-left">
-                      <div className="text-[#B91C1C] text-base font-black uppercase tracking-tight italic font-serif-legal leading-none">Emergency Purge</div>
-                      <div className="text-slate-400 text-[9px] font-black uppercase tracking-widest mt-1 flex items-center gap-2">
-                        Irreversible <div className="w-0.5 h-0.5 bg-red-200 rounded-full"></div> High Risk
+                      <div className="w-8 h-8 rounded-full bg-slate-50 flex items-center justify-center group-hover:bg-[#0F4C81] group-hover:text-white transition-all">
+                        <ArrowUpRight size={16} className="group-hover:scale-110 transition-transform" />
                       </div>
-                    </div>
-                  </div>
-                  <div className="px-3 py-1.5 bg-red-100/50 rounded-lg text-[#B91C1C] text-[8px] font-black uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity">
-                    Execute
-                  </div>
-                </button>
+                    </button>
+
+                    <div className="h-px bg-slate-50 mx-6 my-1"></div>
+
+                    <button
+                      onClick={onClearData}
+                      className="w-full flex items-center justify-between p-5 hover:bg-red-50 rounded-[1.5rem] transition-all group"
+                    >
+                      <div className="flex items-center gap-4">
+                        <div className="w-11 h-11 bg-white border border-red-100 rounded-xl text-[#B91C1C] flex items-center justify-center shadow-lg group-hover:scale-110 transition-all">
+                          <Trash2 size={20} />
+                        </div>
+                        <div className="text-left">
+                          <div className="text-[#B91C1C] text-base font-black uppercase tracking-tight italic font-serif-legal leading-none">Emergency Purge</div>
+                          <div className="text-slate-400 text-[9px] font-black uppercase tracking-widest mt-1 flex items-center gap-2">
+                            Irreversible <div className="w-0.5 h-0.5 bg-red-200 rounded-full"></div> High Risk
+                          </div>
+                        </div>
+                      </div>
+                      <div className="px-3 py-1.5 bg-red-100/50 rounded-lg text-[#B91C1C] text-[8px] font-black uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-opacity">
+                        Execute
+                      </div>
+                    </button>
+                    <div className="h-px bg-slate-50 mx-6 my-1"></div>
+                  </>
+                )}
 
                 <div className="h-px bg-slate-50 mx-6 my-1"></div>
 
