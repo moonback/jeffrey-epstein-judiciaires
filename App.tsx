@@ -54,6 +54,7 @@ const App: React.FC = () => {
   const [showPlanner, setShowPlanner] = useState(false);
   const [showLogs, setShowLogs] = useState(false);
   const [logs, setLogs] = useState<string[]>([]); // Added for file processing logs
+  const [showTabsDropdown, setShowTabsDropdown] = useState(false); // New state for tabs menu
 
   const queueRef = useRef<InputData[]>([]);
 
@@ -438,56 +439,105 @@ const App: React.FC = () => {
                 {/* Main Lab Area */}
                 <section className={`${queue.length > 0 ? 'lg:col-span-9 xl:col-span-10' : 'lg:col-span-12'} flex flex-col overflow-hidden min-h-0 bg-[#F8FAFC]`}>
                   {/* Tabs Wrapper - Pro Tabs */}
-                  <div className="flex items-center overflow-x-auto no-scrollbar bg-[#F1F5F9] border-b border-slate-200 h-12 px-2 gap-1 shrink-0 pt-2">
+                  <div className="flex bg-[#F1F5F9] border-b border-slate-200 h-12 shrink-0 pt-2 relative z-20">
+                    <div className="flex-1 flex items-center overflow-x-auto no-scrollbar px-2 gap-1">
+                      {resolutionHistory.length > 0 && (
+                        <button
+                          onClick={() => {
+                            setViewMode('lab');
+                            setShowPlanner(true);
+                            setActiveTabId(null);
+                          }}
+                          className="flex items-center justify-center w-10 h-10 bg-white hover:bg-[#B91C1C] text-slate-400 hover:text-white rounded-t-lg transition-all shadow-sm border border-b-0 border-slate-200 hover:border-[#B91C1C] shrink-0 group ml-2"
+                        >
+                          <Plus size={18} className="group-hover:rotate-90 transition-transform" />
+                        </button>
+                      )}
+
+                      {resolutionHistory.map((res) => (
+                        <div
+                          key={res.id}
+                          onClick={() => {
+                            setActiveTabId(res.id);
+                            setShowPlanner(false);
+                          }}
+                          className={`group flex items-center gap-4 px-5 h-10 cursor-pointer min-w-[180px] max-w-[280px] transition-all duration-200 relative rounded-t-lg border-t-2 border-x border-b-0 select-none ${activeTabId === res.id && !showPlanner
+                            ? 'bg-white border-t-[#B91C1C] border-x-slate-200 text-[#0F172A] z-10 shadow-[0_-4px_12px_rgba(0,0,0,0.02)]'
+                            : 'bg-slate-100/50 border-t-transparent border-x-transparent text-slate-400 hover:bg-white/50 hover:text-slate-600'
+                            }`}
+                        >
+                          <div className="flex flex-col overflow-hidden flex-1">
+                            <span className={`text-[8px] font-mono-data font-bold tracking-wider leading-none mb-0.5 ${activeTabId === res.id && !showPlanner ? 'text-[#B91C1C]' : 'opacity-70'}`}>{res.id}</span>
+                            <span className={`text-[11px] font-bold truncate font-serif-legal ${activeTabId === res.id && !showPlanner ? 'text-[#0F172A]' : 'opacity-80'}`}>{res.input?.query || 'Nouvelle Analyse'}</span>
+                          </div>
+                          <div className="flex items-center gap-2 pl-2">
+                            {res.status === 'processing' ? (
+                              <Loader2 size={12} className="text-[#B91C1C] animate-spin" />
+                            ) : (
+                              <div
+                                role="button"
+                                onClick={(e) => handleCloseTab(e, res.id)}
+                                className={`p-1 rounded-md transition-colors ${activeTabId === res.id && !showPlanner ? 'hover:bg-slate-100 text-slate-400 hover:text-[#B91C1C]' : 'hover:bg-slate-200 text-slate-400 hover:text-[#B91C1C] opacity-0 group-hover:opacity-100'}`}
+                              >
+                                <X size={12} />
+                              </div>
+                            )}
+                          </div>
+                        </div>
+                      ))}
+
+                      {resolutionHistory.length === 0 && (
+                        <div className="flex items-center gap-4 ml-4">
+                          <span className="text-[11px] text-slate-300 uppercase font-black tracking-[0.5em]">Archives Standby</span>
+                          <div className="h-1 w-20 bg-slate-50 rounded-full overflow-hidden">
+                            <div className="h-full bg-emerald-500 w-1/3 animate-pulse"></div>
+                          </div>
+                        </div>
+                      )}
+                    </div>
+
+                    {/* Tabs Menu Button - Only show if we have tabs */}
                     {resolutionHistory.length > 0 && (
-                      <button
-                        onClick={() => {
-                          setViewMode('lab');
-                          setShowPlanner(true);
-                          setActiveTabId(null);
-                        }}
-                        className="flex items-center justify-center w-10 h-10 bg-white hover:bg-[#B91C1C] text-slate-400 hover:text-white rounded-t-lg transition-all shadow-sm border border-b-0 border-slate-200 hover:border-[#B91C1C] shrink-0 group ml-2"
-                      >
-                        <Plus size={18} className="group-hover:rotate-90 transition-transform" />
-                      </button>
-                    )}
-                    {resolutionHistory.map((res) => (
-                      <div
-                        key={res.id}
-                        onClick={() => {
-                          setActiveTabId(res.id);
-                          setShowPlanner(false);
-                        }}
-                        className={`group flex items-center gap-4 px-5 h-10 cursor-pointer min-w-[180px] max-w-[280px] transition-all duration-200 relative rounded-t-lg border-t-2 border-x border-b-0 select-none ${activeTabId === res.id && !showPlanner
-                          ? 'bg-white border-t-[#B91C1C] border-x-slate-200 text-[#0F172A] z-10 shadow-[0_-4px_12px_rgba(0,0,0,0.02)]'
-                          : 'bg-slate-100/50 border-t-transparent border-x-transparent text-slate-400 hover:bg-white/50 hover:text-slate-600'
-                          }`}
-                      >
-                        <div className="flex flex-col overflow-hidden flex-1">
-                          <span className={`text-[8px] font-mono-data font-bold tracking-wider leading-none mb-0.5 ${activeTabId === res.id && !showPlanner ? 'text-[#B91C1C]' : 'opacity-70'}`}>{res.id}</span>
-                          <span className={`text-[11px] font-bold truncate font-serif-legal ${activeTabId === res.id && !showPlanner ? 'text-[#0F172A]' : 'opacity-80'}`}>{res.input?.query || 'Nouvelle Analyse'}</span>
-                        </div>
-                        <div className="flex items-center gap-2 pl-2">
-                          {res.status === 'processing' ? (
-                            <Loader2 size={12} className="text-[#B91C1C] animate-spin" />
-                          ) : (
-                            <div
-                              role="button"
-                              onClick={(e) => handleCloseTab(e, res.id)}
-                              className={`p-1 rounded-md transition-colors ${activeTabId === res.id && !showPlanner ? 'hover:bg-slate-100 text-slate-400 hover:text-[#B91C1C]' : 'hover:bg-slate-200 text-slate-400 hover:text-[#B91C1C] opacity-0 group-hover:opacity-100'}`}
-                            >
-                              <X size={12} />
+                      <div className="flex items-center px-2 relative h-full mb-2 bg-[#F1F5F9] z-20 pl-4 border-l border-slate-200 shadow-[-10px_0_20px_#F1F5F9]">
+                        <button
+                          onClick={() => setShowTabsDropdown(!showTabsDropdown)}
+                          className={`w-8 h-8 flex items-center justify-center rounded-lg transition-all border border-transparent shadow-sm ${showTabsDropdown ? 'bg-[#0F172A] text-white' : 'hover:bg-white text-slate-400 hover:text-[#0F172A] hover:border-slate-200'}`}
+                        >
+                          <ChevronDown size={14} className={`transition-transform duration-300 ${showTabsDropdown ? 'rotate-180' : ''}`} />
+                        </button>
+
+                        {/* Dropdown Menu */}
+                        {showTabsDropdown && (
+                          <>
+                            <div className="fixed inset-0 z-30" onClick={() => setShowTabsDropdown(false)}></div>
+                            <div className="absolute right-2 top-full mt-2 w-72 bg-white rounded-2xl shadow-2xl border border-slate-100 p-2 z-40 animate-in fade-in zoom-in-95 duration-200 origin-top-right overflow-hidden ring-1 ring-slate-900/5">
+                              <div className="text-[9px] font-black text-slate-300 uppercase tracking-[0.3em] px-4 py-3 border-b border-slate-50 mb-2 flex items-center justify-between">
+                                <span>Index des Dossiers</span>
+                                <span className="bg-slate-100 text-slate-500 px-1.5 py-0.5 rounded text-[8px]">{resolutionHistory.length}</span>
+                              </div>
+                              <div className="max-h-[300px] overflow-y-auto custom-scrollbar space-y-1">
+                                {resolutionHistory.map((res) => (
+                                  <button
+                                    key={res.id}
+                                    onClick={() => {
+                                      setActiveTabId(res.id);
+                                      setShowPlanner(false);
+                                      setShowTabsDropdown(false);
+                                    }}
+                                    className={`w-full text-left p-3 rounded-xl transition-all flex items-center gap-3 group ${activeTabId === res.id && !showPlanner ? 'bg-slate-50 border border-slate-100 shadow-sm' : 'hover:bg-slate-50 border border-transparent'}`}
+                                  >
+                                    <div className={`w-1.5 h-1.5 rounded-full ${activeTabId === res.id && !showPlanner ? 'bg-[#B91C1C]' : 'bg-slate-200 group-hover:bg-slate-300'}`}></div>
+                                    <div className="flex flex-col flex-1 min-w-0">
+                                      <span className={`text-[9px] font-mono-data font-black ${activeTabId === res.id && !showPlanner ? 'text-[#B91C1C]' : 'text-slate-400'}`}>{res.id}</span>
+                                      <span className={`text-[12px] font-bold truncate font-serif-legal ${activeTabId === res.id && !showPlanner ? 'text-[#0F172A]' : 'text-slate-500'}`}>{res.input?.query || 'Nouvelle Analyse'}</span>
+                                    </div>
+                                    {res.status === 'processing' && <Loader2 size={12} className="text-[#B91C1C] animate-spin" />}
+                                  </button>
+                                ))}
+                              </div>
                             </div>
-                          )}
-                        </div>
-                      </div>
-                    ))}
-                    {resolutionHistory.length === 0 && (
-                      <div className="flex items-center gap-4 ml-4">
-                        <span className="text-[11px] text-slate-300 uppercase font-black tracking-[0.5em]">Archives Standby</span>
-                        <div className="h-1 w-20 bg-slate-50 rounded-full overflow-hidden">
-                          <div className="h-full bg-emerald-500 w-1/3 animate-pulse"></div>
-                        </div>
+                          </>
+                        )}
                       </div>
                     )}
                   </div>
@@ -591,10 +641,10 @@ const App: React.FC = () => {
             {viewMode === 'contradictions' && <ContradictionsView onDeepDive={handleDeepDive} />}
             {viewMode === 'poi' && <POIView onDeepDive={handleDeepDive} />}
           </div>
-        </main>
+        </main >
 
         {/* MOBILE BOTTOM NAVIGATION - PREMIUM PRO LIGHT */}
-        <nav className="lg:hidden fixed bottom-0 left-0 right-0 h-20 bg-white/90 border-t border-slate-100 flex items-center justify-around px-4 z-50 backdrop-blur-3xl shadow-[0_-20px_50px_rgba(0,0,0,0.05)]">
+        < nav className="lg:hidden fixed bottom-0 left-0 right-0 h-20 bg-white/90 border-t border-slate-100 flex items-center justify-around px-4 z-50 backdrop-blur-3xl shadow-[0_-20px_50px_rgba(0,0,0,0.05)]" >
           <MobileNavItem
             icon={Terminal}
             label="Lab"
@@ -629,51 +679,53 @@ const App: React.FC = () => {
             </div>
             <span className="text-[10px] font-black uppercase tracking-widest leading-none">Logs</span>
           </button>
-        </nav>
-      </div>
+        </nav >
+      </div >
 
       <LiveAssistant />
 
       {/* LOGS OVERLAY - PRO STYLE */}
-      {showLogs && (
-        <div className="fixed bottom-24 lg:bottom-12 right-6 lg:right-12 left-6 lg:left-auto lg:w-[600px] h-[500px] lg:h-[600px] z-[100] animate-in slide-in-from-bottom-12 fade-in duration-700">
-          <div className="absolute inset-0 bg-white border border-slate-100 shadow-[0_40px_100px_rgba(0,0,0,0.15)] rounded-[3rem] overflow-hidden flex flex-col scale-100">
-            <div className="px-10 py-8 border-b border-slate-50 flex justify-between items-center bg-[#F8FAFC]">
-              <div className="flex items-center gap-5">
-                <div className="w-4 h-4 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_15px_rgba(16,185,129,0.5)]"></div>
-                <div>
-                  <h3 className="text-sm font-black uppercase tracking-[0.4em] text-[#0F172A]">Real-time Trace Console</h3>
-                  <div className="flex items-center gap-2 mt-1">
-                    <span className="text-[9px] font-black text-slate-300 uppercase tracking-widest">Neural Link Synchronized</span>
-                    <div className="h-0.5 w-4 bg-emerald-500/20"></div>
+      {
+        showLogs && (
+          <div className="fixed bottom-24 lg:bottom-12 right-6 lg:right-12 left-6 lg:left-auto lg:w-[600px] h-[500px] lg:h-[600px] z-[100] animate-in slide-in-from-bottom-12 fade-in duration-700">
+            <div className="absolute inset-0 bg-white border border-slate-100 shadow-[0_40px_100px_rgba(0,0,0,0.15)] rounded-[3rem] overflow-hidden flex flex-col scale-100">
+              <div className="px-10 py-8 border-b border-slate-50 flex justify-between items-center bg-[#F8FAFC]">
+                <div className="flex items-center gap-5">
+                  <div className="w-4 h-4 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_15px_rgba(16,185,129,0.5)]"></div>
+                  <div>
+                    <h3 className="text-sm font-black uppercase tracking-[0.4em] text-[#0F172A]">Real-time Trace Console</h3>
+                    <div className="flex items-center gap-2 mt-1">
+                      <span className="text-[9px] font-black text-slate-300 uppercase tracking-widest">Neural Link Synchronized</span>
+                      <div className="h-0.5 w-4 bg-emerald-500/20"></div>
+                    </div>
                   </div>
                 </div>
+                <button
+                  onClick={() => setShowLogs(false)}
+                  className="w-12 h-12 flex items-center justify-center hover:bg-red-50 rounded-2xl transition-all group"
+                >
+                  <X size={24} className="text-slate-300 group-hover:text-[#B91C1C] transition-colors" />
+                </button>
               </div>
-              <button
-                onClick={() => setShowLogs(false)}
-                className="w-12 h-12 flex items-center justify-center hover:bg-red-50 rounded-2xl transition-all group"
-              >
-                <X size={24} className="text-slate-300 group-hover:text-[#B91C1C] transition-colors" />
-              </button>
-            </div>
-            <div className="flex-1 overflow-hidden p-6 bg-slate-50 relative">
-              <div className="absolute inset-0 opacity-[0.03] pointer-events-none">
-                <Activity size={300} className="absolute -bottom-20 -right-20" />
+              <div className="flex-1 overflow-hidden p-6 bg-slate-50 relative">
+                <div className="absolute inset-0 opacity-[0.03] pointer-events-none">
+                  <Activity size={300} className="absolute -bottom-20 -right-20" />
+                </div>
+                <LogTerminal logs={activeLogs} type="flash" />
               </div>
-              <LogTerminal logs={activeLogs} type="flash" />
-            </div>
-            <div className="px-8 py-3 bg-white border-t border-slate-50 flex justify-between items-center">
-              <div className="flex items-center gap-3">
-                <div className="w-1 h-8 bg-[#B91C1C]/10 rounded-full"></div>
-                <span className="text-[10px] font-black text-slate-300 uppercase tracking-[0.3em]">Agent Monitoring Active</span>
-              </div>
-              <div className="flex items-center gap-2">
-                <span className="text-[9px] font-mono-data text-slate-400">STATUS: IDLE_WAIT_FLUSH</span>
+              <div className="px-8 py-3 bg-white border-t border-slate-50 flex justify-between items-center">
+                <div className="flex items-center gap-3">
+                  <div className="w-1 h-8 bg-[#B91C1C]/10 rounded-full"></div>
+                  <span className="text-[10px] font-black text-slate-300 uppercase tracking-[0.3em]">Agent Monitoring Active</span>
+                </div>
+                <div className="flex items-center gap-2">
+                  <span className="text-[9px] font-mono-data text-slate-400">STATUS: IDLE_WAIT_FLUSH</span>
+                </div>
               </div>
             </div>
           </div>
-        </div>
-      )}
+        )
+      }
 
       <SettingsModal
         isOpen={isSettingsOpen}
@@ -683,7 +735,7 @@ const App: React.FC = () => {
         dbSize={resolutionHistory.length}
       />
 
-    </div>
+    </div >
   );
 };
 
