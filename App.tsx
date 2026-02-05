@@ -43,7 +43,8 @@ import {
   ShieldAlert,
   Users,
   Mic,
-  Box
+  Box,
+  Plane
 } from 'lucide-react';
 import { Sidebar, ViewType } from './components/Sidebar';
 import { CaseListView } from './components/CaseListView';
@@ -54,6 +55,7 @@ import { ContradictionsView, POIView } from './components/AdvancedModules';
 import { FinancialFlowView } from './components/FinancialFlowView';
 import { AssetsView } from './components/AssetsView';
 import { CrossSessionView } from './components/CrossSessionView';
+import { FlightLogsView } from './components/FlightLogsView';
 import { VoiceAssistant } from './components/VoiceAssistant';
 import { Auth } from './components/Auth';
 import { EpsteinArchiveView } from './components/EpsteinArchiveView';
@@ -895,6 +897,7 @@ const App: React.FC = () => {
                 isGuestMode={isGuestMode}
               />
             )}
+            {viewMode === 'flights' && <FlightLogsView />}
           </div>
         </main >
 
@@ -972,6 +975,13 @@ const App: React.FC = () => {
             label="Cibles"
             isActive={viewMode === 'poi'}
             onClick={() => setViewMode('poi')}
+          />
+
+          <MobileNavItem
+            icon={Plane}
+            label="Vols"
+            isActive={viewMode === 'flights'}
+            onClick={() => setViewMode('flights')}
           />
 
           {!isGuestMode && (

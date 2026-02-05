@@ -92,6 +92,17 @@ Format de sortie JSON STRICT :
       "description": string
     }
   ],
+  "journaux_de_vol": [
+    {
+      "date": string,
+      "source": string (Ex: "N212JE", "Gulfstream IV"),
+      "depart": string,
+      "destination": string,
+      "passagers": string[] (Liste des noms de passagers),
+      "pilote": string,
+      "description": string
+    }
+  ],
   "contexte_juridique": string
 }
 `;

@@ -5,7 +5,7 @@
 
 import React, { useState, useMemo } from 'react';
 import { DisclosureAnalysis, ProcessedResult } from '../types';
-import { Search, Calendar, Users, FileText, Link as LinkIcon, ShieldAlert, File, List, Zap, Scale, Download, BookOpen, GraduationCap, ArrowUpRight, Filter, Gavel, Award, Box, ShieldCheck, DollarSign, ArrowRightLeft, ArrowRight, Plus } from 'lucide-react';
+import { Search, Calendar, Users, FileText, Link as LinkIcon, ShieldAlert, File, List, Zap, Scale, Download, BookOpen, GraduationCap, ArrowUpRight, Filter, Gavel, Award, Box, ShieldCheck, DollarSign, ArrowRightLeft, ArrowRight, Plus, Plane } from 'lucide-react';
 import { ExportMenu } from './ExportMenu';
 
 interface DataCardProps {
@@ -103,7 +103,7 @@ export const DataCard: React.FC<DataCardProps> = ({ result, loading, onDeepDive,
                             </div>
 
                             <h2 className="text-3xl font-black text-[#0F172A] font-serif-legal italic tracking-tight leading-none">
-                                {data.investigationId || 'Dossier Analytique'}
+                                {result.id || 'Dossier Analytique'}
                             </h2>
 
                         </div>
@@ -327,6 +327,55 @@ export const DataCard: React.FC<DataCardProps> = ({ result, loading, onDeepDive,
                                     </div>
                                     <div className="bg-slate-50/80 p-5 rounded-2xl border border-slate-100 relative z-10">
                                         <p className="text-[12px] text-slate-600 font-bold italic leading-relaxed">"{t.description}"</p>
+                                    </div>
+                                </div>
+                            ))}
+                        </div>
+                    </div>
+                )}
+
+                {/* Flight Logs Section */}
+                {data.journaux_de_vol && data.journaux_de_vol.length > 0 && (
+                    <div className="space-y-12 animate-pro-reveal mt-12 bg-slate-900 p-12 rounded-[4rem] border border-slate-800 shadow-2xl relative overflow-hidden">
+                        <div className="absolute top-0 right-0 w-96 h-96 bg-[#B91C1C]/10 rounded-full blur-[100px] -mr-32 -mt-32"></div>
+                        <div className="flex items-center gap-6 mb-4 relative z-10">
+                            <div className="w-12 h-12 rounded-full bg-white flex items-center justify-center shadow-lg">
+                                <Plane size={20} className="text-[#B91C1C]" />
+                            </div>
+                            <div className="space-y-1">
+                                <h5 className="text-[11px] font-black uppercase tracking-[0.5em] text-white">Manifestes de Bord</h5>
+                                <div className="text-[9px] font-black text-slate-500 uppercase tracking-widest italic">Analyse des Journaux Aériens (Lolita Express)</div>
+                            </div>
+                        </div>
+                        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8 relative z-10">
+                            {data.journaux_de_vol.map((f, idx) => (
+                                <div key={idx} className="bg-white/5 backdrop-blur-md p-8 rounded-[2.5rem] border border-white/10 hover:bg-white/10 transition-all duration-500 group/flight overflow-hidden relative">
+                                    <div className="flex justify-between items-start mb-6">
+                                        <div className="text-[14px] font-mono-data font-black text-white italic">{f.date}</div>
+                                        <span className="text-[8px] font-black text-[#B91C1C] uppercase tracking-widest bg-red-500/10 px-2 py-0.5 rounded border border-red-500/20">{f.source}</span>
+                                    </div>
+                                    <div className="flex items-center gap-5 mb-6">
+                                        <div className="flex-1 min-w-0">
+                                            <div className="text-[8px] font-black text-slate-500 uppercase tracking-widest mb-1">DEPART</div>
+                                            <div className="text-[13px] font-black text-white italic font-serif-legal truncate">{f.depart}</div>
+                                        </div>
+                                        <ArrowRight size={14} className="text-slate-600 group-hover/flight:text-[#B91C1C] transition-colors" />
+                                        <div className="flex-1 min-w-0 text-right">
+                                            <div className="text-[8px] font-black text-slate-500 uppercase tracking-widest mb-1">CIBLE</div>
+                                            <div className="text-[13px] font-black text-white italic font-serif-legal truncate">{f.destination}</div>
+                                        </div>
+                                    </div>
+                                    <div className="space-y-3">
+                                        <div className="text-[8px] font-black text-slate-500 uppercase tracking-widest flex items-center gap-2">
+                                            <Users size={10} /> Manifeste Passagers
+                                        </div>
+                                        <div className="flex flex-wrap gap-2">
+                                            {f.passagers.map((p, pi) => (
+                                                <span key={pi} onClick={() => onEntityClick(p)} className="px-2 py-1 bg-white/5 rounded-lg text-[9px] font-black text-slate-300 hover:text-white hover:bg-[#B91C1C] transition-all cursor-pointer border border-white/5 font-serif-legal">
+                                                    {p}
+                                                </span>
+                                            ))}
+                                        </div>
                                     </div>
                                 </div>
                             ))}

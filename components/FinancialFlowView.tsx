@@ -31,6 +31,7 @@ import {
 } from 'lucide-react';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
+import ForceGraph2D from 'react-force-graph-2d';
 
 interface EntityFinanceProfile {
     name: string;
@@ -46,8 +47,9 @@ export const FinancialFlowView: React.FC = () => {
     const [loading, setLoading] = useState(true);
     const [searchQuery, setSearchQuery] = useState('');
     const [filterType, setFilterType] = useState<'all' | 'high' | 'suspicious'>('all');
+    const [dateFilter, setDateFilter] = useState<'all' | 'month' | 'year'>('all');
     const [selectedEntity, setSelectedEntity] = useState<string | null>(null);
-    const [viewMode, setViewMode] = useState<'list' | 'entities'>('list');
+    const [viewMode, setViewMode] = useState<'list' | 'entities' | 'graph' | 'analytics'>('list');
 
     const formatCurrency = (amount: number, currency: string) => {
         try {
@@ -94,13 +96,25 @@ export const FinancialFlowView: React.FC = () => {
 
             if (!matchesSearch || !matchesEntity) return false;
 
+            const tDate = new Date(t.date);
+            const now = new Date();
+            if (dateFilter === 'month') {
+                const oneMonthAgo = new Date();
+                oneMonthAgo.setMonth(now.getMonth() - 1);
+                if (tDate < oneMonthAgo) return false;
+            } else if (dateFilter === 'year') {
+                const oneYearAgo = new Date();
+                oneYearAgo.setFullYear(now.getFullYear() - 1);
+                if (tDate < oneYearAgo) return false;
+            }
+
             if (filterType === 'high') return t.montant > 500000;
             if (filterType === 'suspicious') return t.montant > 1000000 || t.description.toLowerCase().includes('offshore') || t.description.toLowerCase().includes('inconnu');
             return true;
         });
 
         return filtered.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
-    }, [history, searchQuery, filterType, selectedEntity]);
+    }, [history, searchQuery, filterType, selectedEntity, dateFilter]);
 
     const entityProfiles = useMemo(() => {
         const profiles: Record<string, EntityFinanceProfile> = {};
@@ -140,13 +154,75 @@ export const FinancialFlowView: React.FC = () => {
     const analytics = useMemo(() => {
         const totalVolume = allTransactions.reduce((acc, t) => acc + (Number(t.montant) || 0), 0);
         const suspiciousCount = allTransactions.filter(t => (Number(t.montant) || 0) > 1000000).length;
+
+        // Volume by currency
+        const currencyVolume: Record<string, number> = {};
+        allTransactions.forEach(t => {
+            currencyVolume[t.devise] = (currencyVolume[t.devise] || 0) + (Number(t.montant) || 0);
+        });
+
         return {
             totalVolume,
             count: allTransactions.length,
             suspiciousCount,
-            uniqueEntities: entityProfiles.length
+            uniqueEntities: entityProfiles.length,
+            currencyVolume
         };
     }, [allTransactions, entityProfiles]);
+
+    const graphData = useMemo(() => {
+        const nodes: any[] = [];
+        const links: any[] = [];
+        const nodeSet = new Set();
+
+        allTransactions.forEach(t => {
+            if (!nodeSet.has(t.source)) {
+                nodes.push({ id: t.source, name: t.source, val: 5, color: '#0F172A' });
+                nodeSet.add(t.source);
+            }
+            if (!nodeSet.has(t.destination)) {
+                nodes.push({ id: t.destination, name: t.destination, val: 5, color: '#B91C1C' });
+                nodeSet.add(t.destination);
+            }
+            links.push({
+                source: t.source,
+                target: t.destination,
+                value: Math.log10(t.montant / 1000 + 1) * 2,
+                amount: t.montant,
+                currency: t.devise
+            });
+        });
+
+        return { nodes, links };
+    }, [allTransactions]);
+
+    const exportToCSV = () => {
+        const headers = ["Date", "Source", "Destination", "Montant", "Devise", "Description", "Ref"];
+        const rows = allTransactions.map(t => [
+            t.date,
+            t.source,
+            t.destination,
+            t.montant,
+            t.devise,
+            t.description,
+            t.parentId
+        ]);
+
+        const csvContent = [
+            headers.join(","),
+            ...rows.map(r => r.join(","))
+        ].join("\n");
+
+        const blob = new Blob([csvContent], { type: 'text/csv;charset=utf-8;' });
+        const link = document.createElement("a");
+        const url = URL.createObjectURL(blob);
+        link.setAttribute("href", url);
+        link.setAttribute("download", `Export_Financier_${new Date().getTime()}.csv`);
+        link.style.visibility = 'hidden';
+        document.body.appendChild(link);
+        link.click();
+        document.body.removeChild(link);
+    };
 
     if (loading) {
         return (
@@ -213,6 +289,39 @@ export const FinancialFlowView: React.FC = () => {
                                 className={`px-4 py-2 rounded-lg text-[10px] font-black uppercase tracking-wider transition-all ${viewMode === 'entities' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
                             >
                                 <User size={12} className="inline mr-2" /> Entités
+                            </button>
+                            <button
+                                onClick={() => setViewMode('graph')}
+                                className={`px-4 py-2 rounded-lg text-[10px] font-black uppercase tracking-wider transition-all ${viewMode === 'graph' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
+                            >
+                                <Network size={12} className="inline mr-2" /> Graphe
+                            </button>
+                            <button
+                                onClick={() => setViewMode('analytics')}
+                                className={`px-4 py-2 rounded-lg text-[10px] font-black uppercase tracking-wider transition-all ${viewMode === 'analytics' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
+                            >
+                                <BarChart3 size={12} className="inline mr-2" /> Analyse
+                            </button>
+                        </div>
+
+                        <div className="flex items-center bg-slate-50 border border-slate-100 p-1 rounded-xl shadow-inner">
+                            <button
+                                onClick={() => setDateFilter('all')}
+                                className={`px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-wider transition-all ${dateFilter === 'all' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
+                            >
+                                Tout
+                            </button>
+                            <button
+                                onClick={() => setDateFilter('month')}
+                                className={`px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-wider transition-all ${dateFilter === 'month' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
+                            >
+                                30 Jours
+                            </button>
+                            <button
+                                onClick={() => setDateFilter('year')}
+                                className={`px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-wider transition-all ${dateFilter === 'year' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
+                            >
+                                1 An
                             </button>
                         </div>
 
@@ -298,7 +407,7 @@ export const FinancialFlowView: React.FC = () => {
                                 )}
                             </div>
                         </div>
-                    ) : (
+                    ) : viewMode === 'entities' ? (
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
                             {entityProfiles.map((profile, idx) => (
                                 <EntityProfileCard
@@ -308,6 +417,96 @@ export const FinancialFlowView: React.FC = () => {
                                     formatCurrency={formatCurrency}
                                 />
                             ))}
+                        </div>
+                    ) : viewMode === 'graph' ? (
+                        <div className="bg-white rounded-[3rem] border border-slate-100 shadow-sm h-[700px] relative overflow-hidden">
+                            <ForceGraph2D
+                                graphData={graphData}
+                                nodeLabel="name"
+                                nodeColor="color"
+                                linkDirectionalParticles={2}
+                                linkDirectionalParticleSpeed={0.01}
+                                nodeCanvasObject={(node: any, ctx, globalScale) => {
+                                    const label = node.name;
+                                    const fontSize = 12 / globalScale;
+                                    ctx.font = `${fontSize}px Inter`;
+                                    const textWidth = ctx.measureText(label).width;
+                                    const bckgDimensions = [textWidth, fontSize].map(n => n + fontSize * 0.2) as [number, number];
+
+                                    ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
+                                    ctx.fillRect(node.x - bckgDimensions[0] / 2, node.y - bckgDimensions[1] / 2, bckgDimensions[0], bckgDimensions[1]);
+
+                                    ctx.textAlign = 'center';
+                                    ctx.textBaseline = 'middle';
+                                    ctx.fillStyle = node.color;
+                                    ctx.fillText(label, node.x, node.y);
+
+                                    node.__bckgDimensions = bckgDimensions;
+                                }}
+                                nodePointerAreaPaint={(node: any, color, ctx) => {
+                                    ctx.fillStyle = color;
+                                    const bckgDimensions = node.__bckgDimensions;
+                                    bckgDimensions && ctx.fillRect(node.x - bckgDimensions[0] / 2, node.y - bckgDimensions[1] / 2, bckgDimensions[0], bckgDimensions[1]);
+                                }}
+                                onNodeClick={(node: any) => setSelectedEntity(node.id)}
+                            />
+                            <div className="absolute top-6 left-6 p-4 bg-white/80 backdrop-blur-md rounded-2xl border border-slate-100 shadow-lg pointer-events-none">
+                                <h4 className="text-[10px] font-black text-slate-900 uppercase tracking-widest mb-2">Légende Graphe</h4>
+                                <div className="space-y-2">
+                                    <div className="flex items-center gap-2">
+                                        <div className="w-3 h-3 rounded-full bg-[#0F172A]"></div>
+                                        <span className="text-[9px] font-bold text-slate-500 uppercase">Émetteurs</span>
+                                    </div>
+                                    <div className="flex items-center gap-2">
+                                        <div className="w-3 h-3 rounded-full bg-[#B91C1C]"></div>
+                                        <span className="text-[9px] font-bold text-slate-500 uppercase">Récepteurs</span>
+                                    </div>
+                                </div>
+                            </div>
+                        </div>
+                    ) : (
+                        <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
+                            <div className="bg-white p-10 rounded-[3rem] border border-slate-100 shadow-sm relative overflow-hidden group">
+                                <h3 className="text-lg font-black text-slate-900 uppercase tracking-widest font-serif-legal italic mb-8">Volume par Devise</h3>
+                                <div className="space-y-6">
+                                    {Object.entries(analytics.currencyVolume).map(([currency, volume]) => (
+                                        <div key={currency} className="space-y-2">
+                                            <div className="flex justify-between items-center text-[11px] font-black text-slate-500 uppercase tracking-widest">
+                                                <span>{currency}</span>
+                                                <span className="text-[#B91C1C]">{formatCurrency(volume, currency)}</span>
+                                            </div>
+                                            <div className="h-3 w-full bg-slate-50 rounded-full overflow-hidden">
+                                                <div
+                                                    className="h-full bg-slate-900 transition-all duration-1000"
+                                                    style={{ width: `${(volume / analytics.totalVolume) * 100}%` }}
+                                                ></div>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
+
+                            <div className="bg-white p-10 rounded-[3rem] border border-slate-100 shadow-sm relative overflow-hidden group">
+                                <h3 className="text-lg font-black text-slate-900 uppercase tracking-widest font-serif-legal italic mb-8">Top 5 Entités par Flux</h3>
+                                <div className="space-y-6">
+                                    {entityProfiles.slice(0, 5).map((p, i) => (
+                                        <div key={i} className="flex items-center gap-4">
+                                            <div className="w-10 h-10 bg-slate-50 rounded-xl flex items-center justify-center text-[11px] font-black text-slate-400 border border-slate-100">
+                                                0{i + 1}
+                                            </div>
+                                            <div className="flex-1">
+                                                <div className="text-[12px] font-black text-slate-800 italic font-serif-legal">{p.name}</div>
+                                                <div className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">{formatCurrency(p.totalSent + p.totalReceived, 'USD')} de volume</div>
+                                            </div>
+                                            <div className="text-right">
+                                                <div className={`text-[11px] font-black ${p.riskScore > 60 ? 'text-[#B91C1C]' : 'text-emerald-500'}`}>
+                                                    {Math.round(p.riskScore)}% Risque
+                                                </div>
+                                            </div>
+                                        </div>
+                                    ))}
+                                </div>
+                            </div>
                         </div>
                     )}
                 </div>
@@ -324,9 +523,13 @@ export const FinancialFlowView: React.FC = () => {
                         <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Outflow (Destination)</span>
                     </div>
                 </div>
-                <div className="flex items-center gap-3">
-                    <span className="text-[9px] font-black text-slate-300 uppercase tracking-[0.4em] italic">Quantum-Audit Bureau // Node.5-Finance</span>
-                    <div className="h-4 w-px bg-slate-100"></div>
+                <div className="flex items-center gap-4">
+                    <button
+                        onClick={exportToCSV}
+                        className="text-[10px] font-black text-slate-400 hover:text-slate-900 transition-colors flex items-center gap-2 bg-slate-50 px-4 py-2 rounded-xl border border-slate-100"
+                    >
+                        <FileText size={12} /> EXPORTER CSV
+                    </button>
                     <button
                         onClick={() => {
                             const doc = new jsPDF();
@@ -510,7 +713,7 @@ export const FinancialFlowView: React.FC = () => {
                     </button>
                 </div>
             </footer>
-        </div>
+        </div >
     );
 };
 
