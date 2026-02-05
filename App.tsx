@@ -44,7 +44,8 @@ import {
   Users,
   Mic,
   Plane,
-  Fingerprint
+  Fingerprint,
+  Network
 } from 'lucide-react';
 import { Sidebar, ViewType } from './components/Sidebar';
 import { CaseListView } from './components/CaseListView';
@@ -57,6 +58,7 @@ import { AssetsView } from './components/AssetsView';
 import { CrossSessionView } from './components/CrossSessionView';
 import { FlightLogsView } from './components/FlightLogsView';
 import { PersonalDataView } from './components/PersonalDataView';
+import { CrossDocumentDiscoveryView } from './components/CrossDocumentDiscoveryView';
 import { VoiceAssistant } from './components/VoiceAssistant';
 import { Auth } from './components/Auth';
 import { EpsteinArchiveView } from './components/EpsteinArchiveView';
@@ -900,6 +902,7 @@ const App: React.FC = () => {
             )}
             {viewMode === 'flights' && <FlightLogsView />}
             {viewMode === 'personal_data' && <PersonalDataView />}
+            {viewMode === 'discovery' && <CrossDocumentDiscoveryView onNavigateToInvestigation={handleOpenInvestigation} />}
           </div>
         </main >
 
@@ -973,10 +976,17 @@ const App: React.FC = () => {
           />
 
           <MobileNavItem
-            icon={Users}
-            label="Cibles"
-            isActive={viewMode === 'poi'}
-            onClick={() => setViewMode('poi')}
+            icon={Fingerprint}
+            label="PII"
+            isActive={viewMode === 'personal_data'}
+            onClick={() => setViewMode('personal_data')}
+          />
+
+          <MobileNavItem
+            icon={Network}
+            label="Découverte"
+            isActive={viewMode === 'discovery'}
+            onClick={() => setViewMode('discovery')}
           />
 
           <MobileNavItem
@@ -984,12 +994,6 @@ const App: React.FC = () => {
             label="Vols"
             isActive={viewMode === 'flights'}
             onClick={() => setViewMode('flights')}
-          />
-          <MobileNavItem
-            icon={Fingerprint}
-            label="PII"
-            isActive={viewMode === 'personal_data'}
-            onClick={() => setViewMode('personal_data')}
           />
 
           {!isGuestMode && (

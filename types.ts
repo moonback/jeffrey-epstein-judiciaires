@@ -86,3 +86,20 @@ export interface ProcessedResult {
   error?: string;
   timestamp?: number;
 }
+
+export type LinkType = 'entity' | 'pii' | 'transaction' | 'asset' | 'flight' | 'semantic';
+
+export interface DocumentLink {
+  type: LinkType;
+  label: string;
+  description: string;
+  strength: number; // 1-10
+  relatedData: any;
+}
+
+export interface DiscoveryResult {
+  doc1Id: string;
+  doc2Id: string;
+  links: DocumentLink[];
+  totalStrength: number;
+}

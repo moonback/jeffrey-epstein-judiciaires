@@ -28,10 +28,11 @@ import {
     Mic,
     Briefcase,
     Plane,
-    Fingerprint
+    Fingerprint,
+    Network
 } from 'lucide-react';
 
-export type ViewType = 'lab' | 'database' | 'network' | 'timeline' | 'contradictions' | 'poi' | 'finance' | 'assets' | 'cross' | 'voice' | 'epstein_docs' | 'flights' | 'personal_data';
+export type ViewType = 'lab' | 'database' | 'network' | 'timeline' | 'contradictions' | 'poi' | 'finance' | 'assets' | 'cross' | 'voice' | 'epstein_docs' | 'flights' | 'personal_data' | 'discovery';
 
 interface SidebarProps {
     currentView: ViewType;
@@ -66,6 +67,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
         { id: 'contradictions', label: 'Contradictions', icon: ShieldAlert, color: 'text-[#0F4C81]' },
         { id: 'poi', label: 'Index des Cibles', icon: Users, color: 'text-[#B91C1C]' },
         { id: 'personal_data', label: 'Données Personnelles', icon: Fingerprint, color: 'text-[#B91C1C]' },
+        { id: 'discovery', label: 'Découverte IA', icon: Network, color: 'text-[#B91C1C]', adminOnly: true },
         { id: 'flights', label: 'Vols & Manifestes', icon: Plane, color: 'text-[#B91C1C]' },
         { id: 'voice', label: 'Assistant Vocal', icon: Mic, color: 'text-[#B91C1C]', adminOnly: true },
     ].filter(item => !isGuestMode || !item.adminOnly);

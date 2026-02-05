@@ -1,10 +1,5 @@
-/**
- * @license
- * SPDX-License-Identifier: Apache-2.0
- */
-
 import { storageService } from './storageService';
-import { ProcessedResult } from '../types';
+import { ProcessedResult, DocumentLink, DiscoveryResult } from '../types';
 
 export interface Correlation {
     entity: string;
@@ -19,6 +14,7 @@ export interface Correlation {
 
 export class CorrelationService {
     private static normalize(name: string): string {
+        if (!name) return "";
         return name.toLowerCase()
             .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
             .replace(/[^a-z0-9]/g, " ")
@@ -26,6 +22,113 @@ export class CorrelationService {
             .filter(w => w.length > 2)
             .sort()
             .join("");
+    }
+
+    static async discoverLinks(doc1: ProcessedResult, doc2: ProcessedResult): Promise<DiscoveryResult> {
+        const links: DocumentLink[] = [];
+
+        if (!doc1.output || !doc2.output) return { doc1Id: doc1.id, doc2Id: doc2.id, links: [], totalStrength: 0 };
+
+        // 1. Entity Matching
+        const entities1 = new Map(doc1.output.entites_cles.map(e => [this.normalize(e), e]));
+        const entities2 = new Map(doc2.output.entites_cles.map(e => [this.normalize(e), e]));
+
+        entities1.forEach((original, key) => {
+            if (entities2.has(key)) {
+                links.push({
+                    type: 'entity',
+                    label: `Entité commune : ${original}`,
+                    description: `Cette personne ou organisation apparaît dans les deux documents.`,
+                    strength: 8,
+                    relatedData: { name: original }
+                });
+            }
+        });
+
+        // 2. PII Correlation
+        const pii1 = doc1.output.donnees_personnelles || [];
+        const pii2 = doc2.output.donnees_personnelles || [];
+
+        pii1.forEach(p1 => {
+            pii2.forEach(p2 => {
+                if (p1.value.toLowerCase() === p2.value.toLowerCase() && p1.type === p2.type) {
+                    links.push({
+                        type: 'pii',
+                        label: `Donnée partagée : ${p1.type}`,
+                        description: `Le même ${p1.type} (${p1.value}) a été identifié pour ${p1.owner} et ${p2.owner}.`,
+                        strength: 10,
+                        relatedData: { type: p1.type, value: p1.value }
+                    });
+                }
+            });
+        });
+
+        // 3. Financial Links
+        const trans1 = doc1.output.transactions_financieres || [];
+        const trans2 = doc2.output.transactions_financieres || [];
+
+        trans1.forEach(t1 => {
+            trans2.forEach(t2 => {
+                const src1 = this.normalize(t1.source);
+                const dst1 = this.normalize(t1.destination);
+                const src2 = this.normalize(t2.source);
+                const dst2 = this.normalize(t2.destination);
+
+                if (src1 === src2 || dst1 === dst2 || src1 === dst2 || dst1 === src2) {
+                    const shared = src1 === src2 || src1 === dst2 ? t1.source : t1.destination;
+                    links.push({
+                        type: 'transaction',
+                        label: `Hub financier commun : ${shared}`,
+                        description: `Les deux dossiers mentionnent des flux financiers impliquant ${shared}.`,
+                        strength: 7,
+                        relatedData: { sharedEntity: shared }
+                    });
+                }
+            });
+        });
+
+        // 4. Flight Pattern Correlation
+        const flights1 = doc1.output.journaux_de_vol || [];
+        const flights2 = doc2.output.journaux_de_vol || [];
+
+        flights1.forEach(f1 => {
+            flights2.forEach(f2 => {
+                if (f1.source === f2.source && f1.source !== 'Unknown') {
+                    links.push({
+                        type: 'flight',
+                        label: `Aéronef commun : ${f1.source}`,
+                        description: `Le même appareil est impliqué dans des déplacements mentionnés dans les deux archives.`,
+                        strength: 6,
+                        relatedData: { aircraft: f1.source }
+                    });
+                }
+            });
+        });
+
+        const totalStrength = links.reduce((acc, curr) => acc + curr.strength, 0);
+        return {
+            doc1Id: doc1.id,
+            doc2Id: doc2.id,
+            links: links.slice(0, 10), // Limit to top 10 links
+            totalStrength: Math.min(100, totalStrength)
+        };
+    }
+
+    static async findDiscoveryLinks(targetId: string): Promise<DiscoveryResult[]> {
+        const results = await storageService.getAllResults();
+        const target = results.find(r => r.id === targetId);
+        if (!target) return [];
+
+        const discoveries: DiscoveryResult[] = [];
+        for (const res of results) {
+            if (res.id === targetId) continue;
+            const discovery = await this.discoverLinks(target, res);
+            if (discovery.links.length > 0) {
+                discoveries.push(discovery);
+            }
+        }
+
+        return discoveries.sort((a, b) => b.totalStrength - a.totalStrength);
     }
 
     static async getCrossSessionCorrelations(): Promise<Correlation[]> {
