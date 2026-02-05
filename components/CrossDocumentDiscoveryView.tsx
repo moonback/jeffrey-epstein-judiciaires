@@ -31,6 +31,8 @@ export const CrossDocumentDiscoveryView: React.FC<CrossDocumentDiscoveryViewProp
     const [discoveries, setDiscoveries] = useState<DiscoveryResult[]>([]);
     const [loading, setLoading] = useState(true);
     const [analyzing, setAnalyzing] = useState(false);
+    const [filterType, setFilterType] = useState<string | 'all'>('all');
+    const [discoverySearch, setDiscoverySearch] = useState('');
 
     useEffect(() => {
         storageService.getAllResults().then(data => {
@@ -91,20 +93,49 @@ export const CrossDocumentDiscoveryView: React.FC<CrossDocumentDiscoveryViewProp
                         </div>
                     </div>
 
-                    <div className="flex items-center gap-4">
-                        <span className="text-[9px] font-black text-slate-300 uppercase tracking-widest">Document Source :</span>
-                        <select
-                            value={selectedDocId || ''}
-                            onChange={(e) => setSelectedDocId(e.target.value)}
-                            className="bg-slate-50 border border-slate-100 rounded-lg px-4 py-2 text-[11px] font-bold text-[#0F172A] focus:ring-2 focus:ring-[#B91C1C]/20 outline-none transition-all shadow-inner"
-                        >
-                            {results.map(r => (
-                                <option key={r.id} value={r.id}>
-                                    {r.id === selectedDocId ? '📍 ' : ''}{r.input.query.slice(0, 40)}...
-                                </option>
-                            ))}
-                        </select>
+                    <div className="flex items-center gap-6">
+                        <div className="relative group w-64">
+                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-300" size={12} />
+                            <input
+                                type="text"
+                                placeholder="Filtrer les découvertes..."
+                                value={discoverySearch}
+                                onChange={(e) => setDiscoverySearch(e.target.value)}
+                                className="bg-slate-50 border border-slate-100 rounded-lg pl-9 pr-3 py-1.5 text-[10px] font-bold text-[#0F172A] outline-none focus:border-[#B91C1C] transition-all w-full"
+                            />
+                        </div>
+
+                        <div className="flex items-center gap-2">
+                            <span className="text-[9px] font-black text-slate-300 uppercase tracking-widest leading-none">Source :</span>
+                            <select
+                                value={selectedDocId || ''}
+                                onChange={(e) => setSelectedDocId(e.target.value)}
+                                className="bg-white border border-slate-100 rounded-lg px-3 py-1.5 text-[10px] font-bold text-[#0F172A] focus:ring-2 focus:ring-[#B91C1C]/20 outline-none transition-all shadow-sm max-w-[200px]"
+                            >
+                                {results.map(r => (
+                                    <option key={r.id} value={r.id}>
+                                        {r.input.query.slice(0, 30)}...
+                                    </option>
+                                ))}
+                            </select>
+                        </div>
                     </div>
+                </div>
+
+                {/* Filter Bar */}
+                <div className="flex items-center gap-2 mt-6 overflow-x-auto no-scrollbar pb-1">
+                    {['all', 'entity', 'pii', 'transaction', 'flight', 'semantic'].map(type => (
+                        <button
+                            key={type}
+                            onClick={() => setFilterType(type)}
+                            className={`px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest transition-all ${filterType === type
+                                    ? 'bg-[#0F172A] text-white shadow-lg'
+                                    : 'bg-slate-50 text-slate-400 hover:bg-slate-100'
+                                }`}
+                        >
+                            {type === 'all' ? 'Tous les liens' : type}
+                        </button>
+                    ))}
                 </div>
             </header>
 
@@ -118,72 +149,112 @@ export const CrossDocumentDiscoveryView: React.FC<CrossDocumentDiscoveryViewProp
                         <p className="mt-6 text-[10px] font-black text-slate-400 uppercase tracking-[0.4em]">Analyse des convergences en cours...</p>
                     </div>
                 ) : discoveries.length > 0 ? (
-                    <div className="max-w-6xl mx-auto space-y-8">
-                        {discoveries.map((discovery, idx) => {
-                            const otherDoc = results.find(r => r.id === discovery.doc2Id);
-                            return (
-                                <div key={idx} className="bg-white rounded-[2.5rem] border border-slate-100 shadow-sm hover:shadow-2xl transition-all duration-700 group overflow-hidden">
-                                    <div className="flex flex-col lg:flex-row h-full">
-                                        {/* Document Info Sidebar */}
-                                        <div className="lg:w-80 border-r border-slate-50 p-8 flex flex-col bg-slate-50/30">
-                                            <div className="flex items-center gap-2 mb-6">
-                                                <div className="px-2 py-0.5 bg-black text-white text-[8px] font-black rounded uppercase tracking-widest">
-                                                    Match {Math.round(discovery.totalStrength)}%
+                    <div className="max-w-6xl mx-auto space-y-10">
+                        {discoveries
+                            .filter(d => {
+                                const otherDoc = results.find(r => r.id === d.doc2Id);
+                                const matchesSearch = otherDoc?.input.query.toLowerCase().includes(discoverySearch.toLowerCase()) ||
+                                    d.links.some(l => l.label.toLowerCase().includes(discoverySearch.toLowerCase()));
+                                const matchesFilter = filterType === 'all' || d.links.some(l => l.type === filterType);
+                                return matchesSearch && matchesFilter;
+                            })
+                            .map((discovery, idx) => {
+                                const otherDoc = results.find(r => r.id === discovery.doc2Id);
+                                const filteredLinks = filterType === 'all' ? discovery.links : discovery.links.filter(l => l.type === filterType);
+
+                                if (filteredLinks.length === 0) return null;
+
+                                return (
+                                    <div key={idx} className="bg-white rounded-[2.5rem] border border-slate-100 shadow-xl shadow-slate-200/20 hover:shadow-2xl hover:shadow-[#B91C1C]/5 transition-all duration-700 group overflow-hidden border-l-4 border-l-transparent hover:border-l-[#B91C1C]">
+                                        <div className="flex flex-col lg:flex-row h-full">
+                                            {/* Document Info Sidebar */}
+                                            <div className="lg:w-85 border-r border-slate-50 p-10 flex flex-col bg-slate-50/20">
+                                                <div className="flex items-center justify-between mb-8">
+                                                    <div className="flex flex-col">
+                                                        <span className="text-[8px] font-black text-[#B91C1C] uppercase tracking-[0.3em] mb-1">Convergence IA</span>
+                                                        <span className="text-2xl font-black text-[#0F172A]">{Math.round(discovery.totalStrength)}%</span>
+                                                    </div>
+                                                    <div className="w-12 h-12 rounded-full border-2 border-slate-100 flex items-center justify-center relative">
+                                                        <div
+                                                            className="absolute inset-0 rounded-full border-2 border-[#B91C1C] border-t-transparent animate-spin-slow"
+                                                            style={{ opacity: discovery.totalStrength / 100 }}
+                                                        ></div>
+                                                        <Link2 size={20} className="text-slate-200 group-hover:text-[#B91C1C] transition-colors" />
+                                                    </div>
                                                 </div>
-                                                <div className="h-1 flex-1 bg-slate-100 rounded-full overflow-hidden">
-                                                    <div
-                                                        className="h-full bg-gradient-to-r from-[#B91C1C] to-red-400 transition-all duration-1000"
-                                                        style={{ width: `${Math.min(100, discovery.totalStrength)}%` }}
-                                                    ></div>
+
+                                                <div className="space-y-4 mb-8">
+                                                    <div className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Document Cible :</div>
+                                                    <h3 className="text-sm font-black text-[#0F172A] italic font-serif-legal leading-relaxed">
+                                                        {otherDoc?.input.query}
+                                                    </h3>
+                                                    <div className="flex items-center gap-2 text-[10px] text-slate-400 font-bold italic underline decoration-slate-200">
+                                                        {otherDoc?.input.targetUrl.split('/').pop()?.slice(0, 30)}
+                                                    </div>
                                                 </div>
+
+                                                <div className="flex flex-wrap gap-2 mb-8">
+                                                    {Array.from(new Set(discovery.links.map(l => l.type))).map(t => (
+                                                        <span key={t} className="px-2 py-1 bg-white border border-slate-100 rounded text-[8px] font-black text-slate-400 uppercase tracking-widest">{t}</span>
+                                                    ))}
+                                                </div>
+
+                                                <button
+                                                    onClick={() => onNavigateToInvestigation?.(discovery.doc2Id)}
+                                                    className="mt-auto flex items-center justify-center gap-3 px-6 py-4 bg-[#0F172A] text-white rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] hover:bg-[#B91C1C] transition-all transform active:scale-95 shadow-lg shadow-slate-900/10"
+                                                >
+                                                    Ouvrir l'Analyse <ArrowRight size={14} />
+                                                </button>
                                             </div>
 
-                                            <h3 className="text-sm font-black text-[#0F172A] italic font-serif-legal mb-4 line-clamp-3">
-                                                {otherDoc?.input.query}
-                                            </h3>
+                                            {/* Links Content */}
+                                            <div className="flex-1 p-10 bg-white relative">
+                                                <div className="flex items-center justify-between mb-10 border-b border-slate-50 pb-6">
+                                                    <h4 className="text-[10px] font-black text-[#B91C1C] uppercase tracking-[0.4em] flex items-center gap-3">
+                                                        <Activity size={16} /> Matrix des Connecteurs
+                                                    </h4>
+                                                    <div className="flex items-center gap-4 text-slate-300 font-black text-[9px] uppercase tracking-widest">
+                                                        <span>Confidence: HIGH</span>
+                                                        <span>Matches: {filteredLinks.length}</span>
+                                                    </div>
+                                                </div>
 
-                                            <button
-                                                onClick={() => onNavigateToInvestigation?.(discovery.doc2Id)}
-                                                className="mt-auto flex items-center justify-between px-5 py-3 bg-white border border-slate-100 rounded-2xl text-[10px] font-black uppercase tracking-widest text-slate-400 hover:text-[#B91C1C] hover:border-[#B91C1C]/20 transition-all group/btn shadow-sm"
-                                            >
-                                                Ouvrir Dossier
-                                                <ChevronRight size={14} className="group-hover/btn:translate-x-1 transition-transform" />
-                                            </button>
-                                        </div>
-
-                                        {/* Links Content */}
-                                        <div className="flex-1 p-8">
-                                            <div className="flex items-center gap-3 mb-8">
-                                                <div className="w-1 h-3 bg-[#B91C1C] rounded-full"></div>
-                                                <h4 className="text-[10px] font-black text-slate-300 uppercase tracking-[0.3em]">Liens Identifiés ({discovery.links.length})</h4>
-                                            </div>
-
-                                            <div className="grid grid-cols-1 md:grid-cols-2 gap-4">
-                                                {discovery.links.map((link, lIdx) => (
-                                                    <div key={lIdx} className="bg-[#F8FAFC] p-4 rounded-2xl border border-slate-100 hover:bg-white hover:shadow-md transition-all group/link relative overflow-hidden">
-                                                        <div className="absolute top-0 right-0 p-2 opacity-5 group-hover/link:opacity-20 transition-opacity">
-                                                            {getLinkIcon(link.type)}
-                                                        </div>
-                                                        <div className="flex items-center gap-3 mb-2">
-                                                            <div className={`p-2 rounded-lg ${link.type === 'pii' ? 'bg-emerald-50 text-emerald-600' :
-                                                                    link.type === 'transaction' ? 'bg-red-50 text-[#B91C1C]' :
-                                                                        'bg-blue-50 text-[#0F4C81]'
-                                                                }`}>
+                                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                                    {filteredLinks.map((link, lIdx) => (
+                                                        <div key={lIdx} className="group/link bg-[#F8FAFC] hover:bg-white p-6 rounded-3xl border border-slate-100 hover:border-[#B91C1C]/20 hover:shadow-2xl hover:shadow-slate-200/50 transition-all duration-500 relative overflow-hidden">
+                                                            <div className="absolute top-0 right-0 p-4 opacity-[0.03] group-hover/link:opacity-10 transition-opacity">
                                                                 {getLinkIcon(link.type)}
                                                             </div>
-                                                            <span className="text-[11px] font-black text-[#0F172A] italic font-serif-legal">{link.label}</span>
+                                                            <div className="flex items-center gap-4 mb-4">
+                                                                <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-transform group-hover/link:scale-110 duration-500 ${link.type === 'pii' ? 'bg-emerald-50 text-emerald-600 shadow-sm shadow-emerald-900/5' :
+                                                                        link.type === 'transaction' ? 'bg-red-50 text-[#B91C1C] shadow-sm shadow-red-900/5' :
+                                                                            link.type === 'semantic' ? 'bg-purple-50 text-purple-600 shadow-sm shadow-purple-900/5' :
+                                                                                'bg-blue-50 text-[#0F4C81] shadow-sm shadow-blue-900/5'
+                                                                    }`}>
+                                                                    {getLinkIcon(link.type)}
+                                                                </div>
+                                                                <div className="flex flex-col">
+                                                                    <span className="text-[9px] font-black text-slate-300 uppercase tracking-widest mb-0.5">{link.type}</span>
+                                                                    <span className="text-xs font-black text-[#0F172A] italic font-serif-legal line-clamp-1">{link.label}</span>
+                                                                </div>
+                                                            </div>
+                                                            <p className="text-[11px] text-slate-500 leading-relaxed font-medium pl-14">
+                                                                {link.description}
+                                                            </p>
+
+                                                            {link.strength > 8 && (
+                                                                <div className="absolute bottom-4 right-6 text-[8px] font-black text-[#B91C1C] uppercase tracking-[0.2em] flex items-center gap-1.5 opacity-0 group-hover/link:opacity-100 transition-opacity">
+                                                                    <Zap size={10} className="fill-[#B91C1C]" /> HIGH CONFIDENCE
+                                                                </div>
+                                                            )}
                                                         </div>
-                                                        <p className="text-[10px] text-slate-500 leading-relaxed font-medium pl-10">
-                                                            {link.description}
-                                                        </p>
-                                                    </div>
-                                                ))}
+                                                    ))}
+                                                </div>
                                             </div>
                                         </div>
                                     </div>
-                                </div>
-                            );
-                        })}
+                                );
+                            })}
                     </div>
                 ) : (
                     <div className="text-center py-40">

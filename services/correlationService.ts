@@ -106,30 +106,48 @@ export class CorrelationService {
             });
         });
 
+        // 5. Thematic Correlation (Smarter with Stopwords)
+        const stopWords = new Set(['dans', 'avec', 'pour', 'plus', 'cette', 'fait', 'etre', 'mais', 'nous', 'vous', 'leur', 'aussi', 'tout', 'dont', 'faire', 'about', 'would', 'their', 'there', 'those', 'these', 'where', 'which', 'after', 'before', 'between', 'during', 'through', 'under', 'while']);
+        const words1 = new Set((doc1.output.context_general || "").toLowerCase().split(/\W+/).filter(w => w.length > 4 && !stopWords.has(w)));
+        const words2 = new Set((doc2.output.context_general || "").toLowerCase().split(/\W+/).filter(w => w.length > 4 && !stopWords.has(w)));
+
+        const commonThemes: string[] = [];
+        words1.forEach(w => {
+            if (words2.has(w)) commonThemes.push(w);
+        });
+
+        if (commonThemes.length >= 3) {
+            links.push({
+                type: 'semantic',
+                label: `Convergence Thématique`,
+                description: `Les deux dossiers partagent des concepts clés tels que : ${commonThemes.slice(0, 4).join(', ')}.`,
+                strength: Math.min(12, 4 + commonThemes.length),
+                relatedData: { themes: commonThemes }
+            });
+        }
+
         const totalStrength = links.reduce((acc, curr) => acc + curr.strength, 0);
         return {
             doc1Id: doc1.id,
             doc2Id: doc2.id,
-            links: links.slice(0, 10), // Limit to top 10 links
-            totalStrength: Math.min(100, totalStrength)
+            links: links.sort((a, b) => b.strength - a.strength).slice(0, 15),
+            totalStrength: Math.min(100, Math.round(totalStrength))
         };
     }
 
     static async findDiscoveryLinks(targetId: string): Promise<DiscoveryResult[]> {
         const results = await storageService.getAllResults();
         const target = results.find(r => r.id === targetId);
-        if (!target) return [];
+        if (!target || !target.output) return [];
 
-        const discoveries: DiscoveryResult[] = [];
-        for (const res of results) {
-            if (res.id === targetId) continue;
-            const discovery = await this.discoverLinks(target, res);
-            if (discovery.links.length > 0) {
-                discoveries.push(discovery);
-            }
-        }
+        const otherDocs = results.filter(r => r.id !== targetId && r.output && r.status === 'completed');
 
-        return discoveries.sort((a, b) => b.totalStrength - a.totalStrength);
+        const discoveryPromises = otherDocs.map(res => this.discoverLinks(target, res));
+        const allDiscoveries = await Promise.all(discoveryPromises);
+
+        return allDiscoveries
+            .filter(d => d.links.length > 0)
+            .sort((a, b) => b.totalStrength - a.totalStrength);
     }
 
     static async getCrossSessionCorrelations(): Promise<Correlation[]> {

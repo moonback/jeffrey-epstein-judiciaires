@@ -225,34 +225,61 @@ export const POIView: React.FC<POIViewProps> = ({ onDeepDive, isGuestMode }) => 
         storageService.getAllResults().then(setHistory);
     }, []);
 
+    // Help with normalization for matching in filters
+    const normalize = (name: any): string => {
+        if (!name) return "";
+        const target = typeof name === 'string' ? name : ((name as any).nom || (name as any).name || String(name));
+        return target.toLowerCase().trim().normalize("NFD").replace(/[\u0300-\u036f]/g, "");
+    };
+
     const entities = useMemo(() => {
-        const map = new Map<string, { docs: number, events: number }>();
+        const map = new Map<string, { key: string, displayName: string, docs: number, events: number }>();
+
         history.forEach(res => {
+            const currentResEntities = new Set<string>();
+
             res.output?.entites_cles?.forEach(ent => {
-                const entName = typeof ent === 'string' ? ent : ((ent as any).nom || (ent as any).name || String(ent || "Inconnu"));
-                const stats = map.get(entName) || { docs: 0, events: 0 };
-                stats.docs++;
-                map.set(entName, stats);
+                const key = normalize(ent);
+                if (!key) return;
+
+                if (!map.has(key)) {
+                    const displayName = typeof ent === 'string' ? ent : ((ent as any).nom || (ent as any).name || String(ent));
+                    map.set(key, { key, displayName, docs: 0, events: 0 });
+                }
+                currentResEntities.add(key);
             });
+
+            currentResEntities.forEach(key => {
+                const stats = map.get(key)!;
+                stats.docs++;
+            });
+
             res.output?.documents?.forEach(doc => {
                 if (Array.isArray(doc.key_facts)) {
                     doc.key_facts.forEach(fact => {
-                        res.output?.entites_cles?.forEach(ent => {
-                            const entName = typeof ent === 'string' ? ent : ((ent as any).nom || (ent as any).name || String(ent || "Inconnu"));
-                            if (typeof fact === 'string' && fact.includes(entName)) {
-                                const stats = map.get(entName)!;
+                        if (typeof fact !== 'string') return;
+                        const lowerFact = fact.toLowerCase();
+
+                        currentResEntities.forEach(key => {
+                            const stats = map.get(key)!;
+                            if (lowerFact.includes(stats.displayName.toLowerCase())) {
                                 stats.events++;
-                                map.set(entName, stats);
                             }
                         });
                     });
                 }
             });
         });
-        return Array.from(map.entries())
-            .filter(([name]) => String(name || '').toLowerCase().includes(searchQuery.toLowerCase()))
-            .sort((a, b) => b[1].docs - a[1].docs);
+
+        return Array.from(map.values())
+            .filter(e => e.displayName.toLowerCase().includes(searchQuery.toLowerCase()))
+            .sort((a, b) => b.docs - a.docs);
     }, [history, searchQuery]);
+
+    const selectedEntityData = useMemo(() => {
+        if (!selectedEntity) return null;
+        return entities.find(e => e.key === selectedEntity) || null;
+    }, [selectedEntity, entities]);
 
     return (
         <div className="h-full flex flex-col bg-[#F8FAFC] overflow-hidden relative font-sans">
@@ -288,24 +315,24 @@ export const POIView: React.FC<POIViewProps> = ({ onDeepDive, isGuestMode }) => 
 
             <div className="flex-1 overflow-hidden flex flex-col lg:flex-row z-20">
                 {/* Entity List Sidebar */}
-                <div className="w-full lg:w-[280px] lg:w-[320px] border-r border-slate-100 bg-white/60 backdrop-blur-xl overflow-y-auto custom-scrollbar shadow-xl z-20 transition-all">
+                <div className="w-full lg:w-[320px] border-r border-slate-100 bg-white/60 backdrop-blur-xl overflow-y-auto custom-scrollbar shadow-xl z-20 transition-all">
                     <div className="p-4 lg:p-6 space-y-2">
                         <div className="text-[8px] font-black text-slate-300 uppercase tracking-[0.3em] mb-2 ml-2">Cibles Identifiées</div>
-                        {entities.map(([name, stats]) => (
+                        {entities.map((entity) => (
                             <button
-                                key={name}
-                                onClick={() => setSelectedEntity(name)}
-                                className={`w-full text-left p-4 rounded-xl transition-all duration-300 relative overflow-hidden group border ${selectedEntity === name
+                                key={entity.key}
+                                onClick={() => setSelectedEntity(entity.key)}
+                                className={`w-full text-left p-4 rounded-xl transition-all duration-300 relative overflow-hidden group border ${selectedEntity === entity.key
                                     ? 'bg-[#0F172A] border-[#0F172A] text-white shadow-lg'
                                     : 'bg-white border-slate-50 text-slate-400 hover:bg-slate-50 hover:border-slate-200 shadow-sm'
                                     }`}
                             >
-                                <div className="relative z-10 font-black text-[13px] mb-1 truncate italic font-serif-legal group-hover:text-[#B91C1C] transition-colors">{name}</div>
-                                <div className={`relative z-10 text-[8px] flex gap-3 uppercase font-black tracking-[0.1em] font-mono-data ${selectedEntity === name ? 'opacity-80' : 'opacity-40'}`}>
-                                    <span className="flex items-center gap-1"><Database size={8} /> {stats.docs} D</span>
-                                    <span className="flex items-center gap-1"><Activity size={8} /> {stats.events} E</span>
+                                <div className="relative z-10 font-black text-[13px] mb-1 truncate italic font-serif-legal group-hover:text-[#B91C1C] transition-colors">{entity.displayName}</div>
+                                <div className={`relative z-10 text-[8px] flex gap-3 uppercase font-black tracking-[0.1em] font-mono-data ${selectedEntity === entity.key ? 'opacity-80' : 'opacity-40'}`}>
+                                    <span className="flex items-center gap-1"><Database size={8} /> {entity.docs} D</span>
+                                    <span className="flex items-center gap-1"><Activity size={8} /> {entity.events} E</span>
                                 </div>
-                                {selectedEntity === name && (
+                                {selectedEntity === entity.key && (
                                     <div className="absolute right-4 top-1/2 -translate-y-1/2 text-white/10 animate-pulse">
                                         <ChevronRight size={18} />
                                     </div>
@@ -321,7 +348,7 @@ export const POIView: React.FC<POIViewProps> = ({ onDeepDive, isGuestMode }) => 
 
                 {/* Profiling Detail */}
                 <div className="flex-1 overflow-y-auto p-6 lg:p-10 custom-scrollbar bg-[#F8FAFC]/50 scroll-smooth">
-                    {selectedEntity ? (
+                    {selectedEntityData ? (
                         <div className="animate-pro-reveal max-w-4xl mx-auto pb-10">
                             <div className="flex flex-col lg:flex-row lg:items-center gap-8 mb-10 bg-white p-8 lg:p-10 rounded-[2.5rem] border border-slate-100 shadow-xl shadow-slate-200/50 relative overflow-hidden">
                                 <div className="absolute top-0 right-0 p-8 opacity-[0.01] pointer-events-none">
@@ -330,11 +357,11 @@ export const POIView: React.FC<POIViewProps> = ({ onDeepDive, isGuestMode }) => 
                                 <div className="relative group shrink-0 z-10">
                                     <div className="absolute inset-0 bg-[#B91C1C] blur-[30px] opacity-10 group-hover:opacity-20 transition-opacity"></div>
                                     <div className="relative w-20 h-20 rounded-2xl bg-gradient-to-br from-[#0F172A] to-black flex items-center justify-center text-3xl font-black text-white shadow-xl border-2 border-white transform rotate-2 group-hover:rotate-0 transition-all duration-700 font-serif-legal italic">
-                                        {selectedEntity[0]}
+                                        {selectedEntityData.displayName?.[0] || '?'}
                                     </div>
                                 </div>
                                 <div className="space-y-2 flex-1 z-10">
-                                    <h3 className="text-3xl lg:text-4xl font-black text-[#0F172A] tracking-tighter italic font-serif-legal mb-1 selection:bg-red-50 leading-tight">{selectedEntity}</h3>
+                                    <h3 className="text-3xl lg:text-4xl font-black text-[#0F172A] tracking-tighter italic font-serif-legal mb-1 selection:bg-red-50 leading-tight">{selectedEntityData.displayName}</h3>
                                     <div className="flex flex-wrap gap-4">
                                         <span className="flex items-center gap-2.5 px-4 py-2 bg-red-50 border border-red-100 rounded-xl text-[10px] text-[#B91C1C] font-black uppercase tracking-[0.2em] shadow-sm">
                                             <Target size={14} className="animate-pulse" /> High Priority Target
@@ -356,17 +383,11 @@ export const POIView: React.FC<POIViewProps> = ({ onDeepDive, isGuestMode }) => 
                                             <Activity size={14} /> Archive Resilience
                                         </h4>
                                         <span className="px-2 py-0.5 bg-slate-50 text-slate-400 text-[8px] font-black rounded text-[8px] border border-slate-100 font-mono-data">
-                                            {history.filter(h => (h.output?.entites_cles || []).some(ent => {
-                                                const name = typeof ent === 'string' ? ent : ((ent as any).nom || (ent as any).name || String(ent));
-                                                return name === selectedEntity;
-                                            })).length} REF
+                                            {history.filter(h => (h.output?.entites_cles || []).some(ent => normalize(ent) === selectedEntity)).length} REF
                                         </span>
                                     </div>
                                     <div className="space-y-4 relative z-10">
-                                        {history.filter(h => (h.output?.entites_cles || []).some(ent => {
-                                            const name = typeof ent === 'string' ? ent : ((ent as any).nom || (ent as any).name || String(ent));
-                                            return name === selectedEntity;
-                                        })).slice(0, 5).map((h, i) => (
+                                        {history.filter(h => (h.output?.entites_cles || []).some(ent => normalize(ent) === selectedEntity)).slice(0, 5).map((h, i) => (
                                             <div key={i} className="p-6 bg-slate-50 group-hover:bg-[#F8FAFC] rounded-[1.5rem] border border-slate-50 hover:border-[#B91C1C]/20 transition-all duration-300 group/item">
                                                 <div className="text-[#0F172A] font-black text-[13px] mb-2 italic font-serif-legal group-hover/item:text-[#B91C1C] transition-colors leading-snug">"{h.input.query}"</div>
                                                 <div className="text-slate-500 text-[12px] leading-relaxed font-medium line-clamp-2 italic">"{h.output?.context_general}"</div>
@@ -386,7 +407,7 @@ export const POIView: React.FC<POIViewProps> = ({ onDeepDive, isGuestMode }) => 
                                     </div>
                                     <div className="space-y-6 relative z-10">
                                         {history.flatMap(h => h.output?.documents || [])
-                                            .filter(d => Array.isArray(d.key_facts) && d.key_facts.some(f => typeof f === 'string' && f.includes(selectedEntity!)))
+                                            .filter(d => Array.isArray(d.key_facts) && d.key_facts.some(f => typeof f === 'string' && f.toLowerCase().includes(selectedEntityData.displayName.toLowerCase())))
                                             .slice(0, 8)
                                             .map((d, i) => (
                                                 <div key={i} className="text-[13px] text-slate-500 leading-relaxed border-b border-slate-50 pb-6 last:border-0 relative pl-8 group/item font-medium">
@@ -402,7 +423,7 @@ export const POIView: React.FC<POIViewProps> = ({ onDeepDive, isGuestMode }) => 
                                                             </button>
                                                         )}
                                                     </div>
-                                                    <div className="italic text-slate-600 leading-relaxed font-serif-legal">"{Array.isArray(d.key_facts) ? d.key_facts.find(f => typeof f === 'string' && f.includes(selectedEntity!)) : ""}"</div>
+                                                    <div className="italic text-slate-600 leading-relaxed font-serif-legal">"{Array.isArray(d.key_facts) ? d.key_facts.find(f => typeof f === 'string' && f.toLowerCase().includes(selectedEntityData.displayName.toLowerCase())) : ""}"</div>
                                                 </div>
                                             ))}
                                     </div>
