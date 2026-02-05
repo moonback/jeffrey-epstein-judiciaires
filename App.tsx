@@ -45,7 +45,8 @@ import {
   Mic,
   Plane,
   Fingerprint,
-  Network
+  Network,
+  History
 } from 'lucide-react';
 import { Sidebar, ViewType } from './components/Sidebar';
 import { CaseListView } from './components/CaseListView';
@@ -99,6 +100,7 @@ const App: React.FC = () => {
   const [showPlanner, setShowPlanner] = useState(false);
   const [showLogs, setShowLogs] = useState(false);
   const [logs, setLogs] = useState<string[]>([]);
+  const [showFullHistory, setShowFullHistory] = useState(false);
   const [showTabsDropdown, setShowTabsDropdown] = useState(false);
   const [is3DView, setIs3DView] = useState<boolean>(
     localStorage.getItem('NETWORK_3D_VIEW') === 'true'
@@ -724,141 +726,135 @@ const App: React.FC = () => {
           <div className="h-full w-full relative z-10 overflow-hidden">
             {viewMode === 'lab' && (
               <div className="h-full flex flex-col lg:grid lg:grid-cols-12 overflow-hidden animate-pro-reveal">
-                {/* Lab Sidebar: Queue - Hidden on mobile, visible on LG, hidden if empty */}
+                {/* Lab Sidebar: Queue - Modern Sidebar */}
                 {queue.length > 0 && (
-                  <section className="hidden lg:flex lg:col-span-3 xl:col-span-2 border-r border-slate-100 bg-white flex-col overflow-hidden min-h-0 relative">
-                    <div className="absolute top-0 right-0 h-full w-1/4 bg-gradient-to-l from-[#F8FAFC] to-transparent pointer-events-none opacity-50"></div>
+                  <section className="hidden lg:flex lg:col-span-3 xl:col-span-2 border-r border-slate-100 bg-white flex-col overflow-hidden min-h-0 relative z-30 shadow-[4px_0_24px_rgba(0,0,0,0.02)] animate-in slide-in-from-left duration-700">
+                    <div className="absolute inset-0 z-0 pointer-events-none opacity-[0.1] report-paper"></div>
 
-                    <div className="p-5 flex justify-between items-center border-b border-slate-100 bg-white/50 backdrop-blur-md relative z-10">
-                      <div className="flex flex-col">
-                        <span className="text-[9px] font-black text-slate-300 uppercase tracking-[0.3em] mb-1">Queue d'Analyse</span>
-                        <h2 className="text-[12px] font-black text-[#0F172A] uppercase tracking-[0.2em] flex items-center gap-2">
-                          Pipeline Actif
-                        </h2>
+                    <div className="p-6 pb-4 flex flex-col gap-1 border-b border-slate-50 bg-white/50 backdrop-blur-md relative z-10">
+                      <div className="text-[9px] font-black text-[#B91C1C] uppercase tracking-[0.4em] mb-1 flex items-center gap-2">
+                        <Activity size={10} className="animate-pulse" /> Live Pipeline
                       </div>
-                      <div className="flex flex-col items-center justify-center w-10 h-10 bg-black text-white rounded-xl font-mono-data font-black text-sm shadow-xl">
-                        {queue.length}
+                      <div className="flex justify-between items-center">
+                        <h2 className="text-[14px] font-black text-[#0F172A] italic font-serif-legal">Neural Queue</h2>
+                        <div className="flex items-center justify-center px-2 py-0.5 bg-slate-900 text-white rounded-md font-mono-data font-black text-[10px] shadow-lg">
+                          {queue.length}
+                        </div>
                       </div>
                     </div>
 
-                    <div className="flex-1 overflow-y-auto custom-scrollbar p-6 space-y-6 relative z-10">
-                      {queue.map((item) => (
-                        <div key={item.id} className="bg-white p-6 rounded-[1.5rem] border border-slate-100 border-l-[6px] border-l-[#B91C1C] shadow-sm animate-in slide-in-from-left-4 group hover:shadow-xl hover:border-[#B91C1C]/20 transition-all duration-500 cursor-help">
-                          <div className="flex justify-between items-start mb-3">
-                            <div className="text-[10px] font-mono-data font-black text-slate-300 group-hover:text-[#B91C1C] transition-colors">{item.id}</div>
-                            <Cpu size={12} className="text-slate-100 group-hover:text-[#B91C1C] transition-colors" />
+                    <div className="flex-1 overflow-y-auto custom-scrollbar p-4 space-y-4 relative z-10">
+                      {queue.map((item, idx) => (
+                        <div key={item.id}
+                          className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm animate-in slide-in-from-left-4 group hover:shadow-xl hover:border-[#B91C1C]/10 transition-all duration-500 cursor-wait relative overflow-hidden"
+                          style={{ animationDelay: `${idx * 0.1}s` }}
+                        >
+                          <div className="absolute top-0 left-0 w-1 h-full bg-[#B91C1C]/20 group-hover:bg-[#B91C1C] transition-all"></div>
+                          <div className="flex justify-between items-start mb-2 pl-2">
+                            <div className="text-[9px] font-mono-data font-black text-slate-300 group-hover:text-[#B91C1C] transition-colors">{item.id}</div>
+                            <Loader2 size={10} className="text-[#B91C1C] animate-spin" />
                           </div>
-                          <div className="text-[13px] text-[#475569] font-bold line-clamp-3 leading-relaxed italic group-hover:text-[#0F172A] transition-colors">"{item.query}"</div>
+                          <div className="text-[12px] text-slate-500 font-bold line-clamp-2 leading-snug italic group-hover:text-[#0F172A] transition-colors pl-2">"{item.query}"</div>
                         </div>
                       ))}
+                    </div>
+
+                    <div className="p-4 border-t border-slate-50 bg-[#F8FAFC]/50 flex items-center gap-3">
+                      <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
+                      <span className="text-[8px] font-black text-slate-400 uppercase tracking-widest">Agent Monitoring Active</span>
                     </div>
                   </section>
                 )}
 
                 {/* Main Lab Area */}
                 <section className={`${queue.length > 0 ? 'lg:col-span-9 xl:col-span-10' : 'lg:col-span-12'} flex flex-col overflow-hidden min-h-0 bg-[#F8FAFC]`}>
-                  {/* Tabs Wrapper - Pro Tabs */}
-                  <div className="flex bg-[#F1F5F9] border-b border-slate-200 h-10 shrink-0 pt-1.5 relative z-20">
-                    <div className="flex-1 flex items-center overflow-x-auto no-scrollbar px-2 gap-1">
-                      {optimisticHistory.length > 0 && (
-                        <button
-                          onClick={() => {
-                            setViewMode('lab');
-                            setShowPlanner(true);
-                            setActiveTabId(null);
-                          }}
-                          className="flex items-center justify-center w-10 h-10 bg-white hover:bg-[#B91C1C] text-slate-400 hover:text-white rounded-t-lg transition-all shadow-sm border border-b-0 border-slate-200 hover:border-[#B91C1C] shrink-0 group ml-2"
-                        >
-                          <Plus size={18} className="group-hover:rotate-90 transition-transform" />
-                        </button>
-                      )}
+                  {/* Modern Pro Tab Bar */}
+                  <div className="flex flex-col bg-[#F8FAFC] shrink-0 z-20">
+                    {/* Neural Link Status Line */}
+                    <div className="h-0.5 w-full bg-slate-100 relative overflow-hidden">
+                      <div className="absolute inset-y-0 left-0 w-1/4 bg-gradient-to-r from-transparent via-[#B91C1C] to-transparent animate-shimmer" style={{ backgroundSize: '200% 100%' }}></div>
+                    </div>
 
-                      {optimisticHistory.map((res) => (
-                        <div
-                          key={res.id}
-                          onClick={() => {
-                            setActiveTabId(res.id);
-                            setShowPlanner(false);
-                          }}
-                          className={`group flex items-center gap-3 px-4 h-8.5 cursor-pointer min-w-[150px] max-w-[240px] transition-all duration-200 relative rounded-t-lg border-t-2 border-x border-b-0 select-none ${activeTabId === res.id && !showPlanner
-                            ? 'bg-white border-t-[#B91C1C] border-x-slate-200 text-[#0F172A] z-10 shadow-[0_-4px_12px_rgba(0,0,0,0.02)]'
-                            : 'bg-slate-100/50 border-t-transparent border-x-transparent text-slate-400 hover:bg-white/50 hover:text-slate-600'
-                            }`}
-                        >
-                          <div className="flex flex-col overflow-hidden flex-1">
-                            <span className={`text-[8px] font-mono-data font-bold tracking-wider leading-none mb-0.5 ${activeTabId === res.id && !showPlanner ? 'text-[#B91C1C]' : 'opacity-70'}`}>{res.id}</span>
-                            <span className={`text-[11px] font-bold truncate font-serif-legal ${activeTabId === res.id && !showPlanner ? 'text-[#0F172A]' : 'opacity-80'}`}>{res.input?.query || 'Nouvelle Analyse'}</span>
-                          </div>
-                          <div className="flex items-center gap-2 pl-2">
-                            {res.status === 'processing' ? (
-                              <Loader2 size={12} className="text-[#B91C1C] animate-spin" />
-                            ) : (
-                              <div
-                                role="button"
-                                onClick={(e) => handleCloseTab(e, res.id)}
-                                className={`p-1 rounded-md transition-colors ${activeTabId === res.id && !showPlanner ? 'hover:bg-slate-100 text-slate-400 hover:text-[#B91C1C]' : 'hover:bg-slate-200 text-slate-400 hover:text-[#B91C1C] opacity-0 group-hover:opacity-100'}`}
-                              >
-                                <X size={12} />
-                              </div>
-                            )}
-                          </div>
+                    <div className="flex items-center h-12 bg-white/80 backdrop-blur-md border-b border-slate-100 px-4">
+                      <div className="flex items-center gap-3 mr-6 pr-6 border-r border-slate-100">
+                        <div className="w-8 h-8 rounded-xl bg-black flex items-center justify-center shadow-lg transform -rotate-3 hover:rotate-0 transition-all">
+                          <Terminal size={14} className="text-white" />
                         </div>
-                      ))}
+                        <span className="text-[10px] font-black text-[#0F172A] uppercase tracking-[0.2em] hidden xl:block italic font-serif-legal">Session Lab</span>
+                      </div>
 
-                      {optimisticHistory.length === 0 && (
-                        <div className="flex items-center gap-4 ml-4">
-                          <span className="text-[11px] text-slate-300 uppercase font-black tracking-[0.5em]">Archives Standby</span>
-                          <div className="h-1 w-20 bg-slate-50 rounded-full overflow-hidden">
-                            <div className="h-full bg-emerald-500 w-1/3 animate-pulse"></div>
+                      <div className="flex-1 flex items-center overflow-x-auto no-scrollbar gap-1 relative h-full">
+                        {optimisticHistory.length > 0 && (
+                          <button
+                            onClick={() => {
+                              setViewMode('lab');
+                              setShowPlanner(true);
+                              setActiveTabId(null);
+                            }}
+                            className={`flex items-center justify-center w-10 h-8 rounded-lg transition-all shadow-sm border shrink-0 group ${showPlanner ? 'bg-[#0F172A] border-[#0F172A] text-white shadow-xl rotate-0' : 'bg-white border-slate-100 text-slate-400 hover:text-[#B91C1C] hover:border-[#B91C1C] -rotate-3 hover:rotate-0'}`}
+                            title="Nouvelle Analyse"
+                          >
+                            <Plus size={18} className={`${showPlanner ? 'rotate-90' : 'group-hover:rotate-90'} transition-transform`} />
+                          </button>
+                        )}
+
+                        <div className="h-4 w-px bg-slate-100 mx-2"></div>
+
+                        {optimisticHistory.map((res) => (
+                          <div
+                            key={res.id}
+                            onClick={() => {
+                              setActiveTabId(res.id);
+                              setShowPlanner(false);
+                            }}
+                            className={`group flex items-center gap-3 px-5 h-8.5 cursor-pointer min-w-[140px] max-w-[200px] transition-all duration-300 relative rounded-xl border select-none ${activeTabId === res.id && !showPlanner
+                              ? 'bg-[#0F172A] border-[#0F172A] text-white shadow-xl -translate-y-0.5 z-10'
+                              : 'bg-white border-slate-100 text-slate-500 hover:bg-slate-50 hover:border-slate-200'
+                              }`}
+                          >
+                            <div className="flex flex-col overflow-hidden flex-1">
+                              <span className={`text-[7px] font-mono-data font-black tracking-widest leading-none mb-0.5 ${activeTabId === res.id && !showPlanner ? 'text-[#B91C1C]' : 'text-slate-300'}`}>{res.id}</span>
+                              <span className={`text-[11px] font-black truncate italic font-serif-legal ${activeTabId === res.id && !showPlanner ? 'text-white' : 'text-slate-600'}`}>{res.input?.query || 'Analyse'}</span>
+                            </div>
+                            <div className="flex items-center gap-2">
+                              {res.status === 'processing' ? (
+                                <Loader2 size={10} className="text-[#B91C1C] animate-spin" />
+                              ) : (
+                                <div
+                                  role="button"
+                                  onClick={(e) => handleCloseTab(e, res.id)}
+                                  className={`w-5 h-5 flex items-center justify-center rounded-lg transition-all ${activeTabId === res.id && !showPlanner ? 'hover:bg-white/10 text-white/40 hover:text-white' : 'text-slate-300 hover:bg-slate-100 hover:text-[#B91C1C]'}`}
+                                >
+                                  <X size={10} strokeWidth={3} />
+                                </div>
+                              )}
+                            </div>
                           </div>
+                        ))}
+
+                        {optimisticHistory.length === 0 && (
+                          <div className="flex items-center gap-4 ml-2 animate-pulse">
+                            <span className="text-[10px] text-slate-300 uppercase font-black tracking-[0.4em] italic font-serif-legal">Prêt pour Analyse...</span>
+                            <div className="h-0.5 w-12 bg-slate-100 relative">
+                              <div className="absolute inset-y-0 left-0 w-1/3 bg-[#B91C1C]"></div>
+                            </div>
+                          </div>
+                        )}
+                      </div>
+
+                      {/* Dropdown Menu - Modern */}
+                      {optimisticHistory.length > 5 && (
+                        <div className="flex items-center pl-4 ml-4 border-l border-slate-100 relative h-full">
+                          <button
+                            onClick={() => setShowFullHistory(true)}
+                            className={`w-8 h-8 flex items-center justify-center rounded-xl transition-all ${showFullHistory ? 'bg-[#B91C1C] text-white shadow-lg' : 'bg-slate-50 text-slate-400 hover:bg-slate-100 hover:text-[#0F172A]'}`}
+                            title="Historique des Analyses"
+                          >
+                            <History size={14} />
+                          </button>
                         </div>
                       )}
                     </div>
-
-                    {/* Tabs Menu Button - Only show if we have tabs */}
-                    {optimisticHistory.length > 0 && (
-                      <div className="flex items-center px-2 relative h-full mb-2 bg-[#F1F5F9] z-20 pl-4 border-l border-slate-200 shadow-[-10px_0_20px_#F1F5F9]">
-                        <button
-                          onClick={() => setShowTabsDropdown(!showTabsDropdown)}
-                          className={`w-7 h-7 flex items-center justify-center rounded-lg transition-all border border-transparent shadow-sm ${showTabsDropdown ? 'bg-[#0F172A] text-white' : 'hover:bg-white text-slate-400 hover:text-[#0F172A] hover:border-slate-200'}`}
-                        >
-                          <ChevronDown size={14} className={`transition-transform duration-300 ${showTabsDropdown ? 'rotate-180' : ''}`} />
-                        </button>
-
-                        {/* Dropdown Menu */}
-                        {showTabsDropdown && (
-                          <>
-                            <div className="fixed inset-0 z-30" onClick={() => setShowTabsDropdown(false)}></div>
-                            <div className="absolute right-2 top-full mt-2 w-72 bg-white rounded-2xl shadow-2xl border border-slate-100 p-2 z-40 animate-in fade-in zoom-in-95 duration-200 origin-top-right overflow-hidden ring-1 ring-slate-900/5">
-                              <div className="text-[9px] font-black text-slate-300 uppercase tracking-[0.3em] px-4 py-3 border-b border-slate-50 mb-2 flex items-center justify-between">
-                                <span>Index des Dossiers</span>
-                                <span className="bg-slate-100 text-slate-500 px-1.5 py-0.5 rounded text-[8px]">{optimisticHistory.length}</span>
-                              </div>
-                              <div className="max-h-[300px] overflow-y-auto custom-scrollbar space-y-1">
-                                {optimisticHistory.map((res) => (
-                                  <button
-                                    key={res.id}
-                                    onClick={() => {
-                                      setActiveTabId(res.id);
-                                      setShowPlanner(false);
-                                      setShowTabsDropdown(false);
-                                    }}
-                                    className={`w-full text-left p-3 rounded-xl transition-all flex items-center gap-3 group ${activeTabId === res.id && !showPlanner ? 'bg-slate-50 border border-slate-100 shadow-sm' : 'hover:bg-slate-50 border border-transparent'}`}
-                                  >
-                                    <div className={`w-1.5 h-1.5 rounded-full ${activeTabId === res.id && !showPlanner ? 'bg-[#B91C1C]' : 'bg-slate-200 group-hover:bg-slate-300'}`}></div>
-                                    <div className="flex flex-col flex-1 min-w-0">
-                                      <span className={`text-[9px] font-mono-data font-black ${activeTabId === res.id && !showPlanner ? 'text-[#B91C1C]' : 'text-slate-400'}`}>{res.id}</span>
-                                      <span className={`text-[12px] font-bold truncate font-serif-legal ${activeTabId === res.id && !showPlanner ? 'text-[#0F172A]' : 'text-slate-500'}`}>{res.input?.query || 'Nouvelle Analyse'}</span>
-                                    </div>
-                                    {res.status === 'processing' && <Loader2 size={12} className="text-[#B91C1C] animate-spin" />}
-                                  </button>
-                                ))}
-                              </div>
-                            </div>
-                          </>
-                        )}
-                      </div>
-                    )}
                   </div>
 
                   {/* Content Container */}
@@ -869,9 +865,10 @@ const App: React.FC = () => {
                         <div className="px-8 lg:px-8 py-10 lg:py-3 border-b border-slate-50 flex flex-col lg:flex-row justify-between items-start lg:items-end bg-gradient-to-b from-[#F8FAFC] to-white shrink-0 gap-8">
                           <div className="max-w-5xl">
                             <div className="flex flex-wrap items-center gap-4 mb-8">
-                              <div className="flex items-center gap-2.5 px-5 py-2 bg-white rounded-xl border border-slate-100 shadow-sm">
-                                <div className={`w-2.5 h-2.5 rounded-full ${activeResult.status === 'completed' ? 'bg-emerald-500 animate-pulse shadow-[0_0_10px_rgba(16,185,129,0.3)]' : 'bg-[#B91C1C] animate-ping shadow-[0_0_10px_rgba(185,28,28,0.3)]'}`}></div>
-                                <span className={`text-[11px] font-black uppercase tracking-[0.2em] ${activeResult.status === 'completed' ? 'text-emerald-700' : 'text-[#B91C1C]'}`}>
+                              <div className="flex items-center gap-2.5 px-5 py-2 bg-white rounded-xl border border-slate-100 shadow-sm relative overflow-hidden group">
+                                <div className="absolute inset-0 bg-gradient-to-r from-transparent via-[#B91C1C]/5 to-transparent animate-shimmer"></div>
+                                <div className={`w-2.5 h-2.5 rounded-full relative z-10 ${activeResult.status === 'completed' ? 'bg-emerald-500 animate-pulse shadow-[0_0_10px_rgba(16,185,129,0.3)]' : 'bg-[#B91C1C] animate-ping shadow-[0_0_10px_rgba(185,28,28,0.3)]'}`}></div>
+                                <span className={`text-[11px] font-black uppercase tracking-[0.2em] relative z-10 ${activeResult.status === 'completed' ? 'text-emerald-700' : 'text-[#B91C1C]'}`}>
                                   {activeResult.status === 'completed' ? 'Dossier Qualifié' : 'Investigation en Cours...'}
                                 </span>
                               </div>
@@ -1015,7 +1012,7 @@ const App: React.FC = () => {
         </main >
 
         {/* MOBILE BOTTOM NAVIGATION - PREMIUM PRO LIGHT */}
-        <nav className="lg:hidden fixed bottom-0 left-0 right-0 h-20 bg-white/90 border-t border-slate-100 flex items-center justify-start overflow-x-auto no-scrollbar px-6 z-50 backdrop-blur-3xl shadow-[0_-20px_50px_rgba(0,0,0,0.05)] gap-2">
+        < nav className="lg:hidden fixed bottom-0 left-0 right-0 h-20 bg-white/90 border-t border-slate-100 flex items-center justify-start overflow-x-auto no-scrollbar px-6 z-50 backdrop-blur-3xl shadow-[0_-20px_50px_rgba(0,0,0,0.05)] gap-2" >
           {!isGuestMode && (
             <MobileNavItem
               icon={Terminal}
@@ -1032,23 +1029,27 @@ const App: React.FC = () => {
             onClick={() => setViewMode('database')}
           />
 
-          {!isGuestMode && (
-            <MobileNavItem
-              icon={Cpu}
-              label="B-Scan"
-              isActive={viewMode === 'background_ai'}
-              onClick={() => setViewMode('background_ai')}
-            />
-          )}
+          {
+            !isGuestMode && (
+              <MobileNavItem
+                icon={Cpu}
+                label="B-Scan"
+                isActive={viewMode === 'background_ai'}
+                onClick={() => setViewMode('background_ai')}
+              />
+            )
+          }
 
-          {!isGuestMode && (
-            <MobileNavItem
-              icon={Briefcase}
-              label="Epstein"
-              isActive={viewMode === 'epstein_docs'}
-              onClick={() => setViewMode('epstein_docs')}
-            />
-          )}
+          {
+            !isGuestMode && (
+              <MobileNavItem
+                icon={Briefcase}
+                label="Epstein"
+                isActive={viewMode === 'epstein_docs'}
+                onClick={() => setViewMode('epstein_docs')}
+              />
+            )
+          }
 
           <MobileNavItem
             icon={Share2}
@@ -1107,29 +1108,33 @@ const App: React.FC = () => {
             onClick={() => setViewMode('flights')}
           />
 
-          {!isGuestMode && (
-            <MobileNavItem
-              icon={Mic}
-              label="Vocal"
-              isActive={viewMode === 'voice'}
-              onClick={() => setViewMode('voice')}
-            />
-          )}
+          {
+            !isGuestMode && (
+              <MobileNavItem
+                icon={Mic}
+                label="Vocal"
+                isActive={viewMode === 'voice'}
+                onClick={() => setViewMode('voice')}
+              />
+            )
+          }
 
-          {!isGuestMode && (
-            <>
-              <div className="h-10 w-px bg-slate-100 mx-2 shrink-0"></div>
-              <button
-                onClick={() => setShowLogs(!showLogs)}
-                className={`flex flex-col items-center justify-center gap-2 transition-all min-w-[64px] shrink-0 ${showLogs ? 'text-[#B91C1C]' : 'text-slate-400'}`}
-              >
-                <div className={`p-3 rounded-2xl transition-all ${showLogs ? 'bg-red-50 shadow-inner' : 'hover:bg-slate-50'}`}>
-                  <Activity size={20} className={showLogs ? 'animate-pulse' : ''} />
-                </div>
-                <span className="text-[10px] font-black uppercase tracking-widest leading-none">Logs</span>
-              </button>
-            </>
-          )}
+          {
+            !isGuestMode && (
+              <>
+                <div className="h-10 w-px bg-slate-100 mx-2 shrink-0"></div>
+                <button
+                  onClick={() => setShowLogs(!showLogs)}
+                  className={`flex flex-col items-center justify-center gap-2 transition-all min-w-[64px] shrink-0 ${showLogs ? 'text-[#B91C1C]' : 'text-slate-400'}`}
+                >
+                  <div className={`p-3 rounded-2xl transition-all ${showLogs ? 'bg-red-50 shadow-inner' : 'hover:bg-slate-50'}`}>
+                    <Activity size={20} className={showLogs ? 'animate-pulse' : ''} />
+                  </div>
+                  <span className="text-[10px] font-black uppercase tracking-widest leading-none">Logs</span>
+                </button>
+              </>
+            )
+          }
 
           <div className="h-10 w-px bg-slate-100 mx-2 shrink-0"></div>
           <button
@@ -1143,10 +1148,108 @@ const App: React.FC = () => {
               {isGuestMode ? 'Login' : 'Out'}
             </span>
           </button>
-        </nav>
-      </div>
+        </nav >
+      </div >
 
       {!isGuestMode && <LiveAssistant />}
+
+      {
+        showFullHistory && (
+          <div className="fixed inset-0 z-[110] bg-white animate-in zoom-in-95 fade-in duration-500 flex flex-col pt-10">
+            <div className="absolute inset-0 z-0 pointer-events-none opacity-[0.2] report-paper"></div>
+
+            <header className="px-10 lg:px-20 py-8 border-b border-slate-100 bg-white/50 backdrop-blur-xl shrink-0 z-10 relative">
+              <div className="flex items-center justify-between max-w-[1600px] mx-auto">
+                <div className="flex items-center gap-6">
+                  <div className="w-14 h-14 bg-black rounded-2xl flex items-center justify-center shadow-2xl">
+                    <History className="text-white" size={24} />
+                  </div>
+                  <div>
+                    <h2 className="text-2xl font-black text-[#0F172A] uppercase italic font-serif-legal tracking-tight">Archives <span className="text-[#B91C1C]">Neurales</span> Completes</h2>
+                    <div className="flex items-center gap-3 mt-1">
+                      <div className="w-2 h-2 rounded-full bg-[#B91C1C] animate-pulse"></div>
+                      <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.4em]">Historical Intelligence Index</span>
+                    </div>
+                  </div>
+                </div>
+                <button
+                  onClick={() => setShowFullHistory(false)}
+                  className="w-14 h-14 rounded-2xl bg-white border border-slate-100 flex items-center justify-center text-slate-400 hover:text-[#B91C1C] hover:border-[#B91C1C] transition-all shadow-xl active:scale-95 group"
+                >
+                  <X size={24} className="group-hover:rotate-90 transition-transform" />
+                </button>
+              </div>
+            </header>
+
+            <div className="flex-1 overflow-y-auto p-10 lg:p-20 custom-scrollbar z-10">
+              <div className="max-w-[1600px] mx-auto space-y-16">
+                {Object.entries(
+                  optimisticHistory.reduce((acc, res) => {
+                    const cat = res.input?.targetUrl || 'Analyses Diverses';
+                    if (!acc[cat]) acc[cat] = [];
+                    acc[cat].push(res);
+                    return acc;
+                  }, {} as Record<string, typeof optimisticHistory>)
+                ).map(([category, items]) => (
+                  <section key={category} className="space-y-8">
+                    <div className="flex items-center gap-6">
+                      <div className="h-px flex-1 bg-slate-100"></div>
+                      <h3 className="text-[11px] font-black text-slate-300 uppercase tracking-[0.6em] whitespace-nowrap bg-white px-6 py-2 rounded-full border border-slate-50 shadow-sm">{category}</h3>
+                      <div className="h-px flex-1 bg-slate-100"></div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-6">
+                      {items.map((res) => (
+                        <button
+                          key={res.id}
+                          onClick={() => {
+                            setActiveTabId(res.id);
+                            setShowPlanner(false);
+                            setShowFullHistory(false);
+                          }}
+                          className={`flex flex-col p-8 rounded-[2.5rem] border text-left transition-all relative group hover:shadow-2xl hover:-translate-y-2 ${activeTabId === res.id && !showPlanner
+                            ? 'bg-slate-900 border-slate-900 shadow-xl'
+                            : 'bg-white border-slate-100 hover:border-[#B91C1C]/20 shadow-sm'
+                            }`}
+                        >
+                          <div className="flex justify-between items-start mb-6">
+                            <span className={`text-[9px] font-mono-data font-black p-2 rounded-lg bg-slate-50 group-hover:bg-white/10 transition-colors ${activeTabId === res.id && !showPlanner ? 'text-[#B91C1C]' : 'text-slate-300'}`}>
+                              #{res.id.slice(0, 8)}
+                            </span>
+                            {res.status === 'processing' && <Loader2 size={16} className="text-[#B91C1C] animate-spin" />}
+                          </div>
+
+                          <h4 className={`text-lg font-black italic font-serif-legal leading-tight mb-4 group-hover:text-[#B91C1C] transition-colors line-clamp-2 ${activeTabId === res.id && !showPlanner ? 'text-white' : 'text-[#0F172A]'}`}>
+                            "{res.input?.query || 'Analyse sans titre'}"
+                          </h4>
+
+                          <div className={`mt-auto pt-6 border-t border-slate-50 flex items-center justify-between group-hover:border-white/10 ${activeTabId === res.id && !showPlanner ? 'border-white/10' : ''}`}>
+                            <span className="text-[8px] font-black uppercase tracking-widest text-slate-300">
+                              {new Date(res.timestamp || Date.now()).toLocaleDateString('fr-FR')}
+                            </span>
+                            <ArrowUpRight size={14} className="text-[#B91C1C] opacity-0 group-hover:opacity-100 transition-all transform -translate-x-2 group-hover:translate-x-0" />
+                          </div>
+                        </button>
+                      ))}
+                    </div>
+                  </section>
+                ))}
+
+                {optimisticHistory.length === 0 && (
+                  <div className="flex flex-col items-center justify-center py-40 opacity-20 italic">
+                    <History size={80} className="mb-6 stroke-1" />
+                    <span className="text-xl font-black uppercase tracking-[0.5em] font-serif-legal">Aucune archive neural détectée</span>
+                  </div>
+                )}
+              </div>
+            </div>
+
+            <div className="p-8 border-t border-slate-50 bg-[#F8FAFC]/50 text-center">
+              <span className="text-[9px] font-black text-slate-300 uppercase tracking-[0.5em]">Neural Processing Unit • Secure Extraction Protocol v4.2</span>
+            </div>
+          </div>
+        )
+      }
 
       {/* LOGS OVERLAY - PRO STYLE */}
       {
