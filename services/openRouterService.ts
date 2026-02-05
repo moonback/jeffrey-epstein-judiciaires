@@ -49,10 +49,10 @@ export const mergeDataWithFlash = async (input: InputData): Promise<{ json: Disc
     ${fileContext}
     
     INSTRUCTIONS CRITIQUES :
-    1. Agissez comme un enquêteur forensique senior.
-    2. Analysez les documents DOJ Epstein (ou le contenu fourni ci-dessus) pour extraire des preuves tangibles.
+    1. Agissez comme un enquêteur spécialisé en recherche de personnes.
+    2. Analysez les données fournies pour extraire des indices concrets.
     3. Si une information est absente, indiquez "[NON MENTIONNÉ]" au lieu d'halluciner.
-    4. Citez les numéros de pièces jointes ou de pages si visibles.
+    4. Citez les sources précises si visibles.
     5. Répondez exclusivement en JSON valide selon le schéma fourni.
     `;
 
@@ -68,8 +68,7 @@ export const mergeDataWithFlash = async (input: InputData): Promise<{ json: Disc
                 headers: {
                     "Authorization": `Bearer ${key}`,
                     "Content-Type": "application/json",
-                    "HTTP-Referer": "https://github.com/moonback/Analyseur-de-Documents-Judiciaires",
-                    "X-Title": "DOJ Forensic Analyzer"
+                    "X-Title": "Missing Finder Forensic"
                 },
                 body: JSON.stringify({
                     model: getModelId(),
@@ -108,7 +107,7 @@ export const mergeDataWithFlash = async (input: InputData): Promise<{ json: Disc
                 `Vérification d'hallucination effectuée.`
             ],
             sources: [
-                { title: "Justice.gov Epstein Disclosures", uri: "https://www.justice.gov/epstein/doj-disclosures" }
+                { title: "OSINT Sources", uri: "Internal Databases" }
             ]
         };
     } catch (error: any) {
@@ -132,7 +131,7 @@ export const askAssistant = async (history: { role: string, text: string }[], me
             body: JSON.stringify({
                 model: getModelId(),
                 messages: [
-                    { role: "system", content: "Vous êtes un assistant juridique spécialisé dans les 'DOJ Epstein Disclosures'. Répondez en français de manière précise et factuelle." },
+                    { role: "system", content: "Vous êtes un assistant spécialisé dans la recherche de personnes disparues et l'analyse de données OSINT. Répondez en français de manière précise et factuelle." },
                     ...history.map(h => ({ role: h.role === "user" ? "user" : "assistant", content: h.text })),
                     { role: "user", content: message }
                 ]

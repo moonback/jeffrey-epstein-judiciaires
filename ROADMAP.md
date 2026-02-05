@@ -1,42 +1,40 @@
-# 🗺️ Roadmap : DOJ Forensic Analyzer
+# 🗺️ Roadmap : Missing Finder Forensic
 
-Ce document trace l'évolution de la plateforme, depuis son état actuel de MVP jusqu'à une suite forensique complète et collaborative.
+Ce document trace l'évolution de la plateforme, depuis son état actuel jusqu'à une suite d'enquête OSINT complète.
 
 ---
 
-## ✅ Phase 1 : MVP & Fondations (Terminé)
+## ✅ Phase 1 : Fondations (Terminé)
 - [x] Infrastructure React 19 / Vite réactive.
-- [x] Moteur d'analyse IA via OpenRouter (Gemini 2.0).
-- [x] Stockage Local-First avec IndexedDB.
+- [x] Moteur d'analyse IA spécialisé Missing Persons (Gemini 2.0).
+- [x] Stockage Local-First avec IndexedDB (Missing Finder DB).
 - [x] Interface de laboratoire à onglets.
-- [x] Visualisation des résultats via "Data Cards".
-- [x] Assistant interactif (Live Assistant).
+- [x] Visualisation via "Investigation Cards".
+- [x] Assistant d'investigation en temps réel.
 
-## 🚧 Phase 2 : Visualisation Avancée (En cours)
-- [x] **Neural Network Graph** : Graphe de relations dynamique entre entités.
-- [x] **Timeline Engine** : Chronologie interactive des événements et documents.
-- [x] **Financial Flow Tracker** : Extraction et visualisation des flux monétaires.
-- [x] **Archives Epstein** : Module dédié à l'exploration du dataset de divulgations.
-- [x] **Analyse Multimodale** : Support OCR pour les PDF scannés via Tesseract.js.
+## 🚧 Phase 2 : Analyse de Données (En cours)
+- [x] **Neural Network Graph** : Cartographie des cercles de relations.
+- [x] **Timeline Engine** : Reconstitution des derniers mouvements connus.
+- [x] **Activity Tracker** : Analyse des flux et traces numériques.
+- [x] **Analyse Multimodale** : Support OCR pour rapports de police et documents scannés.
 
-## 🚀 Phase 3 : V1.0 - Outils Forensiques Professionnels (Q1 2026)
-- [ ] **Export Suite Pro** : Génération de rapports PDF complexes, CSV pour Excel, et Markdown.
-- [ ] **Cross-Document Discovery** : Algorithme pour identifier automatiquement des liens entre deux documents analysés séparément.
-- [ ] **Mode Collaboration** : Espaces de travail partagés (Shared Workspaces) via Supabase.
-- [ ] **Agent Backup** : Sauvegarde granulaire des traces de raisonnement des agents IA.
+## 🚀 Phase 3 : V1.0 - Outils d'Enquête Professionnels (Q1 2026)
+- [ ] **Export Suite Pro** : Rapports d'enquête PDF, synthèses pour les autorités.
+- [ ] **Cross-Investigation Discovery** : Identification automatique de liens entre disparitions.
+- [ ] **Mode Collaboration** : Espaces partagés pour équipes de recherche via Supabase.
+- [ ] **Agent OSINT** : Module de recherche automatique sur le web public.
 
 ## 🔮 Phase 4 : Vision Long Terme
-- [ ] **Fine-tuning Juridique** : Entraînement d'un modèle spécifique aux terminologies judiciaires du DOJ.
-- [ ] **OSINT Integration** : Corrélation automatique entre les documents DOJ et les fuites de données (leaks) ou archives du Dark Web.
-- [ ] **Analyse Audio/Vidéo** : Transcription et analyse forensique des enregistrements d'audiences.
-- [ ] **API Publique** : Permettre à des tiers de requêter la base de données indexée.
+- [ ] **Intégration Dark Web** : Corrélation avec les leak databases pour identification.
+- [ ] **Geofencing IA** : Analyse automatique des zones géographiques basées sur les indices.
+- [ ] **Analyse Audio/Vidéo** : Identification faciale et analyse de vidéos de surveillance.
 
 ---
 
 ## 📈 Priorités Actuelles
-1.  **Fiabilité de l'extraction** : Améliorer les prompts pour éliminer les hallucinations sur les dates et montants.
-2.  **Performance du Graphe** : Optimisation du rendu pour les dossiers contenant plus de 200 entités.
-3.  **UI/UX Mobile** : Rendre les outils complexes (Graphe/Timeline) pleinement utilisables sur tablette et mobile.
+1.  **Fiabilité de la Chronologie** : Améliorer les prompts pour une précision temporelle absolue.
+2.  **Visualisation Pro** : Optimiser le graphe pour les enquêtes multi-cibles.
+3.  **Mobile First** : Assurer une utilisation fluide sur le terrain via smartphone.
 
 ---
 

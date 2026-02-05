@@ -1,26 +1,25 @@
-# ⚖️ Analyseur de Documents Judiciaires (DOJ Forensic)
+# 🔍 Missing Finder Forensic - Recherche de Personnes Disparues
 
 [![License: MIT](https://img.shields.io/badge/License-MIT-yellow.svg)](https://opensource.org/licenses/MIT)
 [![React](https://img.shields.io/badge/React-19-blue.svg)](https://react.dev/)
 [![Vite](https://img.shields.io/badge/Vite-6-purple.svg)](https://vitejs.dev/)
 [![Tailwind](https://img.shields.io/badge/Tailwind-4-38B2AC.svg)](https://tailwindcss.com/)
 
-**DOJ Forensic** est une plateforme forensic de pointe conçue pour explorer, extraire et synthétiser les divulgations complexes du Département de la Justice (DOJ). Propulsé par l'IA (Gemini via OpenRouter), l'outil transforme des archives et documents judiciaires denses en une base de données structurée, visuelle et interrogeable en temps réel.
+**Missing Finder Forensic** est une plateforme d'enquête de pointe conçue pour aider à localiser les personnes disparues via l'analyse de données et l'OSINT (Open Source Intelligence). Propulsé par l'IA (Gemini via OpenRouter), l'outil transforme des sources disparates (réseaux sociaux, logs financiers, témoignages) en une base de données structurée, visuelle et interrogeable pour identifier des indices critiques.
 
-> "Transformer le chaos documentaire en preuves structurées et exploitables."
+> "Transformer les traces numériques en pistes concrètes pour retrouver les disparus."
 
 ---
 
 ## 🌟 Fonctionnalités Clés
 
-- **🕵️ Extraction Forensique IA** : Analyse automatique des sources pour extraire les faits, dates, entités et implications juridiques complexes.
-- **🌐 Cartographie de Réseau (Neural Graph)** : Graphe interactif 2D pour identifier les connexions entre individus, organisations et flux financiers.
-- **📊 Chronologie Temporelle (Timeline)** : Vue chronologique avancée permettant de reconstituer la séquence précise des événements.
-- **💰 Traçabilité Financière** : Module dédié à l'analyse des flux monétaires et du patrimoine (Assets).
-- **🤖 Assistant Live & Vocal** : Co-pilote intelligent capable de répondre aux questions complexes et de naviguer via commandes vocales.
-- **💾 Architecture Local-First** : Persistance ultra-rapide via IndexedDB avec synchronisation optionnelle vers **Supabase**.
-- **📁 Gestion Multitâche** : Système d'onglets de laboratoire permettant de mener plusieurs investigations simultanément.
-- **📥 Dossier Archive Epstein** : Accès direct et indexé aux divulgations spécifiques concernant l'affaire Jeffrey Epstein.
+- **🕵️ Enquête IA & OSINT** : Analyse automatique des sources numériques pour extraire les faits, dates, relations et lieux clés.
+- **🌐 Cartographie de Réseau (Neural Graph)** : Graphe interactif pour identifier les cercles proches, les contacts fréquents et les entités liées.
+- **📊 Chronologie de Disparition** : Vue chronologique permettant de reconstituer les derniers mouvements connus et les moments critiques.
+- **💰 Analyse des Flux & Activités** : Module pour repérer les transactions ou activités pouvant indiquer un lieu ou un déplacement.
+- **🤖 Assistant d'Investigation Live** : Co-pilote intelligent capable de suggérer des pistes d'enquête et de croiser les informations.
+- **💾 Architecture Local-First** : Confidentialité et rapidité maximales via IndexedDB avec synchronisation optionnelle vers **Supabase**.
+- **📁 Gestion Multitâche** : Système d'onglets permettant de mener plusieurs enquêtes ou analyses de sources simultanément.
 
 ---
 
