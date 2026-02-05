@@ -21,9 +21,9 @@ import {
     Maximize2,
     TrendingUp,
     ChevronDown,
-    X,
     LayoutGrid,
-    AlignLeft
+    AlignLeft,
+    Layers
 } from 'lucide-react';
 import jsPDF from 'jspdf';
 import autoTable from 'jspdf-autotable';
@@ -43,34 +43,83 @@ export const AssetsView: React.FC = () => {
     }, []);
 
     const allAssets = useMemo(() => {
-        const uniqueMap = new Map<string, AssetDetail & { parentId: string }>();
+        const canonicalAssets: (AssetDetail & { sources: string[], mentions: number, searchKey: string })[] = [];
+
+        const getSearchKey = (name: string) => {
+            return name.toLowerCase()
+                .normalize("NFD").replace(/[\u0300-\u036f]/g, "") // Remove accents
+                .replace(/[^a-z0-9]/g, " ")
+                .split(/\s+/)
+                .filter(w => w.length > 2)
+                .sort()
+                .join("");
+        };
 
         history.forEach(res => {
             if (res.output?.actifs) {
-                res.output.actifs.forEach(a => {
-                    // Create a unique key for deduplication (Type + Normalised Name)
-                    const key = `${a.type}-${a.nom.toLowerCase().trim()}`;
+                res.output.actifs.forEach(asset => {
+                    const searchKey = getSearchKey(asset.nom);
+                    const locationKey = asset.localisation ? getSearchKey(asset.localisation) : '';
 
-                    if (!uniqueMap.has(key)) {
-                        uniqueMap.set(key, { ...a, parentId: res.id });
-                    } else {
-                        // Optional: Keep the one with value if the existing one doesn't have it
-                        const existing = uniqueMap.get(key)!;
-                        if (!existing.valeur_estimee && a.valeur_estimee) {
-                            uniqueMap.set(key, { ...a, parentId: res.id });
+                    // Try to find a match in existing canonical assets
+                    const matchIndex = canonicalAssets.findIndex(existing => {
+                        // 1. Must be same type
+                        if (existing.type !== asset.type) return false;
+
+                        // 2. Immediate key match
+                        if (existing.searchKey === searchKey && searchKey.length > 0) return true;
+
+                        // 3. Location collision + partial name match
+                        if (locationKey.length > 3 && existing.localisation) {
+                            const existingLocKey = getSearchKey(existing.localisation);
+                            if (existingLocKey.includes(locationKey) || locationKey.includes(existingLocKey)) {
+                                // Same location, check if name has a common word
+                                const assetWords = asset.nom.toLowerCase().split(/\s+/).filter(w => w.length > 3);
+                                const existingWords = existing.nom.toLowerCase().split(/\s+/).filter(w => w.length > 3);
+                                if (assetWords.some(w => existingWords.includes(w))) return true;
+                            }
                         }
+
+                        return false;
+                    });
+
+                    if (matchIndex === -1) {
+                        canonicalAssets.push({
+                            ...asset,
+                            sources: [res.id],
+                            mentions: 1,
+                            searchKey
+                        });
+                    } else {
+                        const existing = canonicalAssets[matchIndex];
+
+                        // Merge logic
+                        if (!existing.valeur_estimee && asset.valeur_estimee) {
+                            existing.valeur_estimee = asset.valeur_estimee;
+                            existing.devise = asset.devise;
+                        }
+                        if ((!existing.localisation || existing.localisation.length < 5) && asset.localisation) {
+                            existing.localisation = asset.localisation;
+                        }
+                        if (asset.description && !existing.description.includes(asset.description.slice(0, 15))) {
+                            existing.description += ` | ${asset.description}`;
+                        }
+
+                        if (!existing.sources.includes(res.id)) {
+                            existing.sources.push(res.id);
+                        }
+                        existing.mentions += 1;
                     }
                 });
             }
         });
 
-        const list = Array.from(uniqueMap.values());
-
-        return list.filter(a => {
-            const matchesSearch = a.nom.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                a.description.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                a.proprietaire_declare.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                (a.localisation || '').toLowerCase().includes(searchQuery.toLowerCase());
+        return canonicalAssets.filter(a => {
+            const lowQuery = searchQuery.toLowerCase();
+            const matchesSearch = a.nom.toLowerCase().includes(lowQuery) ||
+                a.description.toLowerCase().includes(lowQuery) ||
+                a.proprietaire_declare.toLowerCase().includes(lowQuery) ||
+                (a.localisation || '').toLowerCase().includes(lowQuery);
 
             const matchesType = filterType === 'all' || a.type === filterType;
 
@@ -477,6 +526,15 @@ const AssetCard: React.FC<{ asset: any, formatCurrency: any, getTypeIcon: any, g
                     </div>
                 </div>
             )}
+            <div className="flex items-start gap-3">
+                <Layers size={14} className="text-[#B91C1C] shrink-0 mt-0.5" />
+                <div className="min-w-0">
+                    <div className="text-[8px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">Sources Doc.</div>
+                    <div className="text-[11px] font-black text-[#B91C1C] flex items-center gap-1">
+                        {asset.sources.length} Dossiers <span className="opacity-40">({asset.mentions} mentions)</span>
+                    </div>
+                </div>
+            </div>
         </div>
 
         <div className="pt-6 border-t border-slate-50 relative">
@@ -517,7 +575,12 @@ const AssetRow: React.FC<{ asset: any, formatCurrency: any, getTypeIcon: any, ge
 
         <div className="flex-1">
             <div className="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-1">Description</div>
-            <p className="text-[11px] text-slate-500 italic truncate italic">"{asset.description}"</p>
+            <p className="text-[11px] text-slate-500 italic truncate font-medium">"{asset.description}"</p>
+        </div>
+
+        <div className="w-24 text-right">
+            <div className="text-[8px] font-black text-[#B91C1C] uppercase tracking-widest mb-1">Impact</div>
+            <div className="text-[11px] font-black text-[#B91C1C]">{asset.sources.length} Sources</div>
         </div>
 
         <button className="w-10 h-10 rounded-xl bg-slate-50 text-slate-300 flex items-center justify-center hover:bg-[#B91C1C] hover:text-white transition-all opacity-0 group-hover:opacity-100">
