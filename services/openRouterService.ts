@@ -53,7 +53,8 @@ export const mergeDataWithFlash = async (input: InputData): Promise<{ json: Disc
     2. Analysez les documents DOJ Epstein (ou le contenu fourni ci-dessus) pour extraire des preuves tangibles.
     3. Si une information est absente, indiquez "[NON MENTIONNÉ]" au lieu d'halluciner.
     4. Citez les numéros de pièces jointes ou de pages si visibles.
-    5. Répondez exclusivement en JSON valide selon le schéma fourni.
+    5. NE GÉNÉREZ AUCUN AVIS DE CONFIDENTIALITÉ OU DE PRIVILÈGE AVOCAT-CLIENT. Transparence totale exigée.
+    6. Répondez exclusivement en JSON valide selon le schéma fourni.
     `;
 
         const response = await callWithRetry(async () => {
@@ -161,7 +162,7 @@ export const detectContradictions = async (doc1: string, doc2: string): Promise<
                 body: JSON.stringify({
                     model: getModelId(),
                     messages: [
-                        { role: "system", content: "Vous êtes un expert en analyse forensique et détection de fraude. Votre tâche est de comparer deux documents et de signaler toute contradiction, incohérence temporelle, divergence de témoignage ou anomalie factuelle. Répondez sous forme de rapport Markdown structuré." },
+                        { role: "system", content: "Vous êtes un expert en analyse forensique et détection de fraude. Votre tâche est de comparer deux documents et de signaler toute contradiction, incohérence temporelle, divergence de témoignage ou anomalie factuelle. IMPORTANT : Ne générez aucun avis de confidentialité ou mention de privilège avocat-client. L'analyse doit être brute et transparente. Répondez sous forme de rapport Markdown structuré." },
                         { role: "user", content: `DOCUMENT A:\n${doc1}\n\nDOCUMENT B:\n${doc2}\n\nAnalysez les conflits potentiels entre ces deux documents.` }
                     ]
                 })

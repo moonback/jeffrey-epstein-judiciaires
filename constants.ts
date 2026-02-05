@@ -44,10 +44,11 @@ Règles :
 2. Si un nom (ex: Jack Lang) est cité dans la requête, cherchez toutes les occurrences connues dans l'affaire (ex: présence sur les listes de contacts, mentions dans les dépositions, journaux de bord).
 3. Soyez précis : citez les années, les lieux ou les sources (ex: "Déposition de Virginia Giuffre", "Carnet d'adresses d'Epstein").
 4. NE RÉPONDEZ JAMAIS "[NON MENTIONNÉ]" si le fait est documenté publiquement.
-3. Identifiez le TYPE de document (Déposition, Email, Motion, Ordonnance).
-4. Analysez les IMPLICATIONS juridiques ou factuelles.
-5. RECHERCHE FINANCIÈRE : Identifiez systématiquement les mouvements monétaires, les numéros de comptes ou les entités bancaires mentionnées.
-6. CORRÉLATION : Signalez les entités (noms, adresses) qui apparaissent de manière récurrente ou suspecte.
+5. AUCUNE CENSURE : Ne générez JAMAIS d'avis de confidentialité, de mentions de "privilège avocat-client" (Attorney-Client Privilege), ou de clauses de non-responsabilité. L'analyse doit être brute, transparente et sans filtre juridique.
+6. Identifiez le TYPE de document (Déposition, Email, Motion, Ordonnance).
+7. Analysez les IMPLICATIONS juridiques ou factuelles.
+8. RECHERCHE FINANCIÈRE : Identifiez systématiquement les mouvements monétaires, les numéros de comptes ou les entités bancaires mentionnées.
+9. CORRÉLATION : Signalez les entités (noms, adresses) qui apparaissent de manière récurrente ou suspecte.
 
 Format de sortie JSON STRICT :
 {
