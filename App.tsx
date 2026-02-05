@@ -56,7 +56,6 @@ import { AssetsView } from './components/AssetsView';
 import { CrossSessionView } from './components/CrossSessionView';
 import { VoiceAssistant } from './components/VoiceAssistant';
 import { Auth } from './components/Auth';
-import { EpsteinArchiveView } from './components/EpsteinArchiveView';
 import { supabase, isSupabaseConfigured } from './services/supabaseClient';
 
 import { useOptimistic, useTransition } from 'react';
@@ -192,7 +191,7 @@ const App: React.FC = () => {
     const inputData: InputData = {
       id: newId,
       query: query,
-      targetUrl: file ? `DOC: ${file.name}` : `DOJ ARCHIVE : ${sourceLabel}`,
+      targetUrl: file ? `DOC: ${file.name}` : `SOURCE : ${sourceLabel}`,
       timestamp: Date.now(),
       ...(fileContent ? { fileContent } : {})
     } as any;
@@ -353,8 +352,8 @@ const App: React.FC = () => {
     const newId = `ENTITY-${Date.now().toString().slice(-4)}`;
     const entityQuery: InputData = {
       id: newId,
-      query: `PROFILAGE ENTITÉ : Qui est "${entityName}" dans le contexte de l'affaire Epstein ? Quel est son rôle exact, quelles sont les accusations ou implications mentionnées dans les documents DOJ ?`,
-      targetUrl: "https://www.justice.gov/epstein/doj-disclosures",
+      query: `PROFILAGE COMPORTEMENTAL : Analyse le profil de "${entityName}" dans le cadre de cette recherche. Quelles sont les dernières interactions ou lieux liés à cette personne ?`,
+      targetUrl: "OSINT DATABASE",
       timestamp: Date.now()
     };
 
@@ -394,7 +393,7 @@ const App: React.FC = () => {
     const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(exportData, null, 2));
     const downloadAnchorNode = document.createElement('a');
     downloadAnchorNode.setAttribute("href", dataStr);
-    downloadAnchorNode.setAttribute("download", `DOJ_Analysis_${result.id}.json`);
+    downloadAnchorNode.setAttribute("download", `Investigation_Data_${result.id}.json`);
     document.body.appendChild(downloadAnchorNode);
     downloadAnchorNode.click();
     downloadAnchorNode.remove();
@@ -407,7 +406,7 @@ const App: React.FC = () => {
       const url = URL.createObjectURL(exportBlob);
       const a = document.createElement('a');
       a.href = url;
-      a.download = `DOJ_Forensic_FULL_Export_${new Date().toISOString().slice(0, 10)}.json`;
+      a.download = `Missing_Finder_Export_${new Date().toISOString().slice(0, 10)}.json`;
       document.body.appendChild(a);
       a.click();
       document.body.removeChild(a);
@@ -465,7 +464,7 @@ const App: React.FC = () => {
     const deepQuery: InputData = {
       id: newId,
       query: queryMap[style],
-      targetUrl: "https://www.justice.gov/epstein/doj-disclosures",
+      targetUrl: "OSINT ANALYSIS",
       timestamp: Date.now()
     };
 
@@ -548,7 +547,7 @@ const App: React.FC = () => {
                 <ShieldCheck size={18} className="text-white" />
               </div>
               <h1 className="text-base font-black tracking-tight text-[#0F172A] uppercase italic">
-                DOJ <span className="text-[#B91C1C] font-serif-legal font-black tracking-normal">Forensic</span>
+                Missing <span className="text-[#B91C1C] font-serif-legal font-black tracking-normal">Finder</span>
               </h1>
             </div>
 
@@ -567,7 +566,7 @@ const App: React.FC = () => {
                 <span className="text-[8px] font-black text-slate-300 uppercase tracking-[0.3em] mb-0.5">Index Central</span>
                 <div className="flex items-center gap-1.5">
                   <div className="text-xl font-mono-data font-black text-[#B91C1C] leading-none">{processedCount}</div>
-                  <div className="text-[9px] font-black text-slate-400 uppercase tracking-tighter self-end mb-0.5 whitespace-nowrap">Dossiers Qualifiés</div>
+                  <div className="text-[9px] font-black text-slate-400 uppercase tracking-tighter self-end mb-0.5 whitespace-nowrap">Analyses de Recherche</div>
                 </div>
               </div>
             </div>
@@ -887,14 +886,7 @@ const App: React.FC = () => {
             {viewMode === 'assets' && <AssetsView />}
             {viewMode === 'cross' && <CrossSessionView onNavigateToInvestigation={handleOpenInvestigation} />}
             {viewMode === 'voice' && <VoiceAssistant />}
-            {viewMode === 'epstein_docs' && (
-              <EpsteinArchiveView
-                onAnalyze={handleAnalyzeFile}
-                onOpenAnalysis={handleOpenAnalysis}
-                analyzedFilePaths={analyzedFilePaths}
-                isGuestMode={isGuestMode}
-              />
-            )}
+
           </div>
         </main >
 
@@ -916,14 +908,7 @@ const App: React.FC = () => {
             onClick={() => setViewMode('database')}
           />
 
-          {!isGuestMode && (
-            <MobileNavItem
-              icon={Briefcase}
-              label="Epstein"
-              isActive={viewMode === 'epstein_docs'}
-              onClick={() => setViewMode('epstein_docs')}
-            />
-          )}
+
 
           <MobileNavItem
             icon={Share2}

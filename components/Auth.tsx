@@ -56,7 +56,7 @@ export const Auth: React.FC<AuthProps> = ({ onGuestAccess }) => {
                             <ShieldCheck className="text-white" size={32} />
                         </div>
                         <h1 className="text-3xl font-black text-[#0F172A] uppercase italic font-serif-legal tracking-tight leading-none mb-3">
-                            DOJ <span className="text-[#B91C1C]">Forensic</span>
+                            Missing <span className="text-[#B91C1C]">Finder</span>
                         </h1>
                         <div className="flex items-center gap-3">
                             <div className="w-1.5 h-1.5 rounded-full bg-[#B91C1C] animate-pulse"></div>
@@ -75,7 +75,7 @@ export const Auth: React.FC<AuthProps> = ({ onGuestAccess }) => {
                                     required
                                     value={email}
                                     onChange={(e) => setEmail(e.target.value)}
-                                    placeholder="agent@doj.gov"
+                                    placeholder="enqueteur@finder.com"
                                     className="w-full bg-[#F8FAFC] border border-slate-100 rounded-2xl py-3.5 pl-12 pr-6 text-sm text-[#0F172A] focus:bg-white focus:border-[#B91C1C] outline-none transition-all shadow-inner font-bold placeholder:text-slate-300"
                                 />
                             </div>

@@ -10,7 +10,7 @@ import { askAssistant } from '../services/openRouterService';
 export const LiveAssistant: React.FC = () => {
   const [isOpen, setIsOpen] = useState(false);
   const [messages, setMessages] = useState<{ role: string, text: string }[]>([
-    { role: 'model', text: 'Bonjour. Je suis connecté aux archives du DOJ. Posez-moi une question sur un document PDF spécifique ou un fait du dossier.' }
+    { role: 'model', text: 'Bonjour. Je suis votre assistant d\'investigation. Posez-moi une question sur une personne, un lieu ou une source numérique.' }
   ]);
   const [input, setInput] = useState('');
   const [isLoading, setIsLoading] = useState(false);
@@ -55,7 +55,7 @@ export const LiveAssistant: React.FC = () => {
                 <Bot size={18} className="text-[#F2B8B5]" />
               </div>
               <div>
-                <h3 className="text-[#E3E3E3] font-bold text-sm">Assistant Dossier DOJ</h3>
+                <h3 className="text-[#E3E3E3] font-bold text-sm">Assistant Recherche</h3>
                 <div className="flex items-center gap-1.5">
                   <span className="w-1.5 h-1.5 rounded-full bg-[#4BB543] animate-pulse"></span>
                   <span className="text-[10px] text-[#C4C7C5]">En ligne • Accès PDF</span>
@@ -88,7 +88,7 @@ export const LiveAssistant: React.FC = () => {
               <div className="flex justify-start">
                 <div className="bg-[#2B2B2B] rounded-2xl rounded-bl-none p-3 border border-[#444746] flex items-center gap-2">
                   <Loader2 size={14} className="animate-spin text-[#F2B8B5]" />
-                  <span className="text-xs text-[#C4C7C5]">Recherche dans les documents...</span>
+                  <span className="text-xs text-[#C4C7C5]">Recherche dans les sources...</span>
                 </div>
               </div>
             )}
@@ -102,7 +102,7 @@ export const LiveAssistant: React.FC = () => {
                 value={input}
                 onChange={(e) => setInput(e.target.value)}
                 onKeyDown={(e) => e.key === 'Enter' && handleSend()}
-                placeholder="Posez une question sur le dossier..."
+                placeholder="Posez une question sur l'enquête..."
                 className="w-full bg-[#121212] text-[#E3E3E3] text-sm rounded-xl pl-4 pr-10 py-3 border border-[#444746] focus:outline-none focus:border-[#F2B8B5] placeholder-[#757775]"
               />
               <button

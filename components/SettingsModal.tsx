@@ -224,7 +224,7 @@ export const SettingsModal: React.FC<SettingsModalProps> = ({ isOpen, onClose, o
           <div className="flex items-center gap-3 relative z-10">
             <Shield size={14} className="text-[#B5965D]" />
             <div className="h-3 w-px bg-slate-200"></div>
-            <span className="text-[#B91C1C] text-[9px] font-black uppercase tracking-[0.3em] font-serif-legal italic">DOJ Authorized</span>
+            <span className="text-[#B91C1C] text-[9px] font-black uppercase tracking-[0.3em] font-serif-legal italic">OSINT Certified</span>
           </div>
         </div>
       </div>

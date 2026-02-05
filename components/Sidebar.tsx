@@ -29,7 +29,7 @@ import {
     Briefcase
 } from 'lucide-react';
 
-export type ViewType = 'lab' | 'database' | 'network' | 'timeline' | 'contradictions' | 'poi' | 'finance' | 'assets' | 'cross' | 'voice' | 'epstein_docs';
+export type ViewType = 'lab' | 'database' | 'network' | 'timeline' | 'contradictions' | 'poi' | 'finance' | 'assets' | 'cross' | 'voice';
 
 interface SidebarProps {
     currentView: ViewType;
@@ -54,15 +54,14 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
     const menuItems = [
         { id: 'lab', label: 'Laboratoire', icon: Terminal, color: 'text-[#B91C1C]', adminOnly: true },
-        { id: 'database', label: 'Archives Centrales', icon: Database, color: 'text-[#0F4C81]' },
-        { id: 'epstein_docs', label: 'Archives Epstein', icon: Briefcase, color: 'text-[#B91C1C]', adminOnly: true },
+        { id: 'database', label: 'Base de Données', icon: Database, color: 'text-[#0F4C81]' },
         { id: 'network', label: 'Cartographie', icon: Share2, color: 'text-[#0F4C81]' },
         { id: 'timeline', label: 'Chronologie', icon: Clock, color: 'text-[#B91C1C]' },
-        { id: 'finance', label: 'Flux Financiers', icon: DollarSign, color: 'text-[#B91C1C]' },
-        { id: 'assets', label: 'Patrimoine', icon: Archive, color: 'text-[#B91C1C]' },
+        { id: 'finance', label: 'Flux Activités', icon: DollarSign, color: 'text-[#B91C1C]' },
+        { id: 'assets', label: 'Biens & Véhicules', icon: Archive, color: 'text-[#B91C1C]' },
         { id: 'cross', label: 'Intelligence Croisée', icon: Link2, color: 'text-[#0F4C81]' },
-        { id: 'contradictions', label: 'Contradictions', icon: ShieldAlert, color: 'text-[#0F4C81]' },
-        { id: 'poi', label: 'Index des Cibles', icon: Users, color: 'text-[#B91C1C]' },
+        { id: 'contradictions', label: 'Incohérences', icon: ShieldAlert, color: 'text-[#0F4C81]' },
+        { id: 'poi', label: 'Personnes d\'Intérêt', icon: Users, color: 'text-[#B91C1C]' },
         { id: 'voice', label: 'Assistant Vocal', icon: Mic, color: 'text-[#B91C1C]', adminOnly: true },
     ].filter(item => !isGuestMode || !item.adminOnly);
 
@@ -91,7 +90,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                     {!isCollapsed && (
                         <div className="hidden lg:block animate-pro-reveal duration-500">
                             <h1 className="font-black text-[#0F172A] tracking-tighter text-lg uppercase leading-none font-serif-legal italic">
-                                DOJ <span className="text-[#B91C1C]">Forensic</span>
+                                Missing <span className="text-[#B91C1C]">Finder</span>
                             </h1>
                             <div className="flex items-center gap-2 mt-1">
                                 <span className="text-[8px] font-black text-slate-300 uppercase tracking-[0.4em]">Analytical Unit 4.2</span>
