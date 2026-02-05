@@ -78,13 +78,13 @@ export const FinancialFlowView: React.FC = () => {
             if (res.output?.transactions_financieres) {
                 res.output.transactions_financieres.forEach(t => {
                     // Normalize data for matching
-                    const src = t.source.toLowerCase().trim();
-                    const dst = t.destination.toLowerCase().trim();
-                    const amt = Math.round(t.montant); // Round to handle slight precision diffs
-                    const date = t.date?.split('T')[0] || 'Unknown'; // Normalize date string
+                    const src = (t.source || 'Inconnu').toLowerCase().trim();
+                    const dst = (t.destination || 'Inconnu').toLowerCase().trim();
+                    const amt = Math.round(Number(t.montant) || 0); // Round to handle slight precision diffs
+                    const date = t.date?.split('T')[0] || 'Inconnue'; // Normalize date string
 
                     // Create a composite key for deduplication
-                    const key = `${src}-${dst}-${amt}-${t.devise}-${date}`;
+                    const key = `${src}-${dst}-${amt}-${t.devise || 'USD'}-${date}`;
 
                     if (!mergedMap.has(key)) {
                         mergedMap.set(key, {
@@ -112,9 +112,9 @@ export const FinancialFlowView: React.FC = () => {
         const list = Array.from(mergedMap.values());
 
         let filtered = list.filter(t => {
-            const matchesSearch = t.source.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                t.destination.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                t.description.toLowerCase().includes(searchQuery.toLowerCase());
+            const matchesSearch = (t.source || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+                (t.destination || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+                (t.description || '').toLowerCase().includes(searchQuery.toLowerCase());
 
             const matchesEntity = !selectedEntity ||
                 t.source === selectedEntity ||
@@ -122,7 +122,7 @@ export const FinancialFlowView: React.FC = () => {
 
             if (!matchesSearch || !matchesEntity) return false;
 
-            const tDate = new Date(t.date);
+            const tDate = t.date ? new Date(t.date) : new Date(0);
             const now = new Date();
             if (dateFilter === 'month') {
                 const oneMonthAgo = new Date();
@@ -134,12 +134,12 @@ export const FinancialFlowView: React.FC = () => {
                 if (tDate < oneYearAgo) return false;
             }
 
-            if (filterType === 'high') return t.montant > 500000;
-            if (filterType === 'suspicious') return t.montant > 1000000 || t.description.toLowerCase().includes('offshore') || t.description.toLowerCase().includes('inconnu');
+            if (filterType === 'high') return (Number(t.montant) || 0) > 500000;
+            if (filterType === 'suspicious') return (Number(t.montant) || 0) > 1000000 || (t.description || '').toLowerCase().includes('offshore') || (t.description || '').toLowerCase().includes('inconnu');
             return true;
         });
 
-        return filtered.sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+        return filtered.sort((a, b) => new Date(b.date || 0).getTime() - new Date(a.date || 0).getTime());
     }, [history, searchQuery, filterType, selectedEntity, dateFilter]);
 
     const entityProfiles = useMemo(() => {
@@ -150,7 +150,7 @@ export const FinancialFlowView: React.FC = () => {
         history.forEach(res => res.output?.transactions_financieres?.forEach(t => baseTransactions.push(t)));
 
         baseTransactions.forEach(t => {
-            [t.source, t.destination].forEach((name, idx) => {
+            [(t.source || 'Inconnu'), (t.destination || 'Inconnu')].forEach((name, idx) => {
                 if (!profiles[name]) {
                     profiles[name] = {
                         name,
@@ -779,8 +779,8 @@ const FilterButton: React.FC<{ active: boolean, onClick: () => void, label: stri
 );
 
 const TransactionCard: React.FC<{ transaction: any, onEntityClick: (name: string) => void, formatCurrency: any }> = ({ transaction, onEntityClick, formatCurrency }) => {
-    const isBig = transaction.montant > 500000;
-    const isSuspicious = transaction.montant > 1000000 || transaction.description.toLowerCase().includes('offshore');
+    const isBig = (Number(transaction.montant) || 0) > 500000;
+    const isSuspicious = (Number(transaction.montant) || 0) > 1000000 || (transaction.description || '').toLowerCase().includes('offshore');
 
     return (
         <div className={`

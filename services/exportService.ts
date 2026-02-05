@@ -33,7 +33,7 @@ export class ExportService {
             markdown += `**Date**: ${doc.date}\n\n`;
             markdown += `**Description**: ${doc.description}\n\n`;
 
-            if (doc.key_facts && doc.key_facts.length > 0) {
+            if (Array.isArray(doc.key_facts) && doc.key_facts.length > 0) {
                 markdown += `**Points clés**:\n`;
                 doc.key_facts.forEach(fact => {
                     markdown += `- ${fact}\n`;
@@ -234,7 +234,7 @@ export class ExportService {
             <p><strong>Type:</strong> ${doc.type || 'Standard'} | <strong>Date:</strong> ${doc.date}</p>
             <p><em>"${doc.description}"</em></p>
             
-            ${doc.key_facts && doc.key_facts.length > 0 ? `
+            ${Array.isArray(doc.key_facts) && doc.key_facts.length > 0 ? `
                 <div class="key-facts">
                     <strong>Points clés:</strong>
                     <ul>

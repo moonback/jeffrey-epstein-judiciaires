@@ -13,13 +13,14 @@ export interface Correlation {
 }
 
 export class CorrelationService {
-    private static normalize(name: string): string {
+    private static normalize(name: any): string {
         if (!name) return "";
-        return name.toLowerCase()
+        const targetName = typeof name === 'string' ? name : ((name as any).nom || (name as any).name || String(name));
+        return targetName.toLowerCase()
             .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
             .replace(/[^a-z0-9]/g, " ")
             .split(/\s+/)
-            .filter(w => w.length > 2)
+            .filter((w: string) => w.length > 2)
             .sort()
             .join("");
     }
@@ -30,8 +31,8 @@ export class CorrelationService {
         if (!doc1.output || !doc2.output) return { doc1Id: doc1.id, doc2Id: doc2.id, links: [], totalStrength: 0 };
 
         // 1. Entity Matching
-        const entities1 = new Map(doc1.output.entites_cles.map(e => [this.normalize(e), e]));
-        const entities2 = new Map(doc2.output.entites_cles.map(e => [this.normalize(e), e]));
+        const entities1 = new Map((doc1.output.entites_cles || []).map(e => [this.normalize(e), e]));
+        const entities2 = new Map((doc2.output.entites_cles || []).map(e => [this.normalize(e), e]));
 
         entities1.forEach((original, key) => {
             if (entities2.has(key)) {
@@ -154,8 +155,10 @@ export class CorrelationService {
                 const key = this.normalize(ent);
                 if (!key) return;
 
+                const entName = typeof ent === 'string' ? ent : ((ent as any).nom || (ent as any).name || "Inconnu");
+
                 const existing = entityMap.get(key) || {
-                    originalName: ent,
+                    originalName: entName,
                     investigations: new Set(),
                     themes: new Set(),
                     totalRisk: 0,
@@ -165,7 +168,7 @@ export class CorrelationService {
                 };
 
                 existing.investigations.add(res.id);
-                const detail = details.find(d => d.nom === ent);
+                const detail = details.find(d => d.nom === entName);
                 existing.totalRisk += detail ? detail.risk_level : 3;
 
                 // Grab mentions in PII

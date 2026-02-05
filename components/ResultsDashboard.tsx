@@ -45,9 +45,9 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ history, onD
   const filteredDocs = useMemo(() => {
     return allDocuments.filter(item => {
       const matchesSearch =
-        item.doc.title.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        item.doc.description.toLowerCase().includes(searchTerm.toLowerCase()) ||
-        item.investigationQuery.toLowerCase().includes(searchTerm.toLowerCase());
+        (item.doc?.title?.toLowerCase() || "").includes(searchTerm.toLowerCase()) ||
+        (item.doc?.description?.toLowerCase() || "").includes(searchTerm.toLowerCase()) ||
+        (item.investigationQuery?.toLowerCase() || "").includes(searchTerm.toLowerCase());
 
       const matchesType = activeType === 'ALL' || item.doc.type === activeType;
 
@@ -170,7 +170,7 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ history, onD
                     </p>
                   </div>
 
-                  {item.doc.key_facts && item.doc.key_facts.length > 0 && (
+                  {Array.isArray(item.doc.key_facts) && item.doc.key_facts.length > 0 && (
                     <div className="space-y-4 bg-[#F8FAFC]/50 p-6 rounded-[2rem] border border-slate-50 group-hover:bg-white group-hover:border-slate-100 transition-all">
                       <label className="text-[9px] uppercase font-black tracking-[0.3em] text-slate-300 flex items-center gap-2">
                         <Activity size={12} className="text-[#B91C1C]" /> Verified Insight

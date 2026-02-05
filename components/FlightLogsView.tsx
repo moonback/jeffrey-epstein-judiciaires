@@ -48,26 +48,36 @@ export const FlightLogsView: React.FC = () => {
         });
 
         return list.filter(f => {
+            const passengers = Array.isArray(f.passagers) ? f.passagers : [];
             const matchesSearch =
-                f.source.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                f.depart.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                f.destination.toLowerCase().includes(searchQuery.toLowerCase()) ||
-                f.passagers.some(p => p.toLowerCase().includes(searchQuery.toLowerCase()));
+                (f.source || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+                (f.depart || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+                (f.destination || '').toLowerCase().includes(searchQuery.toLowerCase()) ||
+                passengers.some(p => {
+                    const name = typeof p === 'string' ? p : ((p as any).nom || (p as any).name || String(p));
+                    return name.toLowerCase().includes(searchQuery.toLowerCase());
+                });
 
             const matchesPassenger = !selectedPassenger ||
-                f.passagers.some(p => p === selectedPassenger);
+                passengers.some(p => {
+                    const name = typeof p === 'string' ? p : ((p as any).nom || (p as any).name || String(p));
+                    return name === selectedPassenger;
+                });
 
             return matchesSearch && matchesPassenger;
-        }).sort((a, b) => new Date(b.date).getTime() - new Date(a.date).getTime());
+        }).sort((a, b) => new Date(b.date || 0).getTime() - new Date(a.date || 0).getTime());
     }, [history, searchQuery, selectedPassenger]);
 
     const passengerStats = useMemo(() => {
         const stats: Record<string, number> = {};
         history.forEach(res => {
             res.output?.journaux_de_vol?.forEach(f => {
-                f.passagers.forEach(p => {
-                    stats[p] = (stats[p] || 0) + 1;
-                });
+                if (Array.isArray(f.passagers)) {
+                    f.passagers.forEach(p => {
+                        const name = typeof p === 'string' ? p : ((p as any).nom || (p as any).name || "Inconnu");
+                        stats[name] = (stats[name] || 0) + 1;
+                    });
+                }
             });
         });
         return Object.entries(stats)
@@ -154,8 +164,8 @@ export const FlightLogsView: React.FC = () => {
                                     key={name}
                                     onClick={() => setSelectedPassenger(name === selectedPassenger ? null : name)}
                                     className={`w-full flex items-center justify-between p-3 rounded-xl border transition-all ${selectedPassenger === name
-                                            ? 'bg-[#0F172A] border-[#0F172A] text-white shadow-lg'
-                                            : 'bg-white border-slate-100 hover:border-slate-200 text-slate-600 shadow-sm'
+                                        ? 'bg-[#0F172A] border-[#0F172A] text-white shadow-lg'
+                                        : 'bg-white border-slate-100 hover:border-slate-200 text-slate-600 shadow-sm'
                                         }`}
                                 >
                                     <span className="text-[11px] font-black italic truncate font-serif-legal">{name}</span>
@@ -257,18 +267,21 @@ const FlightCard: React.FC<{ flight: any, onPassengerClick: (name: string) => vo
 
                     <div className="space-y-3">
                         <div className="text-[9px] font-black text-slate-300 uppercase tracking-[0.3em] flex items-center gap-2 pl-2">
-                            <Users size={12} /> Passagers à bord ({flight.passagers.length})
+                            <Users size={12} /> Passagers à bord ({Array.isArray(flight.passagers) ? flight.passagers.length : 0})
                         </div>
                         <div className="flex flex-wrap gap-2">
-                            {flight.passagers.map((p: string, i: number) => (
-                                <button
-                                    key={i}
-                                    onClick={() => onPassengerClick(p)}
-                                    className="px-3 py-1.5 bg-white border border-slate-100 rounded-lg text-[10px] font-black font-serif-legal italic text-slate-600 hover:text-[#B91C1C] hover:border-[#B91C1C]/30 hover:shadow-md transition-all active:scale-95"
-                                >
-                                    {p}
-                                </button>
-                            ))}
+                            {Array.isArray(flight.passagers) && flight.passagers.map((p: any, i: number) => {
+                                const name = typeof p === 'string' ? p : ((p as any).nom || (p as any).name || "Inconnu");
+                                return (
+                                    <button
+                                        key={i}
+                                        onClick={() => onPassengerClick(name)}
+                                        className="px-3 py-1.5 bg-white border border-slate-100 rounded-lg text-[10px] font-black font-serif-legal italic text-slate-600 hover:text-[#B91C1C] hover:border-[#B91C1C]/30 hover:shadow-md transition-all active:scale-95"
+                                    >
+                                        {name}
+                                    </button>
+                                );
+                            })}
                         </div>
                     </div>
                 </div>

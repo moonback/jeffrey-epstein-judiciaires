@@ -10,13 +10,13 @@ export const AI_MODELS = [
     id: 'google/gemini-2.5-flash-preview-09-2025',
     name: 'Gemini 2.5 Flash',
     provider: 'Google',
-    speed: 'Ultra Fast',
+    speed: 'Fast',
   },
   {
-    id: 'anthropic/claude-3.5-sonnet',
-    name: 'Claude 3.5 Sonnet',
-    provider: 'Anthropic',
-    speed: 'High Intelligence',
+    id: 'openai/gpt-5-nano',
+    name: 'GPT 5 Nano',
+    provider: 'OpenAI',
+    speed: 'Fast',
   },
   {
     id: 'meta-llama/llama-3.3-70b-instruct',

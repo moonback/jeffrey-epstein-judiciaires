@@ -57,11 +57,11 @@ import { FinancialFlowView } from './components/FinancialFlowView';
 import { AssetsView } from './components/AssetsView';
 import { CrossSessionView } from './components/CrossSessionView';
 import { FlightLogsView } from './components/FlightLogsView';
-import { PersonalDataView } from './components/PersonalDataView';
 import { CrossDocumentDiscoveryView } from './components/CrossDocumentDiscoveryView';
 import { VoiceAssistant } from './components/VoiceAssistant';
 import { Auth } from './components/Auth';
 import { EpsteinArchiveView } from './components/EpsteinArchiveView';
+import { BackgroundAIView, FileTask } from './components/BackgroundAIView';
 import { supabase, isSupabaseConfigured } from './services/supabaseClient';
 
 import { useOptimistic, useTransition } from 'react';
@@ -110,6 +110,113 @@ const App: React.FC = () => {
     localStorage.getItem('OPENROUTER_API_KEY') || ''
   );
   const [isPending, startTransition] = useTransition();
+
+  // Background AI Tasks State
+  const [bgTasks, setBgTasks] = useState<FileTask[]>([]);
+  const [isBgProcessing, setIsBgProcessing] = useState(false);
+  const [bgStats, setBgStats] = useState({ total: 0, completed: 0, failed: 0 });
+
+  // Background Processing Loop
+  const isProcessingRef = useRef(false);
+  useEffect(() => {
+    if (!isBgProcessing || isProcessingRef.current) return;
+
+    const processNext = async () => {
+      const nextIndex = bgTasks.findIndex(t => t.status === 'idle' || t.status === 'error');
+      if (nextIndex === -1) {
+        setIsBgProcessing(false);
+        isProcessingRef.current = false;
+        return;
+      }
+
+      isProcessingRef.current = true;
+      const task = bgTasks[nextIndex];
+
+      // Update task status to extracting
+      setBgTasks(prev => {
+        const next = [...prev];
+        next[nextIndex] = { ...next[nextIndex], status: 'extracting', progress: 10 };
+        return next;
+      });
+
+      try {
+        let content = "";
+        let fileName = task.file.name;
+
+        if (task.publicPath) {
+          content = await FileProcessingService.extractTextFromPDFUrl(task.publicPath, fileName, (msg) => {
+            setBgTasks(prev => {
+              const next = [...prev];
+              if (next[nextIndex]) next[nextIndex] = { ...next[nextIndex], progress: 30 };
+              return next;
+            });
+          });
+        } else {
+          const processed = await FileProcessingService.processFile(task.file, (msg) => {
+            setBgTasks(prev => {
+              const next = [...prev];
+              if (next[nextIndex]) next[nextIndex] = { ...next[nextIndex], progress: 30 };
+              return next;
+            });
+          });
+          content = processed.content;
+        }
+
+        setBgTasks(prev => {
+          const next = [...prev];
+          if (next[nextIndex]) next[nextIndex] = { ...next[nextIndex], status: 'analyzing', progress: 50 };
+          return next;
+        });
+
+        const newId = `BG-${Date.now().toString().slice(-4)}-${nextIndex}`;
+        const inputData: InputData = {
+          id: newId,
+          query: `ANALYSE AUTOMATIQUE : Effectuez une extraction structurée des faits, entités et dates clés de ce document judiciaire.`,
+          targetUrl: task.publicPath || `LOCAL_FILE: ${fileName}`,
+          timestamp: Date.now(),
+          fileContent: content
+        } as any;
+
+        const result = await mergeDataWithFlash(inputData);
+
+        const completedResult: ProcessedResult = {
+          id: newId,
+          input: inputData,
+          output: result.json,
+          logs: result.logs,
+          sources: [{ title: fileName, uri: task.publicPath || 'local' }],
+          durationMs: 0,
+          status: 'completed'
+        };
+
+        await storageService.saveResult(completedResult);
+
+        // Sync with main history
+        setResolutionHistory(prev => [...prev.filter(r => r.id !== completedResult.id), completedResult]);
+        setProcessedCount(prev => prev + 1);
+
+        setBgTasks(prev => {
+          const next = [...prev];
+          if (next[nextIndex]) next[nextIndex] = { ...next[nextIndex], status: 'completed', progress: 100, resultId: newId };
+          return next;
+        });
+        setBgStats(prev => ({ ...prev, completed: prev.completed + 1 }));
+
+      } catch (error: any) {
+        console.error("Background task error", error);
+        setBgTasks(prev => {
+          const next = [...prev];
+          if (next[nextIndex]) next[nextIndex] = { ...next[nextIndex], status: 'error', error: error.message };
+          return next;
+        });
+        setBgStats(prev => ({ ...prev, failed: prev.failed + 1 }));
+      } finally {
+        isProcessingRef.current = false;
+      }
+    };
+
+    processNext();
+  }, [isBgProcessing, bgTasks.length, bgStats.completed, bgStats.failed]);
 
   const handleModelChange = (modelId: string) => {
     setSelectedAiModel(modelId);
@@ -598,20 +705,7 @@ const App: React.FC = () => {
                   </div>
                 </div>
               )}
-              <div className="flex flex-col items-start">
-                <span className="text-slate-300 text-[7px] mb-0.5 uppercase">Cryptage</span>
-                <div className="flex items-center gap-1.5 text-slate-600">
-                  <div className="w-1 h-1 rounded-full bg-[#0F4C81]"></div>
-                  <span>AES-256</span>
-                </div>
-              </div>
-              <div className="flex flex-col items-start">
-                <span className="text-slate-300 text-[7px] mb-0.5 uppercase">Réponse</span>
-                <div className="flex items-center gap-1.5 text-emerald-600">
-                  <div className="w-1 h-1 rounded-full bg-emerald-500 animate-pulse"></div>
-                  <span>12.4ms Sync</span>
-                </div>
-              </div>
+
             </div>
 
             <button
@@ -845,6 +939,21 @@ const App: React.FC = () => {
               </div>
             )}
 
+            {viewMode === 'background_ai' && (
+              <div className="h-full overflow-hidden animate-pro-reveal">
+                <BackgroundAIView
+                  onOpenAnalysis={handleOpenInvestigation}
+                  tasks={bgTasks}
+                  setTasks={setBgTasks}
+                  isProcessing={isBgProcessing}
+                  setIsProcessing={setIsBgProcessing}
+                  stats={bgStats}
+                  setStats={setBgStats}
+                  analyzedTargets={new Set(resolutionHistory.map(r => r.input.targetUrl))}
+                />
+              </div>
+            )}
+
             {viewMode === 'database' && (
               <div className="h-full overflow-hidden bg-white">
                 <ResultsDashboard
@@ -901,7 +1010,6 @@ const App: React.FC = () => {
               />
             )}
             {viewMode === 'flights' && <FlightLogsView />}
-            {viewMode === 'personal_data' && <PersonalDataView />}
             {viewMode === 'discovery' && <CrossDocumentDiscoveryView onNavigateToInvestigation={handleOpenInvestigation} />}
           </div>
         </main >
@@ -923,6 +1031,15 @@ const App: React.FC = () => {
             isActive={viewMode === 'database'}
             onClick={() => setViewMode('database')}
           />
+
+          {!isGuestMode && (
+            <MobileNavItem
+              icon={Cpu}
+              label="B-Scan"
+              isActive={viewMode === 'background_ai'}
+              onClick={() => setViewMode('background_ai')}
+            />
+          )}
 
           {!isGuestMode && (
             <MobileNavItem
@@ -975,12 +1092,6 @@ const App: React.FC = () => {
             onClick={() => setViewMode('contradictions')}
           />
 
-          <MobileNavItem
-            icon={Fingerprint}
-            label="PII"
-            isActive={viewMode === 'personal_data'}
-            onClick={() => setViewMode('personal_data')}
-          />
 
           <MobileNavItem
             icon={Network}

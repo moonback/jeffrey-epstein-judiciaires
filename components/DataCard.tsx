@@ -261,7 +261,7 @@ export const DataCard: React.FC<DataCardProps> = ({ result, loading, onDeepDive,
                                                     <div className="h-[1px] flex-1 bg-gradient-to-r from-slate-100 to-transparent"></div>
                                                 </div>
                                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
-                                                    {doc.key_facts.map((fact, k) => (
+                                                    {Array.isArray(doc.key_facts) && doc.key_facts.map((fact, k) => (
                                                         <div key={k} className="bg-white group-hover/inner:bg-slate-50/30 p-6 rounded-[2rem] border border-slate-100 hover:border-[#B91C1C]/20 transition-all flex items-start gap-5 group/fact shadow-sm">
                                                             <div className="w-8 h-8 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-center text-[12px] font-black text-white shrink-0 group-hover/fact:bg-[#B91C1C] group-hover/fact:scale-110 transition-all shadow-lg">
                                                                 {String(k + 1).padStart(2, '0')}
@@ -370,9 +370,13 @@ export const DataCard: React.FC<DataCardProps> = ({ result, loading, onDeepDive,
                                             <Users size={10} /> Manifeste Passagers
                                         </div>
                                         <div className="flex flex-wrap gap-2">
-                                            {f.passagers.map((p, pi) => (
-                                                <span key={pi} onClick={() => onEntityClick(p)} className="px-2 py-1 bg-white/5 rounded-lg text-[9px] font-black text-slate-300 hover:text-white hover:bg-[#B91C1C] transition-all cursor-pointer border border-white/5 font-serif-legal">
-                                                    {p}
+                                            {f.passagers.map((p: any, pi) => (
+                                                <span
+                                                    key={pi}
+                                                    onClick={() => onEntityClick(typeof p === 'string' ? p : p.nom || 'Inconnu')}
+                                                    className="px-2 py-1 bg-white/5 rounded-lg text-[9px] font-black text-slate-300 hover:text-white hover:bg-[#B91C1C] transition-all cursor-pointer border border-white/5 font-serif-legal"
+                                                >
+                                                    {typeof p === 'string' ? p : p.nom || 'Inconnu'}
                                                 </span>
                                             ))}
                                         </div>
@@ -394,13 +398,13 @@ export const DataCard: React.FC<DataCardProps> = ({ result, loading, onDeepDive,
                             <h5 className="text-[11px] font-black uppercase tracking-[0.5em] text-[#0F172A]">Réseau d'Influence</h5>
                         </div>
                         <div className="flex flex-wrap gap-3">
-                            {data.entites_cles?.map((entity, i) => (
+                            {data.entites_cles?.map((entity: any, i) => (
                                 <button
                                     key={i}
-                                    onClick={() => onEntityClick(entity)}
+                                    onClick={() => onEntityClick(typeof entity === 'string' ? entity : entity.nom || 'Inconnu')}
                                     className="group flex items-center gap-4 px-6 py-3 rounded-2xl bg-white text-slate-500 text-[13px] font-black border border-slate-100 hover:border-[#B91C1C] hover:text-[#B91C1C] hover:shadow-2xl transition-all duration-300 active:scale-90 shadow-sm"
                                 >
-                                    <span className="italic font-serif-legal">{entity}</span>
+                                    <span className="italic font-serif-legal">{typeof entity === 'string' ? entity : entity.nom || 'Inconnu'}</span>
                                     <ArrowUpRight size={16} className="text-[#B91C1C] opacity-0 group-hover:opacity-100 transform translate-y-1 group-hover:translate-y-0 transition-all" />
                                 </button>
                             ))}

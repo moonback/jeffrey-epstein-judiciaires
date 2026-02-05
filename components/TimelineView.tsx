@@ -74,21 +74,23 @@ export const TimelineView: React.FC<TimelineViewProps> = ({ onDeepDive, isGuestM
 
             // 2. Key Facts
             res.output.documents?.forEach((doc, dIdx) => {
-                doc.key_facts?.forEach((fact, fIdx) => {
-                    const yearMatch = fact.match(/\b(19|20)\d{2}\b/);
-                    if (yearMatch) {
-                        const year = parseInt(yearMatch[0]);
-                        list.push({
-                            id: `fact-${res.id}-${dIdx}-${fIdx}`,
-                            date: new Date(year, 0, 1),
-                            dateStr: year.toString(),
-                            title: "Fait Marquant",
-                            description: fact,
-                            sourceId: res.id,
-                            type: 'ÉVÉNEMENT_CLÉ'
-                        });
-                    }
-                });
+                if (Array.isArray(doc.key_facts)) {
+                    doc.key_facts.forEach((fact, fIdx) => {
+                        const yearMatch = fact.match(/\b(19|20)\d{2}\b/);
+                        if (yearMatch) {
+                            const year = parseInt(yearMatch[0]);
+                            list.push({
+                                id: `fact-${res.id}-${dIdx}-${fIdx}`,
+                                date: new Date(year, 0, 1),
+                                dateStr: year.toString(),
+                                title: "Fait Marquant",
+                                description: fact,
+                                sourceId: res.id,
+                                type: 'ÉVÉNEMENT_CLÉ'
+                            });
+                        }
+                    });
+                }
             });
 
             // 3. Transactions

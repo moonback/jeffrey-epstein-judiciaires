@@ -229,24 +229,28 @@ export const POIView: React.FC<POIViewProps> = ({ onDeepDive, isGuestMode }) => 
         const map = new Map<string, { docs: number, events: number }>();
         history.forEach(res => {
             res.output?.entites_cles?.forEach(ent => {
-                const stats = map.get(ent) || { docs: 0, events: 0 };
+                const entName = typeof ent === 'string' ? ent : ((ent as any).nom || (ent as any).name || String(ent || "Inconnu"));
+                const stats = map.get(entName) || { docs: 0, events: 0 };
                 stats.docs++;
-                map.set(ent, stats);
+                map.set(entName, stats);
             });
             res.output?.documents?.forEach(doc => {
-                doc.key_facts.forEach(fact => {
-                    res.output?.entites_cles?.forEach(ent => {
-                        if (fact.includes(ent)) {
-                            const stats = map.get(ent)!;
-                            stats.events++;
-                            map.set(ent, stats);
-                        }
+                if (Array.isArray(doc.key_facts)) {
+                    doc.key_facts.forEach(fact => {
+                        res.output?.entites_cles?.forEach(ent => {
+                            const entName = typeof ent === 'string' ? ent : ((ent as any).nom || (ent as any).name || String(ent || "Inconnu"));
+                            if (typeof fact === 'string' && fact.includes(entName)) {
+                                const stats = map.get(entName)!;
+                                stats.events++;
+                                map.set(entName, stats);
+                            }
+                        });
                     });
-                });
+                }
             });
         });
         return Array.from(map.entries())
-            .filter(([name]) => name.toLowerCase().includes(searchQuery.toLowerCase()))
+            .filter(([name]) => String(name || '').toLowerCase().includes(searchQuery.toLowerCase()))
             .sort((a, b) => b[1].docs - a[1].docs);
     }, [history, searchQuery]);
 
@@ -351,10 +355,18 @@ export const POIView: React.FC<POIViewProps> = ({ onDeepDive, isGuestMode }) => 
                                         <h4 className="text-[9px] font-black text-[#B91C1C] uppercase tracking-[0.3em] flex items-center gap-2">
                                             <Activity size={14} /> Archive Resilience
                                         </h4>
-                                        <span className="px-2 py-0.5 bg-slate-50 text-slate-400 text-[8px] font-black rounded text-[8px] border border-slate-100 font-mono-data">{history.filter(h => h.output?.entites_cles?.includes(selectedEntity)).length} REF</span>
+                                        <span className="px-2 py-0.5 bg-slate-50 text-slate-400 text-[8px] font-black rounded text-[8px] border border-slate-100 font-mono-data">
+                                            {history.filter(h => (h.output?.entites_cles || []).some(ent => {
+                                                const name = typeof ent === 'string' ? ent : ((ent as any).nom || (ent as any).name || String(ent));
+                                                return name === selectedEntity;
+                                            })).length} REF
+                                        </span>
                                     </div>
                                     <div className="space-y-4 relative z-10">
-                                        {history.filter(h => h.output?.entites_cles?.includes(selectedEntity)).slice(0, 5).map((h, i) => (
+                                        {history.filter(h => (h.output?.entites_cles || []).some(ent => {
+                                            const name = typeof ent === 'string' ? ent : ((ent as any).nom || (ent as any).name || String(ent));
+                                            return name === selectedEntity;
+                                        })).slice(0, 5).map((h, i) => (
                                             <div key={i} className="p-6 bg-slate-50 group-hover:bg-[#F8FAFC] rounded-[1.5rem] border border-slate-50 hover:border-[#B91C1C]/20 transition-all duration-300 group/item">
                                                 <div className="text-[#0F172A] font-black text-[13px] mb-2 italic font-serif-legal group-hover/item:text-[#B91C1C] transition-colors leading-snug">"{h.input.query}"</div>
                                                 <div className="text-slate-500 text-[12px] leading-relaxed font-medium line-clamp-2 italic">"{h.output?.context_general}"</div>
@@ -374,7 +386,7 @@ export const POIView: React.FC<POIViewProps> = ({ onDeepDive, isGuestMode }) => 
                                     </div>
                                     <div className="space-y-6 relative z-10">
                                         {history.flatMap(h => h.output?.documents || [])
-                                            .filter(d => d.key_facts.some(f => f.includes(selectedEntity!)))
+                                            .filter(d => Array.isArray(d.key_facts) && d.key_facts.some(f => typeof f === 'string' && f.includes(selectedEntity!)))
                                             .slice(0, 8)
                                             .map((d, i) => (
                                                 <div key={i} className="text-[13px] text-slate-500 leading-relaxed border-b border-slate-50 pb-6 last:border-0 relative pl-8 group/item font-medium">
@@ -390,7 +402,7 @@ export const POIView: React.FC<POIViewProps> = ({ onDeepDive, isGuestMode }) => 
                                                             </button>
                                                         )}
                                                     </div>
-                                                    <div className="italic text-slate-600 leading-relaxed font-serif-legal">"{d.key_facts.find(f => f.includes(selectedEntity!))}"</div>
+                                                    <div className="italic text-slate-600 leading-relaxed font-serif-legal">"{Array.isArray(d.key_facts) ? d.key_facts.find(f => typeof f === 'string' && f.includes(selectedEntity!)) : ""}"</div>
                                                 </div>
                                             ))}
                                     </div>
