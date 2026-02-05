@@ -18,57 +18,113 @@ export interface Correlation {
 }
 
 export class CorrelationService {
+    private static normalize(name: string): string {
+        return name.toLowerCase()
+            .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+            .replace(/[^a-z0-9]/g, " ")
+            .split(/\s+/)
+            .filter(w => w.length > 2)
+            .sort()
+            .join("");
+    }
+
     static async getCrossSessionCorrelations(): Promise<Correlation[]> {
         const results = await storageService.getAllResults();
         const entityMap = new Map<string, {
+            originalName: string,
             investigations: Set<string>,
             themes: Set<string>,
             totalRisk: number,
             sent: number,
-            received: number
+            received: number,
+            piiFound: Set<string>
         }>();
 
         results.forEach(res => {
             const entities = res.output?.entites_cles || [];
             const details = res.output?.entites_details || [];
             const transactions = res.output?.transactions_financieres || [];
+            const pii = res.output?.donnees_personnelles || [];
 
+            // 1. Process explicit entities
             entities.forEach(ent => {
-                const existing = entityMap.get(ent) || { investigations: new Set(), themes: new Set(), totalRisk: 0, sent: 0, received: 0 };
-                existing.investigations.add(res.id); // Use ID instead of query for uniqueness
+                const key = this.normalize(ent);
+                if (!key) return;
 
+                const existing = entityMap.get(key) || {
+                    originalName: ent,
+                    investigations: new Set(),
+                    themes: new Set(),
+                    totalRisk: 0,
+                    sent: 0,
+                    received: 0,
+                    piiFound: new Set()
+                };
+
+                existing.investigations.add(res.id);
                 const detail = details.find(d => d.nom === ent);
                 existing.totalRisk += detail ? detail.risk_level : 3;
 
-                // Sync financial data if present
-                transactions.forEach(t => {
-                    if (t.source === ent) existing.sent += t.montant;
-                    if (t.destination === ent) existing.received += t.montant;
+                // Grab mentions in PII
+                pii.forEach(p => {
+                    if (this.normalize(p.owner) === key) {
+                        existing.piiFound.add(`${p.type}:${p.value}`);
+                    }
                 });
 
-                entityMap.set(ent, existing);
+                // Grab financial info
+                transactions.forEach(t => {
+                    const srcKey = this.normalize(t.source);
+                    const dstKey = this.normalize(t.destination);
+                    if (srcKey === key) existing.sent += t.montant;
+                    if (dstKey === key) existing.received += t.montant;
+                    if (srcKey === key || dstKey === key) {
+                        if (t.description) existing.themes.add(t.description.split(' ').slice(0, 3).join(' '));
+                    }
+                });
+
+                entityMap.set(key, existing);
+            });
+
+            // 2. Double check PII Owners who might not be in entities_cles
+            pii.forEach(p => {
+                const key = this.normalize(p.owner);
+                if (!key || entityMap.has(key)) return;
+
+                entityMap.set(key, {
+                    originalName: p.owner,
+                    investigations: new Set([res.id]),
+                    themes: new Set(['Identifié via PII']),
+                    totalRisk: 5,
+                    sent: 0,
+                    received: 0,
+                    piiFound: new Set([`${p.type}:${p.value}`])
+                });
             });
         });
 
         const correlations: Correlation[] = [];
-        entityMap.forEach((data, entity) => {
-            if (data.investigations.size > 1 || data.sent > 0 || data.received > 0) {
+        entityMap.forEach((data, key) => {
+            // Keep significant correlations: multiple investigations OR financial OR pii found
+            if (data.investigations.size > 1 || data.sent > 0 || data.piiFound.size > 0) {
+                const avgRisk = data.totalRisk / data.investigations.size;
+                const piiBonus = data.piiFound.size * 1.5;
+                const freqBonus = data.investigations.size * 0.8;
+
                 correlations.push({
-                    entity,
+                    entity: data.originalName,
                     occurrences: data.investigations.size,
                     relatedInvestigations: Array.from(data.investigations),
-                    sharedThematics: [],
-                    riskScore: Math.min(10, Math.round(data.totalRisk / data.investigations.size + (data.investigations.size * 0.5))),
+                    sharedThematics: Array.from(data.themes).slice(0, 5),
+                    riskScore: Math.min(10, Math.round(avgRisk + piiBonus + freqBonus)),
                     financialHub: data.sent > 100000 || data.received > 100000,
                     totalAmountSent: data.sent,
-                    totalAmountReceived: data.received
-                });
+                    totalAmountReceived: data.received,
+                    piiCount: data.piiFound.size
+                } as any);
             }
         });
 
-        return correlations.sort((a, b) => {
-            if (b.occurrences !== a.occurrences) return b.occurrences - a.occurrences;
-            return (b.totalAmountSent! + b.totalAmountReceived!) - (a.totalAmountSent! + a.totalAmountReceived!);
-        });
+        return correlations.sort((a, b) => b.riskScore - a.riskScore);
     }
 }

@@ -103,6 +103,14 @@ Format de sortie JSON STRICT :
       "description": string
     }
   ],
+  "donnees_personnelles": [
+    {
+      "owner": string (Nom de la personne concernée),
+      "type": "email" | "phone" | "address" | "passport" | "ssn" | "other",
+      "value": string (La donnée brute),
+      "context": string (Où ou comment cette donnée a été trouvée)
+    }
+  ],
   "contexte_juridique": string
 }
 `;
@@ -113,6 +121,7 @@ const QUERIES = [
   "Liste les emails échangés entre les associés et détaille leur contenu.",
   "Quelles motions ont été déposées concernant la confidentialité des noms ?",
   "Trouve les documents mentionnant des transactions financières spécifiques.",
+  "Recherche exhaustive de coordonnées PII (emails, téléphones, adresses) associées aux cibles principales.",
   "Détaille les témoignages des victimes (Jane Doe) présents dans les dossiers."
 ];
 

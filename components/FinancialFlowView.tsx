@@ -72,18 +72,44 @@ export const FinancialFlowView: React.FC = () => {
     }, []);
 
     const allTransactions = useMemo(() => {
-        const list: (TransactionDetail & { parentId: string, parentTitle: string })[] = [];
+        const mergedMap = new Map<string, TransactionDetail & { sources: string[], mentions: number }>();
+
         history.forEach(res => {
             if (res.output?.transactions_financieres) {
                 res.output.transactions_financieres.forEach(t => {
-                    list.push({
-                        ...t,
-                        parentId: res.id,
-                        parentTitle: res.input.query || "Analyse Sans Titre"
-                    });
+                    // Normalize data for matching
+                    const src = t.source.toLowerCase().trim();
+                    const dst = t.destination.toLowerCase().trim();
+                    const amt = Math.round(t.montant); // Round to handle slight precision diffs
+                    const date = t.date?.split('T')[0] || 'Unknown'; // Normalize date string
+
+                    // Create a composite key for deduplication
+                    const key = `${src}-${dst}-${amt}-${t.devise}-${date}`;
+
+                    if (!mergedMap.has(key)) {
+                        mergedMap.set(key, {
+                            ...t,
+                            sources: [res.id],
+                            mentions: 1
+                        });
+                    } else {
+                        const existing = mergedMap.get(key)!;
+                        // Avoid adding same source ID multiple times
+                        if (!existing.sources.includes(res.id)) {
+                            existing.sources.push(res.id);
+                        }
+                        existing.mentions += 1;
+
+                        // Merge descriptions if different
+                        if (t.description && !existing.description.includes(t.description.slice(0, 15))) {
+                            existing.description += ` | ${t.description}`;
+                        }
+                    }
                 });
             }
         });
+
+        const list = Array.from(mergedMap.values());
 
         let filtered = list.filter(t => {
             const matchesSearch = t.source.toLowerCase().includes(searchQuery.toLowerCase()) ||
@@ -205,7 +231,7 @@ export const FinancialFlowView: React.FC = () => {
             t.montant,
             t.devise,
             t.description,
-            t.parentId
+            t.sources.join(";")
         ]);
 
         const csvContent = [
@@ -827,12 +853,16 @@ const TransactionCard: React.FC<{ transaction: any, onEntityClick: (name: string
                         <div className="absolute left-0 top-3 bottom-0 w-1 bg-slate-100 rounded-full group-hover:bg-[#B91C1C] transition-colors"></div>
                         "{transaction.description}"
                     </div>
-                    <div className="flex items-center gap-3">
-                        <span className="text-[8px] font-mono-data font-black text-slate-300 uppercase tracking-widest">REF: {transaction.parentId.slice(0, 8)}</span>
-                        <div className="h-3 w-px bg-slate-100"></div>
-                        <span className="text-[8px] font-black text-emerald-600 flex items-center gap-1 uppercase tracking-widest bg-emerald-50 px-2 py-0.5 rounded">
-                            <ShieldCheck size={10} /> Verified
-                        </span>
+                    <div className="flex items-center justify-between">
+                        <div className="flex items-center gap-3">
+                            <span className="text-[8px] font-mono-data font-black text-slate-300 uppercase tracking-widest flex items-center gap-1">
+                                <Layers size={10} /> {transaction.sources.length} SOURCES ({transaction.mentions} MAG.)
+                            </span>
+                            <div className="h-3 w-px bg-slate-100"></div>
+                            <span className="text-[8px] font-black text-emerald-600 flex items-center gap-1 uppercase tracking-widest bg-emerald-50 px-2 py-0.5 rounded">
+                                <ShieldCheck size={10} /> Verified
+                            </span>
+                        </div>
                     </div>
                 </div>
             </div>

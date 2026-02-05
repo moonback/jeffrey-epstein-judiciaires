@@ -56,6 +56,13 @@ export interface AssetDetail {
   description: string;
 }
 
+export interface PIIDetail {
+  owner: string;
+  type: 'email' | 'phone' | 'address' | 'passport' | 'ssn' | 'other';
+  value: string;
+  context?: string;
+}
+
 export interface DisclosureAnalysis {
   context_general: string;
   documents: DocumentDetail[];
@@ -65,6 +72,7 @@ export interface DisclosureAnalysis {
   actifs?: AssetDetail[];
   journaux_de_vol?: FlightDetail[];
   contexte_juridique: string;
+  donnees_personnelles?: PIIDetail[];
 }
 
 export interface ProcessedResult {

@@ -26,6 +26,7 @@ const QUICK_QUERIES = [
     { label: 'Témoignages Victimes', query: 'Synthétiser les déclarations clés des Jane Doe concernant les lieux de recrutement.' },
     { label: 'Chronologie Critique', query: 'Établir une chronologie détaillée des événements majeurs cités, triée par date.' },
     { label: 'Logs de Vol', query: 'Extraire et structurer toutes les mentions de déplacements aériens, passagers et destinations.' },
+    { label: 'Coordonnées (PII)', query: 'Extraire exhaustivement toutes les données personnelles (emails, numéros de téléphone, adresses physiques, numéros de passeport) identifiées pour chaque personne citée.' },
     { label: 'Inventaire du Patrimoine', query: 'Recenser tous les actifs (immobilier, véhicules, comptes, sociétés) mentionnés, avec leur valeur estimée et propriétaire.' },
     { label: 'Structure Hiérarchique', query: 'Identifier la structure organisationnelle, les rôles des employés et les chaînes de commandement.' },
     { label: 'Analyse des Lieux', query: 'Recenser toutes les propriétés immobilières mentionnées et les événements qui s\'y sont déroulés.' }
