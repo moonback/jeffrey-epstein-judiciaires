@@ -116,7 +116,7 @@ class StorageService {
     }
 
     // Convert map back to array and sort by timestamp
-    return Array.from(localMap.values()).sort((a, b) => a.input.timestamp - b.input.timestamp);
+    return Array.from(localMap.values()).sort((a, b) => (b.input.timestamp || 0) - (a.input.timestamp || 0));
   }
 
   async getResult(id: string): Promise<ProcessedResult | undefined> {

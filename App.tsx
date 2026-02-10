@@ -46,7 +46,8 @@ import {
   Plane,
   Fingerprint,
   Network,
-  History
+  History,
+  Search
 } from 'lucide-react';
 import { Sidebar, ViewType } from './components/Sidebar';
 import { CaseListView } from './components/CaseListView';
@@ -83,7 +84,7 @@ const App: React.FC = () => {
         updated[index] = newResult;
         return updated;
       }
-      return [...state, newResult];
+      return [newResult, ...state];
     }
   );
 
@@ -111,6 +112,7 @@ const App: React.FC = () => {
   const [openRouterKey, setOpenRouterKey] = useState<string>(
     localStorage.getItem('OPENROUTER_API_KEY') || ''
   );
+  const [historySearchTerm, setHistorySearchTerm] = useState('');
   const [isPending, startTransition] = useTransition();
 
   // Background AI Tasks State
@@ -194,7 +196,7 @@ const App: React.FC = () => {
         await storageService.saveResult(completedResult);
 
         // Sync with main history
-        setResolutionHistory(prev => [...prev.filter(r => r.id !== completedResult.id), completedResult]);
+        setResolutionHistory(prev => [completedResult, ...prev.filter(r => r.id !== completedResult.id)]);
         setProcessedCount(prev => prev + 1);
 
         setBgTasks(prev => {
@@ -359,7 +361,7 @@ const App: React.FC = () => {
         status: 'processing',
       };
 
-      setResolutionHistory(prev => [...prev.filter(r => r.id !== item.id), tempResult]);
+      setResolutionHistory(prev => [tempResult, ...prev.filter(r => r.id !== item.id)]);
       await storageService.saveResult(tempResult);
 
       try {
@@ -1155,98 +1157,160 @@ const App: React.FC = () => {
 
       {
         showFullHistory && (
-          <div className="fixed inset-0 z-[110] bg-white animate-in zoom-in-95 fade-in duration-500 flex flex-col pt-10">
+          <div className="fixed inset-0 z-[110] bg-white animate-in zoom-in-95 fade-in duration-500 flex flex-col pt-0">
             <div className="absolute inset-0 z-0 pointer-events-none opacity-[0.2] report-paper"></div>
 
-            <header className="px-10 lg:px-20 py-8 border-b border-slate-100 bg-white/50 backdrop-blur-xl shrink-0 z-10 relative">
-              <div className="flex items-center justify-between max-w-[1600px] mx-auto">
+            <header className="px-6 lg:px-20 py-8 border-b border-slate-100 bg-white/50 backdrop-blur-xl shrink-0 z-10 relative">
+              <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between max-w-[1600px] mx-auto gap-6">
                 <div className="flex items-center gap-6">
-                  <div className="w-14 h-14 bg-black rounded-2xl flex items-center justify-center shadow-2xl">
-                    <History className="text-white" size={24} />
+                  <div className="w-12 h-12 bg-black rounded-2xl flex items-center justify-center shadow-xl">
+                    <History className="text-white" size={20} />
                   </div>
                   <div>
-                    <h2 className="text-2xl font-black text-[#0F172A] uppercase italic font-serif-legal tracking-tight">Archives <span className="text-[#B91C1C]">Neurales</span> Completes</h2>
-                    <div className="flex items-center gap-3 mt-1">
-                      <div className="w-2 h-2 rounded-full bg-[#B91C1C] animate-pulse"></div>
-                      <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.4em]">Historical Intelligence Index</span>
+                    <h2 className="text-xl font-black text-[#0F172A] uppercase italic font-serif-legal tracking-tight">Dossiers <span className="text-[#B91C1C]">Historiques</span></h2>
+                    <div className="flex items-center gap-2 mt-0.5">
+                      <div className="w-1.5 h-1.5 rounded-full bg-[#B91C1C] animate-pulse"></div>
+                      <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Neural Database Index</span>
                     </div>
                   </div>
                 </div>
-                <button
-                  onClick={() => setShowFullHistory(false)}
-                  className="w-14 h-14 rounded-2xl bg-white border border-slate-100 flex items-center justify-center text-slate-400 hover:text-[#B91C1C] hover:border-[#B91C1C] transition-all shadow-xl active:scale-95 group"
-                >
-                  <X size={24} className="group-hover:rotate-90 transition-transform" />
-                </button>
+
+                <div className="flex-1 max-w-2xl px-4 lg:px-10">
+                  <div className="relative group w-full">
+                    <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-[#B91C1C] transition-colors">
+                      <Search size={18} />
+                    </div>
+                    <input
+                      type="text"
+                      placeholder="Rechercher dans les archives neurales (ID, Query, URL)..."
+                      value={historySearchTerm}
+                      onChange={(e) => setHistorySearchTerm(e.target.value)}
+                      className="w-full bg-slate-50/50 border border-slate-100 rounded-2xl py-3 pl-12 pr-6 text-sm focus:bg-white focus:border-[#B91C1C] focus:ring-4 focus:ring-red-900/5 transition-all outline-none font-medium"
+                    />
+                  </div>
+                </div>
+
+                <div className="flex items-center gap-4">
+                  <div className="hidden lg:flex flex-col items-end pr-6 border-r border-slate-100">
+                    <span className="text-[8px] font-black text-slate-300 uppercase tracking-widest">Total Archive</span>
+                    <span className="text-lg font-mono-data font-black text-[#0F172A] leading-none mt-1">{optimisticHistory.length}</span>
+                  </div>
+                  <button
+                    onClick={() => {
+                      setShowFullHistory(false);
+                      setHistorySearchTerm('');
+                    }}
+                    className="w-12 h-12 rounded-2xl bg-white border border-slate-100 flex items-center justify-center text-slate-400 hover:text-[#B91C1C] hover:border-[#B91C1C] transition-all shadow-lg active:scale-95 group"
+                  >
+                    <X size={20} className="group-hover:rotate-90 transition-transform" />
+                  </button>
+                </div>
               </div>
             </header>
 
-            <div className="flex-1 overflow-y-auto p-10 lg:p-20 custom-scrollbar z-10">
-              <div className="max-w-[1600px] mx-auto space-y-16">
-                {Object.entries(
-                  optimisticHistory.reduce((acc, res) => {
+            <div className="flex-1 overflow-y-auto p-6 lg:p-20 custom-scrollbar z-10">
+              <div className="max-w-[1600px] mx-auto space-y-12">
+                {(() => {
+                  const filtered = optimisticHistory.filter(res =>
+                    res.input?.query?.toLowerCase().includes(historySearchTerm.toLowerCase()) ||
+                    res.input?.targetUrl?.toLowerCase().includes(historySearchTerm.toLowerCase()) ||
+                    res.id.toLowerCase().includes(historySearchTerm.toLowerCase())
+                  );
+
+                  if (filtered.length === 0) {
+                    return (
+                      <div className="flex flex-col items-center justify-center py-40 animate-pro-reveal">
+                        <div className="w-24 h-24 bg-slate-50 rounded-full flex items-center justify-center mb-8 border border-slate-100">
+                          <Search size={40} className="text-slate-200" />
+                        </div>
+                        <h3 className="text-lg font-black text-slate-300 uppercase tracking-[0.4em] italic font-serif-legal">Aucun dossier correspondant</h3>
+                        <button
+                          onClick={() => setHistorySearchTerm('')}
+                          className="mt-6 text-[10px] font-black text-[#B91C1C] uppercase tracking-widest hover:underline"
+                        >
+                          Réinitialiser la recherche
+                        </button>
+                      </div>
+                    );
+                  }
+
+                  const grouped = filtered.reduce((acc, res) => {
                     const cat = res.input?.targetUrl || 'Analyses Diverses';
                     if (!acc[cat]) acc[cat] = [];
                     acc[cat].push(res);
                     return acc;
-                  }, {} as Record<string, typeof optimisticHistory>)
-                ).map(([category, items]) => (
-                  <section key={category} className="space-y-8">
-                    <div className="flex items-center gap-6">
-                      <div className="h-px flex-1 bg-slate-100"></div>
-                      <h3 className="text-[11px] font-black text-slate-300 uppercase tracking-[0.6em] whitespace-nowrap bg-white px-6 py-2 rounded-full border border-slate-50 shadow-sm">{category}</h3>
-                      <div className="h-px flex-1 bg-slate-100"></div>
-                    </div>
+                  }, {} as Record<string, typeof optimisticHistory>);
 
-                    <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 2xl:grid-cols-4 gap-6">
-                      {items.map((res) => (
-                        <button
-                          key={res.id}
-                          onClick={() => {
-                            setActiveTabId(res.id);
-                            setShowPlanner(false);
-                            setShowFullHistory(false);
-                          }}
-                          className={`flex flex-col p-8 rounded-[2.5rem] border text-left transition-all relative group hover:shadow-2xl hover:-translate-y-2 ${activeTabId === res.id && !showPlanner
-                            ? 'bg-slate-900 border-slate-900 shadow-xl'
-                            : 'bg-white border-slate-100 hover:border-[#B91C1C]/20 shadow-sm'
-                            }`}
-                        >
-                          <div className="flex justify-between items-start mb-6">
-                            <span className={`text-[9px] font-mono-data font-black p-2 rounded-lg bg-slate-50 group-hover:bg-white/10 transition-colors ${activeTabId === res.id && !showPlanner ? 'text-[#B91C1C]' : 'text-slate-300'}`}>
-                              #{res.id.slice(0, 8)}
-                            </span>
-                            {res.status === 'processing' && <Loader2 size={16} className="text-[#B91C1C] animate-spin" />}
-                          </div>
+                  return Object.entries(grouped).map(([category, items]) => (
+                    <section key={category} className="space-y-6">
+                      <div className="flex items-center gap-4">
+                        <div className="h-px flex-1 bg-slate-100"></div>
+                        <div className="flex items-center gap-3 px-6 py-2 bg-slate-50 border border-slate-100 rounded-full shadow-sm">
+                          <div className="w-1.5 h-1.5 rounded-full bg-slate-300"></div>
+                          <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest truncate max-w-md">{category}</h3>
+                          <span className="text-[9px] font-mono-data font-black text-slate-300 ml-2">({items.length})</span>
+                        </div>
+                        <div className="h-px flex-1 bg-slate-100"></div>
+                      </div>
 
-                          <h4 className={`text-lg font-black italic font-serif-legal leading-tight mb-4 group-hover:text-[#B91C1C] transition-colors line-clamp-2 ${activeTabId === res.id && !showPlanner ? 'text-white' : 'text-[#0F172A]'}`}>
-                            "{res.input?.query || 'Analyse sans titre'}"
-                          </h4>
+                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4">
+                        {items.map((res) => (
+                          <button
+                            key={res.id}
+                            onClick={() => {
+                              setActiveTabId(res.id);
+                              setShowPlanner(false);
+                              setShowFullHistory(false);
+                              setHistorySearchTerm('');
+                            }}
+                            className={`flex flex-col p-6 rounded-3xl border text-left transition-all relative group overflow-hidden ${activeTabId === res.id && !showPlanner
+                              ? 'bg-[#0F172A] border-[#0F172A] shadow-2xl scale-[1.02] z-20'
+                              : 'bg-white border-slate-100 hover:border-[#B91C1C]/30 shadow-sm hover:shadow-xl hover:-translate-y-1'
+                              }`}
+                          >
+                            <div className="flex justify-between items-start mb-4">
+                              <div className="flex flex-col">
+                                <span className={`text-[8px] font-mono-data font-black tracking-widest ${activeTabId === res.id && !showPlanner ? 'text-[#B91C1C]' : 'text-slate-300'}`}>
+                                  #{res.id.slice(0, 10)}
+                                </span>
+                                <span className={`text-[8px] font-black uppercase mt-0.5 ${activeTabId === res.id && !showPlanner ? 'text-slate-400' : 'text-slate-300'}`}>
+                                  {new Date(res.timestamp || (res.input as any).timestamp || Date.now()).toLocaleDateString('fr-FR')}
+                                </span>
+                              </div>
+                              {res.status === 'processing' ? (
+                                <Loader2 size={12} className="text-[#B91C1C] animate-spin" />
+                              ) : res.status === 'completed' ? (
+                                <ShieldCheck size={12} className="text-emerald-500" />
+                              ) : (
+                                <Activity size={12} className="text-[#B91C1C]" />
+                              )}
+                            </div>
 
-                          <div className={`mt-auto pt-6 border-t border-slate-50 flex items-center justify-between group-hover:border-white/10 ${activeTabId === res.id && !showPlanner ? 'border-white/10' : ''}`}>
-                            <span className="text-[8px] font-black uppercase tracking-widest text-slate-300">
-                              {new Date(res.timestamp || Date.now()).toLocaleDateString('fr-FR')}
-                            </span>
-                            <ArrowUpRight size={14} className="text-[#B91C1C] opacity-0 group-hover:opacity-100 transition-all transform -translate-x-2 group-hover:translate-x-0" />
-                          </div>
-                        </button>
-                      ))}
-                    </div>
-                  </section>
-                ))}
+                            <h4 className={`text-[13px] font-bold italic font-serif-legal leading-relaxed mb-4 line-clamp-2 h-10 ${activeTabId === res.id && !showPlanner ? 'text-white' : 'text-[#0F172A]'}`}>
+                              "{res.input?.query || 'Analyse Neutre'}"
+                            </h4>
 
-                {optimisticHistory.length === 0 && (
-                  <div className="flex flex-col items-center justify-center py-40 opacity-20 italic">
-                    <History size={80} className="mb-6 stroke-1" />
-                    <span className="text-xl font-black uppercase tracking-[0.5em] font-serif-legal">Aucune archive neural détectée</span>
-                  </div>
-                )}
+                            <div className={`mt-auto pt-4 border-t flex items-center justify-between ${activeTabId === res.id && !showPlanner ? 'border-white/10' : 'border-slate-50'}`}>
+                              <span className={`text-[7px] font-black uppercase tracking-widest flex items-center gap-1.5 ${activeTabId === res.id && !showPlanner ? 'text-slate-400' : 'text-slate-300'}`}>
+                                <Cpu size={10} /> Forensic Node {res.id.slice(-2)}
+                              </span>
+                              <ArrowUpRight size={12} className={`${activeTabId === res.id && !showPlanner ? 'text-[#B91C1C]' : 'text-slate-200 group-hover:text-[#B91C1C]'} transition-colors`} />
+                            </div>
+                          </button>
+                        ))}
+                      </div>
+                    </section>
+                  ));
+                })()}
               </div>
             </div>
 
-            <div className="p-8 border-t border-slate-50 bg-[#F8FAFC]/50 text-center">
-              <span className="text-[9px] font-black text-slate-300 uppercase tracking-[0.5em]">Neural Processing Unit • Secure Extraction Protocol v4.2</span>
-            </div>
+            <footer className="px-10 py-4 border-t border-slate-50 bg-[#F8FAFC]/50 flex justify-between items-center shrink-0">
+              <span className="text-[8px] font-black text-slate-300 uppercase tracking-widest flex items-center gap-3">
+                <span className="w-2 h-2 rounded-full bg-emerald-500"></span> Neural Database Status: SECURED_IDLE
+              </span>
+              <span className="text-[8px] font-black text-slate-300 uppercase tracking-widest italic font-serif-legal">SECURE_LEGAL_PROTOCOL_V4</span>
+            </footer>
           </div>
         )
       }
