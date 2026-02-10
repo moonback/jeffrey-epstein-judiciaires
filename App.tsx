@@ -62,7 +62,6 @@ import { FlightLogsView } from './components/FlightLogsView';
 import { CrossDocumentDiscoveryView } from './components/CrossDocumentDiscoveryView';
 import { VoiceAssistant } from './components/VoiceAssistant';
 import { Auth } from './components/Auth';
-import { EpsteinArchiveView } from './components/EpsteinArchiveView';
 import { BackgroundAIView, FileTask } from './components/BackgroundAIView';
 import { supabase, isSupabaseConfigured } from './services/supabaseClient';
 
@@ -668,13 +667,7 @@ const App: React.FC = () => {
               </h1>
             </div>
 
-            <div className="hidden lg:flex items-center gap-3 px-4 py-1.5 bg-[#F8FAFC] border border-slate-100 rounded-xl relative overflow-hidden group hover:shadow-md hover:bg-white transition-all cursor-crosshair">
-              <div className="relative flex h-2.5 w-2.5">
-                <span className="animate-ping absolute inline-flex h-full w-full rounded-full bg-emerald-500 opacity-20"></span>
-                <span className="relative inline-flex rounded-full h-2.5 w-2.5 bg-emerald-500 shadow-[0_0_6px_rgba(16,185,129,0.5)]"></span>
-              </div>
-              <span className="text-[10px] text-slate-500 font-black uppercase tracking-[0.2em] relative">Système Live Actif</span>
-            </div>
+
 
             <div className="hidden lg:block h-8 w-[1px] bg-slate-100"></div>
 
@@ -683,7 +676,7 @@ const App: React.FC = () => {
                 <span className="text-[8px] font-black text-slate-300 uppercase tracking-[0.3em] mb-0.5">Index Central</span>
                 <div className="flex items-center gap-1.5">
                   <div className="text-xl font-mono-data font-black text-[#B91C1C] leading-none">{processedCount}</div>
-                  <div className="text-[9px] font-black text-slate-400 uppercase tracking-tighter self-end mb-0.5 whitespace-nowrap">Dossiers Qualifiés</div>
+                  <div className="text-[9px] font-black text-slate-400 uppercase tracking-tighter self-end mb-0.5 whitespace-nowrap">Dossiers analysés</div>
                 </div>
               </div>
             </div>
@@ -778,12 +771,7 @@ const App: React.FC = () => {
                     </div>
 
                     <div className="flex items-center h-12 bg-white/80 backdrop-blur-md border-b border-slate-100 px-4">
-                      <div className="flex items-center gap-3 mr-6 pr-6 border-r border-slate-100">
-                        <div className="w-8 h-8 rounded-xl bg-black flex items-center justify-center shadow-lg transform -rotate-3 hover:rotate-0 transition-all">
-                          <Terminal size={14} className="text-white" />
-                        </div>
-                        <span className="text-[10px] font-black text-[#0F172A] uppercase tracking-[0.2em] hidden xl:block italic font-serif-legal">Session Lab</span>
-                      </div>
+
 
                       <div className="flex-1 flex items-center overflow-x-auto no-scrollbar gap-1 relative h-full">
                         {optimisticHistory.length > 0 && (
@@ -1000,14 +988,6 @@ const App: React.FC = () => {
             {viewMode === 'assets' && <AssetsView />}
             {viewMode === 'cross' && <CrossSessionView onNavigateToInvestigation={handleOpenInvestigation} />}
             {viewMode === 'voice' && <VoiceAssistant />}
-            {viewMode === 'epstein_docs' && (
-              <EpsteinArchiveView
-                onAnalyze={handleAnalyzeFile}
-                onOpenAnalysis={handleOpenAnalysis}
-                analyzedFilePaths={analyzedFilePaths}
-                isGuestMode={isGuestMode}
-              />
-            )}
             {viewMode === 'flights' && <FlightLogsView />}
             {viewMode === 'discovery' && <CrossDocumentDiscoveryView onNavigateToInvestigation={handleOpenInvestigation} />}
           </div>
@@ -1038,17 +1018,6 @@ const App: React.FC = () => {
                 label="B-Scan"
                 isActive={viewMode === 'background_ai'}
                 onClick={() => setViewMode('background_ai')}
-              />
-            )
-          }
-
-          {
-            !isGuestMode && (
-              <MobileNavItem
-                icon={Briefcase}
-                label="Epstein"
-                isActive={viewMode === 'epstein_docs'}
-                onClick={() => setViewMode('epstein_docs')}
               />
             )
           }

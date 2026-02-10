@@ -32,7 +32,7 @@ import {
     Network
 } from 'lucide-react';
 
-export type ViewType = 'lab' | 'database' | 'network' | 'timeline' | 'contradictions' | 'poi' | 'finance' | 'assets' | 'cross' | 'voice' | 'epstein_docs' | 'flights' | 'discovery' | 'background_ai';
+export type ViewType = 'lab' | 'database' | 'network' | 'timeline' | 'contradictions' | 'poi' | 'finance' | 'assets' | 'cross' | 'voice' | 'flights' | 'discovery' | 'background_ai';
 
 interface SidebarProps {
     currentView: ViewType;
@@ -58,7 +58,6 @@ export const Sidebar: React.FC<SidebarProps> = ({
     const menuItems = [
         { id: 'lab', label: 'Laboratoire', icon: Terminal, color: 'text-[#B91C1C]', adminOnly: true },
         { id: 'database', label: 'Archives Centrales', icon: Database, color: 'text-[#0F4C81]' },
-        { id: 'epstein_docs', label: 'Archives Epstein', icon: Briefcase, color: 'text-[#B91C1C]', adminOnly: true },
         { id: 'network', label: 'Cartographie', icon: Share2, color: 'text-[#0F4C81]' },
         { id: 'timeline', label: 'Chronologie', icon: Clock, color: 'text-[#B91C1C]' },
         { id: 'finance', label: 'Flux Financiers', icon: DollarSign, color: 'text-[#B91C1C]' },

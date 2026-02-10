@@ -82,15 +82,15 @@ export const InvestigationPlanner: React.FC<InvestigationPlannerProps> = ({ onSt
                         <FileSearch size={22} className="text-white group-hover/icon:scale-110 transition-transform" />
                     </div>
                     <div>
-                        <h2 className="text-lg lg:text-xl font-black text-[#0F172A] italic uppercase font-serif-legal tracking-tight">Poste de <span className="text-[#B91C1C]">Commande</span></h2>
-                        <div className="flex items-center gap-2 mt-1">
+                        <h2 className="text-base lg:text-lg font-black text-[#0F172A] italic uppercase font-serif-legal tracking-tight">Poste de <span className="text-[#B91C1C]">Commande</span></h2>
+                        <div className="flex items-center gap-2 mt-0.5">
                             <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.5)]"></div>
-                            <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">Agent Analytique Déployé v4.0</span>
+                            <span className="text-[9px] font-black text-slate-400 uppercase tracking-[0.3em]">Agent Analytique Déployé v4.0</span>
                         </div>
                     </div>
                 </div>
-                <p className="text-slate-500 text-[13px] lg:text-[14px] leading-relaxed max-w-2xl font-medium italic">Configurez les paramètres d'extraction pour interroger la base de données DOJ. L'intelligence artificielle analysera les documents ciblés en temps réel avec un grounding haute fidélité.</p>
             </div>
+            ```
 
             <div className="flex-1 overflow-y-auto p-8 lg:p-10 space-y-12 custom-scrollbar relative z-10">
                 {/* Source Selection - ONLY IF NOT UPLOAD MODE */}
