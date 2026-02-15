@@ -292,32 +292,29 @@ export const FinancialFlowView: React.FC = () => {
         <div className="h-full flex flex-col bg-[#F8FAFC] overflow-hidden relative">
             <div className="absolute inset-0 z-0 pointer-events-none opacity-[0.25] report-paper"></div>
 
-            <header className="px-6 lg:px-10 py-6 bg-white border-b border-slate-100 z-30 shadow-sm relative shrink-0">
-                <div className="max-w-12xl mx-auto flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-                    <div className="flex items-center gap-5">
-                        <div className="w-12 h-12 bg-gradient-to-br from-[#0F172A] to-slate-800 rounded-2xl flex items-center justify-center shadow-2xl rotate-3 group cursor-pointer hover:rotate-0 transition-transform">
-                            <Landmark className="text-white" size={24} />
+            <header className="px-12 lg:px-16 py-12 bg-white/90 backdrop-blur-2xl border-b border-slate-100 z-30 shadow-sm relative shrink-0">
+                <div className="max-w-7xl mx-auto flex flex-col lg:flex-row lg:items-center justify-between gap-10">
+                    <div className="flex items-center gap-8">
+                        <div className="w-16 h-16 bg-[#020617] rounded-[1.5rem] flex items-center justify-center shadow-2xl group transition-all hover:rotate-6">
+                            <DollarSign className="text-white group-hover:scale-110 transition-transform" size={28} />
                         </div>
                         <div>
-                            <div className="flex items-center gap-3">
-                                <h2 className="text-xl lg:text-2xl font-black text-[#0F172A] uppercase italic font-serif-legal tracking-tight leading-none">
-                                    Mapping <span className="text-[#B91C1C]">Transactionnel</span>
-                                </h2>
-                                <span className="text-[9px] font-black text-slate-300 uppercase tracking-[0.2em]">Unit-04 Forensic</span>
+                            <div className="flex items-center gap-4">
+                                <h1 className="text-4xl lg:text-5xl font-black text-[#020617] font-display tracking-tight leading-none">
+                                    Flux <span className="text-[#DC2626]">Financiers</span>
+                                </h1>
+                                <span className="badge-forensic bg-slate-50 text-slate-300 border-slate-100 px-3 py-1">Money_Trace_ v2.1</span>
                             </div>
-                            <div className="flex items-center gap-3 mt-1.5">
-                                <span className="flex items-center gap-1.5 text-[9px] font-black text-emerald-600 uppercase tracking-widest bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-100">
-                                    <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></div>
-                                    Real-time Audit
-                                </span>
-                                {selectedEntity && (
-                                    <button
-                                        onClick={() => setSelectedEntity(null)}
-                                        className="flex items-center gap-1.5 text-[9px] font-black text-[#B91C1C] uppercase tracking-widest bg-red-50 px-2.5 py-1 rounded-full border border-red-100 hover:bg-red-100 transition-colors"
-                                    >
-                                        <X size={10} /> Focus: {selectedEntity}
-                                    </button>
-                                )}
+                            <div className="flex items-center gap-6 mt-3">
+                                <div className="flex items-center gap-3">
+                                    <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
+                                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">{analytics.count} Flux Détectés</span>
+                                </div>
+                                <div className="h-4 w-px bg-slate-100"></div>
+                                <div className="flex items-center gap-3">
+                                    <Landmark size={14} className="text-[#DC2626]" />
+                                    <span className="text-[10px] font-black text-[#DC2626] uppercase tracking-[0.3em]">{formatCurrency(analytics.totalVolume, 'USD')} Volume Indexé</span>
+                                </div>
                             </div>
                         </div>
                     </div>

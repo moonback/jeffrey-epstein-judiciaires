@@ -87,20 +87,20 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
             {/* SCROLLABLE AREA: LOGO + ACTION + NAV */}
             <div className={`flex-1 overflow-y-auto custom-scrollbar pt-4 pb-2 transition-all duration-500 ${isCollapsed ? 'px-3' : 'px-5'}`}>
-                <div className="flex items-center gap-4 mb-6 group cursor-pointer whitespace-nowrap" onClick={() => !isGuestMode && onViewChange('lab')}>
+                <div className="flex items-center gap-4 mb-4 group cursor-pointer whitespace-nowrap" onClick={() => !isGuestMode && onViewChange('lab')}>
                     <div className="relative shrink-0">
-                        <div className="absolute inset-0 bg-[#B91C1C] blur-xl opacity-0 group-hover:opacity-20 transition-opacity"></div>
-                        <div className="relative w-11 h-11 bg-black rounded-[1rem] flex items-center justify-center shadow-2xl transition-all duration-500 group-hover:bg-[#B91C1C] group-hover:rotate-[360deg]">
-                            <ShieldCheck className="text-white" size={20} />
+                        <div className="absolute inset-0 bg-[#DC2626] blur-2xl opacity-0 group-hover:opacity-30 transition-opacity"></div>
+                        <div className="relative w-12 h-12 bg-black rounded-2xl flex items-center justify-center shadow-2xl transition-all duration-700 group-hover:bg-[#DC2626] group-hover:rotate-12 group-hover:scale-105">
+                            <ShieldCheck className="text-white" size={24} />
                         </div>
                     </div>
                     {!isCollapsed && (
-                        <div className="hidden lg:block animate-pro-reveal duration-500">
-                            <h1 className="font-black text-[#0F172A] tracking-tighter text-lg uppercase leading-none font-serif-legal italic">
-                                DOJ <span className="text-[#B91C1C]">Forensic</span>
+                        <div className="hidden lg:block animate-pro-reveal duration-700">
+                            <h1 className="font-black text-[#020617] tracking-tighter text-xl uppercase leading-none font-display">
+                                DOJ<span className="text-[#DC2626]">FORENSIC</span>
                             </h1>
-                            <div className="flex items-center gap-2 mt-1">
-                                <span className="text-[8px] font-black text-slate-300 uppercase tracking-[0.4em]">Analytical Unit 4.2</span>
+                            <div className="flex items-center gap-2 mt-1.5">
+                                <span className="badge-forensic text-[7px] text-slate-300 border-slate-100 px-2 py-0.5">Neural_Unit_05</span>
                             </div>
                         </div>
                     )}
@@ -110,43 +110,42 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 {!isGuestMode && (
                     <button
                         onClick={onNewAnalysis}
-                        className="w-full mb-6 group relative"
+                        className="w-full mb-8 group relative"
                     >
-                        <div className={`relative w-full flex items-center justify-center ${isCollapsed ? '' : 'lg:justify-start lg:px-5'} h-10 bg-[#B91C1C] hover:bg-[#0F172A] text-white rounded-xl transition-all duration-500 shadow-xl shadow-red-900/10 hover:shadow-slate-900/20 active:scale-95 overflow-hidden`}>
-                            <div className="absolute inset-x-0 h-px top-0 bg-white/20"></div>
-                            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/5 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
-                            <Plus size={18} className="shrink-0 group-hover:rotate-90 transition-transform duration-500" />
-                            {!isCollapsed && <span className="hidden lg:block font-black text-[9px] uppercase tracking-[0.3em] ml-4 transition-all whitespace-nowrap">Nouvelle Investigation</span>}
+                        <div className={`relative w-full flex items-center justify-center ${isCollapsed ? '' : 'lg:justify-start lg:px-6'} h-12 bg-[#DC2626] hover:bg-[#020617] text-white rounded-2xl transition-all duration-500 shadow-xl shadow-red-900/20 hover:shadow-slate-900/30 active:scale-95 overflow-hidden border border-red-500/20`}>
+                            <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
+                            <Plus size={20} className="shrink-0 group-hover:rotate-90 transition-transform duration-700" />
+                            {!isCollapsed && <span className="hidden lg:block font-black text-[10px] uppercase tracking-[0.2em] ml-4 transition-all whitespace-nowrap font-display">Nouvelle Analyse</span>}
                         </div>
                     </button>
                 )}
 
                 {/* NAVIGATION */}
-                <nav className="space-y-1 pb-2" aria-label="Menu principal d'investigation">
-                    <div className={`text-[8px] font-black text-slate-200 uppercase tracking-[0.5em] mb-2 ml-4 ${isCollapsed ? 'hidden' : 'hidden lg:block'}`}>Investigation Suite</div>
+                <nav className="space-y-1.5 pb-2" aria-label="Menu principal d'investigation">
+                    {!isCollapsed && <div className="text-[9px] font-black text-slate-200 uppercase tracking-[0.4em] mb-4 ml-6 font-display">Forensic Suite</div>}
                     {menuItems.map((item) => {
                         const isActive = currentView === item.id;
                         return (
                             <button
                                 key={item.id}
                                 onClick={() => onViewChange(item.id as ViewType)}
-                                className={`w-full relative flex items-center justify-center ${isCollapsed ? '' : 'lg:justify-start lg:px-5'} h-10 rounded-xl transition-all duration-500 group ${isActive
-                                    ? 'bg-[#F8FAFC] text-[#0F172A] shadow-inner border border-slate-50'
-                                    : 'text-slate-400 hover:text-[#B91C1C] hover:bg-slate-50/50'}`}
+                                className={`w-full relative flex items-center justify-center ${isCollapsed ? '' : 'lg:justify-start lg:px-6'} h-11 rounded-2xl transition-all duration-500 group ${isActive
+                                    ? 'bg-slate-50 text-[#020617] shadow-inner'
+                                    : 'text-slate-400 hover:text-[#DC2626] hover:bg-slate-50/50'}`}
                                 title={isCollapsed ? item.label : ''}
                                 aria-label={item.label}
                                 aria-current={isActive ? 'page' : undefined}
                             >
                                 {isActive && (
-                                    <div className="absolute left-0 w-1 h-5 bg-[#B91C1C] rounded-r-full shadow-[0_0_8px_rgba(185,28,28,0.3)]"></div>
+                                    <div className="absolute left-0 w-1.5 h-6 bg-[#DC2626] rounded-r-xl shadow-[0_0_15px_rgba(220,38,38,0.4)]"></div>
                                 )}
                                 <item.icon
-                                    size={18}
-                                    className={`shrink-0 transition-all duration-500 ${isActive ? item.color : 'group-hover:scale-110 opacity-70 group-hover:opacity-100'}`}
+                                    size={20}
+                                    className={`shrink-0 transition-all duration-700 ${isActive ? 'text-[#DC2626]' : 'group-hover:scale-110 opacity-70 group-hover:opacity-100'}`}
                                     aria-hidden="true"
                                 />
                                 {!isCollapsed && (
-                                    <span className={`hidden lg:block text-[13px] font-black tracking-tight ml-4 transition-all duration-300 font-serif-legal italic ${isActive ? 'translate-x-1' : 'opacity-60 group-hover:opacity-100'}`}>
+                                    <span className={`hidden lg:block text-[14px] font-bold tracking-tight ml-5 transition-all duration-500 font-serif-legal ${isActive ? 'translate-x-1 text-[#020617]' : 'opacity-60 group-hover:opacity-100 text-slate-500'}`}>
                                         {item.label}
                                     </span>
                                 )}

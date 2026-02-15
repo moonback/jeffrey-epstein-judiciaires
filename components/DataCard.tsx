@@ -95,14 +95,12 @@ export const DataCard: React.FC<DataCardProps> = ({ result, loading, onDeepDive,
                     <div className="space-y-4 flex-1 min-w-0">
                         <div className="space-y-1.5">
                             <div className="flex items-center gap-3">
-                                <span className="px-2 py-0.5 bg-[#B91C1C]/5 text-[9px] font-black text-[#B91C1C] uppercase tracking-[0.3em] rounded-md border border-[#B91C1C]/10">Protocol v4.2</span>
-                                <div className="h-[1px] w-6 bg-slate-200"></div>
-                                <span className="text-[9px] font-black text-slate-400 uppercase tracking-[0.4em]">Classified Intelligence</span>
-                                <div className="h-[1px] w-6 bg-slate-200"></div>
-
+                                <span className="badge-forensic bg-red-50 text-[#DC2626] border-[#DC2626]/10">Protocol v5.0</span>
+                                <div className="h-[1px] w-8 bg-slate-200"></div>
+                                <span className="badge-forensic bg-slate-50 text-slate-400 border-slate-200">Neural Forensic Intelligence</span>
                             </div>
 
-                            <h2 className="text-3xl font-black text-[#0F172A] font-serif-legal italic tracking-tight leading-none">
+                            <h2 className="text-1xl lg:text-2xl font-black text-[#020617] font-display tracking-tight leading-tight">
                                 {result.id || 'Dossier Analytique'}
                             </h2>
 
@@ -112,7 +110,7 @@ export const DataCard: React.FC<DataCardProps> = ({ result, loading, onDeepDive,
                         <div className="max-w-4xl relative">
                             <div className="absolute -left-6 top-0 bottom-0 w-1 bg-gradient-to-b from-[#B91C1C] via-slate-100 to-transparent rounded-full opacity-10"></div>
                             <div className="flex flex-col gap-2">
-                                <p className={`text-slate-600 text-[13px] font-medium leading-relaxed font-serif-legal italic transition-all duration-500 ${isSummaryExpanded ? '' : 'line-clamp-2'}`}>
+                                <p className={`text-slate-600 text-[15px] font-medium leading-[1.8] font-serif-legal italic transition-all duration-700 ${isSummaryExpanded ? '' : 'line-clamp-2'}`}>
                                     {data.context_general}
                                 </p>
                                 <button
@@ -147,12 +145,13 @@ export const DataCard: React.FC<DataCardProps> = ({ result, loading, onDeepDive,
                 {/* Evidence Documents Section */}
                 <div className="space-y-12">
                     <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8 border-b border-slate-100 pb-10">
-                        <div className="space-y-2">
-                            <div className="flex items-center gap-3">
-                                <div className="w-8 h-[2px] bg-[#B91C1C]"></div>
-                                <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.4em]">Index des Pièces</span>
+                        <div className="space-y-3">
+                            <div className="flex items-center gap-4">
+                                <div className="w-12 h-[3px] bg-[#DC2626]"></div>
+                                <span className="badge-forensic text-slate-400 border-transparent p-0">Index des Pièces</span>
                             </div>
-                            <h3 className="text-3xl font-black text-[#0F172A] font-serif-legal italic">Archives Centralisées</h3>
+                            <h3 className="text-1xl lg:text-2xl font-black text-[#020617] font-display">Archives <span className="text-slate-300">Centralisées</span></h3>
+                            <p className="text-[11px] font-black text-slate-400 uppercase tracking-[0.4em]">Registre des preuves indexées par intelligence neurale</p>
                         </div>
 
                         {/* Filter System */}
@@ -192,7 +191,7 @@ export const DataCard: React.FC<DataCardProps> = ({ result, loading, onDeepDive,
                                     {String(idx + 1).padStart(2, '0')}
                                 </div>
 
-                                <div className="md:ml-24 bg-white rounded-[3rem] border border-slate-100 overflow-hidden hover:shadow-[0_40px_100px_rgba(0,0,0,0.08)] hover:border-[#B91C1C]/20 transition-all duration-700 flex flex-col xl:flex-row shadow-sm group/inner">
+                                <div className="md:ml-24 bg-white rounded-[3.5rem] border border-slate-100/80 overflow-hidden hover:shadow-premium hover:border-[#DC2626]/20 transition-all duration-700 flex flex-col xl:flex-row group/inner">
                                     {/* Sidebar Detail */}
                                     <div className="xl:w-64 bg-slate-50/30 p-10 border-b xl:border-b-0 xl:border-r border-slate-100 flex flex-col gap-10">
                                         <div className="space-y-8">
@@ -237,19 +236,19 @@ export const DataCard: React.FC<DataCardProps> = ({ result, loading, onDeepDive,
                                         </div>
 
                                         <div className="space-y-4">
-                                            <h4 className="text-2xl lg:text-3xl font-black text-[#0F172A] font-serif-legal italic tracking-tight group-hover/doc:text-[#B91C1C] transition-colors duration-500 leading-tight pr-12">{doc.title}</h4>
+                                            <h4 className="text-2xl lg:text-2xl font-black text-[#0F172A] font-serif-legal italic tracking-tight group-hover/doc:text-[#B91C1C] transition-colors duration-500 leading-tight pr-12">{doc.title}</h4>
                                             <div className="flex items-center gap-4">
                                                 <div className="h-0.5 w-12 bg-[#B91C1C]"></div>
                                                 <span className="text-[10px] font-black text-slate-300 uppercase tracking-[0.3em]">Evidence Log_{idx + 1}</span>
                                             </div>
                                         </div>
 
-                                        <div className="bg-slate-50/50 p-10 rounded-[2.5rem] border border-slate-100 relative group-hover/inner:bg-white group-hover/inner:shadow-inner transition-all duration-500">
-                                            <div className="absolute top-0 right-0 p-6 flex gap-2">
-                                                <div className="w-1.5 h-1.5 rounded-full bg-slate-200"></div>
-                                                <div className="w-1.5 h-1.5 rounded-full bg-slate-200"></div>
+                                        <div className="bg-slate-50/50 p-12 lg:p-14 rounded-[3.5rem] border border-slate-100 relative group-hover/inner:bg-white group-hover/inner:shadow-inner transition-all duration-700 glow-blue/5">
+                                            <div className="absolute top-0 right-0 p-8 flex gap-2">
+                                                <div className="w-2 h-2 rounded-full bg-slate-200"></div>
+                                                <div className="w-2 h-2 rounded-full bg-slate-200"></div>
                                             </div>
-                                            <p className="text-slate-600 text-lg lg:text-xl font-medium italic leading-[1.8] selection:bg-[#B91C1C]/10 border-l-4 border-slate-100 pl-8">
+                                            <p className="text-slate-700 text-xl lg:text-2xl font-medium italic leading-[1.8] selection:bg-[#DC2626]/10 border-l-8 border-[#DC2626]/10 pl-10 font-serif-legal">
                                                 "{doc.description}"
                                             </p>
                                         </div>
@@ -293,13 +292,13 @@ export const DataCard: React.FC<DataCardProps> = ({ result, loading, onDeepDive,
                 {/* Financial Flows Section */}
                 {data.transactions_financieres && data.transactions_financieres.length > 0 && (
                     <div className="space-y-12 animate-pro-reveal mt-12 bg-[#F8FAFC]/50 p-12 rounded-[4rem] border border-slate-100">
-                        <div className="flex items-center gap-6 mb-4">
-                            <div className="w-12 h-12 rounded-full bg-white border border-slate-200 flex items-center justify-center shadow-md">
-                                <DollarSign size={20} className="text-[#B91C1C]" />
+                        <div className="flex items-center gap-8 mb-10">
+                            <div className="w-16 h-16 rounded-[1.5rem] bg-[#020617] flex items-center justify-center shadow-2xl rotate-3">
+                                <DollarSign size={28} className="text-white" />
                             </div>
-                            <div className="space-y-1">
-                                <h5 className="text-[11px] font-black uppercase tracking-[0.5em] text-[#B91C1C]">Resonance Monétaire</h5>
-                                <div className="text-[9px] font-black text-slate-300 uppercase tracking-widest">Traçabilité des Actifs en Session</div>
+                            <div className="space-y-2">
+                                <h5 className="text-3xl font-black text-[#020617] font-display italic">Resonance <span className="text-[#DC2626]">Monétaire</span></h5>
+                                <div className="badge-forensic text-slate-400 border-none p-0">Analyse tactique des flux financiers croisés</div>
                             </div>
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
@@ -338,13 +337,13 @@ export const DataCard: React.FC<DataCardProps> = ({ result, loading, onDeepDive,
                 {data.journaux_de_vol && data.journaux_de_vol.length > 0 && (
                     <div className="space-y-12 animate-pro-reveal mt-12 bg-slate-900 p-12 rounded-[4rem] border border-slate-800 shadow-2xl relative overflow-hidden">
                         <div className="absolute top-0 right-0 w-96 h-96 bg-[#B91C1C]/10 rounded-full blur-[100px] -mr-32 -mt-32"></div>
-                        <div className="flex items-center gap-6 mb-4 relative z-10">
-                            <div className="w-12 h-12 rounded-full bg-white flex items-center justify-center shadow-lg">
-                                <Plane size={20} className="text-[#B91C1C]" />
+                        <div className="flex items-center gap-8 mb-10 relative z-10">
+                            <div className="w-16 h-16 rounded-[1.5rem] bg-white flex items-center justify-center shadow-2xl -rotate-2">
+                                <Plane size={28} className="text-[#DC2626]" />
                             </div>
-                            <div className="space-y-1">
-                                <h5 className="text-[11px] font-black uppercase tracking-[0.5em] text-white">Manifestes de Bord</h5>
-                                <div className="text-[9px] font-black text-slate-500 uppercase tracking-widest italic">Analyse des Journaux Aériens (Lolita Express)</div>
+                            <div className="space-y-2">
+                                <h5 className="text-3xl font-black text-white font-display italic">Manifestes <span className="text-slate-500 font-normal">de Bord</span></h5>
+                                <div className="badge-forensic text-slate-500 border-none p-0">Journalériens du "Lolita Express"</div>
                             </div>
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8 relative z-10">

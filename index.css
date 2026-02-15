@@ -1,34 +1,38 @@
 @import "tailwindcss";
+@import url('https://fonts.googleapis.com/css2?family=IBM+Plex+Mono:ital,wght@0,400;0,700;1,400&family=Inter:wght@400;700;900&family=Outfit:wght@300;400;600;900&family=Crimson+Pro:ital,wght@0,400;0,700;1,400;1,700&display=swap');
 
 @theme {
-    --font-sans: "Inter", ui-sans-serif, system-ui, sans-serif, "Apple Color Emoji", "Segoe UI Emoji", "Segoe UI Symbol", "Noto Color Emoji";
-    --font-mono: "JetBrains Mono", ui-monospace, SFMono-Regular, Menlo, Monaco, Consolas, "Liberation Mono", "Courier New", monospace;
+    --font-sans: "Inter", "Outfit", ui-sans-serif, system-ui, sans-serif;
+    --font-display: "Outfit", sans-serif;
+    --font-mono: "IBM Plex Mono", "JetBrains Mono", ui-monospace, monospace;
+    --font-serif: "Crimson Pro", serif;
 }
 
 
 :root {
-    /* Base Colors - Pro Light Theme */
-    --bg-main: #F8FAFC;
+    /* Base Colors - Ultra Modern Professional */
+    --bg-main: #FDFDFD;
     --bg-panel: #FFFFFF;
     --bg-sidebar: #FFFFFF;
-    --border-main: #E2E8F0;
-    --text-main: #0F172A;
+    --border-main: #F1F5F9;
+    --text-main: #020617;
     --text-muted: #64748B;
-    --accent-primary: #B91C1C;
-    /* Professional Deep Red */
-    --accent-secondary: #0F4C81;
-    /* Classic Blue */
-    --accent-gold: #B5965D;
-    /* Legal Gold Accents */
-    --glass-bg: rgba(255, 255, 255, 0.85);
-    --glass-border: rgba(226, 232, 240, 0.8);
 
-    /* Premium Shadows */
-    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-    --shadow-md: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-    --shadow-lg: 0 10px 15px -3px rgb(0 0 0 / 0.1), 0 4px 6px -4px rgb(0 0 0 / 0.1);
-    --shadow-xl: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
-    --shadow-premium: 0 25px 50px -12px rgba(0, 0, 0, 0.08);
+    --accent-primary: #DC2626;
+    /* Pro Red */
+    --accent-secondary: #1E293B;
+    /* Slate 800 */
+    --accent-gold: #D4AF37;
+
+    --glass-bg: rgba(255, 255, 255, 0.7);
+    --glass-border: rgba(241, 245, 249, 0.5);
+
+    /* Premium Shadows - Softer & Deeper */
+    --shadow-sm: 0 1px 2px 0 rgb(0 0 0 / 0.02);
+    --shadow-md: 0 4px 12px -2px rgb(0 0 0 / 0.05);
+    --shadow-lg: 0 12px 24px -4px rgb(0 0 0 / 0.08);
+    --shadow-xl: 0 20px 48px -10px rgb(0 0 0 / 0.12);
+    --shadow-premium: 0 32px 64px -12px rgba(0, 0, 0, 0.14);
 }
 
 [data-theme="dark"] {
@@ -64,11 +68,19 @@ body {
 }
 
 .font-serif-legal {
-    font-family: Georgia, 'Times New Roman', serif;
+    font-family: var(--font-serif);
+    font-style: italic;
+    letter-spacing: -0.01em;
 }
 
 .font-mono-data {
-    font-family: 'Courier New', Courier, monospace;
+    font-family: var(--font-mono);
+    letter-spacing: -0.02em;
+}
+
+.font-display {
+    font-family: var(--font-display);
+    letter-spacing: -0.03em;
 }
 
 /* Premium Glassmorphism */
@@ -216,4 +228,32 @@ textarea {
     text-rendering: optimizeLegibility;
     -webkit-font-smoothing: antialiased;
     -moz-osx-font-smoothing: grayscale;
+}
+
+/* Cyber Forensic Accents */
+.glow-red {
+    box-shadow: 0 0 20px rgba(220, 38, 38, 0.15);
+}
+
+.glow-blue {
+    box-shadow: 0 0 20px rgba(15, 76, 129, 0.1);
+}
+
+.pro-card {
+    @apply bg-white border border-slate-100 rounded-[2.5rem] shadow-sm hover:shadow-xl transition-all duration-500 overflow-hidden;
+}
+
+.badge-forensic {
+    @apply text-[10px] font-black uppercase tracking-[0.2em] px-3 py-1.5 rounded-full border;
+}
+
+/* Scaling adjust */
+html {
+    font-size: 85%;
+}
+
+@media (min-width: 1536px) {
+    html {
+        font-size: 95%;
+    }
 }
