@@ -4,6 +4,7 @@
  */
 
 import React, { useState, useEffect, useMemo } from 'react';
+import { PageHeader } from './PageHeader';
 import { storageService } from '../services/storageService';
 import { ProcessedResult, DocumentDetail } from '../types';
 import { AlertTriangle, Users, ArrowLeftRight, Zap, Loader2, CheckCircle2, ShieldAlert, Target, Fingerprint, Shield, Activity, Search, Database, ChevronRight, ArrowUpRight, ShieldCheck, Cpu, Lock } from 'lucide-react';
@@ -63,21 +64,12 @@ export const ContradictionsView: React.FC<ContradictionsViewProps> = ({ onDeepDi
         <div className="h-full flex flex-col bg-[#F8FAFC] overflow-hidden relative font-sans">
             <div className="absolute inset-0 z-0 pointer-events-none opacity-[0.25] report-paper"></div>
 
-            <header className="px-6 lg:px-12 py-6 lg:py-8 border-b border-slate-100 bg-white/90 backdrop-blur-xl z-20 shadow-sm relative overflow-hidden shrink-0">
-                <div className="absolute top-0 right-0 h-full w-1/4 bg-gradient-to-l from-[#F8FAFC] to-transparent pointer-events-none opacity-50"></div>
-                <div className="flex items-center gap-5 relative z-10">
-                    <div className="w-12 h-12 bg-black rounded-[1.2rem] flex items-center justify-center shadow-xl group transition-all">
-                        <AlertTriangle className="text-white group-hover:rotate-12 transition-transform" size={22} />
-                    </div>
-                    <div>
-                        <h2 className="text-xl font-black text-[#0F172A] tracking-tight uppercase italic font-serif-legal leading-tight">Détecteur de <span className="text-[#B91C1C]">Contradictions</span></h2>
-                        <div className="flex items-center gap-3 mt-1">
-                            <span className="w-1.5 h-1.5 rounded-full bg-[#B91C1C] animate-pulse shadow-sm"></span>
-                            <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">Moteur de Comparaison Neural v4.2 Actif</span>
-                        </div>
-                    </div>
-                </div>
-            </header>
+            <PageHeader
+                title="Détecteur de"
+                titleHighlight="Contradictions"
+                icon={AlertTriangle}
+                badgeText="Moteur de Comparaison Neural v4.2 Actif"
+            />
 
             <div className="flex-1 overflow-y-auto p-8 lg:p-12 custom-scrollbar z-10 scroll-smooth">
                 <div className="max-w-6xl mx-auto space-y-10 pb-20">
@@ -285,33 +277,17 @@ export const POIView: React.FC<POIViewProps> = ({ onDeepDive, isGuestMode }) => 
         <div className="h-full flex flex-col bg-[#F8FAFC] overflow-hidden relative font-sans">
             <div className="absolute inset-0 z-0 pointer-events-none opacity-[0.25] report-paper"></div>
 
-            <header className="px-6 lg:px-8 py-4 lg:py-5 border-b border-slate-100 bg-white/90 backdrop-blur-xl z-30 shrink-0 shadow-sm relative">
-                <div className="absolute top-0 right-0 h-full w-1/4 bg-gradient-to-l from-[#F8FAFC] to-transparent pointer-events-none opacity-50"></div>
-                <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 relative z-10">
-                    <div className="flex items-center gap-4">
-                        <div className="w-10 h-10 bg-black rounded-xl flex items-center justify-center shadow-lg group transition-all">
-                            <Users size={18} className="text-white group-hover:scale-110 transition-transform" />
-                        </div>
-                        <div>
-                            <h2 className="text-lg font-black text-[#0F172A] tracking-tight uppercase italic font-serif-legal leading-tight">Index des <span className="text-[#B91C1C]">Cibles</span></h2>
-                            <div className="flex items-center gap-2 mt-0.5">
-                                <span className="w-1 h-1 rounded-full bg-emerald-500 animate-pulse"></span>
-                                <span className="text-[9px] font-black text-slate-300 uppercase tracking-[0.2em]">{entities.length} Profils</span>
-                            </div>
-                        </div>
-                    </div>
-                    <div className="relative group w-full lg:w-72">
-                        <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-[#B91C1C] transition-colors" size={14} />
-                        <input
-                            type="text"
-                            placeholder="Rechercher..."
-                            value={searchQuery}
-                            onChange={e => setSearchQuery(e.target.value)}
-                            className="bg-[#F8FAFC] border border-slate-100 rounded-xl py-2 pl-10 pr-4 text-[12px] text-[#0F172A] focus:border-[#B91C1C] focus:bg-white outline-none transition-all w-full shadow-inner placeholder-slate-300 font-medium"
-                        />
-                    </div>
-                </div>
-            </header>
+            <PageHeader
+                title="Index des"
+                titleHighlight="Cibles"
+                icon={Users}
+                badgeText="Classified Intelligence Clustering Protocol"
+                searchQuery={searchQuery}
+                onSearchChange={setSearchQuery}
+                searchPlaceholder="Rechercher une cible..."
+                totalLabel="Profils"
+                totalCount={entities.length}
+            />
 
             <div className="flex-1 overflow-hidden flex flex-col lg:flex-row z-20">
                 {/* Entity List Sidebar */}

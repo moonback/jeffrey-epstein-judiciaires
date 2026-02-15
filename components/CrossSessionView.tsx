@@ -4,6 +4,7 @@
  */
 
 import React, { useState, useEffect, useMemo } from 'react';
+import { PageHeader } from './PageHeader';
 import { CorrelationService, Correlation } from '../services/correlationService';
 import { Network, Link2, AlertTriangle, Search, Fingerprint, Activity, Repeat, ShieldAlert, Zap, DollarSign, ArrowUpRight } from 'lucide-react';
 
@@ -46,35 +47,17 @@ export const CrossSessionView: React.FC<CrossSessionViewProps> = ({ onNavigateTo
         <div className="h-full flex flex-col bg-[#F8FAFC] overflow-hidden relative font-sans">
             <div className="absolute inset-0 z-0 pointer-events-none opacity-[0.25] report-paper"></div>
 
-            <header className="px-6 lg:px-10 py-4 border-b border-slate-100 bg-white/90 backdrop-blur-xl z-20 shrink-0 shadow-sm relative">
-                <div className="absolute top-0 right-0 h-full w-1/4 bg-gradient-to-l from-[#F8FAFC] to-transparent pointer-events-none opacity-50"></div>
-
-                <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-4 relative z-10">
-                    <div className="flex items-center gap-4">
-                        <div className="w-8 h-8 lg:w-9 lg:h-9 bg-black rounded-xl flex items-center justify-center shadow-lg transition-transform hover:rotate-6">
-                            <Repeat size={18} className="text-white" />
-                        </div>
-                        <div>
-                            <h2 className="text-md lg:text-lg font-black text-[#0F172A] uppercase italic font-serif-legal tracking-tight leading-tight">Intelligence <span className="text-[#B91C1C]">Croisée</span></h2>
-                            <div className="flex items-center gap-2 mt-0.5">
-                                <span className="w-1 h-1 rounded-full bg-[#B91C1C] animate-pulse"></span>
-                                <span className="text-[8px] font-black text-slate-400 uppercase tracking-[0.3em]">Détection de Récurrences Multi-Sessions</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="relative group w-full lg:w-72">
-                        <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-[#B91C1C] transition-colors" size={12} />
-                        <input
-                            type="text"
-                            placeholder="Rechercher une entité..."
-                            value={searchQuery}
-                            onChange={e => setSearchQuery(e.target.value)}
-                            className="bg-[#F8FAFC] border border-slate-100 rounded-lg py-1.5 pl-9 pr-3 text-[11px] text-[#0F172A] focus:border-[#B91C1C] focus:bg-white outline-none transition-all w-full shadow-inner placeholder-slate-300 font-medium"
-                        />
-                    </div>
-                </div>
-            </header>
+            <PageHeader
+                title="Intelligence"
+                titleHighlight="Croisée"
+                icon={Repeat}
+                badgeText="Détection de Récurrences Multi-Sessions"
+                searchQuery={searchQuery}
+                onSearchChange={setSearchQuery}
+                searchPlaceholder="Rechercher une entité..."
+                totalLabel="Liens"
+                totalCount={correlations.length}
+            />
 
             <div className="flex-1 overflow-y-auto p-4 lg:p-6 custom-scrollbar z-10">
                 <div className="max-w-12xl mx-auto space-y-6 pb-10">
