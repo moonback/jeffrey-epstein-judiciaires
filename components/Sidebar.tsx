@@ -74,13 +74,13 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
     return (
         <aside
-            className={`bg-white border-r border-slate-100 flex flex-col h-screen sticky top-0 z-50 transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] shadow-2xl relative ${isCollapsed ? 'w-16' : 'w-16 lg:w-[240px]'
+            className={`bg-white/80 backdrop-blur-2xl border-r border-slate-100 flex flex-col h-[100dvh] sticky top-0 z-50 transition-all duration-700 ease-[cubic-bezier(0.16,1,0.3,1)] shadow-2xl relative ${isCollapsed ? 'w-16' : 'w-64 lg:w-[240px]'
                 }`}
         >
             {/* COLLAPSE TOGGLE */}
             <button
                 onClick={() => setIsCollapsed(!isCollapsed)}
-                className="absolute -right-3 top-20 w-7 h-7 bg-white border border-slate-100 rounded-full hidden lg:flex items-center justify-center text-slate-300 hover:text-[#B91C1C] transition-all z-[60] shadow-xl hover:scale-110 active:scale-95"
+                className="absolute -right-3 top-20 w-7 h-7 bg-white border border-slate-100 rounded-full flex items-center justify-center text-slate-300 hover:text-[#B91C1C] transition-all z-[60] shadow-xl hover:scale-110 active:scale-95"
             >
                 {isCollapsed ? <ChevronRight size={14} /> : <ChevronLeft size={14} />}
             </button>
@@ -95,7 +95,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                         </div>
                     </div>
                     {!isCollapsed && (
-                        <div className="hidden lg:block animate-pro-reveal duration-700">
+                        <div className="animate-pro-reveal duration-700">
                             <h1 className="font-black text-[#020617] tracking-tighter text-xl uppercase leading-none font-display">
                                 DOJ<span className="text-[#DC2626]">FORENSIC</span>
                             </h1>
@@ -115,7 +115,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                         <div className={`relative w-full flex items-center justify-center ${isCollapsed ? '' : 'lg:justify-start lg:px-6'} h-12 bg-[#DC2626] hover:bg-[#020617] text-white rounded-2xl transition-all duration-500 shadow-xl shadow-red-900/20 hover:shadow-slate-900/30 active:scale-95 overflow-hidden border border-red-500/20`}>
                             <div className="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:translate-x-full transition-transform duration-1000"></div>
                             <Plus size={20} className="shrink-0 group-hover:rotate-90 transition-transform duration-700" />
-                            {!isCollapsed && <span className="hidden lg:block font-black text-[10px] uppercase tracking-[0.2em] ml-4 transition-all whitespace-nowrap font-display">Nouvelle Analyse</span>}
+                            {!isCollapsed && <span className="font-black text-[10px] uppercase tracking-[0.2em] ml-4 transition-all whitespace-nowrap font-display">Nouvelle Analyse</span>}
                         </div>
                     </button>
                 )}
@@ -141,11 +141,11 @@ export const Sidebar: React.FC<SidebarProps> = ({
                                 )}
                                 <item.icon
                                     size={20}
-                                    className={`shrink-0 transition-all duration-700 ${isActive ? 'text-[#DC2626]' : 'group-hover:scale-110 opacity-70 group-hover:opacity-100'}`}
+                                    className={`shrink-0 transition-all duration-700 ${isActive ? 'text-[#DC2626]' : `${item.color} opacity-70 group-hover:opacity-100 group-hover:scale-110`}`}
                                     aria-hidden="true"
                                 />
                                 {!isCollapsed && (
-                                    <span className={`hidden lg:block text-[14px] font-bold tracking-tight ml-5 transition-all duration-500 font-serif-legal ${isActive ? 'translate-x-1 text-[#020617]' : 'opacity-60 group-hover:opacity-100 text-slate-500'}`}>
+                                    <span className={`text-[14px] font-bold tracking-tight ml-5 transition-all duration-500 font-serif-legal ${isActive ? 'translate-x-1 text-[#020617]' : 'opacity-60 group-hover:opacity-100 text-slate-500'}`}>
                                         {item.label}
                                     </span>
                                 )}
@@ -167,7 +167,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                             size={14}
                             className={`group-hover:animate-pulse transition-all shrink-0`}
                         />
-                        {!isCollapsed && <span className="hidden lg:block text-[9px] font-black uppercase tracking-[0.3em] ml-3 transition-all duration-300">Console Monitor</span>}
+                        {!isCollapsed && <span className="text-[9px] font-black uppercase tracking-[0.3em] ml-3 transition-all duration-300">Console Monitor</span>}
                     </button>
 
                     <button
@@ -179,7 +179,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                             size={14}
                             className="group-hover:rotate-180 transition-transform duration-700 shrink-0"
                         />
-                        {!isCollapsed && <span className="hidden lg:block text-[9px] font-black uppercase tracking-[0.3em] ml-3 transition-all duration-300">Protocole Config</span>}
+                        {!isCollapsed && <span className="text-[9px] font-black uppercase tracking-[0.3em] ml-3 transition-all duration-300">Protocole Config</span>}
                     </button>
 
                     {/* NEW LOGIN/LOGOUT BUTTON */}
@@ -195,7 +195,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                             className={`${isGuestMode ? 'text-white' : 'group-hover:text-[#B91C1C]'} transition-colors shrink-0`}
                         />
                         {!isCollapsed && (
-                            <span className={`hidden lg:block text-[10px] font-black uppercase tracking-[0.3em] ml-3 transition-all duration-300 ${isGuestMode ? 'text-white' : ''}`}>
+                            <span className={`text-[10px] font-black uppercase tracking-[0.3em] ml-3 transition-all duration-300 ${isGuestMode ? 'text-white' : ''}`}>
                                 {isGuestMode ? 'Connexion Analyste' : 'Clôturer Session'}
                             </span>
                         )}
@@ -203,7 +203,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 </div>
 
                 {!isCollapsed && (
-                    <div className="hidden lg:flex mt-3 items-center gap-2 px-3 py-2 bg-[#F8FAFC] rounded-xl border border-slate-50 group cursor-help transition-all hover:bg-white hover:shadow-xl">
+                    <div className="flex mt-3 items-center gap-2 px-3 py-2 bg-[#F8FAFC] rounded-xl border border-slate-50 group cursor-help transition-all hover:bg-white hover:shadow-xl">
                         <div className="relative shrink-0">
                             <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.3)] animate-pulse"></div>
                         </div>

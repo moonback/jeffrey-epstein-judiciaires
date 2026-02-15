@@ -29,7 +29,6 @@ import {
   Settings,
   Share2,
   Clock,
-  Menu,
   ChevronDown,
   Monitor,
   Cpu,
@@ -636,22 +635,20 @@ const App: React.FC = () => {
   return (
     <div className="flex flex-col lg:flex-row bg-[#F8FAFC] text-[#0F172A] min-h-screen overflow-hidden font-sans">
 
-      {/* 1. Global Navigation Sidebar - Hidden on mobile, visible on LG */}
-      <div className="hidden lg:flex">
-        <Sidebar
-          currentView={viewMode}
-          onViewChange={setViewMode}
-          onOpenSettings={() => setIsSettingsOpen(true)}
-          onNewAnalysis={() => {
-            setViewMode('lab');
-            setShowPlanner(true);
-            setActiveTabId(null);
-          }}
-          onToggleLogs={() => setShowLogs(!showLogs)}
-          onLogout={handleLogout}
-          isGuestMode={isGuestMode}
-        />
-      </div>
+      {/* 1. Global Navigation Sidebar - Premium Responsive Navigation */}
+      <Sidebar
+        currentView={viewMode}
+        onViewChange={setViewMode}
+        onOpenSettings={() => setIsSettingsOpen(true)}
+        onNewAnalysis={() => {
+          setViewMode('lab');
+          setShowPlanner(true);
+          setActiveTabId(null);
+        }}
+        onToggleLogs={() => setShowLogs(!showLogs)}
+        onLogout={handleLogout}
+        isGuestMode={isGuestMode}
+      />
 
       <div className="flex-1 flex flex-col min-w-0 h-screen overflow-hidden bg-[#F8FAFC]">
 
@@ -994,140 +991,7 @@ const App: React.FC = () => {
           </div>
         </main >
 
-        {/* MOBILE BOTTOM NAVIGATION - PREMIUM PRO LIGHT */}
-        < nav className="lg:hidden fixed bottom-0 left-0 right-0 h-20 bg-white/90 border-t border-slate-100 flex items-center justify-start overflow-x-auto no-scrollbar px-6 z-50 backdrop-blur-3xl shadow-[0_-20px_50px_rgba(0,0,0,0.05)] gap-2" >
-          {!isGuestMode && (
-            <MobileNavItem
-              icon={Terminal}
-              label="Lab"
-              isActive={viewMode === 'lab'}
-              onClick={() => setViewMode('lab')}
-            />
-          )}
 
-          <MobileNavItem
-            icon={Database}
-            label="Archives"
-            isActive={viewMode === 'database'}
-            onClick={() => setViewMode('database')}
-          />
-
-          {
-            !isGuestMode && (
-              <MobileNavItem
-                icon={Cpu}
-                label="B-Scan"
-                isActive={viewMode === 'background_ai'}
-                onClick={() => setViewMode('background_ai')}
-              />
-            )
-          }
-
-          <MobileNavItem
-            icon={Share2}
-            label="Neural"
-            isActive={viewMode === 'network'}
-            onClick={() => setViewMode('network')}
-          />
-
-          <MobileNavItem
-            icon={Clock}
-            label="Temps"
-            isActive={viewMode === 'timeline'}
-            onClick={() => setViewMode('timeline')}
-          />
-
-          <MobileNavItem
-            icon={Fingerprint}
-            label="Acteurs"
-            isActive={viewMode === 'actors'}
-            onClick={() => setViewMode('actors')}
-          />
-
-          <MobileNavItem
-            icon={DollarSign}
-            label="Finance"
-            isActive={viewMode === 'finance'}
-            onClick={() => setViewMode('finance')}
-          />
-
-          <MobileNavItem
-            icon={Archive}
-            label="Patrimoine"
-            isActive={viewMode === 'assets'}
-            onClick={() => setViewMode('assets')}
-          />
-
-          <MobileNavItem
-            icon={Link2}
-            label="X-Intel"
-            isActive={viewMode === 'cross'}
-            onClick={() => setViewMode('cross')}
-          />
-
-          <MobileNavItem
-            icon={ShieldAlert}
-            label="Contrad"
-            isActive={viewMode === 'contradictions'}
-            onClick={() => setViewMode('contradictions')}
-          />
-
-
-          <MobileNavItem
-            icon={Network}
-            label="Découverte"
-            isActive={viewMode === 'discovery'}
-            onClick={() => setViewMode('discovery')}
-          />
-
-          <MobileNavItem
-            icon={Plane}
-            label="Vols"
-            isActive={viewMode === 'flights'}
-            onClick={() => setViewMode('flights')}
-          />
-
-          {
-            !isGuestMode && (
-              <MobileNavItem
-                icon={Mic}
-                label="Vocal"
-                isActive={viewMode === 'voice'}
-                onClick={() => setViewMode('voice')}
-              />
-            )
-          }
-
-          {
-            !isGuestMode && (
-              <>
-                <div className="h-10 w-px bg-slate-100 mx-2 shrink-0"></div>
-                <button
-                  onClick={() => setShowLogs(!showLogs)}
-                  className={`flex flex-col items-center justify-center gap-2 transition-all min-w-[64px] shrink-0 ${showLogs ? 'text-[#B91C1C]' : 'text-slate-400'}`}
-                >
-                  <div className={`p-3 rounded-2xl transition-all ${showLogs ? 'bg-red-50 shadow-inner' : 'hover:bg-slate-50'}`}>
-                    <Activity size={20} className={showLogs ? 'animate-pulse' : ''} />
-                  </div>
-                  <span className="text-[10px] font-black uppercase tracking-widest leading-none">Logs</span>
-                </button>
-              </>
-            )
-          }
-
-          <div className="h-10 w-px bg-slate-100 mx-2 shrink-0"></div>
-          <button
-            onClick={handleLogout}
-            className={`flex flex-col items-center justify-center gap-2 transition-all min-w-[64px] shrink-0 ${isGuestMode ? 'text-[#B91C1C]' : 'text-slate-400'}`}
-          >
-            <div className={`p-3 rounded-2xl transition-all ${isGuestMode ? 'bg-red-50' : 'hover:bg-slate-50'}`}>
-              <Lock size={20} />
-            </div>
-            <span className="text-[10px] font-black uppercase tracking-widest leading-none">
-              {isGuestMode ? 'Login' : 'Out'}
-            </span>
-          </button>
-        </nav >
       </div >
 
       {!isGuestMode && <LiveAssistant />}
@@ -1353,23 +1217,6 @@ const App: React.FC = () => {
   );
 };
 
-interface MobileNavItemProps {
-  icon: any;
-  label: string;
-  isActive: boolean;
-  onClick: () => void;
-}
 
-const MobileNavItem: React.FC<MobileNavItemProps> = ({ icon: Icon, label, isActive, onClick }) => (
-  <button
-    onClick={onClick}
-    className={`flex flex-col items-center justify-center gap-2 transition-all w-20 shrink-0 ${isActive ? 'text-[#B91C1C]' : 'text-slate-400'}`}
-  >
-    <div className={`p-3 rounded-2xl transition-all duration-500 ${isActive ? 'bg-[#0F172A] text-white shadow-xl scale-110 -translate-y-1' : 'hover:bg-slate-50'}`}>
-      <Icon size={20} />
-    </div>
-    <span className={`text-[10px] font-black uppercase tracking-widest leading-none ${isActive ? 'opacity-100 scale-100' : 'opacity-40 scale-90'}`}>{label}</span>
-  </button>
-);
 
 export default App;
