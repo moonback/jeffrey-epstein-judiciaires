@@ -21,7 +21,10 @@ import {
     Zap,
     TrendingUp,
     ChevronRight,
-    Loader2
+    Loader2,
+    Database,
+    Filter,
+    ListFilter
 } from 'lucide-react';
 
 interface MainActorsViewProps {
@@ -106,7 +109,14 @@ export const MainActorsView: React.FC<MainActorsViewProps> = ({ onEntityClick, i
     const stats = useMemo(() => {
         const highRisk = allActors.filter(a => (a.risk_level || 0) > 7).length;
         const influencers = allActors.filter(a => (a.influence || 0) > 7).length;
-        return { total: allActors.length, highRisk, influencers };
+        // Top 3 roles
+        const rolesCount = new Map<string, number>();
+        allActors.forEach(a => {
+            if (a.role) rolesCount.set(a.role, (rolesCount.get(a.role) || 0) + 1);
+        });
+        const topRoles = Array.from(rolesCount.entries()).sort((a, b) => b[1] - a[1]).slice(0, 3);
+
+        return { total: allActors.length, highRisk, influencers, topRoles };
     }, [allActors]);
 
     const roles = useMemo(() => {
@@ -114,15 +124,15 @@ export const MainActorsView: React.FC<MainActorsViewProps> = ({ onEntityClick, i
         allActors.forEach(a => {
             if (a.role && a.role.length < 40) r.add(a.role);
         });
-        return Array.from(r).sort().slice(0, 12);
+        return Array.from(r).sort().slice(0, 20);
     }, [allActors]);
 
     if (loading) {
         return (
-            <div className="h-full flex items-center justify-center bg-[#F8FAFC]">
-                <div className="flex flex-col items-center gap-6">
-                    <Loader2 size={40} className="text-[#B91C1C] animate-spin" />
-                    <span className="text-[10px] font-black text-slate-300 uppercase tracking-[0.4em]">Indexation des Profils Mobiles...</span>
+            <div className="h-full flex items-center justify-center bg-[#FDFDFD]">
+                <div className="flex flex-col items-center gap-4">
+                    <Loader2 size={32} className="text-[#B91C1C] animate-spin" />
+                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Chargement des profils...</span>
                 </div>
             </div>
         );
@@ -130,126 +140,108 @@ export const MainActorsView: React.FC<MainActorsViewProps> = ({ onEntityClick, i
 
     return (
         <div className="h-full flex flex-col bg-[#F8FAFC] overflow-hidden relative font-sans">
-            <div className="absolute inset-0 z-0 pointer-events-none opacity-[0.25] report-paper"></div>
-
-            <header className="px-6 lg:px-12 py-8 bg-white/90 backdrop-blur-xl border-b border-slate-100 z-30 shadow-sm relative shrink-0">
-                <div className="max-w-7xl mx-auto flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-                    <div className="flex items-center gap-6">
-                        <div className="w-14 h-14 bg-black rounded-[1.5rem] flex items-center justify-center shadow-2xl group transition-all hover:rotate-6">
-                            <Users className="text-white group-hover:scale-110 transition-transform" size={26} />
+            {/* Ultra Compact Professional Header */}
+            <header className="px-4 py-3 bg-white/90 backdrop-blur-md border-b border-slate-200 z-30 shrink-0 flex items-center justify-between shadow-sm gap-4">
+                <div className="flex items-center gap-4 min-w-0">
+                    <div className="w-9 h-9 bg-[#0F172A] rounded-lg flex items-center justify-center shadow-lg group hover:bg-[#B91C1C] transition-colors duration-500 shrink-0">
+                        <Users className="text-white group-hover:scale-110 transition-transform" size={16} />
+                    </div>
+                    <div className="min-w-0">
+                        <div className="flex items-center gap-2">
+                            <h1 className="text-base font-black text-[#0F172A] uppercase italic tracking-tight leading-none truncate">
+                                Acteurs <span className="text-[#B91C1C]">Clés</span>
+                            </h1>
+                            <span className="px-1.5 py-0.5 rounded-md bg-slate-100 border border-slate-200 text-[9px] font-black text-slate-500 uppercase tracking-widest leading-none">
+                                {stats.total}
+                            </span>
                         </div>
-                        <div>
-                            <div className="flex items-center gap-3">
-                                <h1 className="text-2xl lg:text-3xl font-black text-[#0F172A] uppercase italic font-serif-legal tracking-tight leading-none">
-                                    Acteurs <span className="text-[#B91C1C]">Principaux</span>
-                                </h1>
-                                <span className="text-[9px] font-black text-slate-300 uppercase tracking-[0.3em] bg-slate-50 px-2 py-1 rounded-md border border-slate-100">Intel-Unit 07</span>
-                            </div>
-                            <div className="flex items-center gap-4 mt-2">
-                                <div className="flex items-center gap-2">
-                                    <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></div>
-                                    <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">{stats.total} Profils Indexés</span>
-                                </div>
-                                <div className="h-3 w-px bg-slate-100"></div>
-                                <div className="flex items-center gap-2">
-                                    <ShieldAlert size={12} className="text-[#B91C1C]" />
-                                    <span className="text-[9px] font-black text-[#B91C1C] uppercase tracking-widest">{stats.highRisk} Cibles de Risque Alpha</span>
-                                </div>
+                        <div className="flex items-center gap-3 mt-1">
+                            <div className="flex items-center gap-1.5">
+                                <span className={`w-1.5 h-1.5 rounded-full ${stats.highRisk > 0 ? 'bg-[#B91C1C] animate-pulse' : 'bg-emerald-500'}`}></span>
+                                <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider leading-none whitespace-nowrap">{stats.highRisk} Critiques</span>
                             </div>
                         </div>
                     </div>
+                </div>
 
-                    <div className="flex flex-col gap-6">
-                        <div className="flex flex-wrap items-center gap-4">
-                            <div className="relative group">
-                                <Search size={16} className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-[#B91C1C] transition-colors" />
-                                <input
-                                    type="text"
-                                    placeholder="Rechercher une cible..."
-                                    value={searchQuery}
-                                    onChange={e => setSearchQuery(e.target.value)}
-                                    className="pl-12 pr-6 py-3 bg-slate-50 border border-slate-100 rounded-2xl text-[13px] font-bold text-[#0F172A] w-64 focus:w-80 focus:bg-white focus:border-[#B91C1C] transition-all outline-none shadow-inner"
-                                />
-                            </div>
+                <div className="flex items-center gap-2 flex-1 justify-end">
+                    {/* Search Bar - Compact */}
+                    <div className="relative group max-w-xs w-full">
+                        <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-[#B91C1C] transition-colors" />
+                        <input
+                            type="text"
+                            placeholder="Rechercher..."
+                            value={searchQuery}
+                            onChange={e => setSearchQuery(e.target.value)}
+                            className="w-full pl-9 pr-3 py-1.5 bg-slate-50 hover:bg-white focus:bg-white border border-slate-200 rounded-lg text-xs font-semibold text-[#0F172A] focus:border-[#B91C1C] transition-all outline-none shadow-sm placeholder:text-slate-400"
+                        />
+                    </div>
 
-                            <div className="h-10 w-px bg-slate-100 hidden lg:block"></div>
+                    <div className="h-6 w-px bg-slate-200 mx-1 hidden sm:block"></div>
 
-                            <div className="flex items-center gap-2 bg-slate-50 border border-slate-100 p-2 rounded-2xl">
-                                <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest ml-2 flex items-center gap-2">
-                                    <ShieldAlert size={12} /> Risque Min:
-                                </span>
-                                <input
-                                    type="range"
-                                    min="0"
-                                    max="10"
-                                    value={minRisk}
-                                    onChange={e => setMinRisk(Number(e.target.value))}
-                                    className="accent-[#B91C1C] w-24"
-                                />
-                                <span className="text-[11px] font-black text-[#B91C1C] w-6">{minRisk}</span>
-                            </div>
+                    {/* Filters - Compact */}
+                    <div className="flex items-center gap-2 overflow-x-auto no-scrollbar">
+                        <button
+                            onClick={() => setOnlyHighMentions(!onlyHighMentions)}
+                            title="Filtrer par activité"
+                            className={`p-1.5 rounded-lg border transition-all flex items-center justify-center ${onlyHighMentions ? 'bg-[#0F172A] border-[#0F172A] text-white' : 'bg-white border-slate-200 text-slate-400 hover:border-[#B91C1C] hover:text-[#B91C1C]'}`}
+                        >
+                            <Activity size={14} />
+                        </button>
 
-                            <button
-                                onClick={() => setOnlyHighMentions(!onlyHighMentions)}
-                                className={`px-4 py-2.5 rounded-2xl border text-[10px] font-black uppercase tracking-widest transition-all flex items-center gap-2 ${onlyHighMentions ? 'bg-slate-900 border-slate-900 text-white shadow-lg' : 'bg-white border-slate-100 text-slate-400 hover:border-[#B91C1C] hover:text-[#B91C1C]'}`}
+                        <div className="relative">
+                            <select
+                                value={selectedRole}
+                                onChange={(e) => setSelectedRole(e.target.value)}
+                                className="appearance-none pl-3 pr-8 py-1.5 bg-white border border-slate-200 rounded-lg text-[10px] font-bold uppercase tracking-wider text-slate-600 focus:border-[#B91C1C] outline-none cursor-pointer hover:bg-slate-50 w-32 truncate"
                             >
-                                <Zap size={14} /> Multi-mentions
-                            </button>
-                        </div>
-
-                        <div className="flex items-center gap-3 overflow-x-auto no-scrollbar pb-1">
-                            <button
-                                onClick={() => setSelectedRole('all')}
-                                className={`px-5 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all whitespace-nowrap border ${selectedRole === 'all' ? 'bg-[#B91C1C] border-[#B91C1C] text-white shadow-lg' : 'bg-white border-slate-100 text-slate-400 hover:bg-slate-50'}`}
-                            >
-                                Tous
-                            </button>
-                            {roles.map(role => (
-                                <button
-                                    key={role}
-                                    onClick={() => setSelectedRole(role)}
-                                    className={`px-5 py-2 rounded-xl text-[10px] font-black uppercase tracking-widest transition-all whitespace-nowrap border ${selectedRole === role ? 'bg-[#0F172A] border-[#0F172A] text-white shadow-lg' : 'bg-white border-slate-100 text-slate-400 hover:bg-slate-50'}`}
-                                >
-                                    {role}
-                                </button>
-                            ))}
+                                <option value="all">Tous Rôles</option>
+                                {roles.map(role => (
+                                    <option key={role} value={role}>{role}</option>
+                                ))}
+                            </select>
+                            <ChevronRight size={12} className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none rotate-90" />
                         </div>
                     </div>
                 </div>
             </header>
 
-            <div className="flex-1 overflow-y-auto p-6 lg:p-12 custom-scrollbar z-10 scroll-smooth">
-                <div className="max-w-7xl mx-auto">
-                    {/* Top Tier: High Priority Targets */}
-                    <div className="mb-12">
-                        <div className="flex items-center gap-4 mb-8">
-                            <span className="text-[10px] font-black text-[#B91C1C] uppercase tracking-[0.5em] italic">Priorités de Profilage Alpha</span>
-                            <div className="h-px flex-1 bg-gradient-to-r from-[#B91C1C]/20 to-transparent"></div>
-                        </div>
+            {/* Dashboard Content - Densified */}
+            <div className="flex-1 overflow-y-auto p-4 custom-scrollbar z-10 bg-[#F8FAFC]">
+                <div className="max-w-[1920px] mx-auto space-y-6">
 
-                        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
-                            {actors.filter(a => a.risk_level >= 7 || a.influence >= 8).slice(0, 6).map((actor, idx) => (
-                                <ActorCard
-                                    key={idx}
-                                    actor={actor}
-                                    isPriority
-                                    onClick={() => onEntityClick?.(actor.nom)}
-                                />
-                            ))}
+                    {/* High Importance Grid */}
+                    {actors.some(a => a.risk_level >= 8 || a.influence >= 8) && (
+                        <div>
+                            <div className="flex items-center gap-2 mb-3">
+                                <ShieldAlert size={14} className="text-[#B91C1C]" />
+                                <span className="text-[10px] font-black text-[#B91C1C] uppercase tracking-[0.2em]">Cibles Prioritaires Alpha</span>
+                                <div className="h-px flex-1 bg-gradient-to-r from-[#B91C1C]/20 to-transparent"></div>
+                            </div>
+                            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-3">
+                                {actors.filter(a => a.risk_level >= 8 || a.influence >= 8).map((actor, idx) => (
+                                    <ActorCard
+                                        key={actor.nom + idx}
+                                        actor={actor}
+                                        isPriority
+                                        onClick={() => onEntityClick?.(actor.nom)}
+                                    />
+                                ))}
+                            </div>
                         </div>
-                    </div>
+                    )}
 
-                    {/* Second Tier: Full Registry */}
+                    {/* Standard Registry */}
                     <div>
-                        <div className="flex items-center gap-4 mb-8">
-                            <span className="text-[10px] font-black text-slate-300 uppercase tracking-[0.5em] italic">Registre Global des Acteurs</span>
-                            <div className="h-px flex-1 bg-gradient-to-r from-slate-100 to-transparent"></div>
+                        <div className="flex items-center gap-2 mb-3">
+                            <Database size={14} className="text-slate-400" />
+                            <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.2em]">Registre Complet</span>
+                            <div className="h-px flex-1 bg-gradient-to-r from-slate-200 to-transparent"></div>
                         </div>
-
-                        <div className="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-6">
-                            {actors.filter(a => a.risk_level < 7 && a.influence < 8 || actors.indexOf(a) >= 6).map((actor, idx) => (
+                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-3">
+                            {actors.filter(a => !(a.risk_level >= 8 || a.influence >= 8)).map((actor, idx) => (
                                 <ActorCard
-                                    key={idx}
+                                    key={actor.nom + idx}
                                     actor={actor}
                                     onClick={() => onEntityClick?.(actor.nom)}
                                 />
@@ -258,122 +250,98 @@ export const MainActorsView: React.FC<MainActorsViewProps> = ({ onEntityClick, i
                     </div>
 
                     {actors.length === 0 && (
-                        <div className="py-40 text-center bg-white rounded-[4rem] border border-slate-100 shadow-sm">
-                            <div className="relative w-24 h-24 mx-auto mb-8">
-                                <div className="absolute inset-0 bg-slate-50 rounded-full animate-ping opacity-20"></div>
-                                <Search size={48} className="mx-auto text-slate-100 relative z-10" />
+                        <div className="flex flex-col items-center justify-center py-20 opacity-50">
+                            <div className="w-16 h-16 bg-slate-100 rounded-full flex items-center justify-center mb-4">
+                                <Search size={24} className="text-slate-300" />
                             </div>
-                            <h3 className="text-xl font-black text-[#0F172A] uppercase tracking-widest font-serif-legal italic mb-3">Aucun Agent Détecté</h3>
-                            <p className="text-[10px] text-slate-400 font-bold uppercase tracking-[0.3em]">Affinez vos critères de scan neural</p>
+                            <p className="text-xs font-black text-slate-400 uppercase tracking-widest">Aucun profil détecté</p>
                         </div>
                     )}
                 </div>
             </div>
 
-            <footer className="px-10 py-5 bg-white border-t border-slate-100 flex justify-between items-center z-30 shrink-0">
-                <div className="flex items-center gap-8">
-                    <div className="flex items-center gap-2">
-                        <div className="w-2 h-2 rounded-full bg-[#B91C1C]"></div>
-                        <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Risque Critique</span>
-                    </div>
-                    <div className="flex items-center gap-2">
-                        <div className="w-2 h-2 rounded-full bg-[#B5965D]"></div>
-                        <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Influence Système</span>
-                    </div>
+            {/* Status Bar */}
+            <div className="bg-white border-t border-slate-100 px-4 py-2 flex justify-between items-center z-30 shrink-0">
+                <div className="flex items-center gap-4">
+                    <span className="text-[9px] font-black text-slate-300 uppercase tracking-[0.2em]">Status: Connecté</span>
+                    <div className="h-3 w-px bg-slate-100"></div>
+                    <span className="text-[9px] font-black text-slate-300 uppercase tracking-[0.2em]">Mode: Investigation</span>
                 </div>
-                <div className="text-[9px] font-black text-slate-300 uppercase tracking-[0.4em] italic">
-                    Protocol 07: Data-Driven Profiling v8.2
-                </div>
-            </footer>
+                <div className="text-[9px] font-black text-slate-300 uppercase tracking-[0.2em]">Protocol V8.2</div>
+            </div>
         </div>
     );
 };
 
+// Ultra Compact Actor Card
 const ActorCard: React.FC<{ actor: any, isPriority?: boolean, onClick: () => void }> = ({ actor, isPriority, onClick }) => {
-    const riskColor = actor.risk_level > 7 ? 'text-red-600' : actor.risk_level > 4 ? 'text-[#B5965D]' : 'text-emerald-600';
-    const riskBg = actor.risk_level > 7 ? 'bg-red-50' : actor.risk_level > 4 ? 'bg-orange-50' : 'bg-emerald-50';
+    // Risk color logic
+    const isHighRisk = actor.risk_level >= 7;
+    const isMediumRisk = actor.risk_level >= 4 && actor.risk_level < 7;
 
     return (
         <div
             onClick={onClick}
             className={`
-                bg-white rounded-[2.5rem] border transition-all duration-500 cursor-pointer group hover:shadow-2xl hover:-translate-y-2 relative overflow-hidden
-                ${isPriority ? 'p-8 border-slate-200 shadow-xl' : 'p-6 border-slate-100 shadow-sm'}
+                group relative flex flex-col
+                bg-white border rounded-xl overflow-hidden cursor-pointer transition-all duration-300
+                hover:shadow-[0_8px_30px_rgb(0,0,0,0.04)] hover:-translate-y-1 hover:border-slate-300
+                ${isPriority ? 'border-red-100 shadow-sm bg-red-50/10' : 'border-slate-100'}
             `}
         >
-            {isPriority && (
-                <div className="absolute top-0 right-0 p-8 opacity-[0.02] transition-transform group-hover:scale-125 duration-1000 pointer-events-none">
-                    <Fingerprint size={120} className="text-black" />
-                </div>
-            )}
+            {/* Hover Accent Line */}
+            <div className={`absolute top-0 left-0 w-full h-0.5 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 ${isHighRisk ? 'bg-[#B91C1C]' : 'bg-[#0F172A]'}`}></div>
 
-            <div className="flex justify-between items-start mb-6">
-                <div className={`
-                    w-12 h-12 rounded-2xl flex items-center justify-center transition-all duration-500 font-black text-xl italic font-serif-legal
-                    ${isPriority ? 'bg-black text-white shadow-xl rotate-3 group-hover:rotate-0' : 'bg-slate-50 text-slate-400 border border-slate-100'}
-                    group-hover:bg-[#B91C1C] group-hover:text-white
-                `}>
-                    {actor.nom[0]}
-                </div>
-                <div className="text-right">
-                    <div className="text-[8px] font-black text-slate-300 uppercase tracking-widest mb-1.5 flex items-center gap-1.5 justify-end">
-                        <ShieldAlert size={10} className={actor.risk_level > 7 ? 'text-[#B91C1C]' : 'text-slate-300'} /> Risque
+            <div className="p-3">
+                <div className="flex justify-between items-start gap-3 mb-2">
+                    {/* Avatar Info */}
+                    <div className={`
+                        w-8 h-8 rounded-lg flex items-center justify-center font-black text-xs font-serif-legal italic transition-all group-hover:scale-105 shrink-0
+                        ${isHighRisk ? 'bg-[#B91C1C] text-white shadow-md shadow-red-900/10' :
+                            isMediumRisk ? 'bg-orange-100 text-orange-700 border border-orange-200' :
+                                'bg-slate-50 text-slate-500 border border-slate-100'}
+                    `}>
+                        {actor.nom[0]}
                     </div>
-                    <div className={`text-xl font-mono-data font-black ${actor.risk_level > 7 ? 'text-[#B91C1C]' : 'text-slate-900'}`}>
-                        {actor.risk_level}/10
-                    </div>
-                </div>
-            </div>
 
-            <div className="space-y-4">
-                <div>
-                    <h3 className={`font-black text-[#0F172A] font-serif-legal italic leading-tight mb-1 group-hover:text-[#B91C1C] transition-colors truncate ${isPriority ? 'text-xl' : 'text-base'}`}>
+                    {/* Risk Badge */}
+                    <div className={`
+                        px-1.5 py-0.5 rounded flex items-center gap-1 border
+                        ${isHighRisk ? 'bg-red-50 border-red-100 text-[#B91C1C]' : 'bg-slate-50 border-slate-100 text-slate-400'}
+                    `}>
+                        {isHighRisk && <AlertTriangle size={8} />}
+                        <span className="text-[9px] font-black uppercase tracking-wider">{actor.risk_level}/10</span>
+                    </div>
+                </div>
+
+                <div className="mb-2.5">
+                    <h3 className="font-bold text-[#0F172A] text-xs leading-tight group-hover:text-[#B91C1C] transition-colors truncate" title={actor.nom}>
                         {actor.nom}
                     </h3>
-                    <p className={`text-[10px] font-bold text-slate-400 uppercase tracking-widest line-clamp-1`}>
-                        {actor.role}
+                    <p className="text-[8px] font-semibold text-slate-400 uppercase tracking-wider truncate mt-0.5" title={actor.role}>
+                        {actor.role || 'Rôle Inconnu'}
                     </p>
                 </div>
 
-                <div className="grid grid-cols-2 gap-4 pt-2">
-                    <div className="bg-slate-50/50 p-4 rounded-2xl border border-slate-50">
-                        <div className="text-[7px] font-black text-slate-300 uppercase mb-1 tracking-widest">Influence</div>
-                        <div className="flex items-end gap-1.5">
-                            <span className="text-lg font-mono-data font-black text-[#0F172A] leading-none">{actor.influence}</span>
-                            <TrendingUp size={10} className="text-[#B5965D] mb-1" />
-                        </div>
+                {/* Micro Stats */}
+                <div className="grid grid-cols-2 gap-2 mt-auto">
+                    <div className="bg-slate-50/50 rounded flex flex-col justify-center px-2 py-1 border border-slate-100/50">
+                        <span className="text-[6px] font-black text-slate-300 uppercase tracking-widest leading-none mb-0.5">MENTIONS</span>
+                        <span className="text-[10px] font-black text-slate-600 leading-none">{actor.mentions}</span>
                     </div>
-                    <div className="bg-slate-50/50 p-4 rounded-2xl border border-slate-50">
-                        <div className="text-[7px] font-black text-slate-300 uppercase mb-1 tracking-widest">Mentions</div>
-                        <div className="flex items-end gap-1.5">
-                            <span className="text-lg font-mono-data font-black text-[#0F172A] leading-none">{actor.mentions}</span>
-                            <Activity size={10} className="text-blue-500 mb-1" />
-                        </div>
+                    <div className="bg-slate-50/50 rounded flex flex-col justify-center px-2 py-1 border border-slate-100/50">
+                        <span className="text-[6px] font-black text-slate-300 uppercase tracking-widest leading-none mb-0.5">INFLUENCE</span>
+                        <span className="text-[10px] font-black text-slate-600 leading-none">{actor.influence}</span>
                     </div>
-                </div>
-
-                <div className="pt-4 flex items-center justify-between">
-                    <div className="flex -space-x-2">
-                        {actor.sources.slice(0, 3).map((s, i) => (
-                            <div key={i} className="w-6 h-6 rounded-full bg-[#F1F5F9] border-2 border-white flex items-center justify-center text-[8px] font-black text-slate-400" title={s}>
-                                {i + 1}
-                            </div>
-                        ))}
-                        {actor.sources.length > 3 && (
-                            <div className="w-6 h-6 rounded-full bg-slate-900 border-2 border-white flex items-center justify-center text-[7px] font-black text-white">
-                                +{actor.sources.length - 3}
-                            </div>
-                        )}
-                    </div>
-                    <button className="flex items-center gap-2 text-[8px] font-black text-[#B91C1C] uppercase tracking-widest opacity-0 group-hover:opacity-100 transition-all transform translate-x-4 group-hover:translate-x-0">
-                        Profil Complet <ChevronRight size={10} />
-                    </button>
                 </div>
             </div>
 
-            {actor.risk_level > 8 && (
-                <div className="absolute bottom-0 left-0 w-full h-1 bg-[#B91C1C] animate-pulse"></div>
-            )}
+            {/* View Profile Overlay Action */}
+            <div className="absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity transform translate-y-2 group-hover:translate-y-0 duration-300 z-20">
+                <div className="w-5 h-5 rounded-full bg-[#0F172A] flex items-center justify-center shadow-lg">
+                    <ChevronRight size={10} className="text-white" />
+                </div>
+            </div>
         </div>
     );
 };
