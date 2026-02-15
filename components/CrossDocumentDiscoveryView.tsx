@@ -4,6 +4,7 @@
  */
 
 import React, { useState, useEffect } from 'react';
+import { PageHeader } from './PageHeader';
 import { CorrelationService } from '../services/correlationService';
 import { ProcessedResult, DiscoveryResult } from '../types';
 import { storageService } from '../services/storageService';
@@ -78,66 +79,51 @@ export const CrossDocumentDiscoveryView: React.FC<CrossDocumentDiscoveryViewProp
 
     return (
         <div className="h-full flex flex-col bg-[#F8FAFC] overflow-hidden relative font-sans">
-            <header className="px-10 py-6 border-b border-slate-100 bg-white/90 backdrop-blur-xl z-20 shrink-0 shadow-sm">
-                <div className="flex items-center justify-between">
-                    <div className="flex items-center gap-4">
-                        <div className="w-9 h-9 bg-[#B91C1C] rounded-xl flex items-center justify-center shadow-lg shadow-red-900/20">
-                            <Network size={20} className="text-white" />
-                        </div>
-                        <div>
-                            <h2 className="text-lg font-black text-[#0F172A] uppercase italic font-serif-legal tracking-tight">Cross-Document <span className="text-[#B91C1C]">Discovery</span></h2>
-                            <div className="flex items-center gap-2 mt-0.5">
-                                <span className="w-1 h-1 rounded-full bg-emerald-500 animate-pulse"></span>
-                                <span className="text-[8px] font-black text-slate-400 uppercase tracking-[0.3em]">IA Predictive Linking Engine</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="flex items-center gap-6">
-                        <div className="relative group w-64">
-                            <Search className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-300" size={12} />
-                            <input
-                                type="text"
-                                placeholder="Filtrer les découvertes..."
-                                value={discoverySearch}
-                                onChange={(e) => setDiscoverySearch(e.target.value)}
-                                className="bg-slate-50 border border-slate-100 rounded-lg pl-9 pr-3 py-1.5 text-[10px] font-bold text-[#0F172A] outline-none focus:border-[#B91C1C] transition-all w-full"
-                            />
-                        </div>
-
-                        <div className="flex items-center gap-2">
-                            <span className="text-[9px] font-black text-slate-300 uppercase tracking-widest leading-none">Source :</span>
-                            <select
-                                value={selectedDocId || ''}
-                                onChange={(e) => setSelectedDocId(e.target.value)}
-                                className="bg-white border border-slate-100 rounded-lg px-3 py-1.5 text-[10px] font-bold text-[#0F172A] focus:ring-2 focus:ring-[#B91C1C]/20 outline-none transition-all shadow-sm max-w-[200px]"
-                            >
-                                {results.map(r => (
-                                    <option key={r.id} value={r.id}>
-                                        {r.input.query.slice(0, 30)}...
-                                    </option>
-                                ))}
-                            </select>
-                        </div>
-                    </div>
-                </div>
-
-                {/* Filter Bar */}
-                <div className="flex items-center gap-2 mt-6 overflow-x-auto no-scrollbar pb-1">
-                    {['all', 'entity', 'pii', 'transaction', 'flight', 'semantic'].map(type => (
-                        <button
-                            key={type}
-                            onClick={() => setFilterType(type)}
-                            className={`px-4 py-1.5 rounded-full text-[9px] font-black uppercase tracking-widest transition-all ${filterType === type
-                                    ? 'bg-[#0F172A] text-white shadow-lg'
-                                    : 'bg-slate-50 text-slate-400 hover:bg-slate-100'
-                                }`}
+            <PageHeader
+                title="Cross-Document"
+                titleHighlight="Discovery"
+                icon={Network}
+                badgeText="IA Predictive Linking Engine"
+                searchQuery={discoverySearch}
+                onSearchChange={setDiscoverySearch}
+                searchPlaceholder="Filtrer les découvertes..."
+                totalLabel="Découvertes"
+                totalCount={discoveries.length}
+            >
+                <div className="flex items-center gap-4">
+                    <div className="flex items-center gap-2 shrink-0 bg-slate-50 border border-slate-100 rounded-xl px-3 py-1.5">
+                        <span className="text-[9px] font-black text-slate-300 uppercase tracking-widest leading-none">Source</span>
+                        <select
+                            value={selectedDocId || ''}
+                            onChange={(e) => setSelectedDocId(e.target.value)}
+                            className="bg-transparent text-[10px] font-bold text-[#0F172A] outline-none max-w-[150px] truncate"
                         >
-                            {type === 'all' ? 'Tous les liens' : type}
-                        </button>
-                    ))}
+                            {results.map(r => (
+                                <option key={r.id} value={r.id}>
+                                    {r.input.query.slice(0, 30)}...
+                                </option>
+                            ))}
+                        </select>
+                    </div>
+
+                    <div className="h-6 w-px bg-slate-100 hidden sm:block"></div>
+
+                    <div className="flex items-center gap-2">
+                        {['all', 'entity', 'pii', 'transaction', 'flight', 'semantic'].map(type => (
+                            <button
+                                key={type}
+                                onClick={() => setFilterType(type)}
+                                className={`px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all whitespace-nowrap ${filterType === type
+                                    ? 'bg-[#0F172A] text-white shadow-md'
+                                    : 'bg-white border border-slate-100 text-slate-400 hover:text-slate-600'
+                                    }`}
+                            >
+                                {type === 'all' ? 'Tous' : type}
+                            </button>
+                        ))}
+                    </div>
                 </div>
-            </header>
+            </PageHeader>
 
             <div className="flex-1 overflow-y-auto p-10 custom-scrollbar z-10">
                 {analyzing ? (
@@ -227,9 +213,9 @@ export const CrossDocumentDiscoveryView: React.FC<CrossDocumentDiscoveryViewProp
                                                             </div>
                                                             <div className="flex items-center gap-4 mb-4">
                                                                 <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-transform group-hover/link:scale-110 duration-500 ${link.type === 'pii' ? 'bg-emerald-50 text-emerald-600 shadow-sm shadow-emerald-900/5' :
-                                                                        link.type === 'transaction' ? 'bg-red-50 text-[#B91C1C] shadow-sm shadow-red-900/5' :
-                                                                            link.type === 'semantic' ? 'bg-purple-50 text-purple-600 shadow-sm shadow-purple-900/5' :
-                                                                                'bg-blue-50 text-[#0F4C81] shadow-sm shadow-blue-900/5'
+                                                                    link.type === 'transaction' ? 'bg-red-50 text-[#B91C1C] shadow-sm shadow-red-900/5' :
+                                                                        link.type === 'semantic' ? 'bg-purple-50 text-purple-600 shadow-sm shadow-purple-900/5' :
+                                                                            'bg-blue-50 text-[#0F4C81] shadow-sm shadow-blue-900/5'
                                                                     }`}>
                                                                     {getLinkIcon(link.type)}
                                                                 </div>

@@ -4,6 +4,7 @@
  */
 
 import React, { useState, useCallback } from 'react';
+import { PageHeader } from './PageHeader';
 import {
     Folder,
     Play,
@@ -173,113 +174,102 @@ export const BackgroundAIView: React.FC<BackgroundAIViewProps> = ({
 
     return (
         <div className="flex flex-col h-full bg-[#F8FAFC] animate-pro-reveal">
-            {/* Header */}
-            <div className="p-8 border-b border-slate-100 bg-white">
-                <div className="max-w-7xl mx-auto flex flex-col md:flex-row justify-between items-start md:items-center gap-6">
-                    <div>
-                        <div className="flex items-center gap-3 mb-2">
-                            <div className="p-2 bg-[#B91C1C]/5 rounded-lg">
-                                <Cpu size={20} className="text-[#B91C1C]" />
-                            </div>
-                            <span className="text-[10px] font-black text-[#B91C1C] uppercase tracking-[0.4em]">Background Intelligence</span>
-                        </div>
-                        <h1 className="text-3xl font-black text-[#0F172A] font-serif-legal italic tracking-tight">Analyseur de Dossiers Automatique</h1>
-                        <p className="text-slate-500 text-sm mt-2 max-w-2xl font-medium">
-                            Importez un dossier complet de documents judiciaires pour une analyse IA automatisée en arrière-plan.
-                            Utilise le modèle <span className="text-[#B91C1C] font-bold">Gemini 2.0 Flash (Gratuit)</span>.
-                        </p>
+            <PageHeader
+                title="Analyseur"
+                titleHighlight="Automatique"
+                icon={Cpu}
+                badgeText="Background Intelligence"
+                stats={[
+                    { label: "Moteur", value: "Gemini 2.0 Flash", icon: <Zap size={10} className="text-[#B91C1C]" /> },
+                    { label: "Status", value: isProcessing ? "Actif" : "En veille", icon: <Loader2 size={10} className={isProcessing ? "animate-spin" : ""} /> },
+                    { label: "Fichiers", value: stats.total, icon: <FileText size={10} /> }
+                ]}
+            >
+                <div className="flex items-center gap-3">
+                    {/* Directory Selector for Public Archives */}
+                    <div className="flex flex-col gap-1.5 min-w-[200px]">
+                        <label className="text-[8px] font-black text-slate-400 uppercase tracking-[0.2em] ml-2">Dossier Public Cible</label>
+                        <select
+                            value={selectedDir}
+                            onChange={(e) => setSelectedDir(e.target.value)}
+                            className="px-4 py-2.5 bg-white border-2 border-slate-100 rounded-2xl text-[11px] font-bold text-slate-700 focus:border-[#B91C1C] outline-none transition-all shadow-sm"
+                        >
+                            {availableDirs.map(dir => (
+                                <option key={dir} value={dir}>{dir}</option>
+                            ))}
+                        </select>
                     </div>
 
-                    <div className="flex flex-wrap gap-3">
-                        {/* Directory Selector for Public Archives */}
-                        <div className="flex flex-col gap-1.5 min-w-[200px]">
-                            <label className="text-[8px] font-black text-slate-400 uppercase tracking-[0.2em] ml-2">Dossier Public Cible</label>
-                            <select
-                                value={selectedDir}
-                                onChange={(e) => setSelectedDir(e.target.value)}
-                                className="px-4 py-2.5 bg-white border-2 border-slate-100 rounded-2xl text-[11px] font-bold text-slate-700 focus:border-[#B91C1C] outline-none transition-all shadow-sm"
-                            >
-                                {availableDirs.map(dir => (
-                                    <option key={dir} value={dir}>{dir}</option>
-                                ))}
-                            </select>
-                        </div>
-
-                        {/* Batch Limit Selector */}
-                        <div className="flex flex-col gap-1.5 min-w-[120px]">
-                            <label className="text-[8px] font-black text-slate-400 uppercase tracking-[0.2em] ml-2">Limite (Fichiers)</label>
-                            <select
-                                value={batchLimit}
-                                onChange={(e) => setBatchLimit(Number(e.target.value))}
-                                className="px-4 py-2.5 bg-white border-2 border-slate-100 rounded-2xl text-[11px] font-bold text-slate-700 focus:border-[#B91C1C] outline-none transition-all shadow-sm"
-                            >
-                                <option value={10}>10 Fichiers</option>
-                                <option value={20}>20 Fichiers</option>
-                                <option value={50}>50 Fichiers</option>
-                                <option value={100}>100 Fichiers</option>
-                                <option value={0}>Tout le dossier</option>
-                            </select>
-                        </div>
-
-                        <button
-                            onClick={importPublicArchives}
-                            disabled={isProcessing || !selectedDir}
-                            className="flex items-center gap-3 px-6 py-3 bg-white border-2 border-slate-200 lg:mt-5 hover:border-[#B91C1C] hover:bg-[#B91C1C]/5 rounded-2xl cursor-pointer transition-all group shrink-0"
-                            title="Charger les fichiers du dossier sélectionné"
+                    {/* Batch Limit Selector */}
+                    <div className="flex flex-col gap-1.5 min-w-[120px]">
+                        <label className="text-[8px] font-black text-slate-400 uppercase tracking-[0.2em] ml-2">Limite (Fichiers)</label>
+                        <select
+                            value={batchLimit}
+                            onChange={(e) => setBatchLimit(Number(e.target.value))}
+                            className="px-4 py-2.5 bg-white border-2 border-slate-100 rounded-2xl text-[11px] font-bold text-slate-700 focus:border-[#B91C1C] outline-none transition-all shadow-sm"
                         >
-                            <Zap size={18} className="text-slate-400 group-hover:text-[#B91C1C]" />
-                            <span className="text-[11px] font-black uppercase tracking-widest text-slate-500 group-hover:text-[#B91C1C]">Charger Dossier Public</span>
-                        </button>
-
-                        <label className="flex items-center gap-3 px-6 py-3 bg-white border-2 border-dashed border-slate-200 lg:mt-5 hover:border-[#B91C1C] hover:bg-[#B91C1C]/5 rounded-2xl cursor-pointer transition-all group shrink-0">
-                            <Folder size={18} className="text-slate-400 group-hover:text-[#B91C1C]" />
-                            <span className="text-[11px] font-black uppercase tracking-widest text-slate-500 group-hover:text-[#B91C1C]">Sélectionner Dossier Local</span>
-                            <input
-                                type="file"
-                                className="hidden"
-                                // @ts-ignore
-                                webkitdirectory=""
-                                directory=""
-                                multiple
-                                onChange={handleFolderSelect}
-                            />
-                        </label>
-
-                        <button
-                            onClick={startSequencialAnalysis}
-                            disabled={isProcessing || tasks.filter(t => t.status === 'idle' || t.status === 'error').length === 0}
-                            className={`flex items-center gap-3 px-8 py-3 lg:mt-5 rounded-2xl font-black text-[11px] uppercase tracking-[0.2em] transition-all ${isProcessing || tasks.filter(t => t.status === 'idle' || t.status === 'error').length === 0
-                                ? 'bg-slate-100 text-slate-300 cursor-not-allowed'
-                                : 'bg-[#B91C1C] text-white shadow-xl shadow-red-900/20 hover:bg-[#0F172A] hover:scale-105 active:scale-95'
-                                }`}
-                        >
-                            {isProcessing ? (
-                                <>
-                                    <Loader2 size={16} className="animate-spin" />
-                                    <span>Traitement en cours...</span>
-                                </>
-                            ) : (
-                                <>
-                                    <Play size={18} />
-                                    <span>Lancer Analyse Batch ({tasks.filter(t => t.status === 'idle' || t.status === 'error').length})</span>
-                                </>
-                            )}
-                        </button>
-                        <button
-                            onClick={() => {
-                                if (window.confirm("Vider toute la file d'attente ?")) {
-                                    setTasks([]);
-                                    setStats({ total: 0, completed: 0, failed: 0 });
-                                }
-                            }}
-                            className="flex items-center justify-center w-12 h-12 lg:mt-5 bg-white border-2 border-slate-100 text-slate-300 hover:text-red-500 hover:border-red-100 rounded-2xl transition-all"
-                            title="Vider la file d'attente"
-                        >
-                            <History size={18} />
-                        </button>
+                            <option value={10}>10 Fichiers</option>
+                            <option value={20}>20 Fichiers</option>
+                            <option value={50}>50 Fichiers</option>
+                            <option value={100}>100 Fichiers</option>
+                            <option value={0}>Tout le dossier</option>
+                        </select>
                     </div>
+
+                    <button
+                        onClick={importPublicArchives}
+                        disabled={isProcessing || !selectedDir}
+                        className="flex items-center gap-3 px-4 py-2.5 bg-white border-2 border-slate-200 mt-5 hover:border-[#B91C1C] hover:bg-[#B91C1C]/5 rounded-2xl cursor-pointer transition-all group shrink-0"
+                        title="Charger les fichiers du dossier sélectionné"
+                    >
+                        <Zap size={16} className="text-slate-400 group-hover:text-[#B91C1C]" />
+                        <span className="text-[10px] font-black uppercase tracking-widest text-slate-500 group-hover:text-[#B91C1C] hidden lg:inline">Charger</span>
+                    </button>
+
+                    <label className="flex items-center gap-3 px-4 py-2.5 bg-white border-2 border-dashed border-slate-200 mt-5 hover:border-[#B91C1C] hover:bg-[#B91C1C]/5 rounded-2xl cursor-pointer transition-all group shrink-0">
+                        <Folder size={16} className="text-slate-400 group-hover:text-[#B91C1C]" />
+                        <span className="text-[10px] font-black uppercase tracking-widest text-slate-500 group-hover:text-[#B91C1C] hidden lg:inline">Local</span>
+                        <input
+                            type="file"
+                            className="hidden"
+                            // @ts-ignore
+                            webkitdirectory=""
+                            directory=""
+                            multiple
+                            onChange={handleFolderSelect}
+                        />
+                    </label>
+
+                    <button
+                        onClick={startSequencialAnalysis}
+                        disabled={isProcessing || tasks.filter(t => t.status === 'idle' || t.status === 'error').length === 0}
+                        className={`flex items-center gap-3 px-6 py-2.5 mt-5 rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] transition-all ${isProcessing || tasks.filter(t => t.status === 'idle' || t.status === 'error').length === 0
+                            ? 'bg-slate-100 text-slate-300 cursor-not-allowed'
+                            : 'bg-[#B91C1C] text-white shadow-xl shadow-red-900/20 hover:bg-[#0F172A] hover:scale-105 active:scale-95'
+                            }`}
+                    >
+                        {isProcessing ? (
+                            <Loader2 size={14} className="animate-spin" />
+                        ) : (
+                            <Play size={16} />
+                        )}
+                        <span className="hidden lg:inline">Lancer ({tasks.filter(t => t.status === 'idle' || t.status === 'error').length})</span>
+                    </button>
+
+                    <button
+                        onClick={() => {
+                            if (window.confirm("Vider toute la file d'attente ?")) {
+                                setTasks([]);
+                                setStats({ total: 0, completed: 0, failed: 0 });
+                            }
+                        }}
+                        className="flex items-center justify-center w-10 h-10 mt-5 bg-white border-2 border-slate-100 text-slate-300 hover:text-red-500 hover:border-red-100 rounded-2xl transition-all"
+                        title="Vider la file d'attente"
+                    >
+                        <History size={16} />
+                    </button>
                 </div>
-            </div>
+            </PageHeader>
 
             {/* Stats Dashboard */}
             {tasks.length > 0 && (

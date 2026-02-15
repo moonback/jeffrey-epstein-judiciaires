@@ -4,6 +4,7 @@
  */
 
 import React, { useState, useMemo } from 'react';
+import { PageHeader } from './PageHeader';
 import { ProcessedResult } from '../types';
 import { Search, Folder, Calendar, ArrowUpRight, ShieldCheck, Activity, Database, Clock, FileText, Filter, LayoutGrid, List } from 'lucide-react';
 
@@ -27,52 +28,32 @@ export const CaseListView: React.FC<CaseListViewProps> = ({ history, onOpenInves
         <div className="flex flex-col h-full bg-[#F8FAFC] overflow-hidden relative font-sans">
             <div className="absolute inset-0 z-0 pointer-events-none opacity-[0.25] report-paper"></div>
 
-            <header className="px-6 lg:px-12 py-8 lg:py-10 border-b border-slate-100 bg-white/90 backdrop-blur-2xl z-20 shrink-0 shadow-sm relative">
-                <div className="absolute top-0 right-0 h-full w-1/4 bg-gradient-to-l from-[#F8FAFC] to-transparent pointer-events-none opacity-50"></div>
-
-                <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8 relative z-10">
-                    <div className="flex items-center gap-6">
-                        <div className="w-14 h-14 bg-black rounded-[1.5rem] flex items-center justify-center shadow-2xl group transition-all hover:rotate-6">
-                            <Database className="text-white group-hover:scale-110 transition-transform" size={28} />
-                        </div>
-                        <div>
-                            <h2 className="text-2xl font-black text-[#0F172A] uppercase italic font-serif-legal tracking-tight leading-none mb-2">Index des <span className="text-[#B91C1C]">Dossiers</span></h2>
-                            <div className="flex items-center gap-3">
-                                <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
-                                <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.4em]">Base de Données Forensique Sécurisée</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="flex flex-col sm:flex-row items-center gap-4 w-full lg:w-auto">
-                        <div className="relative group w-full lg:w-96">
-                            <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-200 group-focus-within:text-[#B91C1C] transition-colors" size={16} />
-                            <input
-                                type="text"
-                                placeholder="Rechercher par ID ou mot-clé..."
-                                value={searchTerm}
-                                onChange={e => setSearchTerm(e.target.value)}
-                                className="bg-[#F8FAFC] border border-slate-100 rounded-2xl py-3.5 pl-14 pr-6 text-sm text-[#0F172A] w-full focus:bg-white focus:border-[#B91C1C] outline-none transition-all shadow-inner placeholder-slate-300 font-bold"
-                            />
-                        </div>
-
-                        <div className="flex p-1 bg-slate-100 rounded-xl border border-slate-200 shadow-inner">
-                            <button
-                                onClick={() => setViewLayout('grid')}
-                                className={`p-2 rounded-lg transition-all ${viewLayout === 'grid' ? 'bg-white text-[#B91C1C] shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
-                            >
-                                <LayoutGrid size={18} />
-                            </button>
-                            <button
-                                onClick={() => setViewLayout('list')}
-                                className={`p-2 rounded-lg transition-all ${viewLayout === 'list' ? 'bg-white text-[#B91C1C] shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
-                            >
-                                <List size={18} />
-                            </button>
-                        </div>
-                    </div>
+            <PageHeader
+                title="Index des"
+                titleHighlight="Dossiers"
+                icon={Database}
+                badgeText="Base de Données Forensique Sécurisée"
+                searchQuery={searchTerm}
+                onSearchChange={setSearchTerm}
+                searchPlaceholder="Rechercher par ID ou mot-clé..."
+                totalLabel="Dossiers Indexés"
+                totalCount={filteredCases.length}
+            >
+                <div className="flex p-1 bg-slate-100 rounded-xl border border-slate-200 shadow-inner">
+                    <button
+                        onClick={() => setViewLayout('grid')}
+                        className={`p-2 rounded-lg transition-all ${viewLayout === 'grid' ? 'bg-white text-[#B91C1C] shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
+                    >
+                        <LayoutGrid size={18} />
+                    </button>
+                    <button
+                        onClick={() => setViewLayout('list')}
+                        className={`p-2 rounded-lg transition-all ${viewLayout === 'list' ? 'bg-white text-[#B91C1C] shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
+                    >
+                        <List size={18} />
+                    </button>
                 </div>
-            </header>
+            </PageHeader>
 
             <div className="flex-1 overflow-y-auto p-8 lg:p-12 custom-scrollbar z-10">
                 <div className="max-w-12xl mx-auto pb-40">

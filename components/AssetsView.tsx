@@ -1,4 +1,5 @@
 import React, { useMemo, useState, useEffect } from 'react';
+import { PageHeader } from './PageHeader';
 import { storageService } from '../services/storageService';
 import { ProcessedResult, AssetDetail } from '../types';
 import {
@@ -195,59 +196,39 @@ export const AssetsView: React.FC = () => {
         <div className="h-full flex flex-col bg-[#F8FAFC] overflow-hidden relative">
             <div className="absolute inset-0 z-0 pointer-events-none opacity-[0.25] report-paper"></div>
 
-            <header className="px-6 lg:px-10 py-6 bg-white border-b border-slate-100 z-30 shadow-sm relative shrink-0">
-                <div className="max-w-12xl mx-auto flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-                    <div className="flex items-center gap-5">
-                        <div className="w-12 h-12 bg-gradient-to-br from-[#0F172A] to-slate-800 rounded-2xl flex items-center justify-center shadow-2xl rotate-3 group cursor-pointer hover:rotate-0 transition-transform">
-                            <Briefcase className="text-white" size={24} />
-                        </div>
-                        <div>
-                            <div className="flex items-center gap-3">
-                                <h2 className="text-xl lg:text-2xl font-black text-[#0F172A] uppercase italic font-serif-legal tracking-tight leading-none">
-                                    Inventaire du <span className="text-[#B91C1C]">Patrimoine</span>
-                                </h2>
-                                <span className="text-[9px] font-black text-slate-300 uppercase tracking-[0.2em]">Asset Unit-09</span>
-                            </div>
-                            <div className="flex items-center gap-3 mt-1.5">
-                                <span className="flex items-center gap-1.5 text-[9px] font-black text-emerald-600 uppercase tracking-widest bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-100">
-                                    <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></div>
-                                    Wealth Audit Active
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="flex flex-wrap items-center gap-4">
-                        <div className="flex items-center bg-slate-50 border border-slate-100 p-1 rounded-xl shadow-inner">
-                            <button
-                                onClick={() => setViewMode('grid')}
-                                className={`px-4 py-2 rounded-lg text-[10px] font-black uppercase tracking-wider transition-all ${viewMode === 'grid' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
-                            >
-                                <LayoutGrid size={12} className="inline mr-2" /> Grille
-                            </button>
-                            <button
-                                onClick={() => setViewMode('list')}
-                                className={`px-4 py-2 rounded-lg text-[10px] font-black uppercase tracking-wider transition-all ${viewMode === 'list' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
-                            >
-                                <AlignLeft size={12} className="inline mr-2" /> Liste
-                            </button>
-                        </div>
-
-                        <div className="h-8 w-px bg-slate-100 hidden sm:block"></div>
-
-                        <div className="relative group">
-                            <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-[#B91C1C] transition-colors" />
-                            <input
-                                type="text"
-                                placeholder="Rechercher bien, propriétaire..."
-                                value={searchQuery}
-                                onChange={e => setSearchQuery(e.target.value)}
-                                className="pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-100 rounded-xl text-xs font-medium w-64 focus:w-80 transition-all duration-300 outline-none"
-                            />
-                        </div>
-                    </div>
+            <PageHeader
+                title="Inventaire du"
+                titleHighlight="Patrimoine"
+                icon={Briefcase}
+                badgeText="Asset Unit-09"
+                searchQuery={searchQuery}
+                onSearchChange={setSearchQuery}
+                searchPlaceholder="Rechercher bien, propriétaire..."
+                totalLabel="Actifs Identifiés"
+                totalCount={allAssets.length}
+                stats={[
+                    {
+                        label: "Wealth Audit",
+                        value: "Active",
+                        icon: <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></div>
+                    }
+                ]}
+            >
+                <div className="flex items-center bg-slate-50 border border-slate-100 p-1 rounded-xl shadow-inner">
+                    <button
+                        onClick={() => setViewMode('grid')}
+                        className={`px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-wider transition-all ${viewMode === 'grid' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
+                    >
+                        <LayoutGrid size={12} className="inline mr-2" /> Grille
+                    </button>
+                    <button
+                        onClick={() => setViewMode('list')}
+                        className={`px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-wider transition-all ${viewMode === 'list' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
+                    >
+                        <AlignLeft size={12} className="inline mr-2" /> Liste
+                    </button>
                 </div>
-            </header>
+            </PageHeader>
 
             <div className="flex-1 overflow-y-auto p-6 lg:p-10 custom-scrollbar z-10 scroll-smooth">
                 <div className="max-w-12xl mx-auto">
