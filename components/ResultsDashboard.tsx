@@ -100,24 +100,24 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ history, onD
           </div>
         </div>
 
-        <div className="flex flex-col sm:flex-row sm:items-center gap-4 mt-6 relative z-10">
-          <div className="flex items-center gap-1.5 p-1 bg-slate-50 rounded-lg border border-slate-100 shadow-sm overflow-x-auto no-scrollbar max-w-full">
+        <div className="flex flex-col md:flex-row md:items-center gap-4 mt-8 relative z-10 w-full">
+          <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pb-2 mask-linear-fade flex-1">
             <button
               onClick={() => setActiveType('ALL')}
-              className={`px-3 py-1.5 rounded-md text-[8px] font-black uppercase tracking-widest transition-all ${activeType === 'ALL'
-                ? 'bg-[#020617] text-white shadow-md'
-                : 'text-slate-400 hover:text-[#020617]'
+              className={`px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest transition-all border shrink-0 ${activeType === 'ALL'
+                ? 'bg-[#0F172A] text-white border-[#0F172A] shadow-lg shadow-slate-900/10'
+                : 'bg-white text-slate-500 border-slate-200 hover:border-[#DC2626] hover:text-[#DC2626]'
                 }`}
             >
-              Toutes les Pièces
+              Tout ({allDocuments.length})
             </button>
             {types.map(type => (
               <button
                 key={type}
                 onClick={() => setActiveType(type)}
-                className={`px-3 py-1.5 rounded-md text-[8px] font-black uppercase tracking-widest transition-all whitespace-nowrap ${activeType === type
-                  ? 'bg-[#020617] text-white shadow-md'
-                  : 'text-slate-400 hover:text-[#020617]'
+                className={`px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest transition-all border shrink-0 ${activeType === type
+                  ? 'bg-[#0F172A] text-white border-[#0F172A] shadow-lg shadow-slate-900/10'
+                  : 'bg-white text-slate-500 border-slate-200 hover:border-[#DC2626] hover:text-[#DC2626]'
                   }`}
               >
                 {type}
@@ -125,11 +125,9 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ history, onD
             ))}
           </div>
 
-          <div className="sm:ml-auto flex items-center gap-4">
-            <div className="flex flex-col items-end">
-              <span className="text-[7px] font-black text-slate-300 uppercase tracking-[0.1em]">Volume Indexé</span>
-              <span className="text-[12px] font-mono-data font-black text-[#020617] tracking-tight">{allDocuments.length} Documents</span>
-            </div>
+          <div className="hidden md:flex flex-col items-end shrink-0 pl-4 border-l border-slate-100">
+            <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Base Documentaire</span>
+            <span className="text-xl font-mono-data font-black text-[#DC2626] leading-none mt-0.5">{filteredDocs.length}</span>
           </div>
         </div>
       </header>
@@ -148,40 +146,50 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ history, onD
                   <Cpu size={60} className="text-black" />
                 </div>
 
-                <div className="p-4 pb-1 relative">
-                  <div className="flex justify-between items-center gap-2 mb-3">
-                    <div className="flex items-center gap-1.5">
-                      <div className="w-1 h-1 rounded-full bg-[#DC2626]"></div>
-                      <span className="px-1.5 py-0.5 rounded bg-slate-50 text-slate-500 text-[7px] font-black uppercase tracking-tight border border-slate-100">
-                        {item.doc.type || 'Standard'}
+                <div className="p-5 pb-2 relative border-b border-slate-50">
+                  <div className="flex justify-between items-start gap-3 mb-3">
+                    <div className="flex flex-wrap gap-2">
+                      <span className="px-2.5 py-1 rounded-md bg-[#0F172A] text-white text-[9px] font-black uppercase tracking-wider shadow-sm">
+                        {item.doc.type || 'ST'}
                       </span>
+                      {item.doc.date && (
+                        <span className="px-2.5 py-1 rounded-md bg-slate-100 text-slate-500 text-[9px] font-black uppercase tracking-wider flex items-center gap-1">
+                          <Calendar size={10} /> {item.doc.date}
+                        </span>
+                      )}
                     </div>
                     <button
                       onClick={() => onOpenInvestigation(item.investigationId)}
-                      className="w-6 h-6 rounded bg-white flex items-center justify-center text-slate-300 hover:text-[#DC2626] border border-slate-100 transition-all active:scale-90"
+                      className="w-8 h-8 rounded-xl bg-slate-50 hover:bg-[#DC2626] flex items-center justify-center text-slate-400 hover:text-white transition-all shadow-sm"
+                      title="Ouvrir le dossier complet"
                     >
-                      <ArrowUpRight size={12} />
+                      <ArrowUpRight size={16} />
                     </button>
                   </div>
-                  <h3 className="text-[#020617] font-black text-sm italic leading-tight group-hover:text-[#DC2626] transition-colors h-10 line-clamp-2 font-serif-legal">
+                  <h3 className="text-[#020617] font-bold text-lg leading-tight group-hover:text-[#DC2626] transition-colors line-clamp-2 font-display mb-1">
                     {item.doc.title}
                   </h3>
+                  <div className="text-[10px] text-slate-400 font-mono-data uppercase tracking-tight">
+                    REF: {item.investigationId.split('-')[1]} • SRCE: {item.investigationQuery.substring(0, 15)}...
+                  </div>
                 </div>
 
-                <div className="px-4 py-3 space-y-3 flex-1 relative">
+                <div className="px-5 py-4 space-y-4 flex-1 relative">
                   <div className="relative">
-                    <div className="absolute left-0 top-0 bottom-0 w-0.5 bg-slate-50 group-hover:bg-[#DC2626]/10 rounded-full transition-all"></div>
-                    <p className="text-slate-600 text-[12px] leading-relaxed line-clamp-3 italic pl-4 font-medium font-serif-legal">
+                    <p className="text-slate-600 text-sm leading-relaxed line-clamp-3 font-medium font-serif-legal">
                       "{item.doc.description}"
                     </p>
                   </div>
 
                   {Array.isArray(item.doc.key_facts) && item.doc.key_facts.length > 0 && (
-                    <div className="space-y-2 bg-slate-50/50 p-3 rounded-xl border border-slate-100 group-hover:bg-white transition-all">
-                      <ul className="space-y-1.5">
-                        {item.doc.key_facts.slice(0, 2).map((fact, fidx) => (
-                          <li key={fidx} className="flex items-start gap-2 text-[10px] text-slate-500 leading-snug font-bold">
-                            <span className="w-1 h-1 rounded-full bg-[#DC2626]/40 mt-1 shrink-0"></span>
+                    <div className="space-y-2.5">
+                      <div className="text-[10px] font-black text-slate-300 uppercase tracking-widest flex items-center gap-2">
+                        <Activity size={10} /> Points Clés
+                      </div>
+                      <ul className="space-y-2">
+                        {item.doc.key_facts.slice(0, 3).map((fact, fidx) => (
+                          <li key={fidx} className="flex items-start gap-2.5 text-xs text-slate-600 leading-snug">
+                            <span className="w-1.5 h-1.5 rounded-full bg-[#DC2626]/60 mt-1.5 shrink-0 shadow-[0_0_8px_rgba(220,38,38,0.2)]"></span>
                             <span className="line-clamp-2">{fact}</span>
                           </li>
                         ))}
@@ -190,26 +198,32 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ history, onD
                   )}
                 </div>
 
-                <div className="p-4 pt-0">
+                <div className="p-4 pt-0 mt-auto">
                   {!isGuestMode && (
-                    <div className="grid grid-cols-3 gap-1 bg-slate-50 p-1 rounded-xl border border-slate-100">
+                    <div className="flex gap-2">
                       <button
                         onClick={() => onDeepDive(item.doc.title, 'simple')}
-                        className="py-1.5 bg-white hover:bg-[#020617] hover:text-white text-slate-500 border border-slate-50 rounded-lg text-[7px] font-black uppercase tracking-widest transition-all"
+                        className="flex-1 py-2.5 bg-slate-50 hover:bg-white border border-slate-100 hover:border-[#DC2626]/20 text-slate-500 hover:text-[#DC2626] rounded-xl text-[9px] font-black uppercase tracking-wider transition-all flex items-center justify-center gap-2 group/btn"
+                        title="Résumé simple pour compréhension rapide"
                       >
-                        Synthèse
+                        <BookOpen size={12} className="opacity-50 group-hover/btn:opacity-100" />
+                        <span>Synthèse</span>
                       </button>
                       <button
                         onClick={() => onDeepDive(item.doc.title, 'technical')}
-                        className="py-1.5 bg-white hover:bg-[#0F4C81] hover:text-white text-slate-500 border border-slate-50 rounded-lg text-[7px] font-black uppercase tracking-widest transition-all"
+                        className="flex-1 py-2.5 bg-slate-50 hover:bg-white border border-slate-100 hover:border-[#0F4C81]/20 text-slate-500 hover:text-[#0F4C81] rounded-xl text-[9px] font-black uppercase tracking-wider transition-all flex items-center justify-center gap-2 group/btn"
+                        title="Analyse technique et juridique détaillée"
                       >
-                        Expert
+                        <GraduationCap size={12} className="opacity-50 group-hover/btn:opacity-100" />
+                        <span>Expert</span>
                       </button>
                       <button
                         onClick={() => onDeepDive(item.doc.title, 'standard')}
-                        className="py-1.5 bg-[#DC2626] hover:bg-[#020617] text-white rounded-lg text-[7px] font-black uppercase tracking-widest transition-all shadow-sm active:scale-95"
+                        className="flex-1 py-2.5 bg-[#DC2626] hover:bg-[#B91C1C] text-white rounded-xl text-[9px] font-black uppercase tracking-wider transition-all shadow-lg shadow-red-900/20 active:scale-95 flex items-center justify-center gap-2"
+                        title="Analyse approfondie par l'IA"
                       >
-                        Neural
+                        <Zap size={12} fill="currentColor" />
+                        <span>Neural</span>
                       </button>
                     </div>
                   )}
