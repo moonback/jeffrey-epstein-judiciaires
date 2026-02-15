@@ -853,37 +853,39 @@ const App: React.FC = () => {
                     {activeResult && !showPlanner ? (
                       <div className="flex-1 flex flex-col overflow-hidden animate-pro-reveal min-h-0">
                         {/* Investigation Header Info */}
-                        <div className="px-12 lg:px-16 py-12 border-b border-slate-100 flex flex-col lg:flex-row justify-between items-start lg:items-center bg-white shrink-0 gap-10 relative overflow-hidden">
+
+                        <div className="px-6 lg:px-8 py-5 border-b border-slate-100 flex flex-col lg:flex-row justify-between items-start lg:items-center bg-white shrink-0 gap-6 relative overflow-hidden">
                           <div className="max-w-6xl relative z-10">
-                            <div className="flex flex-wrap items-center gap-5 mb-8">
-                              <div className="flex items-center gap-3 badge-forensic bg-white shadow-sm border-slate-100 group">
-                                <div className={`w-2.5 h-2.5 rounded-full ${activeResult.status === 'completed' ? 'bg-emerald-500 animate-pulse shadow-[0_0_15px_rgba(16,185,129,0.5)]' : 'bg-[#DC2626] animate-ping shadow-[0_0_15px_rgba(220,38,38,0.5)]'}`}></div>
-                                <span className={activeResult.status === 'completed' ? 'text-emerald-700' : 'text-[#DC2626]'}>
+                            <div className="flex flex-wrap items-center gap-4 mb-3">
+                              <div className="flex items-center gap-2.5 px-3 py-1 rounded-full bg-slate-50 border border-slate-100 group">
+                                <div className={`w-2 h-2 rounded-full ${activeResult.status === 'completed' ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.4)]' : 'bg-[#DC2626] animate-pulse shadow-[0_0_8px_rgba(220,38,38,0.4)]'}`}></div>
+                                <span className={`text-[10px] font-bold uppercase tracking-wider ${activeResult.status === 'completed' ? 'text-emerald-700' : 'text-[#DC2626]'}`}>
                                   {activeResult.status === 'completed' ? 'Extraction Validée' : 'Analyse de Flux...'}
                                 </span>
                               </div>
-                              <div className="h-6 w-px bg-slate-200"></div>
-                              <div className="flex items-center gap-3">
-                                <Monitor size={16} className="text-slate-400" />
-                                <span className="text-[12px] text-slate-500 font-mono-data font-bold uppercase tracking-tight">{activeResult.input.targetUrl.split(' : ')[1] || activeResult.input.targetUrl}</span>
+                              <div className="h-4 w-px bg-slate-200"></div>
+                              <div className="flex items-center gap-2">
+                                <Monitor size={14} className="text-slate-400" />
+                                <span className="text-[11px] text-slate-500 font-mono-data font-bold uppercase tracking-tight">{activeResult.input.targetUrl.split(' : ')[1] || activeResult.input.targetUrl}</span>
                               </div>
                             </div>
-                            <h2 className="text-1xl lg:text-2xl font-black text-[#020617] font-display tracking-tight leading-tight group">
-                              <span className="text-[#DC2626] opacity-30 mr-2 group-hover:opacity-100 transition-opacity">/</span>
+                            <h2 className="text-lg lg:text-xl font-black text-[#020617] font-display tracking-tight leading-tight group">
+                              <span className="text-[#DC2626] opacity-30 mr-1.5 group-hover:opacity-100 transition-opacity">/</span>
                               {activeResult.input.query}
                             </h2>
                           </div>
 
                           <div className="lg:text-right shrink-0 relative z-10">
-                            <div className="flex items-center gap-3 lg:justify-end mb-4">
-                              <span className="text-[10px] text-slate-400 uppercase font-black tracking-[0.5em]">Liaison Latence</span>
+                            <div className="flex items-center gap-2 lg:justify-end mb-1">
+                              <span className="text-[9px] text-slate-400 uppercase font-black tracking-[0.3em]">Latence</span>
                             </div>
-                            <div className="flex items-baseline gap-2 lg:justify-end">
-                              <div className="text-2xl font-mono-data font-black text-[#DC2626] tracking-tighter drop-shadow-sm">{activeResult.durationMs ? Math.round(activeResult.durationMs) : '000'}</div>
-                              <div className="text-[14px] font-black text-slate-300 uppercase">ms</div>
+                            <div className="flex items-baseline gap-1.5 lg:justify-end">
+                              <div className="text-xl font-mono-data font-black text-[#DC2626] tracking-tighter">{activeResult.durationMs ? Math.round(activeResult.durationMs) : '000'}</div>
+                              <div className="text-[12px] font-black text-slate-300 uppercase">ms</div>
                             </div>
                           </div>
                         </div>
+
 
                         {/* Analysis Body */}
                         <div className="flex-1 overflow-y-auto p-2 lg:p-2 custom-scrollbar report-paper relative">

@@ -141,26 +141,26 @@ export const DataCard: React.FC<DataCardProps> = ({ result, loading, onDeepDive,
                 </div>
             </div>
 
-            <div className="p-8 lg:p-12 lg:px-24 flex flex-col gap-16 flex-1 relative z-10">
+            <div className="p-6 lg:p-8 lg:px-12 flex flex-col gap-10 flex-1 relative z-10">
                 {/* Evidence Documents Section */}
                 <div className="space-y-12">
                     <div className="flex flex-col lg:flex-row lg:items-center justify-between gap-8 border-b border-slate-100 pb-10">
-                        <div className="space-y-3">
-                            <div className="flex items-center gap-4">
-                                <div className="w-12 h-[3px] bg-[#DC2626]"></div>
-                                <span className="badge-forensic text-slate-400 border-transparent p-0">Index des Pièces</span>
+                        <div className="space-y-2">
+                            <div className="flex items-center gap-3">
+                                <div className="w-8 h-[2px] bg-[#DC2626]"></div>
+                                <span className="badge-forensic text-slate-400 border-transparent p-0 text-[8px]">Index des Pièces</span>
                             </div>
-                            <h3 className="text-1xl lg:text-2xl font-black text-[#020617] font-display">Archives <span className="text-slate-300">Centralisées</span></h3>
-                            <p className="text-[11px] font-black text-slate-400 uppercase tracking-[0.4em]">Registre des preuves indexées par intelligence neurale</p>
+                            <h3 className="text-xl lg:text-2xl font-black text-[#020617] font-display">Archives <span className="text-slate-300">Centralisées</span></h3>
+                            <p className="text-[9px] font-black text-slate-400 uppercase tracking-[0.3em]">Registre des preuves indexées</p>
                         </div>
 
                         {/* Filter System */}
                         <div className="flex items-center gap-2 p-2 bg-slate-50/80 rounded-2xl border border-slate-100 overflow-x-auto no-scrollbar max-w-full">
                             <button
                                 onClick={() => setActiveFilter('ALL')}
-                                className={`px-6 py-2.5 rounded-xl text-[10px] uppercase font-black tracking-widest transition-all ${activeFilter === 'ALL'
-                                    ? 'bg-[#0F172A] text-white shadow-lg'
-                                    : 'text-slate-400 hover:text-[#0F172A] hover:bg-white'
+                                className={`px-4 py-1.5 rounded-lg text-[9px] uppercase font-black tracking-widest transition-all ${activeFilter === 'ALL'
+                                    ? 'bg-[#020617] text-white shadow-md'
+                                    : 'text-slate-400 hover:text-[#020617] hover:bg-white'
                                     }`}
                             >
                                 Tous
@@ -169,9 +169,9 @@ export const DataCard: React.FC<DataCardProps> = ({ result, loading, onDeepDive,
                                 <button
                                     key={type}
                                     onClick={() => setActiveFilter(type)}
-                                    className={`px-6 py-2.5 rounded-xl text-[10px] uppercase font-black tracking-widest transition-all whitespace-nowrap ${activeFilter === type
-                                        ? 'bg-[#0F172A] text-white shadow-lg'
-                                        : 'text-slate-400 hover:text-[#0F172A] hover:bg-white'
+                                    className={`px-4 py-1.5 rounded-lg text-[9px] uppercase font-black tracking-widest transition-all whitespace-nowrap ${activeFilter === type
+                                        ? 'bg-[#020617] text-white shadow-md'
+                                        : 'text-slate-400 hover:text-[#020617] hover:bg-white'
                                         }`}
                                 >
                                     {type}
@@ -182,90 +182,90 @@ export const DataCard: React.FC<DataCardProps> = ({ result, loading, onDeepDive,
 
                     <div className="grid grid-cols-1 gap-12 relative pb-20">
                         {/* Vertical Timeline Thread */}
-                        <div className="absolute left-[31px] top-6 bottom-6 w-[2px] bg-gradient-to-b from-slate-100 via-slate-50 to-transparent hidden md:block"></div>
+                        <div className="absolute left-[8px] top-6 bottom-6 w-[1.5px] bg-gradient-to-b from-slate-100 via-slate-50 to-transparent hidden md:block"></div>
 
                         {filteredDocuments.map((doc, idx) => (
                             <div key={idx} className="relative group/doc animate-pro-reveal" style={{ animationDelay: `${idx * 0.05}s` }}>
-                                {/* Timeline Node */}
-                                <div className="absolute left-0 top-12 w-16 h-16 bg-white border border-slate-100 shadow-xl rounded-[1.5rem] hidden md:flex items-center justify-center font-black text-xl text-[#B91C1C] transition-all group-hover/doc:scale-110 group-hover/doc:bg-[#0F172A] group-hover/doc:text-white z-10 font-serif-legal italic border-b-4 border-b-[#B91C1C]">
+                                {/* Timeline Node Compact */}
+                                <div className="absolute left-0 top-10 w-12 h-12 bg-white border border-slate-100 shadow-lg rounded-xl hidden md:flex items-center justify-center font-black text-sm text-[#DC2626] transition-all group-hover/doc:scale-105 group-hover/doc:bg-[#020617] group-hover/doc:text-white z-10 font-serif-legal italic border-b-2 border-b-[#DC2626]">
                                     {String(idx + 1).padStart(2, '0')}
                                 </div>
 
-                                <div className="md:ml-24 bg-white rounded-[3.5rem] border border-slate-100/80 overflow-hidden hover:shadow-premium hover:border-[#DC2626]/20 transition-all duration-700 flex flex-col xl:flex-row group/inner">
-                                    {/* Sidebar Detail */}
-                                    <div className="xl:w-64 bg-slate-50/30 p-10 border-b xl:border-b-0 xl:border-r border-slate-100 flex flex-col gap-10">
-                                        <div className="space-y-8">
+                                <div className="md:ml-16 bg-white rounded-3xl border border-slate-100/80 overflow-hidden hover:shadow-lg hover:border-[#DC2626]/20 transition-all duration-700 flex flex-col xl:flex-row group/inner">
+                                    {/* Sidebar Detail Compact */}
+                                    <div className="xl:w-56 bg-slate-50/30 p-6 border-b xl:border-b-0 xl:border-r border-slate-100 flex flex-col gap-6">
+                                        <div className="space-y-6">
                                             <div>
-                                                <div className="text-[9px] font-black text-slate-300 uppercase tracking-[0.3em] mb-4">Classification</div>
-                                                <div className="flex items-center gap-3">
-                                                    <div className="w-2 h-2 rounded-full bg-[#B91C1C] animate-pulse"></div>
-                                                    <span className="text-[12px] font-black uppercase text-slate-700">{doc.type || 'Standard'} Pieces</span>
+                                                <div className="text-[8px] font-black text-slate-300 uppercase tracking-[0.2em] mb-2">Classification</div>
+                                                <div className="flex items-center gap-2">
+                                                    <div className="w-1.5 h-1.5 rounded-full bg-[#DC2626]"></div>
+                                                    <span className="text-[10px] font-black uppercase text-slate-700">{doc.type || 'Standard'}</span>
                                                 </div>
                                             </div>
-                                            <div className="bg-white p-5 rounded-2xl border border-slate-200/60 shadow-inner">
-                                                <div className="text-[9px] font-black text-slate-200 uppercase tracking-[0.3em] mb-3">Release Date</div>
-                                                <div className="flex items-center gap-3">
-                                                    <Calendar size={14} className="text-[#B91C1C]" />
-                                                    <span className="text-[13px] font-mono-data font-black text-slate-500 tracking-tight">{doc.date}</span>
+                                            <div className="bg-white p-3 rounded-xl border border-slate-200/60 shadow-inner">
+                                                <div className="text-[8px] font-black text-slate-200 uppercase tracking-[0.2em] mb-2">Release Date</div>
+                                                <div className="flex items-center gap-2">
+                                                    <Calendar size={12} className="text-[#DC2626]" />
+                                                    <span className="text-[11px] font-mono-data font-black text-slate-500 tracking-tight">{doc.date}</span>
                                                 </div>
                                             </div>
                                         </div>
 
                                         {!isGuestMode && (
-                                            <div className="mt-auto space-y-3">
+                                            <div className="mt-auto space-y-2">
                                                 <button
                                                     onClick={() => onDeepDive(doc.title, 'simple')}
-                                                    className="w-full flex items-center justify-center gap-3 bg-white hover:bg-[#F8FAFC] text-slate-600 py-3.5 rounded-2xl border border-slate-200 transition-all text-[10px] font-black uppercase tracking-widest shadow-sm active:scale-95 group/btn"
+                                                    className="w-full flex items-center justify-center gap-2 bg-white hover:bg-[#F8FAFC] text-slate-600 py-2 rounded-xl border border-slate-200 transition-all text-[9px] font-black uppercase tracking-widest shadow-sm active:scale-95 group/btn"
                                                 >
-                                                    <BookOpen size={16} className="text-[#B91C1C]" /> Synthèse
+                                                    <BookOpen size={14} className="text-[#DC2626]" /> Synthèse
                                                 </button>
                                                 <button
                                                     onClick={() => onDeepDive(doc.title, 'technical')}
-                                                    className="w-full flex items-center justify-center gap-3 bg-[#0F172A] hover:bg-[#B91C1C] text-white py-3.5 rounded-2xl transition-all text-[10px] font-black uppercase tracking-widest shadow-xl active:scale-95 group/btn border border-slate-800"
+                                                    className="w-full flex items-center justify-center gap-2 bg-[#020617] hover:bg-[#DC2626] text-white py-2 rounded-xl transition-all text-[9px] font-black uppercase tracking-widest shadow-md active:scale-95 group/btn border border-slate-800"
                                                 >
-                                                    <Zap size={16} className="text-yellow-400" /> Deep Dive
+                                                    <Zap size={14} className="text-yellow-400" /> Deep Dive
                                                 </button>
                                             </div>
                                         )}
                                     </div>
 
                                     {/* Main Doc Body */}
-                                    <div className="flex-1 p-10 lg:p-12 flex flex-col gap-10 relative">
-                                        <div className="absolute top-0 right-0 p-12 opacity-[0.02] group-hover/inner:opacity-[0.08] transition-all duration-700 pointer-events-none transform group-hover/inner:scale-110 origin-top-right">
-                                            <FileText size={160} />
+                                    <div className="flex-1 p-6 lg:p-8 flex flex-col gap-6 relative">
+                                        <div className="absolute top-0 right-0 p-8 opacity-[0.02] group-hover/inner:opacity-[0.05] transition-all duration-700 pointer-events-none transform group-hover/inner:scale-105 origin-top-right">
+                                            <FileText size={120} />
                                         </div>
 
-                                        <div className="space-y-4">
-                                            <h4 className="text-2xl lg:text-2xl font-black text-[#0F172A] font-serif-legal italic tracking-tight group-hover/doc:text-[#B91C1C] transition-colors duration-500 leading-tight pr-12">{doc.title}</h4>
-                                            <div className="flex items-center gap-4">
-                                                <div className="h-0.5 w-12 bg-[#B91C1C]"></div>
-                                                <span className="text-[10px] font-black text-slate-300 uppercase tracking-[0.3em]">Evidence Log_{idx + 1}</span>
+                                        <div className="space-y-2">
+                                            <h4 className="text-xl lg:text-xl font-black text-[#020617] font-serif-legal italic tracking-tight group-hover/doc:text-[#DC2626] transition-colors duration-500 leading-tight pr-10">{doc.title}</h4>
+                                            <div className="flex items-center gap-3">
+                                                <div className="h-0.5 w-8 bg-[#DC2626]"></div>
+                                                <span className="text-[9px] font-black text-slate-300 uppercase tracking-[0.2em]">Piece ID_{idx + 1}</span>
                                             </div>
                                         </div>
 
-                                        <div className="bg-slate-50/50 p-12 lg:p-14 rounded-[3.5rem] border border-slate-100 relative group-hover/inner:bg-white group-hover/inner:shadow-inner transition-all duration-700 glow-blue/5">
-                                            <div className="absolute top-0 right-0 p-8 flex gap-2">
-                                                <div className="w-2 h-2 rounded-full bg-slate-200"></div>
-                                                <div className="w-2 h-2 rounded-full bg-slate-200"></div>
+                                        <div className="bg-slate-50/50 p-8 lg:p-10 rounded-3xl border border-slate-100 relative group-hover/inner:bg-white group-hover/inner:shadow-inner transition-all duration-700 glow-blue/5">
+                                            <div className="absolute top-0 right-0 p-6 flex gap-1.5">
+                                                <div className="w-1.5 h-1.5 rounded-full bg-slate-200"></div>
+                                                <div className="w-1.5 h-1.5 rounded-full bg-slate-200"></div>
                                             </div>
-                                            <p className="text-slate-700 text-xl lg:text-2xl font-medium italic leading-[1.8] selection:bg-[#DC2626]/10 border-l-8 border-[#DC2626]/10 pl-10 font-serif-legal">
+                                            <p className="text-slate-700 text-lg lg:text-xl font-medium italic leading-[1.6] selection:bg-[#DC2626]/10 border-l-4 border-[#DC2626]/10 pl-8 font-serif-legal">
                                                 "{doc.description}"
                                             </p>
                                         </div>
 
                                         {doc.key_facts && doc.key_facts.length > 0 && (
-                                            <div className="space-y-8">
-                                                <div className="flex items-center gap-6">
-                                                    <span className="text-[10px] font-black uppercase tracking-[0.5em] text-slate-400">Extraits Factuels</span>
+                                            <div className="space-y-4">
+                                                <div className="flex items-center gap-4">
+                                                    <span className="text-[9px] font-black uppercase tracking-[0.3em] text-slate-400">Points Factuels</span>
                                                     <div className="h-[1px] flex-1 bg-gradient-to-r from-slate-100 to-transparent"></div>
                                                 </div>
-                                                <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
+                                                <div className="grid grid-cols-1 md:grid-cols-2 gap-3">
                                                     {Array.isArray(doc.key_facts) && doc.key_facts.map((fact, k) => (
-                                                        <div key={k} className="bg-white group-hover/inner:bg-slate-50/30 p-6 rounded-[2rem] border border-slate-100 hover:border-[#B91C1C]/20 transition-all flex items-start gap-5 group/fact shadow-sm">
-                                                            <div className="w-8 h-8 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-center text-[12px] font-black text-white shrink-0 group-hover/fact:bg-[#B91C1C] group-hover/fact:scale-110 transition-all shadow-lg">
+                                                        <div key={k} className="bg-white group-hover/inner:bg-slate-50/20 p-4 rounded-2xl border border-slate-100 hover:border-[#DC2626]/20 transition-all flex items-start gap-4 group/fact shadow-sm">
+                                                            <div className="w-6 h-6 rounded-lg bg-[#020617] flex items-center justify-center text-[10px] font-black text-white shrink-0 group-hover/fact:bg-[#DC2626] transition-all">
                                                                 {String(k + 1).padStart(2, '0')}
                                                             </div>
-                                                            <span className="text-slate-600 text-[14px] font-bold leading-relaxed group-hover:text-[#0F172A] transition-colors">{fact}</span>
+                                                            <span className="text-slate-600 text-[13px] font-bold leading-relaxed">{fact}</span>
                                                         </div>
                                                     ))}
                                                 </div>
@@ -273,12 +273,11 @@ export const DataCard: React.FC<DataCardProps> = ({ result, loading, onDeepDive,
                                         )}
 
                                         {doc.legal_implications && (
-                                            <div className="flex items-start gap-6 text-[#0F4C81] bg-[#0F4C81]/5 p-8 rounded-[2rem] border border-[#0F4C81]/20 relative overflow-hidden group/legal">
-                                                <div className="absolute top-0 right-0 w-32 h-32 bg-[#0F4C81]/5 rounded-full blur-3xl -mr-16 -mt-16 group-hover/legal:scale-150 transition-transform duration-1000"></div>
-                                                <Scale size={28} className="shrink-0 mt-1 relative z-10 text-[#0F4C81]" />
-                                                <div className="space-y-2 relative z-10">
-                                                    <div className="text-[9px] font-black uppercase tracking-[0.4em] text-[#0F4C81]/60">Analyse Juridique Officielle</div>
-                                                    <p className="font-bold text-lg lg:text-xl leading-relaxed italic font-serif-legal text-[#0F172A]">{doc.legal_implications}</p>
+                                            <div className="flex items-start gap-4 text-[#0F4C81] bg-[#0F4C81]/5 p-5 rounded-2xl border border-[#0F4C81]/20 relative overflow-hidden group/legal">
+                                                <Scale size={20} className="shrink-0 mt-0.5 relative z-10" />
+                                                <div className="space-y-1 relative z-10">
+                                                    <div className="text-[8px] font-black uppercase tracking-[0.3em] text-[#0F4C81]/60">Analyse Juridique</div>
+                                                    <p className="font-bold text-base leading-relaxed italic font-serif-legal text-[#020617]">{doc.legal_implications}</p>
                                                 </div>
                                             </div>
                                         )}
@@ -291,41 +290,36 @@ export const DataCard: React.FC<DataCardProps> = ({ result, loading, onDeepDive,
 
                 {/* Financial Flows Section */}
                 {data.transactions_financieres && data.transactions_financieres.length > 0 && (
-                    <div className="space-y-12 animate-pro-reveal mt-12 bg-[#F8FAFC]/50 p-12 rounded-[4rem] border border-slate-100">
-                        <div className="flex items-center gap-8 mb-10">
-                            <div className="w-16 h-16 rounded-[1.5rem] bg-[#020617] flex items-center justify-center shadow-2xl rotate-3">
-                                <DollarSign size={28} className="text-white" />
+                    <div className="space-y-8 animate-pro-reveal mt-6 bg-[#F8FAFC]/50 p-8 rounded-3xl border border-slate-100">
+                        <div className="flex items-center gap-6 mb-2">
+                            <div className="w-12 h-12 rounded-xl bg-[#020617] flex items-center justify-center shadow-lg rotate-2">
+                                <DollarSign size={20} className="text-white" />
                             </div>
-                            <div className="space-y-2">
-                                <h5 className="text-3xl font-black text-[#020617] font-display italic">Resonance <span className="text-[#DC2626]">Monétaire</span></h5>
-                                <div className="badge-forensic text-slate-400 border-none p-0">Analyse tactique des flux financiers croisés</div>
+                            <div className="space-y-1">
+                                <h5 className="text-xl font-black text-[#020617] font-display italic">Resonance <span className="text-[#DC2626]">Monétaire</span></h5>
+                                <div className="badge-forensic text-slate-400 border-none p-0 text-[8px]">Flux financiers croisés</div>
                             </div>
                         </div>
-                        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8">
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4">
                             {data.transactions_financieres.map((t, idx) => (
-                                <div key={idx} className="bg-white p-8 rounded-[2.5rem] border border-slate-100 hover:shadow-2xl hover:scale-[1.02] transition-all duration-500 group/finance relative overflow-hidden">
-                                    <div className="absolute top-0 right-0 w-24 h-24 bg-[#B91C1C]/5 rounded-full blur-2xl -mr-12 -mt-12 group-hover/finance:scale-150 transition-transform"></div>
-                                    <div className="flex justify-between items-start mb-6 relative z-10">
-                                        <div className="bg-[#0F172A] px-5 py-2 rounded-xl border border-slate-800 shadow-xl text-[14px] font-mono-data font-black text-white group-hover:bg-[#B91C1C] transition-colors">
+                                <div key={idx} className="bg-white p-5 rounded-2xl border border-slate-100 hover:shadow-xl hover:border-[#DC2626]/10 transition-all duration-500 group/finance relative overflow-hidden">
+                                    <div className="flex justify-between items-start mb-4 relative z-10">
+                                        <div className="bg-[#020617] px-3 py-1 rounded-lg border border-slate-800 shadow-md text-[12px] font-mono-data font-black text-white group-hover:bg-[#DC2626] transition-colors">
                                             {t.montant.toLocaleString()} {t.devise}
                                         </div>
-                                        <span className="text-[9px] font-black text-slate-300 uppercase tracking-widest bg-slate-50 px-3 py-1 rounded-md border border-slate-100">{t.date}</span>
+                                        <span className="text-[8px] font-black text-slate-300 uppercase tracking-widest bg-slate-50 px-2 py-0.5 rounded border border-slate-100">{t.date}</span>
                                     </div>
-                                    <div className="flex items-center gap-5 mb-8 relative z-10">
+                                    <div className="flex items-center gap-3 mb-4 relative z-10">
                                         <div className="flex-1 min-w-0">
-                                            <div className="text-[9px] font-black text-slate-300 uppercase tracking-widest leading-none mb-2 px-2 border-l-2 border-slate-100">Expéditeur</div>
-                                            <div className="text-[13px] font-black text-[#0F172A] truncate italic font-serif-legal group-hover:text-[#B91C1C] transition-colors">{t.source}</div>
+                                            <div className="text-[11px] font-black text-[#020617] truncate italic font-serif-legal group-hover:text-[#DC2626] transition-colors">{t.source}</div>
                                         </div>
-                                        <div className="flex flex-col items-center">
-                                            <ArrowRight size={14} className="text-[#B91C1C] animate-pulse" />
-                                        </div>
+                                        <ArrowRight size={12} className="text-[#DC2626] opacity-30" />
                                         <div className="flex-1 min-w-0 text-right">
-                                            <div className="text-[9px] font-black text-slate-300 uppercase tracking-widest leading-none mb-2 px-2 border-r-2 border-slate-100">Cible</div>
-                                            <div className="text-[13px] font-black text-[#0F172A] truncate italic font-serif-legal group-hover:text-[#B91C1C] transition-colors">{t.destination}</div>
+                                            <div className="text-[11px] font-black text-[#020617] truncate italic font-serif-legal group-hover:text-[#DC2626] transition-colors">{t.destination}</div>
                                         </div>
                                     </div>
-                                    <div className="bg-slate-50/80 p-5 rounded-2xl border border-slate-100 relative z-10">
-                                        <p className="text-[12px] text-slate-600 font-bold italic leading-relaxed">"{t.description}"</p>
+                                    <div className="bg-slate-50/80 p-3 rounded-xl border border-slate-100 relative z-10">
+                                        <p className="text-[10px] text-slate-500 font-bold italic leading-relaxed line-clamp-2">"{t.description}"</p>
                                     </div>
                                 </div>
                             ))}
@@ -335,50 +329,44 @@ export const DataCard: React.FC<DataCardProps> = ({ result, loading, onDeepDive,
 
                 {/* Flight Logs Section */}
                 {data.journaux_de_vol && data.journaux_de_vol.length > 0 && (
-                    <div className="space-y-12 animate-pro-reveal mt-12 bg-slate-900 p-12 rounded-[4rem] border border-slate-800 shadow-2xl relative overflow-hidden">
-                        <div className="absolute top-0 right-0 w-96 h-96 bg-[#B91C1C]/10 rounded-full blur-[100px] -mr-32 -mt-32"></div>
-                        <div className="flex items-center gap-8 mb-10 relative z-10">
-                            <div className="w-16 h-16 rounded-[1.5rem] bg-white flex items-center justify-center shadow-2xl -rotate-2">
-                                <Plane size={28} className="text-[#DC2626]" />
+                    <div className="space-y-8 animate-pro-reveal mt-6 bg-[#020617] p-8 rounded-3xl border border-slate-800 shadow-xl relative overflow-hidden">
+                        <div className="absolute top-0 right-0 w-64 h-64 bg-[#DC2626]/5 rounded-full blur-[80px] -mr-16 -mt-16"></div>
+                        <div className="flex items-center gap-6 mb-2 relative z-10">
+                            <div className="w-12 h-12 rounded-xl bg-white flex items-center justify-center shadow-lg -rotate-1">
+                                <Plane size={24} className="text-[#DC2626]" />
                             </div>
-                            <div className="space-y-2">
-                                <h5 className="text-3xl font-black text-white font-display italic">Manifestes <span className="text-slate-500 font-normal">de Bord</span></h5>
-                                <div className="badge-forensic text-slate-500 border-none p-0">Journalériens du "Lolita Express"</div>
+                            <div className="space-y-1">
+                                <h5 className="text-xl font-black text-white font-display italic">Manifestes <span className="text-slate-500 font-normal">de Bord</span></h5>
+                                <div className="badge-forensic text-slate-500 border-none p-0 text-[8px]">Journaux aériens tracés</div>
                             </div>
                         </div>
-                        <div className="grid grid-cols-1 md:grid-cols-2 xl:grid-cols-3 gap-8 relative z-10">
+                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 gap-4 relative z-10">
                             {data.journaux_de_vol.map((f, idx) => (
-                                <div key={idx} className="bg-white/5 backdrop-blur-md p-8 rounded-[2.5rem] border border-white/10 hover:bg-white/10 transition-all duration-500 group/flight overflow-hidden relative">
-                                    <div className="flex justify-between items-start mb-6">
-                                        <div className="text-[14px] font-mono-data font-black text-white italic">{f.date}</div>
-                                        <span className="text-[8px] font-black text-[#B91C1C] uppercase tracking-widest bg-red-500/10 px-2 py-0.5 rounded border border-red-500/20">{f.source}</span>
+                                <div key={idx} className="bg-white/5 backdrop-blur-md p-5 rounded-2xl border border-white/10 hover:bg-white/10 transition-all duration-500 group/flight overflow-hidden relative">
+                                    <div className="flex justify-between items-start mb-4">
+                                        <div className="text-[12px] font-mono-data font-black text-white italic">{f.date}</div>
+                                        <span className="text-[7px] font-black text-[#DC2626] uppercase tracking-widest bg-red-500/10 px-1.5 py-0.5 rounded border border-red-500/20">{f.source}</span>
                                     </div>
-                                    <div className="flex items-center gap-5 mb-6">
+                                    <div className="flex items-center gap-3 mb-4">
                                         <div className="flex-1 min-w-0">
-                                            <div className="text-[8px] font-black text-slate-500 uppercase tracking-widest mb-1">DEPART</div>
-                                            <div className="text-[13px] font-black text-white italic font-serif-legal truncate">{f.depart}</div>
+                                            <div className="text-[11px] font-black text-white italic font-serif-legal truncate">{f.depart}</div>
                                         </div>
-                                        <ArrowRight size={14} className="text-slate-600 group-hover/flight:text-[#B91C1C] transition-colors" />
+                                        <ArrowRight size={10} className="text-slate-600" />
                                         <div className="flex-1 min-w-0 text-right">
-                                            <div className="text-[8px] font-black text-slate-500 uppercase tracking-widest mb-1">CIBLE</div>
-                                            <div className="text-[13px] font-black text-white italic font-serif-legal truncate">{f.destination}</div>
+                                            <div className="text-[11px] font-black text-white italic font-serif-legal truncate">{f.destination}</div>
                                         </div>
                                     </div>
-                                    <div className="space-y-3">
-                                        <div className="text-[8px] font-black text-slate-500 uppercase tracking-widest flex items-center gap-2">
-                                            <Users size={10} /> Manifeste Passagers
-                                        </div>
-                                        <div className="flex flex-wrap gap-2">
-                                            {f.passagers.map((p: any, pi) => (
-                                                <span
-                                                    key={pi}
-                                                    onClick={() => onEntityClick(typeof p === 'string' ? p : p.nom || 'Inconnu')}
-                                                    className="px-2 py-1 bg-white/5 rounded-lg text-[9px] font-black text-slate-300 hover:text-white hover:bg-[#B91C1C] transition-all cursor-pointer border border-white/5 font-serif-legal"
-                                                >
-                                                    {typeof p === 'string' ? p : p.nom || 'Inconnu'}
-                                                </span>
-                                            ))}
-                                        </div>
+                                    <div className="flex flex-wrap gap-1.5 mt-auto">
+                                        {f.passagers.slice(0, 3).map((p: any, pi) => (
+                                            <span
+                                                key={pi}
+                                                onClick={() => onEntityClick(typeof p === 'string' ? p : p.nom || 'Inconnu')}
+                                                className="px-1.5 py-0.5 bg-white/5 rounded-md text-[8px] font-black text-slate-400 hover:text-white hover:bg-[#DC2626] transition-all cursor-pointer font-serif-legal"
+                                            >
+                                                {typeof p === 'string' ? p : p.nom || 'Inconnu'}
+                                            </span>
+                                        ))}
+                                        {f.passagers.length > 3 && <span className="text-[8px] text-slate-600 font-black">+{f.passagers.length - 3}</span>}
                                     </div>
                                 </div>
                             ))}
@@ -387,58 +375,58 @@ export const DataCard: React.FC<DataCardProps> = ({ result, loading, onDeepDive,
                 )}
 
                 {/* Footer Intelligence Sections */}
-                <div className="grid grid-cols-1 lg:grid-cols-2 gap-16 pt-20 border-t border-slate-100">
-                    {/* Entity Extraction */}
-                    <div className="space-y-8">
-                        <div className="flex items-center gap-5">
-                            <div className="w-10 h-10 rounded-xl bg-slate-900 border border-slate-800 flex items-center justify-center shadow-lg">
-                                <Users size={18} className="text-[#B91C1C]" />
+                <div className="grid grid-cols-1 lg:grid-cols-2 gap-10 pt-10 border-t border-slate-100">
+                    {/* Entity Extraction Compact */}
+                    <div className="space-y-6">
+                        <div className="flex items-center gap-4">
+                            <div className="w-8 h-8 rounded-lg bg-[#020617] flex items-center justify-center shadow-md">
+                                <Users size={16} className="text-[#DC2626]" />
                             </div>
-                            <h5 className="text-[11px] font-black uppercase tracking-[0.5em] text-[#0F172A]">Réseau d'Influence</h5>
+                            <h5 className="text-[10px] font-black uppercase tracking-[0.3em] text-[#0F172A]">Réseau d'Influence</h5>
                         </div>
-                        <div className="flex flex-wrap gap-3">
+                        <div className="flex flex-wrap gap-2">
                             {data.entites_cles?.map((entity: any, i) => (
                                 <button
                                     key={i}
                                     onClick={() => onEntityClick(typeof entity === 'string' ? entity : entity.nom || 'Inconnu')}
-                                    className="group flex items-center gap-4 px-6 py-3 rounded-2xl bg-white text-slate-500 text-[13px] font-black border border-slate-100 hover:border-[#B91C1C] hover:text-[#B91C1C] hover:shadow-2xl transition-all duration-300 active:scale-90 shadow-sm"
+                                    className="group flex items-center gap-3 px-4 py-2 rounded-xl bg-white text-slate-500 text-[11px] font-black border border-slate-100 hover:border-[#DC2626] hover:text-[#DC2626] hover:shadow-lg transition-all active:scale-95 shadow-sm"
                                 >
                                     <span className="italic font-serif-legal">{typeof entity === 'string' ? entity : entity.nom || 'Inconnu'}</span>
-                                    <ArrowUpRight size={16} className="text-[#B91C1C] opacity-0 group-hover:opacity-100 transform translate-y-1 group-hover:translate-y-0 transition-all" />
+                                    <ArrowUpRight size={12} className="text-[#DC2626] opacity-0 group-hover:opacity-100 transition-all" />
                                 </button>
                             ))}
                         </div>
                     </div>
 
-                    {/* Source Verification */}
-                    <div className="space-y-8">
-                        <div className="flex items-center gap-5">
-                            <div className="w-10 h-10 rounded-xl bg-[#0F4C81] border border-slate-800 flex items-center justify-center shadow-lg">
-                                <LinkIcon size={18} className="text-white" />
+                    {/* Source Verification Compact */}
+                    <div className="space-y-6">
+                        <div className="flex items-center gap-4">
+                            <div className="w-8 h-8 rounded-lg bg-[#0F4C81] flex items-center justify-center shadow-md">
+                                <LinkIcon size={16} className="text-white" />
                             </div>
-                            <h5 className="text-[11px] font-black uppercase tracking-[0.5em] text-[#0F4C81]">Liaison Sources</h5>
+                            <h5 className="text-[10px] font-black uppercase tracking-[0.3em] text-[#0F4C81]">Liaison Sources</h5>
                         </div>
-                        <div className="flex flex-col gap-4">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 gap-3">
                             {sources.map((source, i) => (
                                 <a
                                     key={i}
                                     href={source.uri}
                                     target="_blank"
                                     rel="noopener noreferrer"
-                                    className="flex items-center justify-between group p-6 rounded-2xl bg-white border border-slate-100 hover:bg-slate-50 hover:border-[#0F4C81] transition-all duration-300 shadow-sm"
+                                    className="flex items-center justify-between group p-4 rounded-xl bg-white border border-slate-100 hover:bg-slate-50 hover:border-[#0F4C81] transition-all shadow-sm"
                                 >
-                                    <div className="flex items-center gap-5 min-w-0">
-                                        <div className="w-12 h-12 rounded-[1.2rem] bg-slate-50 border border-slate-200 flex items-center justify-center text-slate-400 group-hover:bg-[#0F4C81] group-hover:text-white transition-all shadow-inner">
-                                            <File size={18} />
+                                    <div className="flex items-center gap-3 min-w-0">
+                                        <div className="w-8 h-8 rounded-lg bg-slate-50 border border-slate-200 flex items-center justify-center text-slate-400 group-hover:bg-[#0F4C81] group-hover:text-white transition-all">
+                                            <File size={14} />
                                         </div>
                                         <div className="flex flex-col min-w-0">
-                                            <span className="text-[15px] font-black text-slate-700 group-hover:text-[#0F172A] transition-colors truncate font-serif-legal italic mb-1">{source.title}</span>
-                                            <span className="text-[9px] font-black text-slate-300 uppercase tracking-widest flex items-center gap-2">
-                                                <ShieldCheck size={10} className="text-emerald-500" /> Gov_Verified_Sync
+                                            <span className="text-[12px] font-black text-slate-700 truncate font-serif-legal italic">{source.title}</span>
+                                            <span className="text-[7px] font-black text-slate-300 uppercase tracking-widest flex items-center gap-1">
+                                                <ShieldCheck size={8} className="text-emerald-500" /> SECURE_SYNC
                                             </span>
                                         </div>
                                     </div>
-                                    <ArrowUpRight size={16} className="text-[#0F4C81] opacity-0 group-hover:opacity-100 transform -translate-x-2 group-hover:translate-x-0 transition-all" />
+                                    <ArrowUpRight size={12} className="text-[#0F4C81] opacity-0 group-hover:opacity-100 transition-all" />
                                 </a>
                             ))}
                         </div>
