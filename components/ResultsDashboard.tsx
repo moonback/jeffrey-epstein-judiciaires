@@ -4,6 +4,7 @@
  */
 
 import React, { useState, useMemo } from 'react';
+import { PageHeader } from './PageHeader';
 import { ProcessedResult, DocumentDetail } from '../types';
 import { Search, Database, FileText, Calendar, Filter, ArrowUpRight, BookOpen, GraduationCap, Zap, Download, Database as DatabaseIcon, Shield, Activity, ListFilter, ShieldCheck, Cpu } from 'lucide-react';
 
@@ -59,78 +60,42 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ history, onD
     <div className="flex flex-col h-full bg-[#F8FAFC] overflow-hidden relative">
       <div className="absolute inset-0 z-0 pointer-events-none opacity-[0.25] report-paper"></div>
 
-      <header className="px-6 lg:px-8 py-5 border-b border-slate-100 bg-white/95 backdrop-blur-2xl z-40 shadow-sm relative overflow-hidden shrink-0">
-        <div className="absolute top-0 right-0 h-full w-1/4 bg-gradient-to-l from-slate-50/50 to-transparent pointer-events-none opacity-30"></div>
-
-        <div className="flex flex-col lg:flex-row justify-between items-start lg:items-center gap-6 relative z-10">
-          <div className="flex items-center gap-5">
-            <div className="w-12 h-12 bg-[#020617] rounded-xl flex items-center justify-center shadow-xl group transition-all hover:rotate-6">
-              <DatabaseIcon className="text-white group-hover:scale-110 transition-transform" size={20} />
-            </div>
-            <div>
-              <div className="flex items-center gap-3">
-                <h2 className="text-xl lg:text-2xl font-black text-[#020617] font-display tracking-tight leading-none">
-                  Archives <span className="text-[#DC2626]">Centrales</span>
-                </h2>
-                <span className="badge-forensic bg-slate-50 text-slate-300 border-slate-100 px-2 py-0.5 text-[8px]">Vault_Sync_ v4.0</span>
-              </div>
-              <div className="flex items-center gap-4 mt-1.5">
-                <div className="flex items-center gap-2">
-                  <div className="w-1.5 h-1.5 rounded-full bg-[#DC2626] animate-pulse"></div>
-                  <span className="text-[9px] font-black text-slate-400 uppercase tracking-[0.2em]">Indexation Forensique</span>
-                </div>
-                <div className="h-3 w-px bg-slate-100"></div>
-                <div className="flex items-center gap-2">
-                  <ShieldCheck size={12} className="text-[#DC2626]" />
-                  <span className="text-[9px] font-black text-slate-400 uppercase tracking-[0.2em]">Niveau 5</span>
-                </div>
-              </div>
-            </div>
-          </div>
-
-          <div className="relative group w-full lg:w-[350px]">
-            <Search className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-[#DC2626] transition-colors" size={16} />
-            <input
-              type="text"
-              placeholder="Rechercher..."
-              value={searchTerm}
-              onChange={(e) => setSearchTerm(e.target.value)}
-              className="bg-slate-50 border border-slate-100 rounded-xl py-2.5 pl-12 pr-6 text-[13px] text-[#020617] w-full focus:bg-white focus:border-[#DC2626] outline-none transition-all shadow-inner placeholder-slate-300 font-bold"
-            />
-          </div>
-        </div>
-
-        <div className="flex flex-col md:flex-row md:items-center gap-4 mt-8 relative z-10 w-full">
-          <div className="flex items-center gap-2 overflow-x-auto no-scrollbar pb-2 mask-linear-fade flex-1">
-            <button
-              onClick={() => setActiveType('ALL')}
-              className={`px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest transition-all border shrink-0 ${activeType === 'ALL'
-                ? 'bg-[#0F172A] text-white border-[#0F172A] shadow-lg shadow-slate-900/10'
-                : 'bg-white text-slate-500 border-slate-200 hover:border-[#DC2626] hover:text-[#DC2626]'
-                }`}
-            >
-              Tout ({allDocuments.length})
-            </button>
-            {types.map(type => (
-              <button
-                key={type}
-                onClick={() => setActiveType(type)}
-                className={`px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest transition-all border shrink-0 ${activeType === type
-                  ? 'bg-[#0F172A] text-white border-[#0F172A] shadow-lg shadow-slate-900/10'
-                  : 'bg-white text-slate-500 border-slate-200 hover:border-[#DC2626] hover:text-[#DC2626]'
-                  }`}
-              >
-                {type}
-              </button>
-            ))}
-          </div>
-
-          <div className="hidden md:flex flex-col items-end shrink-0 pl-4 border-l border-slate-100">
-            <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Base Documentaire</span>
-            <span className="text-xl font-mono-data font-black text-[#DC2626] leading-none mt-0.5">{filteredDocs.length}</span>
-          </div>
-        </div>
-      </header>
+      <PageHeader
+        title="Archives"
+        titleHighlight="Centrales"
+        icon={DatabaseIcon}
+        badgeText="Vault_Sync_ v4.0"
+        searchQuery={searchTerm}
+        onSearchChange={setSearchTerm}
+        totalLabel="Base Documentaire"
+        totalCount={filteredDocs.length}
+        stats={[
+          { label: "Indexation Forensique", value: "", icon: <div className="w-1.5 h-1.5 rounded-full bg-[#DC2626] animate-pulse"></div> },
+          { label: "Niveau 5", value: "", icon: <ShieldCheck size={12} className="text-[#DC2626]" /> }
+        ]}
+      >
+        <button
+          onClick={() => setActiveType('ALL')}
+          className={`px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest transition-all border shrink-0 ${activeType === 'ALL'
+            ? 'bg-[#0F172A] text-white border-[#0F172A] shadow-lg shadow-slate-900/10'
+            : 'bg-white text-slate-500 border-slate-200 hover:border-[#DC2626] hover:text-[#DC2626]'
+            }`}
+        >
+          Tout ({allDocuments.length})
+        </button>
+        {types.map(type => (
+          <button
+            key={type}
+            onClick={() => setActiveType(type)}
+            className={`px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest transition-all border shrink-0 ${activeType === type
+              ? 'bg-[#0F172A] text-white border-[#0F172A] shadow-lg shadow-slate-900/10'
+              : 'bg-white text-slate-500 border-slate-200 hover:border-[#DC2626] hover:text-[#DC2626]'
+              }`}
+          >
+            {type}
+          </button>
+        ))}
+      </PageHeader>
 
       <div className="flex-1 overflow-y-auto p-4 lg:p-6 custom-scrollbar z-10 scroll-smooth">
         {filteredDocs.length > 0 ? (

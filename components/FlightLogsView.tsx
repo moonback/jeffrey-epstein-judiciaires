@@ -1,4 +1,5 @@
 import React, { useMemo, useState, useEffect } from 'react';
+import { PageHeader } from './PageHeader';
 import { storageService } from '../services/storageService';
 import { ProcessedResult, FlightDetail } from '../types';
 import {
@@ -107,49 +108,33 @@ export const FlightLogsView: React.FC = () => {
         <div className="h-full flex flex-col bg-[#F8FAFC] overflow-hidden relative">
             <div className="absolute inset-0 z-0 pointer-events-none opacity-[0.25] report-paper"></div>
 
-            <header className="px-6 lg:px-10 py-6 bg-white border-b border-slate-100 z-30 shadow-sm relative shrink-0">
-                <div className="max-w-12xl mx-auto flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-                    <div className="flex items-center gap-5">
-                        <div className="w-12 h-12 bg-gradient-to-br from-[#0F172A] to-slate-800 rounded-2xl flex items-center justify-center shadow-2xl skew-x-[-12deg] group cursor-pointer hover:skew-x-0 transition-transform">
-                            <Plane className="text-white" size={24} />
-                        </div>
-                        <div>
-                            <div className="flex items-center gap-3">
-                                <h2 className="text-xl lg:text-2xl font-black text-[#0F172A] uppercase italic font-serif-legal tracking-tight leading-none">
-                                    Manifestes <span className="text-[#B91C1C]">Aériens</span>
-                                </h2>
-                                <span className="text-[9px] font-black text-slate-300 uppercase tracking-[0.2em]">Lolita Express Logs</span>
-                            </div>
-                            <div className="flex items-center gap-3 mt-1.5">
-                                <span className="flex items-center gap-1.5 text-[9px] font-black text-blue-600 uppercase tracking-widest bg-blue-50 px-2.5 py-1 rounded-full border border-blue-100">
-                                    <Globe size={10} /> Forensic Air-Trace
-                                </span>
-                                {selectedPassenger && (
-                                    <button
-                                        onClick={() => setSelectedPassenger(null)}
-                                        className="flex items-center gap-1.5 text-[9px] font-black text-emerald-600 uppercase tracking-widest bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-100 hover:bg-emerald-100 transition-colors"
-                                    >
-                                        Passager: {selectedPassenger} (X)
-                                    </button>
-                                )}
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="flex items-center gap-4">
-                        <div className="relative group">
-                            <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-[#B91C1C] transition-colors" />
-                            <input
-                                type="text"
-                                placeholder="Rechercher un vol, passager, ville..."
-                                value={searchQuery}
-                                onChange={e => setSearchQuery(e.target.value)}
-                                className="pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-100 rounded-xl text-xs font-medium w-64 focus:w-80 transition-all duration-300 outline-none shadow-inner focus:bg-white"
-                            />
-                        </div>
-                    </div>
-                </div>
-            </header>
+            <PageHeader
+                title="Manifestes"
+                titleHighlight="Aériens"
+                icon={Plane}
+                badgeText="Forensic Air-Trace v2.0"
+                searchQuery={searchQuery}
+                onSearchChange={setSearchQuery}
+                searchPlaceholder="Rechercher un vol, passager, ville..."
+                totalLabel="Vols Identifiés"
+                totalCount={allFlights.length}
+                stats={[
+                    {
+                        label: "Passagers",
+                        value: passengerStats.length,
+                        icon: <Users size={10} className="text-slate-400" />
+                    }
+                ]}
+            >
+                {selectedPassenger && (
+                    <button
+                        onClick={() => setSelectedPassenger(null)}
+                        className="flex items-center gap-1.5 text-[9px] font-black text-emerald-600 uppercase tracking-widest bg-emerald-50 px-3 py-1.5 rounded-xl border border-emerald-100 hover:bg-emerald-100 transition-colors shadow-sm"
+                    >
+                        Passager: {selectedPassenger} (X)
+                    </button>
+                )}
+            </PageHeader>
 
             <div className="flex-1 overflow-hidden flex z-10">
                 {/* Sidebar: Top Passengers */}

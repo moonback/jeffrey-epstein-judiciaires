@@ -4,6 +4,7 @@
  */
 
 import React, { useState, useEffect, useMemo } from 'react';
+import { PageHeader } from './PageHeader';
 import { storageService } from '../services/storageService';
 import { ProcessedResult, EntityDetail } from '../types';
 import {
@@ -141,70 +142,52 @@ export const MainActorsView: React.FC<MainActorsViewProps> = ({ onEntityClick, i
     return (
         <div className="h-full flex flex-col bg-[#F8FAFC] overflow-hidden relative font-sans">
             {/* Ultra Compact Professional Header */}
-            <header className="px-4 py-3 bg-white/90 backdrop-blur-md border-b border-slate-200 z-30 shrink-0 flex items-center justify-between shadow-sm gap-4">
-                <div className="flex items-center gap-4 min-w-0">
-                    <div className="w-9 h-9 bg-[#0F172A] rounded-lg flex items-center justify-center shadow-lg group hover:bg-[#B91C1C] transition-colors duration-500 shrink-0">
-                        <Users className="text-white group-hover:scale-110 transition-transform" size={16} />
-                    </div>
-                    <div className="min-w-0">
-                        <div className="flex items-center gap-2">
-                            <h1 className="text-base font-black text-[#0F172A] uppercase italic tracking-tight leading-none truncate">
-                                Acteurs <span className="text-[#B91C1C]">Clés</span>
-                            </h1>
-                            <span className="px-1.5 py-0.5 rounded-md bg-slate-100 border border-slate-200 text-[9px] font-black text-slate-500 uppercase tracking-widest leading-none">
-                                {stats.total}
-                            </span>
-                        </div>
-                        <div className="flex items-center gap-3 mt-1">
-                            <div className="flex items-center gap-1.5">
-                                <span className={`w-1.5 h-1.5 rounded-full ${stats.highRisk > 0 ? 'bg-[#B91C1C] animate-pulse' : 'bg-emerald-500'}`}></span>
-                                <span className="text-[9px] font-bold text-slate-400 uppercase tracking-wider leading-none whitespace-nowrap">{stats.highRisk} Critiques</span>
-                            </div>
-                        </div>
-                    </div>
+            {/* Ultra Compact Professional Header */}
+            <PageHeader
+                title="Acteurs"
+                titleHighlight="Clés"
+                icon={Users}
+                badgeText="Neural Registry v2.1"
+                searchQuery={searchQuery}
+                onSearchChange={setSearchQuery}
+                totalLabel="Profils Identifiés"
+                totalCount={stats.total}
+                stats={[
+                    {
+                        label: "Critiques",
+                        value: stats.highRisk,
+                        icon: <div className={`w-1.5 h-1.5 rounded-full ${stats.highRisk > 0 ? 'bg-[#B91C1C] animate-pulse' : 'bg-emerald-500'}`}></div>
+                    },
+                    {
+                        label: "Influenceurs",
+                        value: stats.influencers,
+                        icon: <Activity size={10} className="text-slate-400" />
+                    }
+                ]}
+            >
+                <button
+                    onClick={() => setOnlyHighMentions(!onlyHighMentions)}
+                    title="Filtrer par activité"
+                    className={`mt-[-4px] p-2 h-[34px] rounded-lg border transition-all flex items-center justify-center ${onlyHighMentions ? 'bg-[#0F172A] border-[#0F172A] text-white' : 'bg-white border-slate-200 text-slate-400 hover:border-[#B91C1C] hover:text-[#B91C1C]'}`}
+                >
+                    <Activity size={14} />
+                    <span className="ml-2 text-[10px] font-black uppercase tracking-wider hidden sm:inline">Actifs</span>
+                </button>
+
+                <div className="relative mt-[-4px]">
+                    <select
+                        value={selectedRole}
+                        onChange={(e) => setSelectedRole(e.target.value)}
+                        className="appearance-none pl-3 pr-8 h-[34px] bg-white border border-slate-200 rounded-lg text-[10px] font-bold uppercase tracking-wider text-slate-600 focus:border-[#B91C1C] outline-none cursor-pointer hover:bg-slate-50 w-40 truncate"
+                    >
+                        <option value="all">Tous Rôles</option>
+                        {roles.map(role => (
+                            <option key={role} value={role}>{role}</option>
+                        ))}
+                    </select>
+                    <ChevronRight size={12} className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none rotate-90" />
                 </div>
-
-                <div className="flex items-center gap-2 flex-1 justify-end">
-                    {/* Search Bar - Compact */}
-                    <div className="relative group max-w-xs w-full">
-                        <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-[#B91C1C] transition-colors" />
-                        <input
-                            type="text"
-                            placeholder="Rechercher..."
-                            value={searchQuery}
-                            onChange={e => setSearchQuery(e.target.value)}
-                            className="w-full pl-9 pr-3 py-1.5 bg-slate-50 hover:bg-white focus:bg-white border border-slate-200 rounded-lg text-xs font-semibold text-[#0F172A] focus:border-[#B91C1C] transition-all outline-none shadow-sm placeholder:text-slate-400"
-                        />
-                    </div>
-
-                    <div className="h-6 w-px bg-slate-200 mx-1 hidden sm:block"></div>
-
-                    {/* Filters - Compact */}
-                    <div className="flex items-center gap-2 overflow-x-auto no-scrollbar">
-                        <button
-                            onClick={() => setOnlyHighMentions(!onlyHighMentions)}
-                            title="Filtrer par activité"
-                            className={`p-1.5 rounded-lg border transition-all flex items-center justify-center ${onlyHighMentions ? 'bg-[#0F172A] border-[#0F172A] text-white' : 'bg-white border-slate-200 text-slate-400 hover:border-[#B91C1C] hover:text-[#B91C1C]'}`}
-                        >
-                            <Activity size={14} />
-                        </button>
-
-                        <div className="relative">
-                            <select
-                                value={selectedRole}
-                                onChange={(e) => setSelectedRole(e.target.value)}
-                                className="appearance-none pl-3 pr-8 py-1.5 bg-white border border-slate-200 rounded-lg text-[10px] font-bold uppercase tracking-wider text-slate-600 focus:border-[#B91C1C] outline-none cursor-pointer hover:bg-slate-50 w-32 truncate"
-                            >
-                                <option value="all">Tous Rôles</option>
-                                {roles.map(role => (
-                                    <option key={role} value={role}>{role}</option>
-                                ))}
-                            </select>
-                            <ChevronRight size={12} className="absolute right-2 top-1/2 -translate-y-1/2 text-slate-400 pointer-events-none rotate-90" />
-                        </div>
-                    </div>
-                </div>
-            </header>
+            </PageHeader>
 
             {/* Dashboard Content - Densified */}
             <div className="flex-1 overflow-y-auto p-4 custom-scrollbar z-10 bg-[#F8FAFC]">

@@ -4,10 +4,11 @@
  */
 
 import React, { useMemo, useState, useEffect, useRef } from 'react';
+import { PageHeader } from './PageHeader';
 import ForceGraph2D, { ForceGraphMethods } from 'react-force-graph-2d';
 import { ProcessedResult } from '../types';
 import { storageService } from '../services/storageService';
-import { Share2, Info, Crosshair, ZoomIn, ZoomOut, Activity, Users, FileText, Search, Filter, Shield, Target, Link2, Maximize2, Minimize2, PanelLeftClose, PanelLeftOpen, ArrowUpRight, Zap, ShieldCheck, Box } from 'lucide-react';
+import { Share2, Info, Crosshair, ZoomIn, ZoomOut, Activity, Users, FileText, Search, Filter, Shield, Target, Link2, Maximize2, Minimize2, PanelLeftClose, PanelLeftOpen, ArrowUpRight, Zap, ShieldCheck, Box, Network } from 'lucide-react';
 import { EntityProfile } from './EntityProfile';
 
 interface GraphNode {
@@ -231,380 +232,316 @@ export const NetworkGraphView: React.FC<NetworkGraphViewProps> = ({ onDeepDive, 
     }
 
     return (
-        <div ref={containerRef} className={`h-full flex bg-[#F8FAFC] relative overflow-hidden font-sans text-[#0F172A] ${isFullscreen ? 'fixed inset-0 z-[100]' : ''}`}>
-
-            {/* Background Texture */}
-            <div className="absolute inset-0 z-0 pointer-events-none opacity-[0.25] report-paper"></div>
-
-            {/* SIDEBAR TOGGLE */}
-            {!isSidebarOpen && (
-                <button
-                    onClick={() => setIsSidebarOpen(true)}
-                    className="absolute top-6 left-6 z-40 p-3 bg-white/90 backdrop-blur-3xl border border-slate-100 rounded-xl text-slate-400 hover:text-[#B91C1C] transition-all shadow-lg animate-in fade-in"
-                >
-                    <PanelLeftOpen size={18} />
-                </button>
-            )}
-
-            {/* PROFESSIONAL SIDEBAR - Forensic Asset Panel */}
-            <aside className={`${isSidebarOpen ? 'w-[360px] lg:w-[400px]' : 'w-0'} border-r border-slate-100 bg-white/95 backdrop-blur-3xl z-20 flex flex-col transition-all duration-500 relative overflow-hidden shadow-2xl`}>
-                <div className={`${isSidebarOpen ? 'opacity-100' : 'opacity-0'} transition-opacity duration-300 h-full flex flex-col p-8 lg:p-10`}>
-                    <div className="absolute top-0 right-0 h-full w-1/4 bg-gradient-to-l from-[#F8FAFC] to-transparent pointer-events-none opacity-50"></div>
-
-                    <button
-                        onClick={() => setIsSidebarOpen(false)}
-                        className="absolute top-8 right-8 text-slate-300 hover:text-[#0F172A] transition-colors p-2 hover:bg-slate-50 rounded-xl z-10"
-                    >
-                        <PanelLeftClose size={18} />
-                    </button>
-
-                    <div className="mb-10 relative z-10">
-                        <div className="flex items-center gap-5 mb-4">
-                            <div className="w-12 h-12 bg-[#B91C1C] rounded-[1rem] flex items-center justify-center shadow-xl shadow-red-900/10 transition-transform hover:rotate-6">
-                                <Share2 size={22} className="text-white" />
-                            </div>
-                            <div>
-                                <h2 className="text-xl font-black tracking-tight text-[#0F172A] uppercase italic font-serif-legal leading-tight">Cartographie <span className="text-[#B91C1C]">Relationnelle</span></h2>
-                                <div className="flex items-center gap-2 mt-1">
-                                    <span className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></span>
-                                    <span className="text-[9px] font-black text-slate-300 uppercase tracking-[0.3em]">Neural Link v4.2 Trace</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Stats Grid */}
-                    <div className="grid grid-cols-2 gap-4 mb-10 relative z-10">
-                        <div className="bg-[#F8FAFC] p-6 rounded-[2rem] border border-slate-100 relative overflow-hidden group shadow-sm transition-all hover:bg-white hover:shadow-xl">
-                            <div className="absolute top-0 right-0 p-4 opacity-[0.03] group-hover:scale-110 transition-transform">
-                                <Target size={40} className="text-[#B91C1C]" />
-                            </div>
-                            <div className="text-[9px] font-black text-slate-400 uppercase mb-1 tracking-widest">Entités Identifiées</div>
-                            <div className="text-2xl font-mono-data font-black text-[#B91C1C] leading-none">{graphData.nodes.length}</div>
-                        </div>
-                        <div className="bg-[#F8FAFC] p-6 rounded-[2rem] border border-slate-100 relative overflow-hidden group shadow-sm transition-all hover:bg-white hover:shadow-xl">
-                            <div className="absolute top-0 right-0 p-4 opacity-[0.03] group-hover:scale-110 transition-transform">
-                                <Link2 size={40} className="text-[#0F4C81]" />
-                            </div>
-                            <div className="text-[9px] font-black text-slate-400 uppercase mb-1 tracking-widest">Liens Détectés</div>
-                            <div className="text-2xl font-mono-data font-black text-[#0F4C81] leading-none">{graphData.links.length}</div>
-                        </div>
-                    </div>
-
-                    {/* Search & Filters */}
-                    <div className="space-y-4 mb-10 relative z-10">
-                        <div className="relative group">
-                            <Search className="absolute left-5 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-[#B91C1C] transition-colors" size={16} />
-                            <input
-                                type="text"
-                                placeholder="Rechercher une cible..."
-                                value={searchQuery}
-                                onChange={e => setSearchQuery(e.target.value)}
-                                className="w-full bg-[#F8FAFC] border border-slate-100 rounded-xl py-3 pl-12 pr-6 text-[13px] focus:border-[#B91C1C] focus:bg-white outline-none transition-all placeholder:text-slate-300 font-medium"
-                            />
-                        </div>
-                        <div className="flex gap-2 p-1.5 bg-[#F8FAFC] border border-slate-50 rounded-xl">
-                            {(['ALL', 'PERSON', 'INVESTIGATION'] as const).map(t => (
-                                <button
-                                    key={t}
-                                    onClick={() => setFilterType(t)}
-                                    className={`flex-1 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all ${filterType === t ? 'bg-white text-[#B91C1C] shadow-sm border border-slate-100' : 'text-slate-400 hover:text-slate-600'}`}
-                                >
-                                    {t === 'ALL' ? 'Tous' : t === 'PERSON' ? 'Cibles' : 'Affaires'}
-                                </button>
-                            ))}
-                        </div>
-
-                        {/* Density Control */}
-                        <div className="pt-4 px-2">
-                            <div className="flex justify-between items-center mb-3">
-                                <span className="text-[10px] font-black text-slate-400 uppercase tracking-widest">Densité du Réseau</span>
-                                <span className="text-[10px] font-mono-data font-black text-[#B91C1C]">{minConnections}+ liens</span>
-                            </div>
-                            <input
-                                type="range"
-                                min="0"
-                                max="10"
-                                step="1"
-                                value={minConnections}
-                                onChange={(e) => setMinConnections(parseInt(e.target.value))}
-                                className="w-full h-1.5 bg-slate-100 rounded-lg appearance-none cursor-pointer accent-[#B91C1C]"
-                            />
-                            <div className="flex justify-between mt-2 text-[8px] font-black text-slate-300 uppercase tracking-tighter">
-                                <span>Complexe</span>
-                                <span>Épuré</span>
-                            </div>
-                        </div>
-                    </div>
-
-                    {/* Influencers */}
-                    <div className="flex-1 overflow-y-auto custom-scrollbar pr-2 relative z-10">
-                        <h3 className="text-[9px] font-black text-slate-300 uppercase tracking-[0.4em] mb-6 flex items-center gap-4">
-                            <Zap size={14} className="text-[#B91C1C]" /> Forensic Integrity Feed
-                        </h3>
-                        <div className="space-y-3 pb-8">
-                            {topInfluencers.map((inf, i) => (
-                                <div
-                                    key={inf.id}
-                                    className="group relative flex items-center gap-4 p-4 bg-white hover:bg-slate-50 rounded-[1.5rem] border border-slate-100 hover:border-[#B91C1C]/10 transition-all cursor-pointer shadow-sm hover:shadow-md"
-                                    onClick={() => setSelectedEntity(inf.name)}
-                                    onDoubleClick={() => {
-                                        fgRef.current?.centerAt(inf.x, inf.y, 800);
-                                        fgRef.current?.zoom(3, 800);
-                                        handleNodeHover(inf);
-                                    }}
-                                    title="Cliquer pour voir le profil • Double-cliquer pour zoomer"
-                                >
-                                    <div className="w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center text-[10px] font-black text-[#B91C1C] border border-slate-100 group-hover:bg-white group-hover:border-[#B91C1C] transition-all shrink-0 font-serif-legal italic">
-                                        {String(i + 1).padStart(2, '0')}
-                                    </div>
-                                    <div className="flex-1 min-w-0">
-                                        <div className="flex items-center justify-between gap-3">
-                                            <div className="text-[13px] font-black text-[#0F172A] truncate group-hover:text-[#B91C1C] transition-colors font-serif-legal italic">{inf.name}</div>
-                                            <ArrowUpRight size={12} className="text-slate-300 opacity-0 group-hover:opacity-100 transition-all shrink-0" />
-                                        </div>
-                                        <div className="flex items-center gap-3 mt-1.5">
-                                            <div className="flex-1 h-1 bg-slate-100 rounded-full overflow-hidden">
-                                                <div className="h-full bg-[#B91C1C] opacity-80" style={{ width: `${Math.min(100, (inf.val / 50) * 100)}%` }}></div>
-                                            </div>
-                                            <span className="text-[9px] font-mono-data font-black text-slate-300 uppercase shrink-0">RI: {inf.val}</span>
-                                        </div>
-                                    </div>
-                                </div>
-                            ))}
-                        </div>
-                    </div>
-
-                    <div className="pt-8 border-t border-slate-50 mt-4 relative z-10">
-                        <div className="p-5 bg-[#F8FAFC] border border-slate-50 rounded-2xl flex items-start gap-4">
-                            <ShieldCheck size={18} className="text-[#B5965D] shrink-0 mt-0.5" />
-                            <p className="text-[10px] text-slate-500 leading-relaxed font-bold italic">
-                                Le RI-Score calcule l'indice de résonance transversale au sein des archives judiciaires compilées.
-                            </p>
-                        </div>
-                    </div>
-                </div>
-            </aside>
-
-            {/* GRAPH AREA */}
-            <div className="flex-1 relative bg-white transition-all overflow-hidden flex flex-col">
-                <div className="absolute inset-0 pointer-events-none opacity-[0.2]"
-                    style={{ backgroundImage: 'radial-gradient(#E2E8F0 1px, transparent 1px)', backgroundSize: '40px 40px' }}>
-                </div>
-
-                {/* HUD Overlay - Top Right Controls */}
-                <div className="absolute top-6 right-6 z-30 flex flex-col items-end gap-3 scale-90 origin-top-right">
-                    <div className="bg-white/80 backdrop-blur-3xl p-1.5 rounded-2xl shadow-xl border border-slate-100 flex items-center gap-1.5">
-                        {/* Toggle to 3D Iron Man View */}
+        <div className="h-full flex flex-col bg-[#F8FAFC] overflow-hidden relative font-sans text-[#0F172A]">
+            <PageHeader
+                title="Cartographie"
+                titleHighlight="Relationnelle"
+                icon={Share2}
+                badgeText="Nexus_Graph_ v3.0"
+                searchQuery={searchQuery}
+                onSearchChange={setSearchQuery}
+                searchPlaceholder="Rechercher une cible..."
+                totalLabel="Nœuds Actifs"
+                totalCount={graphData.nodes.length}
+                stats={[
+                    {
+                        label: "Liens",
+                        value: graphData.links.length,
+                        icon: <Activity size={10} className="text-slate-400" />
+                    },
+                    {
+                        label: "Densité",
+                        value: minConnections,
+                        icon: <Network size={10} className="text-slate-400" />
+                    }
+                ]}
+            >
+                <div className="flex items-center bg-slate-50 border border-slate-100 p-1 rounded-xl shadow-inner shrink-0 leading-none">
+                    {(['ALL', 'PERSON', 'INVESTIGATION'] as const).map(t => (
                         <button
-                            onClick={onToggle2D3D}
-                            className="flex items-center gap-2 px-4 py-2.5 hover:bg-slate-50 rounded-xl text-slate-600 hover:text-[#B91C1C] transition-all group"
-                            title="Basculer en Iron Man View 3D"
+                            key={t}
+                            onClick={() => setFilterType(t)}
+                            className={`px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-wider transition-all ${filterType === t ? 'bg-white text-[#B91C1C] shadow-sm border border-slate-100' : 'text-slate-400 hover:text-slate-600'}`}
                         >
-                            <Box size={16} className="group-hover:rotate-12 transition-transform" />
-                            <span className="text-[10px] font-black uppercase tracking-wider">Iron Man View</span>
+                            {t === 'ALL' ? 'Tous' : t === 'PERSON' ? 'Cibles' : 'Affaires'}
                         </button>
-                        <div className="w-[1px] h-6 bg-slate-100"></div>
-                        <button onClick={toggleFullscreen} className="p-3 hover:bg-slate-50 rounded-xl text-slate-400 hover:text-[#B91C1C] transition-all" title="Fullscreen">
-                            {isFullscreen ? <Minimize2 size={18} /> : <Maximize2 size={18} />}
-                        </button>
-                        <div className="w-[1px] h-6 bg-slate-100"></div>
-                        <button onClick={() => fgRef.current?.zoomToFit(800)} className="p-3 hover:bg-slate-50 rounded-xl text-slate-400 hover:text-[#B91C1C] transition-all" title="Zoom to Fit">
-                            <Crosshair size={18} />
-                        </button>
-                        <div className="w-[1px] h-6 bg-slate-100"></div>
-                        <div className="flex items-center">
-                            <button onClick={() => fgRef.current?.zoom(fgRef.current?.zoom() * 1.5, 300)} className="p-3 hover:bg-slate-50 rounded-xl text-slate-400 hover:text-[#B91C1C] transition-all">
-                                <ZoomIn size={18} />
-                            </button>
-                            <button onClick={() => fgRef.current?.zoom(fgRef.current?.zoom() * 0.7, 300)} className="p-3 hover:bg-slate-50 rounded-xl text-slate-400 hover:text-[#B91C1C] transition-all">
-                                <ZoomOut size={18} />
-                            </button>
-                        </div>
-                    </div>
-
-                    <div className="px-4 py-2 bg-black/90 backdrop-blur-md rounded-xl shadow-2xl border border-white/10 flex items-center gap-3">
-                        <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></div>
-                        <span className="text-[9px] font-black text-white/50 uppercase tracking-[0.4em] font-mono-data">Renderer: Canvas_v4</span>
-                    </div>
+                    ))}
                 </div>
 
-                {/* Hover Evidence Details - Pro Style */}
-                {hoverNode && (
-                    <div className="absolute top-24 right-6 z-30 bg-white/95 backdrop-blur-3xl p-6 lg:p-8 rounded-[2.5rem] border border-slate-100 shadow-[0_30px_100px_rgba(0,0,0,0.1)] w-[320px] lg:w-[380px] animate-in slide-in-from-top-4 fade-in pointer-events-none scale-95 lg:scale-100 origin-top-right">
-                        <div className="absolute top-0 right-0 p-8 opacity-[0.02] pointer-events-none">
-                            <Target size={120} className="text-[#B91C1C]" />
-                        </div>
+                <div className="h-6 w-px bg-slate-200 mx-2 hidden sm:block shrink-0"></div>
 
-                        <div className="flex items-center gap-3 mb-6 relative z-10">
-                            <div className={`w-2.5 h-2.5 rounded-full shadow-sm animate-pulse ${hoverNode.type === 'INVESTIGATION' ? 'bg-[#B91C1C] shadow-red-500/50' : 'bg-[#0F4C81] shadow-blue-500/50'}`}></div>
-                            <span className="text-[9px] font-black text-slate-400 uppercase tracking-[0.4em]">{hoverNode.type} ANALYTICS</span>
-                        </div>
+                {/* Density Control - Mini */}
+                <div className="flex items-center gap-3 bg-slate-50 border border-slate-100 px-3 py-1 rounded-xl shadow-inner shrink-0">
+                    <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest hidden lg:inline">Densité</span>
+                    <input
+                        type="range"
+                        min="0"
+                        max="10"
+                        step="1"
+                        value={minConnections}
+                        onChange={(e) => setMinConnections(parseInt(e.target.value))}
+                        className="w-24 h-1.5 bg-slate-200 rounded-lg appearance-none cursor-pointer accent-[#B91C1C]"
+                        title={`Minimum connections: ${minConnections}`}
+                    />
+                    <span className="text-[9px] font-mono-data font-black text-[#B91C1C] w-4 text-center">{minConnections}</span>
+                </div>
+            </PageHeader>
 
-                        <h4 className="text-xl lg:text-2xl font-black text-[#0F172A] leading-snug mb-8 tracking-tighter italic font-serif-legal">"{hoverNode.name}"</h4>
+            <div ref={containerRef} className={`flex-1 flex overflow-hidden relative ${isFullscreen ? 'fixed inset-0 z-[100] bg-[#F8FAFC]' : ''}`}>
+                {/* Background Texture */}
+                <div className="absolute inset-0 z-0 pointer-events-none opacity-[0.25] report-paper"></div>
 
-                        <div className="grid grid-cols-2 gap-4 relative z-10">
-                            <div className="bg-[#F8FAFC] p-5 rounded-2xl border border-slate-100 flex flex-col justify-center">
-                                <div className="text-[8px] font-black text-slate-300 uppercase tracking-widest mb-1.5">Direct Connections</div>
-                                <div className="flex items-baseline gap-2 text-[#B91C1C]">
-                                    <div className="text-3xl font-mono-data font-black">{hoverNode.neighbors?.length}</div>
-                                    <div className="text-[10px] font-black uppercase tracking-tighter opacity-50">Links</div>
-                                </div>
-                            </div>
-                            <div className="bg-[#F8FAFC] p-5 rounded-2xl border border-slate-100 flex flex-col justify-center">
-                                <div className="text-[8px] font-black text-slate-300 uppercase tracking-widest mb-1.5">Resonance Score</div>
-                                <div className="flex items-baseline gap-2 text-[#0F4C81]">
-                                    <div className="text-3xl font-mono-data font-black">{hoverNode.val}</div>
-                                    <div className="text-[10px] font-black uppercase tracking-tighter opacity-50">Pts</div>
-                                </div>
-                            </div>
-                        </div>
-
-                        <div className="mt-8 flex items-center gap-3 bg-white border border-slate-50 px-4 py-2 rounded-xl">
-                            <Shield className="text-emerald-500" size={14} />
-                            <span className="text-[8px] font-black text-slate-300 uppercase tracking-[0.3em]">Verified Integrity Source</span>
-                        </div>
-                    </div>
+                {/* SIDEBAR TOGGLE */}
+                {!isSidebarOpen && (
+                    <button
+                        onClick={() => setIsSidebarOpen(true)}
+                        className="absolute top-6 left-6 z-40 p-3 bg-white/90 backdrop-blur-3xl border border-slate-100 rounded-xl text-slate-400 hover:text-[#B91C1C] transition-all shadow-lg animate-in fade-in"
+                    >
+                        <PanelLeftOpen size={18} />
+                    </button>
                 )}
 
-                <div className="flex-1 min-h-0 relative z-10">
-                    <ForceGraph2D
-                        ref={fgRef}
-                        graphData={graphData}
-                        nodeLabel={(node: any) => node.name}
-                        nodeRelSize={1.5}
-                        nodeVal={(node: any) => Math.sqrt(node.val) * 2}
-                        cooldownTicks={100}
-                        d3AlphaDecay={0.02}
-                        d3VelocityDecay={0.3}
-                        linkColor={(link: any) => {
-                            if (highlightLinks.has(link)) return '#B91C1C';
-                            return link.type === 'TRANSACTION' ? 'rgba(239, 68, 68, 0.2)' : 'rgba(226, 232, 240, 0.4)';
-                        }}
-                        linkWidth={(link: any) => {
-                            if (highlightLinks.has(link)) return 2;
-                            return link.type === 'TRANSACTION' ? 1.5 : 0.8;
-                        }}
-                        linkDirectionalArrowLength={(link: any) => link.type === 'TRANSACTION' ? 6 : 0}
-                        linkDirectionalArrowRelPos={1}
-                        linkDirectionalParticles={(link: any) => link.type === 'TRANSACTION' && highlightLinks.has(link) ? 4 : 0}
-                        linkDirectionalParticleWidth={2}
-                        linkDirectionalParticleSpeed={0.01}
-                        backgroundColor="transparent"
-                        onNodeHover={handleNodeHover}
-                        onNodeClick={(node: any) => {
-                            const graphNode = node as GraphNode;
-                            if (graphNode.type === 'PERSON') {
-                                setSelectedEntity(graphNode.name);
-                            }
-                        }}
-                        nodeCanvasObject={(nodeItem: any, ctx, globalScale) => {
-                            const node = nodeItem as GraphNode;
-                            if (!node.x || !node.y) return;
+                {/* PROFESSIONAL SIDEBAR - Forensic Asset Panel */}
+                <aside className={`${isSidebarOpen ? 'w-[360px] lg:w-[400px]' : 'w-0'} border-r border-slate-100 bg-white/95 backdrop-blur-3xl z-20 flex flex-col transition-all duration-500 relative overflow-hidden shadow-2xl shrink-0`}>
+                    <div className={`${isSidebarOpen ? 'opacity-100' : 'opacity-0'} transition-opacity duration-300 h-full flex flex-col`}>
+                        <div className="absolute top-0 right-0 h-full w-1/4 bg-gradient-to-l from-[#F8FAFC] to-transparent pointer-events-none opacity-50"></div>
 
-                            const isHighlighted = highlightNodes.has(node);
-                            const isSearching = searchQuery && node.name.toLowerCase().includes(searchQuery.toLowerCase());
-                            const active = isHighlighted || isSearching;
+                        <button
+                            onClick={() => setIsSidebarOpen(false)}
+                            className="absolute top-4 right-4 text-slate-300 hover:text-[#0F172A] transition-colors p-2 hover:bg-slate-50 rounded-xl z-30"
+                        >
+                            <PanelLeftClose size={18} />
+                        </button>
 
-                            const baseSize = Math.sqrt(node.val) * 1.8;
-                            const size = active ? baseSize * 1.4 : baseSize;
-
-                            // Selection Glow
-                            if (active) {
-                                ctx.beginPath();
-                                ctx.arc(node.x, node.y, size * 2.5, 0, 2 * Math.PI);
-                                ctx.fillStyle = `${node.color}10`;
-                                ctx.fill();
-
-                                ctx.beginPath();
-                                ctx.arc(node.x, node.y, size * 1.6, 0, 2 * Math.PI);
-                                ctx.fillStyle = `${node.color}20`;
-                                ctx.fill();
-                            }
-
-                            // Node Circle
-                            ctx.beginPath();
-                            ctx.arc(node.x, node.y, size, 0, 2 * Math.PI);
-                            ctx.fillStyle = active ? node.color : '#FFFFFF';
-                            ctx.fill();
-                            ctx.strokeStyle = active ? '#FFFFFF' : `${node.color}80`;
-                            ctx.lineWidth = active ? 2 : 1.2;
-                            ctx.stroke();
-
-                            // Inner Core Detail
-                            if (active) {
-                                ctx.beginPath();
-                                ctx.arc(node.x, node.y, size * 0.35, 0, 2 * Math.PI);
-                                ctx.fillStyle = '#FFFFFF';
-                                ctx.fill();
-                            }
-
-                            // Label Styling - Intelligently hide labels to avoid clutter
-                            const isImportant = node.neighbors!.length > 4 || node.val > 30;
-                            const shouldShowLabel = globalScale > 2.0 || (globalScale > 1.1 && isImportant) || active;
-
-                            if (shouldShowLabel) {
-                                const labelFontSize = (active ? 13 : 8) / globalScale;
-                                ctx.font = `${active ? '900' : '600'} ${labelFontSize}px Inter`;
-                                ctx.textAlign = 'center';
-                                ctx.textBaseline = 'middle';
-
-                                // Truncate long investigation titles
-                                let text = active ? node.name.toUpperCase() : node.name;
-                                if (!active && text.length > 25) text = text.substring(0, 22) + '...';
-
-                                const textWidth = ctx.measureText(text).width;
-                                const padding = 4 / globalScale;
-
-                                if (active) {
-                                    // Premium Tag-style label background for active nodes
-                                    ctx.fillStyle = 'rgba(15, 23, 42, 0.98)';
-                                    const rectX = node.x - textWidth / 2 - padding * 2;
-                                    const rectY = node.y + size + (10 / globalScale);
-                                    const rectW = textWidth + padding * 4;
-                                    const rectH = labelFontSize + padding * 2;
-
-                                    ctx.beginPath();
-                                    ctx.roundRect(rectX, rectY, rectW, rectH, 6 / globalScale);
-                                    ctx.fill();
-
-                                    ctx.fillStyle = '#FFFFFF';
-                                    ctx.fillText(text, node.x, rectY + rectH / 2);
-                                } else {
-                                    // Subtle labels for other important nodes
-                                    ctx.fillStyle = 'rgba(255, 255, 255, 0.8)';
-                                    ctx.fillRect(node.x - textWidth / 2 - 2, node.y + size + 8 / globalScale - labelFontSize / 2, textWidth + 4, labelFontSize + 2);
-
-                                    ctx.fillStyle = '#475569';
-                                    ctx.fillText(text, node.x, node.y + size + (12 / globalScale));
-                                }
-                            }
-                        }}
-                    />
-                </div>
-
-                {/* HUD Footer Information */}
-                <div className="absolute bottom-6 left-6 right-6 z-30 flex justify-between items-center pointer-events-none scale-90 lg:scale-100 origin-bottom">
-                    <div className="flex items-center gap-6 px-6 py-3 bg-white/50 backdrop-blur-xl border border-slate-100 rounded-2xl shadow-sm">
-                        <div className="flex items-center gap-2">
-                            <div className="w-2 h-2 rounded-full bg-[#B91C1C]"></div>
-                            <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Criminal Record</span>
+                        <div className="p-6 border-b border-slate-50 flex items-center justify-between z-20 bg-white/50 backdrop-blur-sm">
+                            <h3 className="text-[9px] font-black text-slate-300 uppercase tracking-[0.4em] flex items-center gap-2">
+                                <Zap size={14} className="text-[#B91C1C]" /> Forensic Feed
+                            </h3>
                         </div>
-                        <div className="h-3 w-px bg-slate-200"></div>
-                        <div className="flex items-center gap-2">
-                            <div className="w-2 h-2 rounded-full bg-[#0F4C81]"></div>
-                            <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Active Case</span>
+
+                        <div className="flex-1 overflow-y-auto custom-scrollbar p-6 relative z-10">
+                            <div className="space-y-3 pb-8">
+                                {topInfluencers.map((inf, i) => (
+                                    <div
+                                        key={inf.id}
+                                        className="group relative flex items-center gap-4 p-4 bg-white hover:bg-slate-50 rounded-[1.5rem] border border-slate-100 hover:border-[#B91C1C]/10 transition-all cursor-pointer shadow-sm hover:shadow-md"
+                                        onClick={() => setSelectedEntity(inf.name)}
+                                        onDoubleClick={() => {
+                                            fgRef.current?.centerAt(inf.x, inf.y, 800);
+                                            fgRef.current?.zoom(3, 800);
+                                            handleNodeHover(inf);
+                                        }}
+                                        title="Cliquer pour voir le profil • Double-cliquer pour zoomer"
+                                    >
+                                        <div className="w-10 h-10 rounded-xl bg-slate-50 flex items-center justify-center text-[10px] font-black text-[#B91C1C] border border-slate-100 group-hover:bg-white group-hover:border-[#B91C1C] transition-all shrink-0 font-serif-legal italic">
+                                            {String(i + 1).padStart(2, '0')}
+                                        </div>
+                                        <div className="flex-1 min-w-0">
+                                            <div className="flex items-center justify-between gap-3">
+                                                <div className="text-[13px] font-black text-[#0F172A] truncate group-hover:text-[#B91C1C] transition-colors font-serif-legal italic">{inf.name}</div>
+                                                <ArrowUpRight size={12} className="text-slate-300 opacity-0 group-hover:opacity-100 transition-all shrink-0" />
+                                            </div>
+                                            <div className="flex items-center gap-3 mt-1.5">
+                                                <div className="flex-1 h-1 bg-slate-100 rounded-full overflow-hidden">
+                                                    <div className="h-full bg-[#B91C1C] opacity-80" style={{ width: `${Math.min(100, (inf.val / 50) * 100)}%` }}></div>
+                                                </div>
+                                                <span className="text-[9px] font-mono-data font-black text-slate-300 uppercase shrink-0">RI: {inf.val}</span>
+                                            </div>
+                                        </div>
+                                    </div>
+                                ))}
+                            </div>
+                        </div>
+                    </div>
+                </aside>
+
+                {/* GRAPH AREA */}
+                <div className="flex-1 relative bg-white transition-all overflow-hidden flex flex-col min-w-0">
+                    <div className="absolute inset-0 pointer-events-none opacity-[0.2]"
+                        style={{ backgroundImage: 'radial-gradient(#E2E8F0 1px, transparent 1px)', backgroundSize: '40px 40px' }}>
+                    </div>
+
+                    {/* HUD Overlay - Top Right Controls */}
+                    <div className="absolute top-6 right-6 z-30 flex flex-col items-end gap-3 scale-90 origin-top-right">
+                        <div className="bg-white/80 backdrop-blur-3xl p-1.5 rounded-2xl shadow-xl border border-slate-100 flex items-center gap-1.5">
+                            {/* Toggle to 3D Iron Man View */}
+                            <button
+                                onClick={onToggle2D3D}
+                                className="flex items-center gap-2 px-4 py-2.5 hover:bg-slate-50 rounded-xl text-slate-600 hover:text-[#B91C1C] transition-all group"
+                                title="Basculer en Iron Man View 3D"
+                            >
+                                <Box size={16} className="group-hover:rotate-12 transition-transform" />
+                                <span className="text-[10px] font-black uppercase tracking-wider">Iron Man View</span>
+                            </button>
+                            <div className="w-[1px] h-6 bg-slate-100"></div>
+                            <button onClick={toggleFullscreen} className="p-3 hover:bg-slate-50 rounded-xl text-slate-400 hover:text-[#B91C1C] transition-all" title="Fullscreen">
+                                {isFullscreen ? <Minimize2 size={18} /> : <Maximize2 size={18} />}
+                            </button>
+                            <div className="w-[1px] h-6 bg-slate-100"></div>
+                            <button onClick={() => fgRef.current?.zoomToFit(800)} className="p-3 hover:bg-slate-50 rounded-xl text-slate-400 hover:text-[#B91C1C] transition-all" title="Zoom to Fit">
+                                <Crosshair size={18} />
+                            </button>
+                            <div className="w-[1px] h-6 bg-slate-100"></div>
+                            <div className="flex items-center">
+                                <button onClick={() => fgRef.current?.zoom((fgRef.current?.zoom() || 1) * 1.5, 300)} className="p-3 hover:bg-slate-50 rounded-xl text-slate-400 hover:text-[#B91C1C] transition-all">
+                                    <ZoomIn size={18} />
+                                </button>
+                                <button onClick={() => fgRef.current?.zoom((fgRef.current?.zoom() || 1) * 0.7, 300)} className="p-3 hover:bg-slate-50 rounded-xl text-slate-400 hover:text-[#B91C1C] transition-all">
+                                    <ZoomOut size={18} />
+                                </button>
+                            </div>
+                        </div>
+
+                        <div className="px-4 py-2 bg-black/90 backdrop-blur-md rounded-xl shadow-2xl border border-white/10 flex items-center gap-3">
+                            <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse"></div>
+                            <span className="text-[9px] font-black text-white/50 uppercase tracking-[0.4em] font-mono-data">Renderer: Canvas_v4</span>
                         </div>
                     </div>
 
-                    <div className="flex items-center gap-4 text-right">
-                        <div className="flex flex-col items-end">
-                            <span className="text-[8px] font-black text-slate-300 uppercase tracking-[0.4em]">Spatial Processor</span>
-                            <span className="text-[10px] font-mono-data font-black text-slate-500 uppercase tracking-wider">v4.2.0-ALGORITHMIC</span>
+                    {/* Hover Evidence Details - Pro Style */}
+                    {hoverNode && (
+                        <div className="absolute top-24 right-6 z-30 bg-white/95 backdrop-blur-3xl p-6 lg:p-8 rounded-[2.5rem] border border-slate-100 shadow-[0_30px_100px_rgba(0,0,0,0.1)] w-[320px] lg:w-[380px] animate-in slide-in-from-top-4 fade-in pointer-events-none scale-95 lg:scale-100 origin-top-right">
+                            <div className="absolute top-0 right-0 p-8 opacity-[0.02] pointer-events-none">
+                                <Target size={120} className="text-[#B91C1C]" />
+                            </div>
+
+                            <div className="flex items-center gap-3 mb-6 relative z-10">
+                                <div className={`w-2.5 h-2.5 rounded-full shadow-sm animate-pulse ${hoverNode.type === 'INVESTIGATION' ? 'bg-[#B91C1C] shadow-red-500/50' : 'bg-[#0F4C81] shadow-blue-500/50'}`}></div>
+                                <span className="text-[9px] font-black text-slate-400 uppercase tracking-[0.4em]">{hoverNode.type} ANALYTICS</span>
+                            </div>
+
+                            <h4 className="text-xl lg:text-2xl font-black text-[#0F172A] leading-snug mb-8 tracking-tighter italic font-serif-legal">"{hoverNode.name}"</h4>
+
+                            <div className="grid grid-cols-2 gap-4 relative z-10">
+                                <div className="bg-[#F8FAFC] p-5 rounded-2xl border border-slate-100 flex flex-col justify-center">
+                                    <div className="text-[8px] font-black text-slate-300 uppercase tracking-widest mb-1.5">Direct Connections</div>
+                                    <div className="flex items-baseline gap-2 text-[#B91C1C]">
+                                        <div className="text-3xl font-mono-data font-black">{hoverNode.neighbors?.length}</div>
+                                        <div className="text-[10px] font-black uppercase tracking-tighter opacity-50">Links</div>
+                                    </div>
+                                </div>
+                                <div className="bg-[#F8FAFC] p-5 rounded-2xl border border-slate-100 flex flex-col justify-center">
+                                    <div className="text-[8px] font-black text-slate-300 uppercase tracking-widest mb-1.5">Resonance Score</div>
+                                    <div className="flex items-baseline gap-2 text-[#0F4C81]">
+                                        <div className="text-3xl font-mono-data font-black">{hoverNode.val}</div>
+                                        <div className="text-[10px] font-black uppercase tracking-tighter opacity-50">Pts</div>
+                                    </div>
+                                </div>
+                            </div>
+
+                            <div className="mt-8 flex items-center gap-3 bg-white border border-slate-50 px-4 py-2 rounded-xl">
+                                <Shield className="text-emerald-500" size={14} />
+                                <span className="text-[8px] font-black text-slate-300 uppercase tracking-[0.3em]">Verified Integrity Source</span>
+                            </div>
                         </div>
-                        <div className="w-10 h-10 bg-black rounded-xl flex items-center justify-center shadow-lg">
-                            <Zap size={16} className="text-white" />
-                        </div>
+                    )}
+
+                    <div className="flex-1 min-h-0 relative z-10">
+                        <ForceGraph2D
+                            ref={fgRef}
+                            graphData={graphData}
+                            nodeLabel={(node: any) => node.name}
+                            nodeRelSize={1.5}
+                            nodeVal={(node: any) => Math.sqrt(node.val) * 2}
+                            cooldownTicks={100}
+                            d3AlphaDecay={0.02}
+                            d3VelocityDecay={0.3}
+                            linkColor={(link: any) => {
+                                if (highlightLinks.has(link)) return '#B91C1C';
+                                return link.type === 'TRANSACTION' ? 'rgba(239, 68, 68, 0.2)' : 'rgba(226, 232, 240, 0.4)';
+                            }}
+                            linkWidth={(link: any) => {
+                                if (highlightLinks.has(link)) return 2;
+                                return link.type === 'TRANSACTION' ? 1.5 : 0.8;
+                            }}
+                            linkDirectionalArrowLength={(link: any) => link.type === 'TRANSACTION' ? 6 : 0}
+                            linkDirectionalArrowRelPos={1}
+                            linkDirectionalParticles={(link: any) => link.type === 'TRANSACTION' && highlightLinks.has(link) ? 4 : 0}
+                            linkDirectionalParticleWidth={2}
+                            linkDirectionalParticleSpeed={0.01}
+                            backgroundColor="transparent"
+                            onNodeHover={handleNodeHover}
+                            onNodeClick={(node: any) => {
+                                const graphNode = node as GraphNode;
+                                if (graphNode.type === 'PERSON') {
+                                    setSelectedEntity(graphNode.name);
+                                }
+                            }}
+                            nodeCanvasObject={(nodeItem: any, ctx, globalScale) => {
+                                const node = nodeItem as GraphNode;
+                                if (!node.x || !node.y) return;
+
+                                const isHighlighted = highlightNodes.has(node);
+                                const isSearching = searchQuery && node.name.toLowerCase().includes(searchQuery.toLowerCase());
+                                const active = isHighlighted || isSearching;
+
+                                const baseSize = Math.sqrt(node.val) * 1.8;
+                                const size = active ? baseSize * 1.4 : baseSize;
+
+                                // Selection Glow
+                                if (active) {
+                                    ctx.beginPath();
+                                    ctx.arc(node.x, node.y, size * 2.5, 0, 2 * Math.PI);
+                                    ctx.fillStyle = `${node.color}10`;
+                                    ctx.fill();
+
+                                    ctx.beginPath();
+                                    ctx.arc(node.x, node.y, size * 1.6, 0, 2 * Math.PI);
+                                    ctx.fillStyle = `${node.color}20`;
+                                    ctx.fill();
+                                }
+
+                                // Node Circle
+                                ctx.beginPath();
+                                ctx.arc(node.x, node.y, size, 0, 2 * Math.PI);
+                                ctx.fillStyle = active ? node.color : '#FFFFFF';
+                                ctx.fill();
+                                ctx.strokeStyle = active ? '#FFFFFF' : `${node.color}80`;
+                                ctx.lineWidth = active ? 2 : 1.2;
+                                ctx.stroke();
+
+                                // Inner Core Detail
+                                if (active) {
+                                    ctx.beginPath();
+                                    ctx.arc(node.x, node.y, size * 0.35, 0, 2 * Math.PI);
+                                    ctx.fillStyle = '#FFFFFF';
+                                    ctx.fill();
+                                }
+
+                                const label = node.name;
+                                const fontSize = active ? 14 / globalScale : 12 / globalScale;
+                                ctx.font = `${active ? '900' : '500'} ${fontSize}px Inter`;
+                                const textWidth = ctx.measureText(label).width;
+                                const bckgDimensions = [textWidth, fontSize].map(n => n + fontSize * 0.5) as [number, number];
+
+                                if (active) {
+                                    ctx.fillStyle = 'rgba(255, 255, 255, 0.9)';
+                                    ctx.roundRect
+                                        ? ctx.roundRect(node.x - bckgDimensions[0] / 2, node.y + size + 2, bckgDimensions[0], bckgDimensions[1], 4)
+                                        : ctx.fillRect(node.x - bckgDimensions[0] / 2, node.y + size + 2, bckgDimensions[0], bckgDimensions[1]);
+                                    ctx.fill();
+
+                                    ctx.shadowColor = 'rgba(0, 0, 0, 0.2)';
+                                    ctx.shadowBlur = 10;
+                                }
+
+                                ctx.textAlign = 'center';
+                                ctx.textBaseline = 'middle';
+                                ctx.fillStyle = active ? '#0F172A' : node.color;
+                                if (active || globalScale > 1.5) {
+                                    ctx.fillText(label, node.x, node.y + size + 2 + bckgDimensions[1] / 2);
+                                }
+
+                                ctx.shadowColor = 'transparent';
+                            }}
+                            nodePointerAreaPaint={(node: any, color, ctx) => {
+                                ctx.fillStyle = color;
+                                const size = Math.sqrt(node.val) * 1.8;
+                                ctx.beginPath();
+                                ctx.arc(node.x, node.y, size + 5, 0, 2 * Math.PI);
+                                ctx.fill();
+                            }}
+                        />
                     </div>
                 </div>
             </div>

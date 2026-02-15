@@ -1,4 +1,5 @@
 import React, { useMemo, useState, useEffect } from 'react';
+import { PageHeader } from './PageHeader';
 import { storageService } from '../services/storageService';
 import { ProcessedResult, TransactionDetail } from '../types';
 import {
@@ -292,97 +293,79 @@ export const FinancialFlowView: React.FC = () => {
         <div className="h-full flex flex-col bg-[#F8FAFC] overflow-hidden relative">
             <div className="absolute inset-0 z-0 pointer-events-none opacity-[0.25] report-paper"></div>
 
-            <header className="px-12 lg:px-16 py-12 bg-white/90 backdrop-blur-2xl border-b border-slate-100 z-30 shadow-sm relative shrink-0">
-                <div className="max-w-7xl mx-auto flex flex-col lg:flex-row lg:items-center justify-between gap-10">
-                    <div className="flex items-center gap-8">
-                        <div className="w-16 h-16 bg-[#020617] rounded-[1.5rem] flex items-center justify-center shadow-2xl group transition-all hover:rotate-6">
-                            <DollarSign className="text-white group-hover:scale-110 transition-transform" size={28} />
-                        </div>
-                        <div>
-                            <div className="flex items-center gap-4">
-                                <h1 className="text-4xl lg:text-5xl font-black text-[#020617] font-display tracking-tight leading-none">
-                                    Flux <span className="text-[#DC2626]">Financiers</span>
-                                </h1>
-                                <span className="badge-forensic bg-slate-50 text-slate-300 border-slate-100 px-3 py-1">Money_Trace_ v2.1</span>
-                            </div>
-                            <div className="flex items-center gap-6 mt-3">
-                                <div className="flex items-center gap-3">
-                                    <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
-                                    <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">{analytics.count} Flux Détectés</span>
-                                </div>
-                                <div className="h-4 w-px bg-slate-100"></div>
-                                <div className="flex items-center gap-3">
-                                    <Landmark size={14} className="text-[#DC2626]" />
-                                    <span className="text-[10px] font-black text-[#DC2626] uppercase tracking-[0.3em]">{formatCurrency(analytics.totalVolume, 'USD')} Volume Indexé</span>
-                                </div>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="flex flex-wrap items-center gap-4">
-                        <div className="flex items-center bg-slate-50 border border-slate-100 p-1 rounded-xl shadow-inner">
-                            <button
-                                onClick={() => setViewMode('list')}
-                                className={`px-4 py-2 rounded-lg text-[10px] font-black uppercase tracking-wider transition-all ${viewMode === 'list' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
-                            >
-                                <Layers size={12} className="inline mr-2" /> Flux
-                            </button>
-                            <button
-                                onClick={() => setViewMode('entities')}
-                                className={`px-4 py-2 rounded-lg text-[10px] font-black uppercase tracking-wider transition-all ${viewMode === 'entities' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
-                            >
-                                <User size={12} className="inline mr-2" /> Entités
-                            </button>
-                            <button
-                                onClick={() => setViewMode('graph')}
-                                className={`px-4 py-2 rounded-lg text-[10px] font-black uppercase tracking-wider transition-all ${viewMode === 'graph' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
-                            >
-                                <Network size={12} className="inline mr-2" /> Graphe
-                            </button>
-                            <button
-                                onClick={() => setViewMode('analytics')}
-                                className={`px-4 py-2 rounded-lg text-[10px] font-black uppercase tracking-wider transition-all ${viewMode === 'analytics' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
-                            >
-                                <BarChart3 size={12} className="inline mr-2" /> Analyse
-                            </button>
-                        </div>
-
-                        <div className="flex items-center bg-slate-50 border border-slate-100 p-1 rounded-xl shadow-inner">
-                            <button
-                                onClick={() => setDateFilter('all')}
-                                className={`px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-wider transition-all ${dateFilter === 'all' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
-                            >
-                                Tout
-                            </button>
-                            <button
-                                onClick={() => setDateFilter('month')}
-                                className={`px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-wider transition-all ${dateFilter === 'month' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
-                            >
-                                30 Jours
-                            </button>
-                            <button
-                                onClick={() => setDateFilter('year')}
-                                className={`px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-wider transition-all ${dateFilter === 'year' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
-                            >
-                                1 An
-                            </button>
-                        </div>
-
-                        <div className="h-8 w-px bg-slate-100 hidden sm:block"></div>
-
-                        <div className="relative group">
-                            <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-[#B91C1C] transition-colors" />
-                            <input
-                                type="text"
-                                placeholder="Rechercher une transaction..."
-                                value={searchQuery}
-                                onChange={e => setSearchQuery(e.target.value)}
-                                className="pl-10 pr-4 py-2.5 bg-slate-50 border border-slate-100 rounded-xl text-xs font-medium w-64 focus:w-80 transition-all duration-300 outline-none"
-                            />
-                        </div>
-                    </div>
+            <PageHeader
+                title="Flux"
+                titleHighlight="Financiers"
+                icon={DollarSign}
+                badgeText="Money_Trace_ v2.1"
+                searchQuery={searchQuery}
+                onSearchChange={setSearchQuery}
+                searchPlaceholder="Rechercher une transaction..."
+                totalLabel="Volume Total"
+                totalCount={formatCurrency(analytics.totalVolume, 'USD')}
+                stats={[
+                    {
+                        label: `${analytics.count} Flux Détectés`,
+                        value: "",
+                        icon: <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
+                    },
+                    {
+                        label: "Volume Indexé",
+                        value: "", // Value is in label for this specific layout match or I can split it
+                        icon: <Landmark size={14} className="text-[#DC2626]" />
+                    }
+                ]}
+            >
+                <div className="flex items-center bg-slate-50 border border-slate-100 p-1 rounded-xl shadow-inner shrink-0">
+                    <button
+                        onClick={() => setViewMode('list')}
+                        className={`px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-wider transition-all ${viewMode === 'list' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
+                    >
+                        <Layers size={10} className="inline mr-1" /> Flux
+                    </button>
+                    <button
+                        onClick={() => setViewMode('entities')}
+                        className={`px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-wider transition-all ${viewMode === 'entities' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
+                    >
+                        <User size={10} className="inline mr-1" /> Entités
+                    </button>
+                    <button
+                        onClick={() => setViewMode('graph')}
+                        className={`px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-wider transition-all ${viewMode === 'graph' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
+                    >
+                        <Network size={10} className="inline mr-1" /> Graphe
+                    </button>
+                    <button
+                        onClick={() => setViewMode('analytics')}
+                        className={`px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-wider transition-all ${viewMode === 'analytics' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
+                    >
+                        <BarChart3 size={10} className="inline mr-1" /> Analyse
+                    </button>
                 </div>
-            </header>
+
+                <div className="h-6 w-px bg-slate-200 mx-2 hidden sm:block shrink-0"></div>
+
+                <div className="flex items-center bg-slate-50 border border-slate-100 p-1 rounded-xl shadow-inner shrink-0">
+                    <button
+                        onClick={() => setDateFilter('all')}
+                        className={`px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-wider transition-all ${dateFilter === 'all' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
+                    >
+                        Tout
+                    </button>
+                    <button
+                        onClick={() => setDateFilter('month')}
+                        className={`px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-wider transition-all ${dateFilter === 'month' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
+                    >
+                        30 Jours
+                    </button>
+                    <button
+                        onClick={() => setDateFilter('year')}
+                        className={`px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-wider transition-all ${dateFilter === 'year' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
+                    >
+                        1 An
+                    </button>
+                </div>
+            </PageHeader>
 
             <div className="flex-1 overflow-y-auto p-6 lg:p-10 custom-scrollbar z-10 scroll-smooth">
                 <div className="max-w-12xl mx-auto">

@@ -4,6 +4,7 @@
  */
 
 import React, { useMemo, useState, useEffect } from 'react';
+import { PageHeader } from './PageHeader';
 import { storageService } from '../services/storageService';
 import { ProcessedResult, TransactionDetail } from '../types';
 import {
@@ -177,63 +178,50 @@ export const TimelineView: React.FC<TimelineViewProps> = ({ onDeepDive, isGuestM
         <div className="h-full flex flex-col bg-[#F8FAFC] overflow-hidden relative">
             <div className="absolute inset-0 z-0 pointer-events-none opacity-[0.25] report-paper"></div>
 
-            <header className="px-6 lg:px-10 py-5 bg-white border-b border-slate-100 z-20 shadow-sm relative shrink-0">
-                <div className="max-w-12xl mx-auto flex flex-col lg:flex-row lg:items-center justify-between gap-6">
-                    <div className="flex items-center gap-5">
-                        <div className="w-12 h-12 bg-gradient-to-br from-[#B91C1C] to-[#7F1D1D] rounded-2xl flex items-center justify-center shadow-xl shadow-red-900/10 rotate-3">
-                            <Clock className="text-white" size={24} />
-                        </div>
-                        <div>
-                            <h2 className="text-xl lg:text-2xl font-black text-[#0F172A] uppercase italic font-serif-legal tracking-tight leading-tight">
-                                Chronologie <span className="text-[#B91C1C]">Analytique</span>
-                            </h2>
-                            <div className="flex items-center gap-3 mt-1">
-                                <span className="flex items-center gap-1.5 text-[9px] font-black text-emerald-600 uppercase tracking-[0.15em] bg-emerald-50 px-2.5 py-1 rounded-full border border-emerald-100">
-                                    <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></div>
-                                    Live Analysis
-                                </span>
-                                <span className="text-[9px] font-black text-slate-400 uppercase tracking-[0.15em]">
-                                    {events.length} Entrées Détectées
-                                </span>
-                            </div>
-                        </div>
-                    </div>
-
-                    <div className="flex flex-wrap items-center gap-3">
-                        <div className="relative group">
-                            <Search size={14} className="absolute left-3 top-1/2 -translate-y-1/2 text-slate-400 group-focus-within:text-[#B91C1C] transition-colors" />
-                            <input
-                                type="text"
-                                placeholder="Rechercher un fait, une date..."
-                                value={searchTerm}
-                                onChange={(e) => setSearchTerm(e.target.value)}
-                                className="pl-10 pr-4 py-2 bg-slate-50 border border-slate-100 rounded-xl text-xs font-medium w-64 focus:w-80 transition-all duration-300 outline-none"
-                            />
-                        </div>
-
-                        <div className="flex items-center bg-white border border-slate-100 p-1 rounded-xl shadow-sm">
-                            <button
-                                onClick={() => setFilterType('ALL')}
-                                className={`px-4 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-wider transition-all ${filterType === 'ALL' ? 'bg-[#B91C1C] text-white shadow-md' : 'text-slate-400 hover:text-slate-600'}`}
-                            >
-                                Tous
-                            </button>
-                            <button
-                                onClick={() => setFilterType('DOCUMENT')}
-                                className={`px-4 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-wider transition-all ${filterType === 'DOCUMENT' ? 'bg-[#B91C1C] text-white shadow-md' : 'text-slate-400 hover:text-slate-600'}`}
-                            >
-                                Docs
-                            </button>
-                            <button
-                                onClick={() => setFilterType('TRANSACTION')}
-                                className={`px-4 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-wider transition-all ${filterType === 'TRANSACTION' ? 'bg-emerald-600 text-white shadow-md' : 'text-slate-400 hover:text-slate-600'}`}
-                            >
-                                Fonds
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            </header>
+            <PageHeader
+                title="Chronologie"
+                titleHighlight="Analytique"
+                icon={Clock}
+                badgeText="Timeline Forensics"
+                searchQuery={searchTerm}
+                onSearchChange={setSearchTerm}
+                searchPlaceholder="Rechercher un fait, une date..."
+                totalLabel="Points Temporels"
+                totalCount={events.length}
+                stats={[
+                    {
+                        label: "Live Analysis",
+                        value: "",
+                        icon: <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></div>,
+                        color: "text-emerald-600 bg-emerald-50 border-emerald-100" // Not directly used by PageHeader simple stat render but close enough
+                    }
+                ]}
+            >
+                <button
+                    onClick={() => setFilterType('ALL')}
+                    className={`px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest transition-all border shrink-0 ${filterType === 'ALL'
+                        ? 'bg-[#B91C1C] text-white border-[#B91C1C] shadow-md'
+                        : 'bg-white text-slate-500 border-slate-200 hover:text-slate-600'}`}
+                >
+                    Tous
+                </button>
+                <button
+                    onClick={() => setFilterType('DOCUMENT')}
+                    className={`px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest transition-all border shrink-0 ${filterType === 'DOCUMENT'
+                        ? 'bg-[#B91C1C] text-white border-[#B91C1C] shadow-md'
+                        : 'bg-white text-slate-500 border-slate-200 hover:text-slate-600'}`}
+                >
+                    Docs
+                </button>
+                <button
+                    onClick={() => setFilterType('TRANSACTION')}
+                    className={`px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest transition-all border shrink-0 ${filterType === 'TRANSACTION'
+                        ? 'bg-emerald-600 text-white border-emerald-600 shadow-md'
+                        : 'bg-white text-slate-500 border-slate-200 hover:text-slate-600'}`}
+                >
+                    Fonds
+                </button>
+            </PageHeader>
 
             <div className="flex-1 overflow-y-auto p-6 lg:p-12 custom-scrollbar z-10 scroll-smooth">
                 <div className="max-w-5xl mx-auto relative pl-4 lg:pl-0">
