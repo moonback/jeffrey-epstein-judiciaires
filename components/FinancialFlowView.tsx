@@ -40,6 +40,8 @@ interface EntityFinanceProfile {
     transactionCount: number;
     averageTransaction: number;
     riskScore: number;
+    netFlow: number;
+    role: 'Distributeur' | 'Bénéficiaire' | 'Intermédiaire' | 'Inconnu';
 }
 
 export const FinancialFlowView: React.FC = () => {
@@ -50,6 +52,7 @@ export const FinancialFlowView: React.FC = () => {
     const [dateFilter, setDateFilter] = useState<'all' | 'month' | 'year'>('all');
     const [selectedEntity, setSelectedEntity] = useState<string | null>(null);
     const [viewMode, setViewMode] = useState<'list' | 'entities' | 'graph' | 'analytics'>('list');
+    const [roleFilter, setRoleFilter] = useState<'all' | 'Distributeur' | 'Bénéficiaire' | 'Intermédiaire'>('all');
 
     const formatCurrency = (amount: number, currency: string) => {
         try {
@@ -72,7 +75,7 @@ export const FinancialFlowView: React.FC = () => {
     }, []);
 
     const allTransactions = useMemo(() => {
-        const mergedMap = new Map<string, TransactionDetail & { sources: string[], mentions: number }>();
+        const mergedMap = new Map<string, TransactionDetail & { sources: string[], mentions: number, category?: string }>();
 
         history.forEach(res => {
             if (res.output?.transactions_financieres) {
@@ -83,6 +86,13 @@ export const FinancialFlowView: React.FC = () => {
                     const amt = Math.round(Number(t.montant) || 0); // Round to handle slight precision diffs
                     const date = t.date?.split('T')[0] || 'Inconnue'; // Normalize date string
 
+                    // Intelligent categorization
+                    const desc = (t.description || '').toLowerCase();
+                    let category: 'Transfert' | 'Offshore' | 'Investissement' | 'Légal' | 'Inconnu' = 'Transfert';
+                    if (desc.includes('offshore') || desc.includes('seychelles') || desc.includes('cayman') || desc.includes('panama')) category = 'Offshore';
+                    else if (desc.includes('invest') || desc.includes('equity') || desc.includes('stock')) category = 'Investissement';
+                    else if (desc.includes('lawyer') || desc.includes('legal') || desc.includes('frais') || desc.includes('cabinet')) category = 'Légal';
+
                     // Create a composite key for deduplication
                     const key = `${src}-${dst}-${amt}-${t.devise || 'USD'}-${date}`;
 
@@ -90,7 +100,8 @@ export const FinancialFlowView: React.FC = () => {
                         mergedMap.set(key, {
                             ...t,
                             sources: [res.id],
-                            mentions: 1
+                            mentions: 1,
+                            category: category
                         });
                     } else {
                         const existing = mergedMap.get(key)!;
@@ -158,7 +169,9 @@ export const FinancialFlowView: React.FC = () => {
                         totalReceived: 0,
                         transactionCount: 0,
                         averageTransaction: 0,
-                        riskScore: 0
+                        riskScore: 0,
+                        netFlow: 0,
+                        role: 'Inconnu'
                     };
                 }
                 const p = profiles[name];
@@ -171,8 +184,15 @@ export const FinancialFlowView: React.FC = () => {
 
         return Object.values(profiles).map(p => {
             p.averageTransaction = (p.totalSent + p.totalReceived) / p.transactionCount;
+            p.netFlow = p.totalReceived - p.totalSent;
+
+            // Role assignment
+            if (p.totalSent > p.totalReceived * 3) p.role = 'Distributeur';
+            else if (p.totalReceived > p.totalSent * 3) p.role = 'Bénéficiaire';
+            else p.role = 'Intermédiaire';
+
             // Simple risk scoring logic
-            p.riskScore = Math.min(100, (p.totalSent + p.totalReceived) / 1000000 + (p.transactionCount > 5 ? 20 : 0));
+            p.riskScore = Math.min(100, (p.totalSent + p.totalReceived) / 1000000 + (p.transactionCount > 5 ? 20 : 0) + (p.role === 'Distributeur' ? 10 : 0));
             return p;
         }).sort((a, b) => (b.totalSent + b.totalReceived) - (a.totalSent + a.totalReceived));
     }, [history]);
@@ -434,15 +454,26 @@ export const FinancialFlowView: React.FC = () => {
                             </div>
                         </div>
                     ) : viewMode === 'entities' ? (
-                        <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
-                            {entityProfiles.map((profile, idx) => (
-                                <EntityProfileCard
-                                    key={idx}
-                                    profile={profile}
-                                    onSelect={setSelectedEntity}
-                                    formatCurrency={formatCurrency}
-                                />
-                            ))}
+                        <div className="space-y-8">
+                            <div className="flex items-center gap-4">
+                                <span className="text-[10px] font-black text-slate-300 uppercase tracking-[0.4em] italic">Classification par Comportement</span>
+                                <div className="h-px flex-1 bg-gradient-to-r from-slate-100 to-transparent"></div>
+                                <div className="flex gap-2">
+                                    <FilterButton active={roleFilter === 'all'} onClick={() => setRoleFilter('all')} label="TOUS" />
+                                    <FilterButton active={roleFilter === 'Distributeur'} onClick={() => setRoleFilter('Distributeur')} label="DISTRIBUTEURS" />
+                                    <FilterButton active={roleFilter === 'Bénéficiaire'} onClick={() => setRoleFilter('Bénéficiaire')} label="BÉNÉFICIAIRES" />
+                                </div>
+                            </div>
+                            <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-6">
+                                {entityProfiles.filter(p => roleFilter === 'all' || p.role === roleFilter).map((profile, idx) => (
+                                    <EntityProfileCard
+                                        key={idx}
+                                        profile={profile}
+                                        onSelect={setSelectedEntity}
+                                        formatCurrency={formatCurrency}
+                                    />
+                                ))}
+                            </div>
                         </div>
                     ) : viewMode === 'graph' ? (
                         <div className="bg-white rounded-[3rem] border border-slate-100 shadow-sm h-[700px] relative overflow-hidden">
@@ -450,6 +481,9 @@ export const FinancialFlowView: React.FC = () => {
                                 graphData={graphData}
                                 nodeLabel="name"
                                 nodeColor="color"
+                                linkDirectionalArrowLength={4}
+                                linkDirectionalArrowRelPos={1}
+                                linkCurvature={0.2}
                                 linkDirectionalParticles={2}
                                 linkDirectionalParticleSpeed={0.01}
                                 nodeCanvasObject={(node: any, ctx, globalScale) => {
@@ -513,21 +547,23 @@ export const FinancialFlowView: React.FC = () => {
                             </div>
 
                             <div className="bg-white p-10 rounded-[3rem] border border-slate-100 shadow-sm relative overflow-hidden group">
-                                <h3 className="text-lg font-black text-slate-900 uppercase tracking-widest font-serif-legal italic mb-8">Top 5 Entités par Flux</h3>
+                                <h3 className="text-lg font-black text-slate-900 uppercase tracking-widest font-serif-legal italic mb-8">Flux Net par Entité</h3>
                                 <div className="space-y-6">
-                                    {entityProfiles.slice(0, 5).map((p, i) => (
+                                    {entityProfiles.slice(0, 8).map((p, i) => (
                                         <div key={i} className="flex items-center gap-4">
-                                            <div className="w-10 h-10 bg-slate-50 rounded-xl flex items-center justify-center text-[11px] font-black text-slate-400 border border-slate-100">
-                                                0{i + 1}
-                                            </div>
                                             <div className="flex-1">
                                                 <div className="text-[12px] font-black text-slate-800 italic font-serif-legal">{p.name}</div>
-                                                <div className="text-[9px] font-bold text-slate-400 uppercase tracking-widest">{formatCurrency(p.totalSent + p.totalReceived, 'USD')} de volume</div>
+                                                <div className="flex items-center gap-2 mt-1">
+                                                    <span className={`text-[8px] font-black px-2 py-0.5 rounded uppercase tracking-widest ${p.role === 'Distributeur' ? 'bg-orange-50 text-orange-600' : p.role === 'Bénéficiaire' ? 'bg-emerald-50 text-emerald-600' : 'bg-blue-50 text-blue-600'}`}>
+                                                        {p.role}
+                                                    </span>
+                                                </div>
                                             </div>
                                             <div className="text-right">
-                                                <div className={`text-[11px] font-black ${p.riskScore > 60 ? 'text-[#B91C1C]' : 'text-emerald-500'}`}>
-                                                    {Math.round(p.riskScore)}% Risque
+                                                <div className={`text-[11px] font-black ${p.netFlow > 0 ? 'text-emerald-500' : 'text-red-500'}`}>
+                                                    {p.netFlow > 0 ? '+' : ''}{formatCurrency(p.netFlow, 'USD')}
                                                 </div>
+                                                <div className="text-[8px] font-bold text-slate-400 uppercase tracking-widest">Solde Net</div>
                                             </div>
                                         </div>
                                     ))}
@@ -802,13 +838,22 @@ const TransactionCard: React.FC<{ transaction: any, onEntityClick: (name: string
                             {formatCurrency(transaction.montant, transaction.devise)}
                         </div>
                     </div>
-                    <div className="flex items-center gap-3">
+                    <div className="flex flex-wrap items-center gap-2">
                         <div className="flex items-center gap-1.5 text-[9px] font-black text-slate-300 uppercase tracking-widest bg-slate-50 px-3 py-1 rounded-lg border border-slate-100">
                             <Calendar size={10} /> {transaction.date}
                         </div>
+                        {(transaction as any).category && (
+                            <span className={`text-[8px] font-black px-2 py-1 rounded flex items-center gap-1 border uppercase tracking-widest ${(transaction as any).category === 'Offshore' ? 'bg-red-50 text-red-600 border-red-100' :
+                                (transaction as any).category === 'Investissement' ? 'bg-blue-50 text-blue-600 border-blue-100' :
+                                    (transaction as any).category === 'Légal' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' :
+                                        'bg-slate-50 text-slate-600 border-slate-100'
+                                }`}>
+                                <Box size={8} /> {(transaction as any).category}
+                            </span>
+                        )}
                         {isSuspicious && (
-                            <span className="text-[8px] font-black text-red-600 bg-red-50 px-2 py-0.5 rounded flex items-center gap-1 border border-red-100 animate-pulse">
-                                <AlertTriangle size={8} /> ALERT
+                            <span className="text-[8px] font-black text-red-600 bg-red-50 px-2 py-1 rounded flex items-center gap-1 border border-red-100 animate-pulse">
+                                <AlertTriangle size={8} /> ALERTE RISQUE
                             </span>
                         )}
                     </div>
@@ -882,14 +927,26 @@ const EntityProfileCard: React.FC<{ profile: EntityFinanceProfile, onSelect: (na
             `}
         >
             <div className="flex justify-between items-start mb-6">
-                <div className="w-12 h-12 bg-slate-50 rounded-2xl flex items-center justify-center group-hover:bg-[#B91C1C] group-hover:text-white transition-all duration-500 shadow-inner">
-                    <User size={24} />
+                <div className="flex flex-col gap-2">
+                    <div className="w-12 h-12 bg-slate-50 rounded-2xl flex items-center justify-center group-hover:bg-[#B91C1C] group-hover:text-white transition-all duration-500 shadow-inner">
+                        <User size={24} />
+                    </div>
+                    <span className={`text-[8px] font-black px-2 py-1 rounded text-center uppercase tracking-widest border ${profile.role === 'Distributeur' ? 'bg-orange-50 text-orange-600 border-orange-100' :
+                        profile.role === 'Bénéficiaire' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' :
+                            'bg-blue-50 text-blue-600 border-blue-100'
+                        }`}>
+                        {profile.role}
+                    </span>
                 </div>
                 <div className="text-right">
                     <div className="text-[8px] font-black text-slate-300 uppercase tracking-[0.2em] mb-1">Index de Risque</div>
                     <div className={`text-xl font-mono-data font-black ${isRisky ? 'text-red-600' : 'text-slate-900'}`}>
                         {Math.round(profile.riskScore)}%
                     </div>
+                    <div className={`text-[11px] font-black mt-2 ${profile.netFlow > 0 ? 'text-emerald-500' : 'text-red-500'}`}>
+                        {profile.netFlow > 0 ? '+' : ''}{formatCurrency(profile.netFlow, 'USD')}
+                    </div>
+                    <div className="text-[7px] font-black text-slate-400 uppercase tracking-widest">Balance Net</div>
                 </div>
             </div>
 
