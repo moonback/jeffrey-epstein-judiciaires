@@ -60,6 +60,7 @@ import { AssetsView } from './components/AssetsView';
 import { CrossSessionView } from './components/CrossSessionView';
 import { FlightLogsView } from './components/FlightLogsView';
 import { CrossDocumentDiscoveryView } from './components/CrossDocumentDiscoveryView';
+import { MainActorsView } from './components/MainActorsView';
 import { VoiceAssistant } from './components/VoiceAssistant';
 import { Auth } from './components/Auth';
 import { BackgroundAIView, FileTask } from './components/BackgroundAIView';
@@ -982,6 +983,7 @@ const App: React.FC = () => {
             )}
 
             {viewMode === 'timeline' && <TimelineView onDeepDive={handleDeepDive} isGuestMode={isGuestMode} />}
+            {viewMode === 'actors' && <MainActorsView onEntityClick={handleEntityClick} isGuestMode={isGuestMode} />}
             {viewMode === 'contradictions' && <ContradictionsView onDeepDive={handleDeepDive} isGuestMode={isGuestMode} />}
             {viewMode === 'poi' && <POIView onDeepDive={handleDeepDive} isGuestMode={isGuestMode} />}
             {viewMode === 'finance' && <FinancialFlowView />}
@@ -1034,6 +1036,13 @@ const App: React.FC = () => {
             label="Temps"
             isActive={viewMode === 'timeline'}
             onClick={() => setViewMode('timeline')}
+          />
+
+          <MobileNavItem
+            icon={Fingerprint}
+            label="Acteurs"
+            isActive={viewMode === 'actors'}
+            onClick={() => setViewMode('actors')}
           />
 
           <MobileNavItem
