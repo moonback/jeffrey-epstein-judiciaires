@@ -49,10 +49,7 @@
     --glass-border: rgba(30, 41, 59, 0.8);
 }
 
-html {
-    font-size: 80%;
-    /* Global scale reduction */
-}
+
 
 body {
     font-family: Arial, Helvetica, sans-serif;
@@ -248,12 +245,3 @@ textarea {
 }
 
 /* Scaling adjust */
-html {
-    font-size: 85%;
-}
-
-@media (min-width: 1536px) {
-    html {
-        font-size: 95%;
-    }
-}

@@ -46,7 +46,8 @@ import {
   Fingerprint,
   Network,
   History,
-  Search
+  Search,
+  Menu
 } from 'lucide-react';
 import { Sidebar, ViewType } from './components/Sidebar';
 import { CaseListView } from './components/CaseListView';
@@ -71,6 +72,7 @@ const App: React.FC = () => {
   const [session, setSession] = useState<any>(null);
   const [isGuestMode, setIsGuestMode] = useState<boolean>(localStorage.getItem('GUEST_MODE') === 'true');
   const [isAuthLoading, setIsAuthLoading] = useState(true);
+  const [isMobileMenuOpen, setIsMobileMenuOpen] = useState(false);
 
   const [queue, setQueue] = useState<InputData[]>([]);
   const [resolutionHistory, setResolutionHistory] = useState<ProcessedResult[]>([]);
@@ -648,6 +650,8 @@ const App: React.FC = () => {
         onToggleLogs={() => setShowLogs(!showLogs)}
         onLogout={handleLogout}
         isGuestMode={isGuestMode}
+        isMobileOpen={isMobileMenuOpen}
+        onMobileClose={() => setIsMobileMenuOpen(false)}
       />
 
       <div className="flex-1 flex flex-col min-w-0 h-screen overflow-hidden bg-[#F8FAFC]">
@@ -656,7 +660,14 @@ const App: React.FC = () => {
         <header className="px-4 lg:px-6 h-12 lg:h-14 shrink-0 flex justify-between items-center bg-white border-b border-slate-100 z-40 shadow-sm relative">
           <div className="flex gap-3 lg:gap-8 items-center">
             {/* Mobile Logo */}
-            <div className="lg:hidden flex items-center gap-2.5">
+            <div className="lg:hidden flex items-center gap-3">
+              <button
+                onClick={() => setIsMobileMenuOpen(true)}
+                className="p-2 -ml-2 text-slate-600 hover:text-[#B91C1C] hover:bg-slate-50 rounded-lg transition-colors"
+                aria-label="Ouvrir le menu"
+              >
+                <Menu size={24} />
+              </button>
               <div className="p-1.5 bg-[#B91C1C] rounded-lg shadow-lg shadow-red-900/10">
                 <ShieldCheck size={18} className="text-white" />
               </div>

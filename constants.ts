@@ -6,24 +6,7 @@
 import { InputData } from './types';
 
 export const AI_MODELS = [
-  {
-    id: 'google/gemini-2.5-flash-preview-09-2025',
-    name: 'Gemini 2.5 Flash',
-    provider: 'Google',
-    speed: 'Fast',
-  },
-  {
-    id: 'openai/gpt-5-nano',
-    name: 'GPT 5 Nano',
-    provider: 'OpenAI',
-    speed: 'Fast',
-  },
-  {
-    id: 'meta-llama/llama-3.3-70b-instruct',
-    name: 'Llama 3.3 70B Instruct',
-    provider: 'Meta',
-    speed: 'Stable',
-  },
+
   {
     id: 'x-ai/grok-4.1-fast',
     name: 'Grok 4.1 Fast',
