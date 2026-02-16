@@ -63,6 +63,7 @@ import { FlightLogsView } from './components/FlightLogsView';
 import { CrossDocumentDiscoveryView } from './components/CrossDocumentDiscoveryView';
 import { MainActorsView } from './components/MainActorsView';
 import { VoiceAssistant } from './components/VoiceAssistant';
+import { GlobalSummaryView } from './components/GlobalSummaryView';
 import { Auth } from './components/Auth';
 import { BackgroundAIView, FileTask } from './components/BackgroundAIView';
 import { supabase, isSupabaseConfigured } from './services/supabaseClient';
@@ -1028,6 +1029,7 @@ const App: React.FC = () => {
             )}
 
             {viewMode === 'timeline' && <TimelineView onDeepDive={handleDeepDive} isGuestMode={isGuestMode} />}
+            {viewMode === 'summary' && <GlobalSummaryView />}
             {viewMode === 'actors' && <MainActorsView onEntityClick={handleEntityClick} isGuestMode={isGuestMode} />}
             {viewMode === 'contradictions' && <ContradictionsView onDeepDive={handleDeepDive} isGuestMode={isGuestMode} />}
             {viewMode === 'poi' && <POIView onDeepDive={handleDeepDive} isGuestMode={isGuestMode} />}

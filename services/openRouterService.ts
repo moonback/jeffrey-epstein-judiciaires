@@ -181,3 +181,55 @@ export const detectContradictions = async (doc1: string, doc2: string): Promise<
         return "Erreur lors de l'analyse des contradictions. Veuillez réessayer.";
     }
 };
+
+export const generateGlobalSummary = async (analyses: DisclosureAnalysis[]): Promise<string> => {
+    try {
+        const context = analyses.map((a, i) => `ANALYSE #${i + 1}:\n${JSON.stringify(a, null, 2)}`).join("\n\n---\n\n");
+        const prompt = `
+        RÔLE : Vous êtes un Analyste Judiciaire Principal chargé de rédiger une synthèse globale de l'affaire Epstein basée sur de multiples rapports d'analyse de documents DOJ.
+        
+        DONNÉES D'ENTRÉE : Voici une série de rapports d'analyse structurés extraits de différents documents.
+        
+        CONTEXTE DES DOCUMENTS :\n${context}\n
+        
+        STRUCTURE DU RÉSUMÉ EXÉCUTIF ATTENDUE :
+        1. **SYNTHÈSE EXÉCUTIVE** : Vue d'ensemble du dossier (gravité, étendue).
+        2. **ACTEURS CLÉS ET RÉSEAUX** : Qui sont les individus les plus cités et quels sont leurs liens ?
+        3. **CHRONOLOGIE DES FAITS CRITIQUES** : Reconstitution des dates les plus sombres ou importantes.
+        4. **MODUS OPERANDI ET FLUX FINANCIERS** : Comment le système opérait-il ?
+        5. **CONTRADICTIONS ET ZONES D'OMBRE** : Éléments suspects nécessitant une investigation plus approfondie.
+        
+        STYLE : Professionnel, factuel, sans concessions, format Markdown riche. NE PAS inclure de mentions de confidentialité ou de privilège.
+        `;
+
+        const response = await callWithRetry(async () => {
+            const res = await fetch("https://openrouter.ai/api/v1/chat/completions", {
+                method: "POST",
+                headers: {
+                    "Authorization": `Bearer ${getApiKey()}`,
+                    "Content-Type": "application/json",
+                    "HTTP-Referer": "https://github.com/moonback/Analyseur-de-Documents-Judiciaires",
+                    "X-Title": "DOJ Forensic Analyzer"
+                },
+                body: JSON.stringify({
+                    model: getModelId(),
+                    messages: [
+                        { role: "system", content: "Expert en synthèse judiciaire forensique." },
+                        { role: "user", content: prompt }
+                    ]
+                })
+            });
+
+            if (!res.ok) {
+                const err = await res.json();
+                throw { status: res.status, message: err.error?.message || "Unknown error" };
+            }
+            return res.json();
+        });
+
+        return response.choices[0].message.content;
+    } catch (error: any) {
+        console.error("Erreur résumé global:", error);
+        return "Échec de la génération du résumé global. Vérifiez votre connexion et votre clé API.";
+    }
+};

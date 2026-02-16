@@ -32,7 +32,7 @@ import {
     Network
 } from 'lucide-react';
 
-export type ViewType = 'lab' | 'database' | 'network' | 'timeline' | 'actors' | 'contradictions' | 'poi' | 'finance' | 'assets' | 'cross' | 'voice' | 'flights' | 'discovery' | 'background_ai';
+export type ViewType = 'lab' | 'database' | 'network' | 'summary' | 'timeline' | 'actors' | 'contradictions' | 'poi' | 'finance' | 'assets' | 'cross' | 'voice' | 'flights' | 'discovery' | 'background_ai';
 
 interface SidebarProps {
     currentView: ViewType;
@@ -63,6 +63,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
         { id: 'lab', label: 'Laboratoire', icon: Terminal, color: 'text-[var(--accent)]', adminOnly: true },
         { id: 'database', label: 'Archives Centrales', icon: Database, color: 'text-[var(--color-slate-600)]' },
         { id: 'network', label: 'Cartographie', icon: Share2, color: 'text-[var(--color-slate-600)]' },
+        { id: 'summary', label: 'Synthèse Globale', icon: BookOpen, color: 'text-[var(--accent)]' },
         { id: 'timeline', label: 'Chronologie', icon: Clock, color: 'text-[var(--accent)]' },
         { id: 'actors', label: 'Acteurs Clés', icon: Fingerprint, color: 'text-[var(--accent)]' },
         { id: 'finance', label: 'Flux Financiers', icon: DollarSign, color: 'text-[var(--accent)]' },
