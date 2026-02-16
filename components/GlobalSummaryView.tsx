@@ -32,7 +32,7 @@ export const GlobalSummaryView: React.FC = () => {
 
             const result = await generateGlobalSummary(validAnalyses);
             setSummary(result);
-            localStorage.setItem('GLOBAL_SUMMARY_CACHE', result);
+            await storageService.saveGlobalSummary(result);
         } catch (e: any) {
             setError("Échec du moteur de synthèse neural.");
         } finally {
@@ -41,8 +41,9 @@ export const GlobalSummaryView: React.FC = () => {
     };
 
     useEffect(() => {
-        const cached = localStorage.getItem('GLOBAL_SUMMARY_CACHE');
-        if (cached) setSummary(cached);
+        storageService.getGlobalSummary().then(cached => {
+            if (cached) setSummary(cached);
+        });
     }, []);
 
     const handleExportPDF = () => {

@@ -17,6 +17,14 @@ interface ForensicVectorDB extends DBSchema {
       updated_at: string;
     };
   };
+  global_summaries: {
+    key: string;
+    value: {
+      id: string;
+      content: string;
+      created_at: string;
+    };
+  };
 }
 
 const DB_NAME = 'doj_forensic_vector_store';
@@ -26,7 +34,7 @@ class StorageService {
   private dbPromise: Promise<IDBPDatabase<ForensicVectorDB>>;
 
   constructor() {
-    this.dbPromise = openDB<ForensicVectorDB>(DB_NAME, 2, {
+    this.dbPromise = openDB<ForensicVectorDB>(DB_NAME, 3, {
       upgrade(db) {
         if (!db.objectStoreNames.contains(STORE_NAME)) {
           const store = db.createObjectStore(STORE_NAME, { keyPath: 'id' });
@@ -34,6 +42,9 @@ class StorageService {
         }
         if (!db.objectStoreNames.contains('epstein_file_metadata')) {
           db.createObjectStore('epstein_file_metadata', { keyPath: 'path' });
+        }
+        if (!db.objectStoreNames.contains('global_summaries')) {
+          db.createObjectStore('global_summaries', { keyPath: 'id' });
         }
       },
     });
@@ -195,6 +206,49 @@ class StorageService {
     }
 
     return local;
+  }
+
+  async saveGlobalSummary(content: string): Promise<void> {
+    const db = await this.dbPromise;
+    const summary = {
+      id: 'latest',
+      content,
+      created_at: new Date().toISOString()
+    };
+    await db.put('global_summaries', summary);
+    console.log('[Local Storage] Global summary saved');
+
+    if (isSupabaseConfigured && supabase) {
+      try {
+        const { error } = await supabase
+          .from('global_summaries')
+          .upsert(summary);
+        if (error) throw error;
+      } catch (e) {
+        console.error('[Supabase Summary Sync Error]', e);
+      }
+    }
+  }
+
+  async getGlobalSummary(): Promise<string | null> {
+    const db = await this.dbPromise;
+    const summary = await db.get('global_summaries', 'latest');
+
+    if (!summary && isSupabaseConfigured && supabase) {
+      try {
+        const { data, error } = await supabase
+          .from('global_summaries')
+          .select('content')
+          .eq('id', 'latest')
+          .single();
+        if (error) throw error;
+        if (data) return data.content;
+      } catch (e) {
+        console.warn('[Supabase Summary Fetch Error]', e);
+      }
+    }
+
+    return summary ? summary.content : null;
   }
 }
 
