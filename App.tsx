@@ -47,7 +47,8 @@ import {
   Network,
   History,
   Search,
-  Menu
+  Menu,
+  Trash2
 } from 'lucide-react';
 import { Sidebar, ViewType } from './components/Sidebar';
 import { CaseListView } from './components/CaseListView';
@@ -901,12 +902,28 @@ const App: React.FC = () => {
                             </h2>
                           </div>
 
-                          <div className="lg:text-right shrink-0 relative z-10 flex flex-col items-end gap-1">
-                            <span className="text-[9px] text-[var(--text-dim)] uppercase font-black tracking-[0.3em]">Latence Forensique</span>
-                            <div className="flex items-baseline gap-1.5">
-                              <div className="text-3xl font-mono-data font-black text-[var(--accent)] tracking-tighter">{activeResult.durationMs ? Math.round(activeResult.durationMs) : '000'}</div>
-                              <div className="text-sm font-black text-[var(--text-dim)] uppercase">ms</div>
+                          <div className="flex items-center gap-6 relative z-10 shrink-0">
+                            <div className="lg:text-right flex flex-col items-end gap-1">
+                              <span className="text-[9px] text-[var(--text-dim)] uppercase font-black tracking-[0.3em]">Latence Forensique</span>
+                              <div className="flex items-baseline gap-1.5">
+                                <div className="text-3xl font-mono-data font-black text-[var(--accent)] tracking-tighter">{activeResult.durationMs ? Math.round(activeResult.durationMs) : '000'}</div>
+                                <div className="text-sm font-black text-[var(--text-dim)] uppercase">ms</div>
+                              </div>
                             </div>
+
+                            <div className="h-10 w-px bg-[var(--border)] hidden sm:block"></div>
+
+                            <button
+                              onClick={(e) => {
+                                if (window.confirm("Êtes-vous sûr de vouloir supprimer définitivement cette analyse ?")) {
+                                  handleCloseTab(e as any, activeResult.id);
+                                }
+                              }}
+                              className="p-3 text-[var(--text-dim)] hover:text-[var(--danger)] hover:bg-[var(--danger)]/5 rounded-[var(--radius-lg)] border border-transparent hover:border-[var(--danger)]/20 transition-all group"
+                              title="Supprimer l'analyse"
+                            >
+                              <Trash2 size={20} className="group-active:scale-90 transition-transform" />
+                            </button>
                           </div>
                         </div>
 
@@ -1169,8 +1186,22 @@ const App: React.FC = () => {
                             <span className={`text-[8px] font-black uppercase tracking-widest flex items-center gap-2 ${activeTabId === res.id && !showPlanner ? 'text-white/40' : 'text-[var(--text-dim)]'}`}>
                               <Cpu size={12} /> Node {res.id.slice(-2)}
                             </span>
-                            <div className={`w-6 h-6 rounded-full flex items-center justify-center transition-all ${activeTabId === res.id && !showPlanner ? 'bg-[var(--accent)] text-white' : 'bg-[var(--surface-muted)] text-[var(--text-dim)] group-hover:bg-[var(--accent)]/10 group-hover:text-[var(--accent)]'}`}>
-                              <ArrowUpRight size={14} />
+                            <div className="flex items-center gap-2">
+                              <button
+                                onClick={(e) => {
+                                  e.stopPropagation();
+                                  if (window.confirm("Supprimer cette archive ?")) {
+                                    handleCloseTab(e as any, res.id);
+                                  }
+                                }}
+                                className={`w-8 h-8 rounded-full flex items-center justify-center transition-all ${activeTabId === res.id && !showPlanner ? 'bg-white/10 text-white' : 'bg-[var(--surface-muted)] text-[var(--text-dim)] hover:bg-[var(--danger)]/10 hover:text-[var(--danger)] opacity-0 group-hover:opacity-100'}`}
+                                title="Supprimer l'archive"
+                              >
+                                <Trash2 size={12} />
+                              </button>
+                              <div className={`w-6 h-6 rounded-full flex items-center justify-center transition-all ${activeTabId === res.id && !showPlanner ? 'bg-[var(--accent)] text-white' : 'bg-[var(--surface-muted)] text-[var(--text-dim)] group-hover:bg-[var(--accent)]/10 group-hover:text-[var(--accent)]'}`}>
+                                <ArrowUpRight size={14} />
+                              </div>
                             </div>
                           </div>
                         </button>
