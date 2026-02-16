@@ -637,7 +637,7 @@ const App: React.FC = () => {
   }
 
   return (
-    <div className="flex flex-col lg:flex-row bg-[#F8FAFC] text-[#0F172A] min-h-screen overflow-hidden font-sans">
+    <div className="flex flex-col lg:flex-row bg-[#F8FAFC] text-[#0F172A] min-h-[100dvh] overflow-x-hidden lg:overflow-hidden font-sans">
 
       {/* 1. Global Navigation Sidebar - Premium Responsive Navigation */}
       <Sidebar
@@ -656,10 +656,10 @@ const App: React.FC = () => {
         onMobileClose={() => setIsMobileMenuOpen(false)}
       />
 
-      <div className="flex-1 flex flex-col min-w-0 h-screen overflow-hidden bg-[#F8FAFC]">
+      <div className="flex-1 flex flex-col min-w-0 h-[100dvh] overflow-hidden bg-[#F8FAFC]">
 
         {/* PREMIUM MODULE HEADER - Pro Design System */}
-        <header className="px-6 h-16 lg:h-20 shrink-0 flex justify-between items-center bg-[var(--surface)]/80 backdrop-blur-xl border-b border-[var(--border)] z-40 shadow-sm relative">
+        <header className="px-3 sm:px-4 lg:px-6 h-16 lg:h-20 shrink-0 flex justify-between items-center bg-[var(--surface)]/80 backdrop-blur-xl border-b border-[var(--border)] z-40 shadow-sm relative">
           <div className="flex gap-4 lg:gap-10 items-center">
             {/* Mobile Logo & Menu Trigger */}
             <div className="lg:hidden flex items-center gap-4">
@@ -880,7 +880,7 @@ const App: React.FC = () => {
                     {activeResult && !showPlanner ? (
                       <div className="flex-1 flex flex-col overflow-hidden animate-reveal min-h-0">
                         {/* Investigation Header Info - Modernized */}
-                        <div className="px-8 py-6 border-b border-[var(--border)] flex flex-col lg:flex-row justify-between items-start lg:items-center bg-[var(--surface)]/50 backdrop-blur-xl shrink-0 gap-6 relative overflow-hidden">
+                        <div className="px-4 sm:px-6 lg:px-8 py-4 sm:py-5 lg:py-6 border-b border-[var(--border)] flex flex-col lg:flex-row justify-between items-start lg:items-center bg-[var(--surface)]/50 backdrop-blur-xl shrink-0 gap-4 sm:gap-6 relative overflow-hidden">
                           <div className="absolute inset-0 z-0 pointer-events-none opacity-[0.03] bg-noise"></div>
 
                           <div className="max-w-6xl relative z-10 flex flex-col gap-3">
@@ -894,20 +894,20 @@ const App: React.FC = () => {
                               <div className="h-4 w-px bg-[var(--border)]"></div>
                               <div className="flex items-center gap-2 text-[var(--text-muted)]">
                                 <Monitor size={14} />
-                                <span className="text-[11px] font-mono-data font-black uppercase tracking-tight">{activeResult.input.targetUrl.split(' : ')[1] || activeResult.input.targetUrl}</span>
+                                <span className="text-[10px] sm:text-[11px] font-mono-data font-black uppercase tracking-tight break-all">{activeResult.input.targetUrl.split(' : ')[1] || activeResult.input.targetUrl}</span>
                               </div>
                             </div>
-                            <h2 className="text-xl lg:text-2xl font-black text-[var(--primary)] font-display tracking-tight leading-tight group flex items-center gap-3">
+                            <h2 className="text-lg sm:text-xl lg:text-2xl font-black text-[var(--primary)] font-display tracking-tight leading-tight group flex items-start sm:items-center gap-2 sm:gap-3 break-words">
                               <span className="text-[var(--accent)] opacity-40 font-legal">/</span>
                               {activeResult.input.query}
                             </h2>
                           </div>
 
-                          <div className="flex items-center gap-6 relative z-10 shrink-0">
+                          <div className="flex items-center gap-3 sm:gap-6 relative z-10 shrink-0 w-full lg:w-auto justify-between lg:justify-end">
                             <div className="lg:text-right flex flex-col items-end gap-1">
                               <span className="text-[9px] text-[var(--text-dim)] uppercase font-black tracking-[0.3em]">Latence Forensique</span>
                               <div className="flex items-baseline gap-1.5">
-                                <div className="text-3xl font-mono-data font-black text-[var(--accent)] tracking-tighter">{activeResult.durationMs ? Math.round(activeResult.durationMs) : '000'}</div>
+                                <div className="text-2xl sm:text-3xl font-mono-data font-black text-[var(--accent)] tracking-tighter">{activeResult.durationMs ? Math.round(activeResult.durationMs) : '000'}</div>
                                 <div className="text-sm font-black text-[var(--text-dim)] uppercase">ms</div>
                               </div>
                             </div>
@@ -930,7 +930,7 @@ const App: React.FC = () => {
 
                         {/* Analysis Body - Modernized */}
                         <div className="flex-1 overflow-y-auto custom-scrollbar report-paper relative">
-                          <div className="max-w-7xl mx-auto p-8 lg:p-12 pb-40">
+                          <div className="max-w-7xl mx-auto p-4 sm:p-6 lg:p-12 pb-24 sm:pb-32 lg:pb-40">
                             <DataCard
                               result={activeResult}
                               loading={activeResult.status === 'processing' || activeResult.status === 'pending'}
@@ -948,8 +948,8 @@ const App: React.FC = () => {
                         <div className="absolute inset-0 z-0 pointer-events-none opacity-[0.02] bg-[var(--accent)]/10"></div>
 
                         {/* Investigation Planner Interface */}
-                        <div className="flex-1 p-8 lg:p-16 animate-reveal">
-                          <div className="max-w-5xl mx-auto py-10 relative">
+                        <div className="flex-1 p-4 sm:p-6 lg:p-16 animate-reveal">
+                          <div className="max-w-5xl mx-auto py-6 sm:py-8 lg:py-10 relative">
                             {/* Visual Glows */}
                             <div className="absolute -top-40 -right-40 w-96 h-96 bg-[var(--accent)] rounded-full blur-[140px] opacity-[0.05]"></div>
                             <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-[var(--primary)] rounded-full blur-[140px] opacity-[0.05]"></div>
@@ -961,7 +961,7 @@ const App: React.FC = () => {
                         {showPlanner && activeResult && (
                           <button
                             onClick={() => setShowPlanner(false)}
-                            className="fixed bottom-12 right-12 p-5 bg-[var(--surface)] text-[var(--primary)] rounded-full border border-[var(--border)] hover:border-[var(--accent)] hover:text-[var(--accent)] shadow-2xl transition-all z-20 hover:scale-110 active:scale-95 group"
+                            className="fixed bottom-6 right-4 sm:bottom-8 sm:right-6 lg:bottom-12 lg:right-12 p-4 sm:p-5 bg-[var(--surface)] text-[var(--primary)] rounded-full border border-[var(--border)] hover:border-[var(--accent)] hover:text-[var(--accent)] shadow-2xl transition-all z-20 hover:scale-110 active:scale-95 group"
                           >
                             <X size={28} className="group-hover:rotate-90 transition-transform" />
                           </button>
@@ -1050,7 +1050,7 @@ const App: React.FC = () => {
         <div className="fixed inset-0 z-[110] bg-[var(--background)] animate-reveal flex flex-col">
           <div className="absolute inset-0 z-0 pointer-events-none opacity-[0.05] report-paper"></div>
 
-          <header className="px-8 lg:px-20 py-10 border-b border-[var(--border)] bg-[var(--surface)]/80 backdrop-blur-2xl shrink-0 z-10 relative shadow-xl shadow-slate-900/5">
+          <header className="px-4 sm:px-6 lg:px-20 py-6 sm:py-8 lg:py-10 border-b border-[var(--border)] bg-[var(--surface)]/80 backdrop-blur-2xl shrink-0 z-10 relative shadow-xl shadow-slate-900/5">
             <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between max-w-[1600px] mx-auto gap-8">
               <div className="flex items-center gap-6">
                 <div className="w-16 h-16 bg-[var(--primary)] rounded-[var(--radius-xl)] flex items-center justify-center shadow-2xl">
@@ -1065,7 +1065,7 @@ const App: React.FC = () => {
                 </div>
               </div>
 
-              <div className="flex-1 max-w-2xl px-4 lg:px-12 w-full">
+              <div className="flex-1 max-w-2xl px-0 lg:px-12 w-full">
                 <div className="relative group w-full">
                   <div className="absolute left-5 top-1/2 -translate-y-1/2 text-[var(--text-dim)] group-focus-within:text-[var(--accent)] transition-colors">
                     <Search size={22} />
@@ -1098,8 +1098,8 @@ const App: React.FC = () => {
             </div>
           </header>
 
-          <div className="flex-1 overflow-y-auto p-8 lg:p-20 custom-scrollbar z-10 relative">
-            <div className="max-w-[1600px] mx-auto space-y-16">
+          <div className="flex-1 overflow-y-auto p-4 sm:p-6 lg:p-20 custom-scrollbar z-10 relative">
+            <div className="max-w-[1600px] mx-auto space-y-8 sm:space-y-12 lg:space-y-16">
               {(() => {
                 const filtered = optimisticHistory.filter(res =>
                   res.input?.query?.toLowerCase().includes(historySearchTerm.toLowerCase()) ||
@@ -1153,7 +1153,7 @@ const App: React.FC = () => {
                             setShowFullHistory(false);
                             setHistorySearchTerm('');
                           }}
-                          className={`flex flex-col p-8 rounded-[var(--radius-xl)] border text-left transition-all relative group overflow-hidden h-[220px] shadow-sm
+                          className={`flex flex-col p-5 sm:p-6 lg:p-8 rounded-[var(--radius-xl)] border text-left transition-all relative group overflow-hidden min-h-[220px] h-auto shadow-sm
                             ${activeTabId === res.id && !showPlanner
                               ? 'bg-[var(--primary)] border-[var(--primary)] shadow-2xl scale-[1.03] z-20'
                               : 'bg-[var(--surface)] border-[var(--border)] hover:border-[var(--accent)]/40 hover:shadow-premium hover:-translate-y-2'
@@ -1215,7 +1215,7 @@ const App: React.FC = () => {
             </div>
           </div>
 
-          <footer className="px-12 py-6 border-t border-[var(--border)] bg-[var(--surface)]/50 flex justify-between items-center shrink-0 z-10 backdrop-blur-md">
+          <footer className="px-4 sm:px-6 lg:px-12 py-4 sm:py-6 border-t border-[var(--border)] bg-[var(--surface)]/50 flex flex-col sm:flex-row justify-between items-start sm:items-center gap-2 sm:gap-4 shrink-0 z-10 backdrop-blur-md">
             <span className="text-[9px] font-black text-[var(--text-dim)] uppercase tracking-widest flex items-center gap-4">
               <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.5)]"></span>
               Neural Engine Status: <span className="text-[var(--primary)]">ACTIVE_SECURED_QUERY</span>

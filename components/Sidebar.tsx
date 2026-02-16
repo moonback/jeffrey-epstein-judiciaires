@@ -97,7 +97,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                     lg:sticky lg:top-0 lg:h-screen lg:shadow-none lg:bg-[var(--surface)]/80
                     ${isMobileOpen ? 'translate-x-0' : '-translate-x-full lg:translate-x-0'}
                     ${isCollapsed ? 'lg:w-[80px]' : 'lg:w-[280px]'}
-                    w-[280px] sm:w-[320px] 
+                    w-[86vw] max-w-[320px] sm:w-[320px]
                 `}
             >
                 {/* COLLAPSE TOGGLE (Desktop Only) */}
@@ -119,7 +119,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
 
 
                 {/* SCROLLABLE AREA: LOGO + ACTION + NAV */}
-                <div className={`flex-1 overflow-y-auto custom-scrollbar pt-8 pb-4 transition-all duration-300 ${isCollapsed ? 'px-2' : 'px-6'}`}>
+                <div className={`flex-1 overflow-y-auto custom-scrollbar pt-8 pb-4 transition-all duration-300 ${isCollapsed ? 'px-2' : 'px-4 sm:px-6'}`}>
                     <div
                         className={`flex items-center gap-4 mb-10 group cursor-pointer whitespace-nowrap ${isCollapsed ? 'justify-center' : ''}`}
                         onClick={() => {
