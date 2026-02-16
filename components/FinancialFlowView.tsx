@@ -273,16 +273,16 @@ export const FinancialFlowView: React.FC = () => {
 
     if (loading) {
         return (
-            <div className="h-full flex items-center justify-center bg-white">
+            <div className="h-full flex items-center justify-center bg-[var(--background)]">
                 <div className="flex flex-col items-center gap-6">
                     <div className="relative w-24 h-24">
-                        <div className="absolute inset-0 border-[3px] border-slate-100 rounded-full"></div>
-                        <div className="absolute inset-0 border-t-[3px] border-[#B91C1C] rounded-full animate-spin"></div>
-                        <Activity size={32} className="absolute inset-0 m-auto text-[#B91C1C] animate-pulse" />
+                        <div className="absolute inset-0 border-[3px] border-[var(--surface-muted)] rounded-full"></div>
+                        <div className="absolute inset-0 border-t-[3px] border-[var(--accent)] rounded-full animate-spin"></div>
+                        <Activity size={32} className="absolute inset-0 m-auto text-[var(--accent)] animate-pulse" />
                     </div>
                     <div className="space-y-2 text-center">
-                        <span className="block text-xs font-black text-slate-800 uppercase tracking-[0.4em]">Audit Financier en Cours</span>
-                        <span className="block text-[8px] font-bold text-slate-400 uppercase tracking-widest italic">Analyse des flux et patterns monétaires...</span>
+                        <span className="block text-xs font-black text-[var(--text)] uppercase tracking-[0.4em]">Audit Financier en Cours</span>
+                        <span className="block text-[8px] font-bold text-[var(--text-dim)] uppercase tracking-widest italic">Analyse des flux et patterns monétaires...</span>
                     </div>
                 </div>
             </div>
@@ -290,14 +290,14 @@ export const FinancialFlowView: React.FC = () => {
     }
 
     return (
-        <div className="h-full flex flex-col bg-[#F8FAFC] overflow-hidden relative">
+        <div className="h-full flex flex-col bg-[var(--background)] overflow-hidden relative">
             <div className="absolute inset-0 z-0 pointer-events-none opacity-[0.25] report-paper"></div>
 
             <PageHeader
                 title="Flux"
                 titleHighlight="Financiers"
                 icon={DollarSign}
-                badgeText="Money_Trace_ v2.1"
+                badgeText=""
                 searchQuery={searchQuery}
                 onSearchChange={setSearchQuery}
                 searchPlaceholder="Rechercher une transaction..."
@@ -307,60 +307,60 @@ export const FinancialFlowView: React.FC = () => {
                     {
                         label: `${analytics.count} Flux Détectés`,
                         value: "",
-                        icon: <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
+                        icon: <div className="w-2 h-2 rounded-full bg-[var(--success)] animate-pulse"></div>
                     },
                     {
                         label: "Volume Indexé",
-                        value: "", // Value is in label for this specific layout match or I can split it
-                        icon: <Landmark size={14} className="text-[#DC2626]" />
+                        value: "",
+                        icon: <Landmark size={14} className="text-[var(--accent)]" />
                     }
                 ]}
             >
-                <div className="flex items-center bg-slate-50 border border-slate-100 p-1 rounded-xl shadow-inner shrink-0">
+                <div className="flex items-center bg-[var(--surface-muted)] border border-[var(--border)] p-1 rounded-xl shadow-inner shrink-0">
                     <button
                         onClick={() => setViewMode('list')}
-                        className={`px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-wider transition-all ${viewMode === 'list' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
+                        className={`px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-wider transition-all ${viewMode === 'list' ? 'bg-[var(--surface)] text-[var(--text)] shadow-sm' : 'text-[var(--text-dim)] hover:text-[var(--text-muted)]'}`}
                     >
                         <Layers size={10} className="inline mr-1" /> Flux
                     </button>
                     <button
                         onClick={() => setViewMode('entities')}
-                        className={`px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-wider transition-all ${viewMode === 'entities' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
+                        className={`px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-wider transition-all ${viewMode === 'entities' ? 'bg-[var(--surface)] text-[var(--text)] shadow-sm' : 'text-[var(--text-dim)] hover:text-[var(--text-muted)]'}`}
                     >
                         <User size={10} className="inline mr-1" /> Entités
                     </button>
                     <button
                         onClick={() => setViewMode('graph')}
-                        className={`px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-wider transition-all ${viewMode === 'graph' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
+                        className={`px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-wider transition-all ${viewMode === 'graph' ? 'bg-[var(--surface)] text-[var(--text)] shadow-sm' : 'text-[var(--text-dim)] hover:text-[var(--text-muted)]'}`}
                     >
                         <Network size={10} className="inline mr-1" /> Graphe
                     </button>
                     <button
                         onClick={() => setViewMode('analytics')}
-                        className={`px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-wider transition-all ${viewMode === 'analytics' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
+                        className={`px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-wider transition-all ${viewMode === 'analytics' ? 'bg-[var(--surface)] text-[var(--text)] shadow-sm' : 'text-[var(--text-dim)] hover:text-[var(--text-muted)]'}`}
                     >
                         <BarChart3 size={10} className="inline mr-1" /> Analyse
                     </button>
                 </div>
 
-                <div className="h-6 w-px bg-slate-200 mx-2 hidden sm:block shrink-0"></div>
+                <div className="h-6 w-px bg-[var(--border)] mx-2 hidden sm:block shrink-0"></div>
 
-                <div className="flex items-center bg-slate-50 border border-slate-100 p-1 rounded-xl shadow-inner shrink-0">
+                <div className="flex items-center bg-[var(--surface-muted)] border border-[var(--border)] p-1 rounded-xl shadow-inner shrink-0">
                     <button
                         onClick={() => setDateFilter('all')}
-                        className={`px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-wider transition-all ${dateFilter === 'all' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
+                        className={`px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-wider transition-all ${dateFilter === 'all' ? 'bg-[var(--surface)] text-[var(--text)] shadow-sm' : 'text-[var(--text-dim)] hover:text-[var(--text-muted)]'}`}
                     >
                         Tout
                     </button>
                     <button
                         onClick={() => setDateFilter('month')}
-                        className={`px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-wider transition-all ${dateFilter === 'month' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
+                        className={`px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-wider transition-all ${dateFilter === 'month' ? 'bg-[var(--surface)] text-[var(--text)] shadow-sm' : 'text-[var(--text-dim)] hover:text-[var(--text-muted)]'}`}
                     >
                         30 Jours
                     </button>
                     <button
                         onClick={() => setDateFilter('year')}
-                        className={`px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-wider transition-all ${dateFilter === 'year' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
+                        className={`px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-wider transition-all ${dateFilter === 'year' ? 'bg-[var(--surface)] text-[var(--text)] shadow-sm' : 'text-[var(--text-dim)] hover:text-[var(--text-muted)]'}`}
                     >
                         1 An
                     </button>
@@ -375,14 +375,14 @@ export const FinancialFlowView: React.FC = () => {
                             icon={TrendingUp}
                             label="Volume Total Audité"
                             value={formatCurrency(analytics.totalVolume, 'USD')}
-                            color="#B91C1C"
+                            color="var(--accent)"
                             subText={`${analytics.count} Transactions synchronisées`}
                         />
                         <StatCard
                             icon={AlertTriangle}
                             label="Alertes de Haut Risque"
                             value={analytics.suspiciousCount.toString()}
-                            color="#B91C1C"
+                            color="var(--danger)"
                             subText="Montants > 1.0M USD ou Offshore"
                             isUrgent={analytics.suspiciousCount > 0}
                         />
@@ -390,14 +390,14 @@ export const FinancialFlowView: React.FC = () => {
                             icon={Network}
                             label="Entités de Référence"
                             value={analytics.uniqueEntities.toString()}
-                            color="#0F172A"
+                            color="var(--primary)"
                             subText="Nœuds financiers identifiés"
                         />
                         <StatCard
                             icon={Fingerprint}
                             label="Score d'Audit"
                             value="98.2"
-                            color="#10B981"
+                            color="var(--success)"
                             subText="Fiabilité des données extraites"
                         />
                     </div>
@@ -405,8 +405,8 @@ export const FinancialFlowView: React.FC = () => {
                     {viewMode === 'list' ? (
                         <div className="space-y-6">
                             <div className="flex items-center gap-4 mb-4">
-                                <span className="text-[10px] font-black text-slate-300 uppercase tracking-[0.4em] italic">Timeline des Mouvements</span>
-                                <div className="h-px flex-1 bg-gradient-to-r from-slate-100 to-transparent"></div>
+                                <span className="text-[10px] font-black text-[var(--text-dim)] uppercase tracking-[0.4em] italic">Timeline des Mouvements</span>
+                                <div className="h-px flex-1 bg-gradient-to-r from-[var(--border)] to-transparent"></div>
                                 <div className="flex gap-2">
                                     <FilterButton active={filterType === 'all'} onClick={() => setFilterType('all')} label="TOUS" />
                                     <FilterButton active={filterType === 'high'} onClick={() => setFilterType('high')} label="> 500K" />
@@ -425,10 +425,10 @@ export const FinancialFlowView: React.FC = () => {
                                 ))}
 
                                 {allTransactions.length === 0 && (
-                                    <div className="py-40 text-center bg-white rounded-[3rem] border border-slate-100 shadow-sm">
-                                        <Search size={48} className="mx-auto text-slate-100 mb-6" />
-                                        <h3 className="text-xl font-black text-slate-900 uppercase tracking-widest font-serif-legal italic mb-2">Aucun Résultat</h3>
-                                        <p className="text-[10px] text-slate-400 font-bold uppercase tracking-[0.2em]">Modifiez vos filtres ou effectuez une nouvelle analyse</p>
+                                    <div className="py-40 text-center bg-[var(--surface)] rounded-[var(--radius-2xl)] border border-[var(--border)] shadow-sm">
+                                        <Search size={48} className="mx-auto text-[var(--surface-muted)] mb-6" />
+                                        <h3 className="text-xl font-black text-[var(--text)] uppercase tracking-widest font-legal italic mb-2">Aucun Résultat</h3>
+                                        <p className="text-[10px] text-[var(--text-dim)] font-bold uppercase tracking-[0.2em]">Modifiez vos filtres ou effectuez une nouvelle analyse</p>
                                     </div>
                                 )}
                             </div>
@@ -436,8 +436,8 @@ export const FinancialFlowView: React.FC = () => {
                     ) : viewMode === 'entities' ? (
                         <div className="space-y-8">
                             <div className="flex items-center gap-4">
-                                <span className="text-[10px] font-black text-slate-300 uppercase tracking-[0.4em] italic">Classification par Comportement</span>
-                                <div className="h-px flex-1 bg-gradient-to-r from-slate-100 to-transparent"></div>
+                                <span className="text-[10px] font-black text-[var(--text-dim)] uppercase tracking-[0.4em] italic">Classification par Comportement</span>
+                                <div className="h-px flex-1 bg-gradient-to-r from-[var(--border)] to-transparent"></div>
                                 <div className="flex gap-2">
                                     <FilterButton active={roleFilter === 'all'} onClick={() => setRoleFilter('all')} label="TOUS" />
                                     <FilterButton active={roleFilter === 'Distributeur'} onClick={() => setRoleFilter('Distributeur')} label="DISTRIBUTEURS" />
@@ -456,7 +456,7 @@ export const FinancialFlowView: React.FC = () => {
                             </div>
                         </div>
                     ) : viewMode === 'graph' ? (
-                        <div className="bg-white rounded-[3rem] border border-slate-100 shadow-sm h-[700px] relative overflow-hidden">
+                        <div className="bg-[var(--surface)] rounded-[var(--radius-2xl)] border border-[var(--border)] shadow-sm h-[700px] relative overflow-hidden">
                             <ForceGraph2D
                                 graphData={graphData}
                                 nodeLabel="name"
@@ -491,33 +491,33 @@ export const FinancialFlowView: React.FC = () => {
                                 onNodeClick={(node: any) => setSelectedEntity(node.id)}
                             />
                             <div className="absolute top-6 left-6 p-4 bg-white/80 backdrop-blur-md rounded-2xl border border-slate-100 shadow-lg pointer-events-none">
-                                <h4 className="text-[10px] font-black text-slate-900 uppercase tracking-widest mb-2">Légende Graphe</h4>
+                                <h4 className="text-[10px] font-black text-[var(--text)] uppercase tracking-widest mb-2">Légende Graphe</h4>
                                 <div className="space-y-2">
                                     <div className="flex items-center gap-2">
-                                        <div className="w-3 h-3 rounded-full bg-[#0F172A]"></div>
-                                        <span className="text-[9px] font-bold text-slate-500 uppercase">Émetteurs</span>
+                                        <div className="w-3 h-3 rounded-full bg-[var(--primary)]"></div>
+                                        <span className="text-[9px] font-bold text-[var(--text-dim)] uppercase">Émetteurs</span>
                                     </div>
                                     <div className="flex items-center gap-2">
-                                        <div className="w-3 h-3 rounded-full bg-[#B91C1C]"></div>
-                                        <span className="text-[9px] font-bold text-slate-500 uppercase">Récepteurs</span>
+                                        <div className="w-3 h-3 rounded-full bg-[var(--accent)]"></div>
+                                        <span className="text-[9px] font-bold text-[var(--text-dim)] uppercase">Récepteurs</span>
                                     </div>
                                 </div>
                             </div>
                         </div>
                     ) : (
                         <div className="grid grid-cols-1 lg:grid-cols-2 gap-8">
-                            <div className="bg-white p-10 rounded-[3rem] border border-slate-100 shadow-sm relative overflow-hidden group">
-                                <h3 className="text-lg font-black text-slate-900 uppercase tracking-widest font-serif-legal italic mb-8">Volume par Devise</h3>
+                            <div className="bg-[var(--surface)] p-10 rounded-[var(--radius-2xl)] border border-[var(--border)] shadow-sm relative overflow-hidden group">
+                                <h3 className="text-lg font-black text-[var(--text)] uppercase tracking-widest font-legal italic mb-8">Volume par Devise</h3>
                                 <div className="space-y-6">
                                     {Object.entries(analytics.currencyVolume).map(([currency, volume]) => (
                                         <div key={currency} className="space-y-2">
-                                            <div className="flex justify-between items-center text-[11px] font-black text-slate-500 uppercase tracking-widest">
+                                            <div className="flex justify-between items-center text-[11px] font-black text-[var(--text-muted)] uppercase tracking-widest">
                                                 <span>{currency}</span>
-                                                <span className="text-[#B91C1C]">{formatCurrency(volume, currency)}</span>
+                                                <span className="text-[var(--accent)]">{formatCurrency(volume, currency)}</span>
                                             </div>
-                                            <div className="h-3 w-full bg-slate-50 rounded-full overflow-hidden">
+                                            <div className="h-3 w-full bg-[var(--surface-muted)] rounded-full overflow-hidden">
                                                 <div
-                                                    className="h-full bg-slate-900 transition-all duration-1000"
+                                                    className="h-full bg-[var(--primary)] transition-all duration-1000"
                                                     style={{ width: `${(volume / analytics.totalVolume) * 100}%` }}
                                                 ></div>
                                             </div>
@@ -526,24 +526,24 @@ export const FinancialFlowView: React.FC = () => {
                                 </div>
                             </div>
 
-                            <div className="bg-white p-10 rounded-[3rem] border border-slate-100 shadow-sm relative overflow-hidden group">
-                                <h3 className="text-lg font-black text-slate-900 uppercase tracking-widest font-serif-legal italic mb-8">Flux Net par Entité</h3>
+                            <div className="bg-[var(--surface)] p-10 rounded-[var(--radius-2xl)] border border-[var(--border)] shadow-sm relative overflow-hidden group">
+                                <h3 className="text-lg font-black text-[var(--text)] uppercase tracking-widest font-legal italic mb-8">Flux Net par Entité</h3>
                                 <div className="space-y-6">
                                     {entityProfiles.slice(0, 8).map((p, i) => (
                                         <div key={i} className="flex items-center gap-4">
                                             <div className="flex-1">
-                                                <div className="text-[12px] font-black text-slate-800 italic font-serif-legal">{p.name}</div>
+                                                <div className="text-[12px] font-black text-[var(--text)] italic font-legal">{p.name}</div>
                                                 <div className="flex items-center gap-2 mt-1">
-                                                    <span className={`text-[8px] font-black px-2 py-0.5 rounded uppercase tracking-widest ${p.role === 'Distributeur' ? 'bg-orange-50 text-orange-600' : p.role === 'Bénéficiaire' ? 'bg-emerald-50 text-emerald-600' : 'bg-blue-50 text-blue-600'}`}>
+                                                    <span className={`text-[8px] font-black px-2 py-0.5 rounded uppercase tracking-widest ${p.role === 'Distributeur' ? 'bg-[var(--warning)]/10 text-[var(--warning)]' : p.role === 'Bénéficiaire' ? 'bg-[var(--success)]/10 text-[var(--success)]' : 'bg-[var(--info)]/10 text-[var(--info)]'}`}>
                                                         {p.role}
                                                     </span>
                                                 </div>
                                             </div>
                                             <div className="text-right">
-                                                <div className={`text-[11px] font-black ${p.netFlow > 0 ? 'text-emerald-500' : 'text-red-500'}`}>
+                                                <div className={`text-[11px] font-black ${p.netFlow > 0 ? 'text-[var(--success)]' : 'text-[var(--danger)]'}`}>
                                                     {p.netFlow > 0 ? '+' : ''}{formatCurrency(p.netFlow, 'USD')}
                                                 </div>
-                                                <div className="text-[8px] font-bold text-slate-400 uppercase tracking-widest">Solde Net</div>
+                                                <div className="text-[8px] font-bold text-[var(--text-dim)] uppercase tracking-widest">Solde Net</div>
                                             </div>
                                         </div>
                                     ))}
@@ -554,21 +554,21 @@ export const FinancialFlowView: React.FC = () => {
                 </div>
             </div>
 
-            <footer className="px-10 py-5 bg-white border-t border-slate-100 flex justify-between items-center z-30 shrink-0">
+            <footer className="px-10 py-5 bg-[var(--surface)] border-t border-[var(--border)] flex justify-between items-center z-30 shrink-0">
                 <div className="flex items-center gap-8">
                     <div className="flex items-center gap-2">
-                        <div className="w-2 h-2 rounded-full bg-[#B91C1C]"></div>
-                        <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Inflow (Source)</span>
+                        <div className="w-2 h-2 rounded-full bg-[var(--accent)]"></div>
+                        <span className="text-[9px] font-black text-[var(--text-dim)] uppercase tracking-widest">Inflow (Source)</span>
                     </div>
                     <div className="flex items-center gap-2">
-                        <div className="w-2 h-2 rounded-full bg-slate-900"></div>
-                        <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Outflow (Destination)</span>
+                        <div className="w-2 h-2 rounded-full bg-[var(--primary)]"></div>
+                        <span className="text-[9px] font-black text-[var(--text-dim)] uppercase tracking-widest">Outflow (Destination)</span>
                     </div>
                 </div>
                 <div className="flex items-center gap-4">
                     <button
                         onClick={exportToCSV}
-                        className="text-[10px] font-black text-slate-400 hover:text-slate-900 transition-colors flex items-center gap-2 bg-slate-50 px-4 py-2 rounded-xl border border-slate-100"
+                        className="text-[10px] font-black text-[var(--text-dim)] hover:text-[var(--text)] transition-colors flex items-center gap-2 bg-[var(--surface-muted)] px-4 py-2 rounded-xl border border-[var(--border)]"
                     >
                         <FileText size={12} /> EXPORTER CSV
                     </button>
@@ -749,7 +749,7 @@ export const FinancialFlowView: React.FC = () => {
 
                             doc.save(`QUANTUM_AUDIT_REPORT_${new Date().getTime()}.pdf`);
                         }}
-                        className="text-[10px] font-black text-[#B91C1C] hover:text-[#7F1D1D] transition-colors flex items-center gap-2"
+                        className="text-[10px] font-black text-[var(--accent)] hover:text-[var(--text)] transition-colors flex items-center gap-2"
                     >
                         <Download size={12} /> GÉNÉRER RAPPORT PDF
                     </button>
@@ -760,21 +760,21 @@ export const FinancialFlowView: React.FC = () => {
 };
 
 const StatCard: React.FC<{ icon: any, label: string, value: string, color: string, subText: string, isUrgent?: boolean }> = ({ icon: Icon, label, value, color, subText, isUrgent }) => (
-    <div className={`bg-white p-6 lg:p-8 rounded-[2.5rem] border ${isUrgent ? 'border-red-200' : 'border-slate-100'} shadow-sm relative overflow-hidden group hover:shadow-xl transition-all duration-500`}>
+    <div className={`bg-[var(--surface)] p-6 lg:p-8 rounded-[var(--radius-2xl)] border ${isUrgent ? 'border-[var(--danger)]/20' : 'border-[var(--border)]'} shadow-[var(--shadow-subtle)] relative overflow-hidden group hover:shadow-[var(--shadow-premium)] transition-all duration-500`}>
         <div className="absolute top-0 right-0 p-6 opacity-[0.03] group-hover:scale-125 transition-transform duration-700">
-            <Icon size={80} />
+            <Icon size={80} style={{ color }} />
         </div>
         <div className="relative z-10">
-            <div className="text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] mb-3 flex items-center gap-2">
+            <div className="text-[9px] font-black text-[var(--text-dim)] uppercase tracking-[0.2em] mb-3 flex items-center gap-2">
                 <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: color }}></div> {label}
             </div>
-            <div className="text-2xl lg:text-3xl font-mono-data font-black text-[#0F172A] tracking-tighter mb-2 italic">
+            <div className="text-2xl lg:text-3xl font-mono-data font-black text-[var(--text)] tracking-tighter mb-2 italic">
                 {value}
             </div>
-            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-tight">{subText}</p>
+            <p className="text-[10px] font-bold text-[var(--text-dim)] uppercase tracking-tight">{subText}</p>
         </div>
         {isUrgent && (
-            <div className="absolute bottom-0 left-0 h-1 w-full bg-[#B91C1C] animate-pulse"></div>
+            <div className="absolute bottom-0 left-0 h-1 w-full bg-[var(--danger)] animate-pulse"></div>
         )}
     </div>
 );
@@ -785,8 +785,8 @@ const FilterButton: React.FC<{ active: boolean, onClick: () => void, label: stri
         className={`
             px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all border
             ${active
-                ? (isDanger ? 'bg-red-600 border-red-600 text-white shadow-lg' : 'bg-[#0F172A] border-[#0F172A] text-white shadow-lg')
-                : 'bg-white border-slate-100 text-slate-400 hover:border-slate-200'
+                ? (isDanger ? 'bg-[var(--danger)] border-[var(--danger)] text-white shadow-lg' : 'bg-[var(--primary)] border-[var(--primary)] text-[var(--primary-foreground)] shadow-lg')
+                : 'bg-[var(--surface)] border-[var(--border)] text-[var(--text-dim)] hover:border-[var(--accent)]'
             }
         `}
     >
@@ -800,39 +800,39 @@ const TransactionCard: React.FC<{ transaction: any, onEntityClick: (name: string
 
     return (
         <div className={`
-            bg-white group rounded-[2.5rem] border transition-all duration-500 relative overflow-hidden
-            ${isSuspicious ? 'border-red-200 shadow-xl shadow-red-900/5' : 'border-slate-100 hover:border-slate-200 shadow-sm hover:shadow-lg'}
+            bg-[var(--surface)] group rounded-[var(--radius-2xl)] border transition-all duration-500 relative overflow-hidden
+            ${isSuspicious ? 'border-[var(--danger)]/20 shadow-[var(--shadow-premium)] shadow-red-900/5' : 'border-[var(--border)] hover:border-[var(--accent)]/30 shadow-[var(--shadow-subtle)] hover:shadow-[var(--shadow-soft)]'}
         `}>
             {isSuspicious && (
-                <div className="absolute top-0 left-0 w-1.5 h-full bg-[#B91C1C]"></div>
+                <div className="absolute top-0 left-0 w-1.5 h-full bg-[var(--danger)]"></div>
             )}
 
             <div className="p-6 lg:p-8 flex flex-col xl:flex-row xl:items-center gap-8">
                 {/* Left: Amount & Date */}
                 <div className="xl:w-1/4 shrink-0">
                     <div className="flex items-center gap-4 mb-3">
-                        <div className={`w-10 h-10 rounded-2xl flex items-center justify-center transition-all duration-500 group-hover:rotate-6 ${isSuspicious ? 'bg-[#B91C1C]' : 'bg-slate-900'} text-white shadow-xl`}>
+                        <div className={`w-10 h-10 rounded-[var(--radius-lg)] flex items-center justify-center transition-all duration-500 group-hover:rotate-6 ${isSuspicious ? 'bg-[var(--danger)]' : 'bg-[var(--primary)]'} text-[var(--primary-foreground)] shadow-xl`}>
                             <DollarSign size={18} strokeWidth={3} />
                         </div>
-                        <div className="text-[20px] font-mono-data font-black text-slate-900 tracking-tighter italic">
+                        <div className="text-[20px] font-mono-data font-black text-[var(--text)] tracking-tighter italic">
                             {formatCurrency(transaction.montant, transaction.devise)}
                         </div>
                     </div>
                     <div className="flex flex-wrap items-center gap-2">
-                        <div className="flex items-center gap-1.5 text-[9px] font-black text-slate-300 uppercase tracking-widest bg-slate-50 px-3 py-1 rounded-lg border border-slate-100">
+                        <div className="flex items-center gap-1.5 text-[9px] font-black text-[var(--text-dim)] uppercase tracking-widest bg-[var(--surface-muted)] px-3 py-1 rounded-[var(--radius-md)] border border-[var(--border)]">
                             <Calendar size={10} /> {transaction.date}
                         </div>
                         {(transaction as any).category && (
-                            <span className={`text-[8px] font-black px-2 py-1 rounded flex items-center gap-1 border uppercase tracking-widest ${(transaction as any).category === 'Offshore' ? 'bg-red-50 text-red-600 border-red-100' :
-                                (transaction as any).category === 'Investissement' ? 'bg-blue-50 text-blue-600 border-blue-100' :
-                                    (transaction as any).category === 'Légal' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' :
-                                        'bg-slate-50 text-slate-600 border-slate-100'
+                            <span className={`text-[8px] font-black px-2 py-1 rounded flex items-center gap-1 border uppercase tracking-widest ${(transaction as any).category === 'Offshore' ? 'bg-[var(--danger)]/10 text-[var(--danger)] border-[var(--danger)]/20' :
+                                (transaction as any).category === 'Investissement' ? 'bg-[var(--info)]/10 text-[var(--info)] border-[var(--info)]/20' :
+                                    (transaction as any).category === 'Légal' ? 'bg-[var(--success)]/10 text-[var(--success)] border-[var(--success)]/20' :
+                                        'bg-[var(--surface-muted)] text-[var(--text-dim)] border-[var(--border)]'
                                 }`}>
                                 <Box size={8} /> {(transaction as any).category}
                             </span>
                         )}
                         {isSuspicious && (
-                            <span className="text-[8px] font-black text-red-600 bg-red-50 px-2 py-1 rounded flex items-center gap-1 border border-red-100 animate-pulse">
+                            <span className="text-[8px] font-black text-[var(--danger)] bg-[var(--danger)]/10 px-2 py-1 rounded flex items-center gap-1 border border-[var(--danger)]/20 animate-pulse">
                                 <AlertTriangle size={8} /> ALERTE RISQUE
                             </span>
                         )}
@@ -840,32 +840,32 @@ const TransactionCard: React.FC<{ transaction: any, onEntityClick: (name: string
                 </div>
 
                 {/* Center: Flow Visualization */}
-                <div className="flex-1 flex items-center justify-between gap-6 bg-[#F8FAFC] p-6 rounded-[2rem] border border-slate-50 relative group/flow">
+                <div className="flex-1 flex items-center justify-between gap-6 bg-[var(--surface-muted)] p-6 rounded-[var(--radius-xl)] border border-[var(--border)] relative group/flow">
                     <div className="flex-1 min-w-0">
-                        <div className="text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2 flex items-center gap-2">
-                            <ArrowUpRight size={12} className="text-emerald-500" /> SOURCE D'ÉMISSION
+                        <div className="text-[9px] font-black text-[var(--text-dim)] uppercase tracking-[0.2em] mb-2 flex items-center gap-2">
+                            <ArrowUpRight size={12} className="text-[var(--success)]" /> SOURCE D'ÉMISSION
                         </div>
                         <button
                             onClick={() => onEntityClick(transaction.source)}
-                            className="text-[13px] lg:text-[14px] font-black text-slate-800 hover:text-[#B91C1C] transition-colors font-serif-legal italic text-left truncate w-full"
+                            className="text-[13px] lg:text-[14px] font-black text-[var(--text)] hover:text-[var(--accent)] transition-colors font-legal italic text-left truncate w-full"
                         >
                             {transaction.source}
                         </button>
                     </div>
 
                     <div className="flex flex-col items-center">
-                        <div className="w-12 h-12 bg-white rounded-full border border-slate-100 flex items-center justify-center shadow-lg group-hover/flow:scale-110 transition-transform duration-500 group-hover/flow:border-[#B91C1C]">
-                            <ArrowRight size={20} className={isSuspicious ? 'text-[#B91C1C]' : 'text-slate-300'} />
+                        <div className="w-12 h-12 bg-[var(--surface)] rounded-full border border-[var(--border)] flex items-center justify-center shadow-[var(--shadow-soft)] group-hover/flow:scale-110 transition-transform duration-500 group-hover/flow:border-[var(--accent)]">
+                            <ArrowRight size={20} className={isSuspicious ? 'text-[var(--danger)]' : 'text-[var(--text-dim)]'} />
                         </div>
                     </div>
 
                     <div className="flex-1 min-w-0 text-right">
-                        <div className="text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] mb-2 flex items-center gap-2 justify-end">
-                            CIBLE DE RÉCEPTION <ArrowDownLeft size={12} className="text-red-500" />
+                        <div className="text-[9px] font-black text-[var(--text-dim)] uppercase tracking-[0.2em] mb-2 flex items-center gap-2 justify-end">
+                            CIBLE DE RÉCEPTION <ArrowDownLeft size={12} className="text-[var(--danger)]" />
                         </div>
                         <button
                             onClick={() => onEntityClick(transaction.destination)}
-                            className="text-[13px] lg:text-[14px] font-black text-slate-800 hover:text-[#B91C1C] transition-colors font-serif-legal italic text-right truncate w-full"
+                            className="text-[13px] lg:text-[14px] font-black text-[var(--text)] hover:text-[var(--accent)] transition-colors font-legal italic text-right truncate w-full"
                         >
                             {transaction.destination}
                         </button>
@@ -874,17 +874,17 @@ const TransactionCard: React.FC<{ transaction: any, onEntityClick: (name: string
 
                 {/* Right: Description & Meta */}
                 <div className="xl:w-1/4">
-                    <div className="bg-[#FFFFF0]/40 p-4 rounded-2xl border border-slate-50 italic text-[12px] text-slate-600 leading-relaxed relative group-hover:bg-[#FFFFF0] transition-colors mb-4">
-                        <div className="absolute left-0 top-3 bottom-0 w-1 bg-slate-100 rounded-full group-hover:bg-[#B91C1C] transition-colors"></div>
+                    <div className="bg-[var(--surface-muted)]/40 p-4 rounded-[var(--radius-xl)] border border-[var(--border)] italic text-[12px] text-[var(--text-muted)] leading-relaxed relative group-hover:bg-[var(--surface-muted)] transition-colors mb-4">
+                        <div className="absolute left-0 top-3 bottom-0 w-1 bg-[var(--border)] rounded-full group-hover:bg-[var(--accent)] transition-colors"></div>
                         "{transaction.description}"
                     </div>
                     <div className="flex items-center justify-between">
                         <div className="flex items-center gap-3">
-                            <span className="text-[8px] font-mono-data font-black text-slate-300 uppercase tracking-widest flex items-center gap-1">
+                            <span className="text-[8px] font-mono-data font-black text-[var(--text-dim)] uppercase tracking-widest flex items-center gap-1">
                                 <Layers size={10} /> {transaction.sources.length} SOURCES ({transaction.mentions} MAG.)
                             </span>
-                            <div className="h-3 w-px bg-slate-100"></div>
-                            <span className="text-[8px] font-black text-emerald-600 flex items-center gap-1 uppercase tracking-widest bg-emerald-50 px-2 py-0.5 rounded">
+                            <div className="h-3 w-px bg-[var(--border)]"></div>
+                            <span className="text-[8px] font-black text-[var(--success)] flex items-center gap-1 uppercase tracking-widest bg-[var(--success)]/10 px-2 py-0.5 rounded">
                                 <ShieldCheck size={10} /> Verified
                             </span>
                         </div>
@@ -902,62 +902,62 @@ const EntityProfileCard: React.FC<{ profile: EntityFinanceProfile, onSelect: (na
         <div
             onClick={() => onSelect(profile.name)}
             className={`
-                bg-white p-6 lg:p-8 rounded-[2.5rem] border transition-all duration-500 cursor-pointer group hover:shadow-2xl hover:-translate-y-2
-                ${isRisky ? 'border-red-100 shadow-xl shadow-red-900/5' : 'border-slate-100 shadow-sm'}
+                bg-[var(--surface)] p-6 lg:p-8 rounded-[var(--radius-2xl)] border transition-all duration-500 cursor-pointer group hover:shadow-[var(--shadow-premium)] hover:-translate-y-2
+                ${isRisky ? 'border-[var(--danger)]/20 shadow-[var(--shadow-soft)] shadow-red-900/5' : 'border-[var(--border)] shadow-[var(--shadow-subtle)]'}
             `}
         >
             <div className="flex justify-between items-start mb-6">
                 <div className="flex flex-col gap-2">
-                    <div className="w-12 h-12 bg-slate-50 rounded-2xl flex items-center justify-center group-hover:bg-[#B91C1C] group-hover:text-white transition-all duration-500 shadow-inner">
+                    <div className="w-12 h-12 bg-[var(--surface-muted)] rounded-[var(--radius-lg)] flex items-center justify-center group-hover:bg-[var(--accent)] group-hover:text-white transition-all duration-500 shadow-inner">
                         <User size={24} />
                     </div>
-                    <span className={`text-[8px] font-black px-2 py-1 rounded text-center uppercase tracking-widest border ${profile.role === 'Distributeur' ? 'bg-orange-50 text-orange-600 border-orange-100' :
-                        profile.role === 'Bénéficiaire' ? 'bg-emerald-50 text-emerald-600 border-emerald-100' :
-                            'bg-blue-50 text-blue-600 border-blue-100'
+                    <span className={`text-[8px] font-black px-2 py-1 rounded text-center uppercase tracking-widest border ${profile.role === 'Distributeur' ? 'bg-[var(--warning)]/10 text-[var(--warning)] border-[var(--warning)]/20' :
+                        profile.role === 'Bénéficiaire' ? 'bg-[var(--success)]/10 text-[var(--success)] border-[var(--success)]/20' :
+                            'bg-[var(--info)]/10 text-[var(--info)] border-[var(--info)]/20'
                         }`}>
                         {profile.role}
                     </span>
                 </div>
                 <div className="text-right">
-                    <div className="text-[8px] font-black text-slate-300 uppercase tracking-[0.2em] mb-1">Index de Risque</div>
-                    <div className={`text-xl font-mono-data font-black ${isRisky ? 'text-red-600' : 'text-slate-900'}`}>
+                    <div className="text-[8px] font-black text-[var(--text-dim)] uppercase tracking-[0.2em] mb-1">Index de Risque</div>
+                    <div className={`text-xl font-mono-data font-black ${isRisky ? 'text-[var(--danger)]' : 'text-[var(--text)]'}`}>
                         {Math.round(profile.riskScore)}%
                     </div>
-                    <div className={`text-[11px] font-black mt-2 ${profile.netFlow > 0 ? 'text-emerald-500' : 'text-red-500'}`}>
+                    <div className={`text-[11px] font-black mt-2 ${profile.netFlow > 0 ? 'text-[var(--success)]' : 'text-[var(--danger)]'}`}>
                         {profile.netFlow > 0 ? '+' : ''}{formatCurrency(profile.netFlow, 'USD')}
                     </div>
-                    <div className="text-[7px] font-black text-slate-400 uppercase tracking-widest">Balance Net</div>
+                    <div className="text-[7px] font-black text-[var(--text-dim)] uppercase tracking-widest">Balance Net</div>
                 </div>
             </div>
 
-            <h3 className="text-lg font-black text-slate-900 font-serif-legal italic transition-colors group-hover:text-[#B91C1C] mb-6 truncate">
+            <h3 className="text-lg font-black text-[var(--text)] font-legal italic transition-colors group-hover:text-[var(--accent)] mb-6 truncate">
                 {profile.name}
             </h3>
 
             <div className="space-y-4">
-                <div className="flex justify-between items-center text-[10px] font-bold text-slate-400">
+                <div className="flex justify-between items-center text-[10px] font-bold text-[var(--text-dim)]">
                     <span className="uppercase tracking-widest">Envois</span>
-                    <span className="text-slate-800 font-mono-data">{formatCurrency(profile.totalSent, 'USD')}</span>
+                    <span className="text-[var(--text)] font-mono-data">{formatCurrency(profile.totalSent, 'USD')}</span>
                 </div>
-                <div className="h-1.5 w-full bg-slate-50 rounded-full overflow-hidden">
-                    <div className="h-full bg-slate-900 transition-all duration-1000" style={{ width: `${(profile.totalSent / (profile.totalSent + profile.totalReceived)) * 100}%` }}></div>
+                <div className="h-1.5 w-full bg-[var(--surface-muted)] rounded-full overflow-hidden">
+                    <div className="h-full bg-[var(--primary)] transition-all duration-1000" style={{ width: `${(profile.totalSent / (profile.totalSent + profile.totalReceived)) * 100}%` }}></div>
                 </div>
 
-                <div className="flex justify-between items-center text-[10px] font-bold text-slate-400">
+                <div className="flex justify-between items-center text-[10px] font-bold text-[var(--text-dim)]">
                     <span className="uppercase tracking-widest">Réceptions</span>
-                    <span className="text-slate-800 font-mono-data">{formatCurrency(profile.totalReceived, 'USD')}</span>
+                    <span className="text-[var(--text)] font-mono-data">{formatCurrency(profile.totalReceived, 'USD')}</span>
                 </div>
-                <div className="h-1.5 w-full bg-slate-50 rounded-full overflow-hidden">
-                    <div className="h-full bg-[#B91C1C] transition-all duration-1000" style={{ width: `${(profile.totalReceived / (profile.totalSent + profile.totalReceived)) * 100}%` }}></div>
+                <div className="h-1.5 w-full bg-[var(--surface-muted)] rounded-full overflow-hidden">
+                    <div className="h-full bg-[var(--accent)] transition-all duration-1000" style={{ width: `${(profile.totalReceived / (profile.totalSent + profile.totalReceived)) * 100}%` }}></div>
                 </div>
             </div>
 
-            <div className="mt-8 pt-6 border-t border-slate-50 flex justify-between items-center">
+            <div className="mt-8 pt-6 border-t border-[var(--border)] flex justify-between items-center">
                 <div className="flex items-center gap-2">
-                    <Activity size={14} className="text-slate-300" />
-                    <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">{profile.transactionCount} Événements</span>
+                    <Activity size={14} className="text-[var(--text-dim)]" />
+                    <span className="text-[9px] font-black text-[var(--text-dim)] uppercase tracking-widest">{profile.transactionCount} Événements</span>
                 </div>
-                <button className="p-2 rounded-xl bg-slate-50 text-slate-400 opacity-0 group-hover:opacity-100 transition-all hover:bg-[#B91C1C] hover:text-white">
+                <button className="p-2 rounded-xl bg-[var(--surface-muted)] text-[var(--text-dim)] opacity-0 group-hover:opacity-100 transition-all hover:bg-[var(--accent)] hover:text-white">
                     <Maximize2 size={14} />
                 </button>
             </div>

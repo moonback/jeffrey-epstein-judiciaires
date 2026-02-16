@@ -57,28 +57,28 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ history, onD
   }, [allDocuments, searchTerm, activeType]);
 
   return (
-    <div className="flex flex-col h-full bg-[#F8FAFC] overflow-hidden relative">
+    <div className="flex flex-col h-full bg-[var(--background)] overflow-hidden relative">
       <div className="absolute inset-0 z-0 pointer-events-none opacity-[0.25] report-paper"></div>
 
       <PageHeader
         title="Archives"
         titleHighlight="Centrales"
         icon={DatabaseIcon}
-        badgeText="Vault_Sync_ v4.0"
+        badgeText=""
         searchQuery={searchTerm}
         onSearchChange={setSearchTerm}
         totalLabel="Base Documentaire"
         totalCount={filteredDocs.length}
         stats={[
-          { label: "Indexation Forensique", value: "", icon: <div className="w-1.5 h-1.5 rounded-full bg-[#DC2626] animate-pulse"></div> },
-          { label: "Niveau 5", value: "", icon: <ShieldCheck size={12} className="text-[#DC2626]" /> }
+          { label: "Indexation Forensique", value: "", icon: <div className="w-1.5 h-1.5 rounded-full bg-[var(--accent)] animate-pulse"></div> },
+          { label: "Niveau 5", value: "", icon: <ShieldCheck size={12} className="text-[var(--accent)]" /> }
         ]}
       >
         <button
           onClick={() => setActiveType('ALL')}
           className={`px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest transition-all border shrink-0 ${activeType === 'ALL'
-            ? 'bg-[#0F172A] text-white border-[#0F172A] shadow-lg shadow-slate-900/10'
-            : 'bg-white text-slate-500 border-slate-200 hover:border-[#DC2626] hover:text-[#DC2626]'
+            ? 'bg-[var(--primary)] text-[var(--primary-foreground)] border-[var(--primary)] shadow-[var(--shadow-soft)]'
+            : 'bg-[var(--surface)] text-[var(--text-muted)] border-[var(--border)] hover:border-[var(--accent)] hover:text-[var(--accent)]'
             }`}
         >
           Tout ({allDocuments.length})
@@ -88,8 +88,8 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ history, onD
             key={type}
             onClick={() => setActiveType(type)}
             className={`px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest transition-all border shrink-0 ${activeType === type
-              ? 'bg-[#0F172A] text-white border-[#0F172A] shadow-lg shadow-slate-900/10'
-              : 'bg-white text-slate-500 border-slate-200 hover:border-[#DC2626] hover:text-[#DC2626]'
+              ? 'bg-[var(--primary)] text-[var(--primary-foreground)] border-[var(--primary)] shadow-[var(--shadow-soft)]'
+              : 'bg-[var(--surface)] text-[var(--text-muted)] border-[var(--border)] hover:border-[var(--accent)] hover:text-[var(--accent)]'
               }`}
           >
             {type}
@@ -103,58 +103,58 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ history, onD
             {filteredDocs.map((item, idx) => (
               <div
                 key={`${item.investigationId}-${idx}`}
-                className="group relative bg-white rounded-2xl border border-slate-100 hover:border-[#DC2626]/20 transition-all duration-500 flex flex-col overflow-hidden shadow-sm hover:shadow-lg animate-pro-reveal"
+                className="group relative bg-[var(--surface)] rounded-[var(--radius-xl)] border border-[var(--border)] hover:border-[var(--accent)]/20 transition-all duration-500 flex flex-col overflow-hidden shadow-[var(--shadow-subtle)] hover:shadow-[var(--shadow-premium)] animate-reveal"
                 style={{ animationDelay: `${idx * 0.05}s` }}
               >
                 {/* ID Background Decoration Compact */}
                 <div className="absolute top-0 right-0 p-4 opacity-[0.02] group-hover:opacity-[0.04] transition-opacity pointer-events-none">
-                  <Cpu size={60} className="text-black" />
+                  <Cpu size={60} className="text-[var(--text)]" />
                 </div>
 
-                <div className="p-5 pb-2 relative border-b border-slate-50">
+                <div className="p-5 pb-2 relative border-b border-[var(--surface-muted)]">
                   <div className="flex justify-between items-start gap-3 mb-3">
                     <div className="flex flex-wrap gap-2">
-                      <span className="px-2.5 py-1 rounded-md bg-[#0F172A] text-white text-[9px] font-black uppercase tracking-wider shadow-sm">
+                      <span className="px-2.5 py-1 rounded-md bg-[var(--primary)] text-[var(--primary-foreground)] text-[9px] font-black uppercase tracking-wider shadow-sm">
                         {item.doc.type || 'ST'}
                       </span>
                       {item.doc.date && (
-                        <span className="px-2.5 py-1 rounded-md bg-slate-100 text-slate-500 text-[9px] font-black uppercase tracking-wider flex items-center gap-1">
+                        <span className="px-2.5 py-1 rounded-md bg-[var(--surface-muted)] text-[var(--text-muted)] text-[9px] font-black uppercase tracking-wider flex items-center gap-1">
                           <Calendar size={10} /> {item.doc.date}
                         </span>
                       )}
                     </div>
                     <button
                       onClick={() => onOpenInvestigation(item.investigationId)}
-                      className="w-8 h-8 rounded-xl bg-slate-50 hover:bg-[#DC2626] flex items-center justify-center text-slate-400 hover:text-white transition-all shadow-sm"
+                      className="w-8 h-8 rounded-xl bg-[var(--surface-muted)] hover:bg-[var(--accent)] flex items-center justify-center text-[var(--text-dim)] hover:text-white transition-all shadow-sm"
                       title="Ouvrir le dossier complet"
                     >
                       <ArrowUpRight size={16} />
                     </button>
                   </div>
-                  <h3 className="text-[#020617] font-bold text-lg leading-tight group-hover:text-[#DC2626] transition-colors line-clamp-2 font-display mb-1">
+                  <h3 className="text-[var(--text)] font-bold text-lg leading-tight group-hover:text-[var(--accent)] transition-colors line-clamp-2 font-display mb-1">
                     {item.doc.title}
                   </h3>
-                  <div className="text-[10px] text-slate-400 font-mono-data uppercase tracking-tight">
+                  <div className="text-[10px] text-[var(--text-dim)] font-mono-data uppercase tracking-tight">
                     REF: {item.investigationId.split('-')[1]} • SRCE: {item.investigationQuery.substring(0, 15)}...
                   </div>
                 </div>
 
                 <div className="px-5 py-4 space-y-4 flex-1 relative">
                   <div className="relative">
-                    <p className="text-slate-600 text-sm leading-relaxed line-clamp-3 font-medium font-serif-legal">
+                    <p className="text-[var(--text-muted)] text-sm leading-relaxed line-clamp-3 font-medium font-legal">
                       "{item.doc.description}"
                     </p>
                   </div>
 
                   {Array.isArray(item.doc.key_facts) && item.doc.key_facts.length > 0 && (
                     <div className="space-y-2.5">
-                      <div className="text-[10px] font-black text-slate-300 uppercase tracking-widest flex items-center gap-2">
+                      <div className="text-[10px] font-black text-[var(--text-dim)] uppercase tracking-widest flex items-center gap-2">
                         <Activity size={10} /> Points Clés
                       </div>
                       <ul className="space-y-2">
                         {item.doc.key_facts.slice(0, 3).map((fact, fidx) => (
-                          <li key={fidx} className="flex items-start gap-2.5 text-xs text-slate-600 leading-snug">
-                            <span className="w-1.5 h-1.5 rounded-full bg-[#DC2626]/60 mt-1.5 shrink-0 shadow-[0_0_8px_rgba(220,38,38,0.2)]"></span>
+                          <li key={fidx} className="flex items-start gap-2.5 text-xs text-[var(--text-muted)] leading-snug">
+                            <span className="w-1.5 h-1.5 rounded-full bg-[var(--accent)]/60 mt-1.5 shrink-0 shadow-[0_0_8px_rgba(220,38,38,0.2)]"></span>
                             <span className="line-clamp-2">{fact}</span>
                           </li>
                         ))}
@@ -168,7 +168,7 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ history, onD
                     <div className="flex gap-2">
                       <button
                         onClick={() => onDeepDive(item.doc.title, 'simple')}
-                        className="flex-1 py-2.5 bg-slate-50 hover:bg-white border border-slate-100 hover:border-[#DC2626]/20 text-slate-500 hover:text-[#DC2626] rounded-xl text-[9px] font-black uppercase tracking-wider transition-all flex items-center justify-center gap-2 group/btn"
+                        className="flex-1 py-2.5 bg-[var(--surface-muted)] hover:bg-[var(--surface)] border border-[var(--border)] hover:border-[var(--accent)]/20 text-[var(--text-muted)] hover:text-[var(--accent)] rounded-[var(--radius-md)] text-[9px] font-black uppercase tracking-wider transition-all flex items-center justify-center gap-2 group/btn"
                         title="Résumé simple pour compréhension rapide"
                       >
                         <BookOpen size={12} className="opacity-50 group-hover/btn:opacity-100" />
@@ -176,7 +176,7 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ history, onD
                       </button>
                       <button
                         onClick={() => onDeepDive(item.doc.title, 'technical')}
-                        className="flex-1 py-2.5 bg-slate-50 hover:bg-white border border-slate-100 hover:border-[#0F4C81]/20 text-slate-500 hover:text-[#0F4C81] rounded-xl text-[9px] font-black uppercase tracking-wider transition-all flex items-center justify-center gap-2 group/btn"
+                        className="flex-1 py-2.5 bg-[var(--surface-muted)] hover:bg-[var(--surface)] border border-[var(--border)] hover:border-[var(--info)]/20 text-[var(--text-muted)] hover:text-[var(--info)] rounded-[var(--radius-md)] text-[9px] font-black uppercase tracking-wider transition-all flex items-center justify-center gap-2 group/btn"
                         title="Analyse technique et juridique détaillée"
                       >
                         <GraduationCap size={12} className="opacity-50 group-hover/btn:opacity-100" />
@@ -184,7 +184,7 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ history, onD
                       </button>
                       <button
                         onClick={() => onDeepDive(item.doc.title, 'standard')}
-                        className="flex-1 py-2.5 bg-[#DC2626] hover:bg-[#B91C1C] text-white rounded-xl text-[9px] font-black uppercase tracking-wider transition-all shadow-lg shadow-red-900/20 active:scale-95 flex items-center justify-center gap-2"
+                        className="flex-1 py-2.5 bg-[var(--accent)] hover:opacity-90 text-[var(--accent-foreground)] rounded-[var(--radius-md)] text-[9px] font-black uppercase tracking-wider transition-all shadow-lg active:scale-95 flex items-center justify-center gap-2"
                         title="Analyse approfondie par l'IA"
                       >
                         <Zap size={12} fill="currentColor" />
@@ -198,16 +198,16 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ history, onD
             ))}
           </div>
         ) : (
-          <div className="flex flex-col items-center justify-center h-[500px] border border-slate-100 rounded-3xl bg-white animate-pro-reveal relative overflow-hidden group">
-            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[#DC2626]/5 to-transparent -translate-y-full group-hover:translate-y-full transition-transform duration-2000 pointer-events-none"></div>
+          <div className="flex flex-col items-center justify-center h-[500px] border border-[var(--border)] rounded-[var(--radius-2xl)] bg-[var(--surface)] animate-reveal relative overflow-hidden group">
+            <div className="absolute inset-0 bg-gradient-to-b from-transparent via-[var(--accent)]/5 to-transparent -translate-y-full group-hover:translate-y-full transition-transform duration-2000 pointer-events-none"></div>
             <div className="relative mb-8">
-              <div className="absolute inset-0 bg-[#DC2626] blur-[60px] opacity-10"></div>
-              <div className="relative w-24 h-24 bg-slate-50 rounded-3xl flex items-center justify-center shadow-inner">
-                <DatabaseIcon size={40} className="text-slate-200" strokeWidth={1} />
+              <div className="absolute inset-0 bg-[var(--accent)] blur-[60px] opacity-10"></div>
+              <div className="relative w-24 h-24 bg-[var(--surface-muted)] rounded-[var(--radius-xl)] flex items-center justify-center shadow-inner">
+                <DatabaseIcon size={40} className="text-[var(--text-dim)]" strokeWidth={1} />
               </div>
             </div>
-            <h3 className="text-xl font-black text-[#020617] uppercase tracking-[0.4em] italic font-serif-legal">Archives Standby</h3>
-            <p className="max-w-md mt-4 text-slate-400 font-black text-[9px] uppercase tracking-widest text-center leading-relaxed">
+            <h3 className="text-xl font-black text-[var(--text)] uppercase tracking-[0.4em] italic font-legal">Archives Standby</h3>
+            <p className="max-w-md mt-4 text-[var(--text-dim)] font-black text-[9px] uppercase tracking-widest text-center leading-relaxed">
               Le moteur d'indexation n'a détecté aucun flux compatible. <br />Initialisation requise.
             </p>
           </div>
@@ -216,7 +216,7 @@ export const ResultsDashboard: React.FC<ResultsDashboardProps> = ({ history, onD
 
       {/* Side Label */}
       <div className="hidden 2xl:block fixed right-4 top-1/2 -translate-y-1/2 -rotate-90 origin-right pointer-events-none z-10">
-        <span className="text-[9px] font-black text-slate-200 uppercase tracking-[1em] whitespace-nowrap">SECURED DATABASE ACCESS PROTOCOL 4.0</span>
+        <span className="text-[9px] font-black text-[var(--text-dim)]/20 uppercase tracking-[1em] whitespace-nowrap">SECURED DATABASE ACCESS PROTOCOL 5.0</span>
       </div>
     </div>
   );

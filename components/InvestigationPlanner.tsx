@@ -72,20 +72,20 @@ export const InvestigationPlanner: React.FC<InvestigationPlannerProps> = ({ onSt
     };
 
     return (
-        <div className="bg-white rounded-[3rem] border border-slate-100 overflow-hidden shadow-2xl shadow-slate-200/50 flex flex-col h-full animate-pro-reveal relative group/planner">
+        <div className="bg-[var(--surface)] rounded-[var(--radius-2xl)] border border-[var(--border)] overflow-hidden shadow-[var(--shadow-premium)] flex flex-col h-full animate-pro-reveal relative group/planner">
             <div className="absolute inset-0 z-0 pointer-events-none opacity-[0.25] report-paper"></div>
 
             {/* Header */}
-            <div className="p-8 lg:p-10 bg-[#F8FAFC]/50 border-b border-slate-100 backdrop-blur-sm relative z-10">
+            <div className="p-8 lg:p-10 bg-[var(--surface-muted)]/50 border-b border-[var(--border)] backdrop-blur-sm relative z-10">
                 <div className="flex items-center gap-6 mb-6">
-                    <div className="w-12 h-12 bg-black rounded-[1.2rem] flex items-center justify-center shadow-xl group/icon transition-all">
-                        <FileSearch size={22} className="text-white group-hover/icon:scale-110 transition-transform" />
+                    <div className="w-12 h-12 bg-[var(--primary)] rounded-xl flex items-center justify-center shadow-xl group/icon transition-all">
+                        <FileSearch size={22} className="text-[var(--primary-foreground)] group-hover/icon:scale-110 transition-transform" />
                     </div>
                     <div>
-                        <h2 className="text-lg lg:text-xl font-black text-[#0F172A] italic uppercase font-serif-legal tracking-tight">Poste de <span className="text-[#B91C1C]">Commande</span></h2>
+                        <h2 className="text-lg lg:text-xl font-black text-[var(--text)] italic uppercase font-legal tracking-tight">Poste de <span className="text-[var(--accent)]">Commande</span></h2>
                         <div className="flex items-center gap-2 mt-1">
-                            <div className="w-1.5 h-1.5 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_8px_rgba(16,185,129,0.5)]"></div>
-                            <span className="text-[10px] font-black text-slate-400 uppercase tracking-[0.3em]">Agent Analytique Déployé v4.0</span>
+                            <div className="w-1.5 h-1.5 rounded-full bg-[var(--success)] animate-pulse shadow-[0_0_8px_var(--success)]"></div>
+                            <span className="text-[10px] font-black text-[var(--text-dim)] uppercase tracking-[0.3em]">Agent Analytique Déployé v4.0</span>
                         </div>
                     </div>
                 </div>
@@ -96,28 +96,28 @@ export const InvestigationPlanner: React.FC<InvestigationPlannerProps> = ({ onSt
                 {activeTab !== 'upload' && (
                     <section className="space-y-6 animate-in slide-in-from-left-4 duration-500">
                         <div className="flex items-center gap-4 mb-6">
-                            <div className="h-[1px] w-8 bg-[#B91C1C]"></div>
-                            <h3 className="text-[10px] font-black uppercase tracking-[0.4em] text-[#B91C1C]">01. Périmètre de Recherche</h3>
+                            <div className="h-[1px] w-8 bg-[var(--accent)]"></div>
+                            <h3 className="text-[10px] font-black uppercase tracking-[0.4em] text-[var(--accent)]">01. Périmètre de Recherche</h3>
                         </div>
                         <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 gap-4">
                             {DOJ_SOURCES.map((source) => (
                                 <button
                                     key={source.id}
                                     onClick={() => setSelectedSource(source.id)}
-                                    className={`flex flex-col p-5 rounded-2xl border transition-all text-left relative group/source ${selectedSource === source.id
-                                        ? 'bg-white border-[#B91C1C] shadow-xl shadow-red-900/5 ring-1 ring-[#B91C1C]/10'
-                                        : 'bg-white border-slate-100 hover:bg-[#F8FAFC] hover:border-slate-300'
+                                    className={`flex flex-col p-5 rounded-xl border transition-all text-left relative group/source ${selectedSource === source.id
+                                        ? 'bg-[var(--surface)] border-[var(--accent)] shadow-[var(--shadow-premium)] ring-1 ring-[var(--accent)]/10'
+                                        : 'bg-[var(--surface)] border-[var(--border)] hover:bg-[var(--surface-muted)] hover:border-[var(--border-strong)]'
                                         }`}
                                 >
                                     {selectedSource === source.id && (
                                         <div className="absolute top-4 right-4 animate-in fade-in zoom-in">
-                                            <div className="w-2.5 h-2.5 rounded-full bg-[#B91C1C] shadow-[0_0_12px_rgba(185,28,28,0.4)]"></div>
+                                            <div className="w-2.5 h-2.5 rounded-full bg-[var(--accent)] shadow-[0_0_12px_var(--accent)]"></div>
                                         </div>
                                     )}
-                                    <div className={`text-[12px] font-black mb-1.5 uppercase tracking-wide transition-colors italic font-serif-legal ${selectedSource === source.id ? 'text-[#B91C1C]' : 'text-[#0F172A]'}`}>
+                                    <div className={`text-[12px] font-black mb-1.5 uppercase tracking-wide transition-colors italic font-legal ${selectedSource === source.id ? 'text-[var(--accent)]' : 'text-[var(--text)]'}`}>
                                         {source.name}
                                     </div>
-                                    <span className="text-[10px] text-slate-400 font-bold leading-relaxed">{source.description}</span>
+                                    <span className="text-[10px] text-[var(--text-dim)] font-bold leading-relaxed">{source.description}</span>
                                 </button>
                             ))}
                         </div>
@@ -127,29 +127,29 @@ export const InvestigationPlanner: React.FC<InvestigationPlannerProps> = ({ onSt
                 {/* Query Input */}
                 <section className="space-y-6">
                     <div className="flex items-center gap-4 mb-6">
-                        <div className="h-[1px] w-8 bg-[#B91C1C]"></div>
-                        <h3 className="text-[10px] font-black uppercase tracking-[0.4em] text-[#B91C1C]">
+                        <div className="h-[1px] w-8 bg-[var(--accent)]"></div>
+                        <h3 className="text-[10px] font-black uppercase tracking-[0.4em] text-[var(--accent)]">
                             {activeTab === 'upload' ? '01. Import & Analyse' : '02. Paramètres du Neural Agent'}
                         </h3>
                     </div>
 
-                    <div className="bg-white rounded-[2rem] border border-slate-100 overflow-hidden shadow-sm">
-                        <div className="flex border-b border-slate-100 bg-[#F8FAFC]">
+                    <div className="bg-[var(--surface)] rounded-[var(--radius-xl)] border border-[var(--border)] overflow-hidden shadow-[var(--shadow-subtle)]">
+                        <div className="flex border-b border-[var(--border)] bg-[var(--surface-muted)]">
                             <button
                                 onClick={() => setActiveTab('dataset')}
-                                className={`flex-1 py-4 text-[10px] font-black uppercase tracking-[0.3em] transition-all border-b-2 font-serif-legal italic ${activeTab === 'dataset' ? 'border-[#B91C1C] text-[#B91C1C] bg-white' : 'border-transparent text-slate-400 hover:text-slate-600'}`}
+                                className={`flex-1 py-4 text-[10px] font-black uppercase tracking-[0.3em] transition-all border-b-2 font-legal italic ${activeTab === 'dataset' ? 'border-[var(--accent)] text-[var(--accent)] bg-[var(--surface)]' : 'border-transparent text-[var(--text-dim)] hover:text-[var(--text-muted)]'}`}
                             >
                                 Modèles Prédéfinis
                             </button>
                             <button
                                 onClick={() => setActiveTab('custom')}
-                                className={`flex-1 py-4 text-[10px] font-black uppercase tracking-[0.3em] transition-all border-b-2 font-serif-legal italic ${activeTab === 'custom' ? 'border-[#B91C1C] text-[#B91C1C] bg-white' : 'border-transparent text-slate-400 hover:text-slate-600'}`}
+                                className={`flex-1 py-4 text-[10px] font-black uppercase tracking-[0.3em] transition-all border-b-2 font-legal italic ${activeTab === 'custom' ? 'border-[var(--accent)] text-[var(--accent)] bg-[var(--surface)]' : 'border-transparent text-[var(--text-dim)] hover:text-[var(--text-muted)]'}`}
                             >
                                 Requête Dynamique
                             </button>
                             <button
                                 onClick={() => setActiveTab('upload')}
-                                className={`flex-1 py-4 text-[10px] font-black uppercase tracking-[0.3em] transition-all border-b-2 font-serif-legal italic ${activeTab === 'upload' ? 'border-[#B91C1C] text-[#B91C1C] bg-white' : 'border-transparent text-slate-400 hover:text-slate-600'}`}
+                                className={`flex-1 py-4 text-[10px] font-black uppercase tracking-[0.3em] transition-all border-b-2 font-legal italic ${activeTab === 'upload' ? 'border-[var(--accent)] text-[var(--accent)] bg-[var(--surface)]' : 'border-transparent text-[var(--text-dim)] hover:text-[var(--text-muted)]'}`}
                             >
                                 Import Direct PDF
                             </button>
@@ -163,12 +163,12 @@ export const InvestigationPlanner: React.FC<InvestigationPlannerProps> = ({ onSt
                                             key={idx}
                                             onClick={() => setCustomQuery(q.query)}
                                             className={`flex items-center justify-between p-4 rounded-xl border text-left transition-all group/q ${customQuery === q.query
-                                                ? 'bg-[#FEF2F2]/50 border-[#B91C1C]'
-                                                : 'bg-white border-slate-100 hover:bg-[#F8FAFC] hover:border-slate-300 shadow-sm'
+                                                ? 'bg-[var(--accent)]/5 border-[var(--accent)]'
+                                                : 'bg-[var(--surface)] border-[var(--border)] hover:bg-[var(--surface-muted)] hover:border-[var(--border-strong)] shadow-sm'
                                                 }`}
                                         >
-                                            <span className={`text-[12px] font-bold tracking-tight ${customQuery === q.query ? 'text-[#B91C1C]' : 'text-slate-600 group-hover/q:text-[#0F172A]'}`}>{q.label}</span>
-                                            <div className={`w-8 h-8 rounded-lg flex items-center justify-center transition-all ${customQuery === q.query ? 'bg-[#B91C1C] text-white rotate-90 scale-110' : 'bg-slate-50 text-slate-300'}`}>
+                                            <span className={`text-[12px] font-bold tracking-tight ${customQuery === q.query ? 'text-[var(--accent)]' : 'text-[var(--text-dim)] group-hover/q:text-[var(--text)]'}`}>{q.label}</span>
+                                            <div className={`w-8 h-8 rounded-lg flex items-center justify-center transition-all ${customQuery === q.query ? 'bg-[var(--accent)] text-white rotate-90 scale-110' : 'bg-[var(--surface-muted)] text-[var(--text-dim)]'}`}>
                                                 <ChevronRight size={14} />
                                             </div>
                                         </button>
@@ -177,7 +177,7 @@ export const InvestigationPlanner: React.FC<InvestigationPlannerProps> = ({ onSt
                             ) : activeTab === 'upload' ? (
                                 <div className="space-y-6 animate-in fade-in duration-300">
                                     <div
-                                        className={`border-2 border-dashed rounded-2xl p-10 flex flex-col items-center justify-center transition-all cursor-pointer ${uploadedFile ? 'border-[#B91C1C] bg-[#FEF2F2]/30' : 'border-slate-200 hover:border-[#B91C1C] hover:bg-slate-50'}`}
+                                        className={`border-2 border-dashed rounded-xl p-10 flex flex-col items-center justify-center transition-all cursor-pointer ${uploadedFile ? 'border-[var(--accent)] bg-[var(--accent)]/5' : 'border-[var(--border)] hover:border-[var(--accent)] hover:bg-[var(--surface-muted)]'}`}
                                         onDragOver={(e) => e.preventDefault()}
                                         onDrop={handleDrop}
                                         onClick={() => fileInputRef.current?.click()}
@@ -192,30 +192,30 @@ export const InvestigationPlanner: React.FC<InvestigationPlannerProps> = ({ onSt
 
                                         {uploadedFile ? (
                                             <div className="flex flex-col items-center">
-                                                <div className="w-16 h-16 bg-[#B91C1C] rounded-2xl flex items-center justify-center shadow-lg mb-4">
+                                                <div className="w-16 h-16 bg-[var(--accent)] rounded-xl flex items-center justify-center shadow-lg mb-4">
                                                     <FileIcon size={32} className="text-white" />
                                                 </div>
-                                                <h3 className="text-lg font-black text-[#0F172A] mb-1">{uploadedFile.name}</h3>
-                                                <div className="flex items-center gap-3 text-xs font-bold text-slate-400">
+                                                <h3 className="text-lg font-black text-[var(--text)] mb-1">{uploadedFile.name}</h3>
+                                                <div className="flex items-center gap-3 text-xs font-bold text-[var(--text-dim)]">
                                                     <span>{(uploadedFile.size / 1024 / 1024).toFixed(2)} MB</span>
-                                                    <div className="w-1 h-1 rounded-full bg-slate-300"></div>
+                                                    <div className="w-1 h-1 rounded-full bg-[var(--border)]"></div>
                                                     <span className="uppercase">{uploadedFile.type || 'Fichier Inconnu'}</span>
                                                 </div>
                                                 <button
                                                     onClick={(e) => { e.stopPropagation(); setUploadedFile(null); }}
-                                                    className="mt-6 px-4 py-2 bg-white border border-slate-200 rounded-lg text-xs font-bold text-slate-500 hover:text-[#B91C1C] hover:border-[#B91C1C] transition-all"
+                                                    className="mt-6 px-4 py-2 bg-[var(--surface)] border border-[var(--border)] rounded-lg text-xs font-bold text-[var(--text-dim)] hover:text-[var(--accent)] hover:border-[var(--accent)] transition-all"
                                                 >
                                                     Changer de fichier
                                                 </button>
                                             </div>
                                         ) : (
                                             <>
-                                                <div className="w-16 h-16 bg-slate-50 rounded-full flex items-center justify-center mb-6 group-hover:bg-[#FEF2F2] transition-colors">
-                                                    <Upload size={32} className="text-slate-300 group-hover:text-[#B91C1C] transition-colors" />
+                                                <div className="w-48 h-12 bg-[var(--surface-muted)] rounded-full flex items-center justify-center mb-6 group-hover:bg-[var(--accent)]/10 transition-colors">
+                                                    <Upload size={32} className="text-[var(--text-dim)] group-hover:text-[var(--accent)] transition-colors" />
                                                 </div>
-                                                <h3 className="text-sm font-black text-[#0F172A] uppercase tracking-wider mb-2">Glisser-déposer le dossier PDF</h3>
-                                                <p className="text-xs text-slate-400 font-bold mb-6">ou cliquer pour parcourir les fichiers locaux</p>
-                                                <div className="flex items-center gap-2 text-[9px] font-black text-slate-300 uppercase tracking-widest border border-slate-100 px-3 py-1.5 rounded-lg bg-white">
+                                                <h3 className="text-sm font-black text-[var(--text)] uppercase tracking-wider mb-2">Glisser-déposer le dossier PDF</h3>
+                                                <p className="text-xs text-[var(--text-dim)] font-bold mb-6">ou cliquer pour parcourir les fichiers locaux</p>
+                                                <div className="flex items-center gap-2 text-[9px] font-black text-[var(--text-dim)] uppercase tracking-widest border border-[var(--border)] px-3 py-1.5 rounded-lg bg-[var(--surface)]">
                                                     PDF • IMG • TXT • MD SUPPORTED
                                                 </div>
                                             </>
@@ -223,12 +223,12 @@ export const InvestigationPlanner: React.FC<InvestigationPlannerProps> = ({ onSt
                                     </div>
 
                                     <div className="relative group/textarea">
-                                        <label className="text-[10px] font-black uppercase tracking-widest text-slate-400 mb-2 block ml-2">Instructions d'analyse optionnelles</label>
+                                        <label className="text-[10px] font-black uppercase tracking-widest text-[var(--text-dim)] mb-2 block ml-2">Instructions d'analyse optionnelles</label>
                                         <textarea
                                             value={customQuery}
                                             onChange={(e) => setCustomQuery(e.target.value)}
                                             placeholder="Ex: Identifiez toutes les entités mentionnées et les dates clés..."
-                                            className="w-full h-24 bg-[#F8FAFC] rounded-[1.5rem] p-6 text-[14px] text-[#0F172A] border border-slate-100 focus:border-[#B91C1C] focus:bg-white transition-all outline-none resize-none placeholder-slate-300 font-medium leading-relaxed shadow-inner"
+                                            className="w-full h-24 bg-[var(--surface-muted)] rounded-xl p-6 text-[14px] text-[var(--text)] border border-[var(--border)] focus:border-[var(--accent)] focus:bg-[var(--surface)] transition-all outline-none resize-none placeholder-[var(--text-dim)] font-medium leading-relaxed shadow-inner"
                                         />
                                     </div>
                                 </div>
@@ -238,10 +238,10 @@ export const InvestigationPlanner: React.FC<InvestigationPlannerProps> = ({ onSt
                                         value={customQuery}
                                         onChange={(e) => setCustomQuery(e.target.value)}
                                         placeholder="Saisissez vos mots-clés, noms de cibles ou contextes juridiques spécifiques..."
-                                        className="w-full h-40 bg-[#F8FAFC] rounded-[1.5rem] p-6 text-[14px] text-[#0F172A] border border-slate-100 focus:border-[#B91C1C] focus:bg-white transition-all outline-none resize-none placeholder-slate-300 font-medium leading-relaxed shadow-inner"
+                                        className="w-full h-40 bg-[var(--surface-muted)] rounded-xl p-6 text-[14px] text-[var(--text)] border border-[var(--border)] focus:border-[var(--accent)] focus:bg-[var(--surface)] transition-all outline-none resize-none placeholder-[var(--text-dim)] font-medium leading-relaxed shadow-inner"
                                     />
                                     <div className="absolute bottom-6 right-8 opacity-[0.03] group-focus-within/textarea:opacity-[0.08] transition-opacity pointer-events-none">
-                                        <ShieldCheck size={60} className="text-black" />
+                                        <ShieldCheck size={60} className="text-[var(--text)]" />
                                     </div>
                                 </div>
                             )}
@@ -251,13 +251,13 @@ export const InvestigationPlanner: React.FC<InvestigationPlannerProps> = ({ onSt
 
                 {/* Grounding Info - Hide for Upload mode to emphasize local analaysis */}
                 {activeTab !== 'upload' && (
-                    <div className="p-5 bg-emerald-50/30 border border-emerald-100/50 rounded-[1.5rem] flex gap-5 items-center animate-in slide-in-from-bottom-4 duration-500">
-                        <div className="w-10 h-10 bg-white rounded-xl border border-emerald-100 shadow-sm text-emerald-600 shrink-0 flex items-center justify-center">
+                    <div className="p-5 bg-[var(--success)]/5 border border-[var(--success)]/20 rounded-xl flex gap-5 items-center animate-in slide-in-from-bottom-4 duration-500">
+                        <div className="w-10 h-10 bg-[var(--surface)] rounded-xl border border-[var(--border)] shadow-sm text-[var(--success)] shrink-0 flex items-center justify-center">
                             <Zap size={18} fill="currentColor" className="animate-pulse" />
                         </div>
                         <div>
-                            <span className="text-[9px] font-black uppercase tracking-[0.3em] text-emerald-700 block mb-1">Grounding Architecture</span>
-                            <p className="text-[12px] text-emerald-800/80 leading-relaxed font-bold italic">
+                            <span className="text-[9px] font-black uppercase tracking-[0.3em] text-[var(--success)] block mb-1">Grounding Architecture</span>
+                            <p className="text-[12px] text-[var(--text-muted)] leading-relaxed font-bold italic">
                                 Les résultats sont systématiquement croisés avec les sources officielles du Department of Justice pour garantir l'intégrité des preuves.
                             </p>
                         </div>
@@ -266,13 +266,13 @@ export const InvestigationPlanner: React.FC<InvestigationPlannerProps> = ({ onSt
             </div>
 
             {/* Footer / Submit */}
-            <div className="p-8 lg:p-10 bg-[#F8FAFC]/50 border-t border-slate-100 relative z-10 backdrop-blur-sm">
+            <div className="p-8 lg:p-10 bg-[var(--surface-muted)]/50 border-t border-[var(--border)] relative z-10 backdrop-blur-sm">
                 <button
                     onClick={handleStart}
                     disabled={(activeTab === 'custom' && !customQuery) || (activeTab === 'upload' && !uploadedFile)}
                     className={`w-full h-14 flex items-center justify-center gap-4 rounded-xl font-black uppercase tracking-[0.3em] text-[11px] transition-all relative overflow-hidden group shadow-xl ${((activeTab === 'custom' && !customQuery) || (activeTab === 'upload' && !uploadedFile))
-                        ? 'bg-slate-100 text-slate-300 cursor-not-allowed shadow-none'
-                        : 'bg-[#0F172A] text-white hover:bg-[#B91C1C] active:scale-[0.98] shadow-red-900/10'
+                        ? 'bg-[var(--surface-muted)] text-[var(--text-dim)] cursor-not-allowed shadow-none'
+                        : 'bg-[var(--primary)] text-[var(--primary-foreground)] hover:bg-[var(--accent)] active:scale-[0.98] shadow-[var(--accent)]/10'
                         }`}
                 >
                     <div className="relative z-10 flex items-center gap-3">

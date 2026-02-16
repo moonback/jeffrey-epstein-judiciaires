@@ -166,26 +166,26 @@ export const AssetsView: React.FC = () => {
 
     const getTypeColor = (type: string) => {
         switch (type) {
-            case 'immobilier': return 'text-blue-600 bg-blue-50 border-blue-100';
-            case 'vehicule': return 'text-amber-600 bg-amber-50 border-amber-100';
-            case 'compte_bancaire': return 'text-emerald-600 bg-emerald-50 border-emerald-100';
-            case 'societe': return 'text-purple-600 bg-purple-50 border-purple-100';
-            default: return 'text-slate-600 bg-slate-50 border-slate-100';
+            case 'immobilier': return 'text-[var(--info)] bg-[var(--info)]/10 border-[var(--info)]/20';
+            case 'vehicule': return 'text-[var(--warning)] bg-[var(--warning)]/10 border-[var(--warning)]/20';
+            case 'compte_bancaire': return 'text-[var(--success)] bg-[var(--success)]/10 border-[var(--success)]/20';
+            case 'societe': return 'text-[var(--accent)] bg-[var(--accent)]/10 border-[var(--accent)]/20';
+            default: return 'text-[var(--text-dim)] bg-[var(--surface-muted)] border-[var(--border)]';
         }
     };
 
     if (loading) {
         return (
-            <div className="h-full flex items-center justify-center bg-white">
+            <div className="h-full flex items-center justify-center bg-[var(--background)]">
                 <div className="flex flex-col items-center gap-6">
                     <div className="relative w-24 h-24">
-                        <div className="absolute inset-0 border-[3px] border-slate-100 rounded-full"></div>
-                        <div className="absolute inset-0 border-t-[3px] border-[#B91C1C] rounded-full animate-spin"></div>
-                        <Activity size={32} className="absolute inset-0 m-auto text-[#B91C1C] animate-pulse" />
+                        <div className="absolute inset-0 border-[3px] border-[var(--surface-muted)] rounded-full"></div>
+                        <div className="absolute inset-0 border-t-[3px] border-[var(--accent)] rounded-full animate-spin"></div>
+                        <Activity size={32} className="absolute inset-0 m-auto text-[var(--accent)] animate-pulse" />
                     </div>
                     <div className="space-y-2 text-center">
-                        <span className="block text-xs font-black text-slate-800 uppercase tracking-[0.4em]">Audit Patrimonial en Cours</span>
-                        <span className="block text-[8px] font-bold text-slate-400 uppercase tracking-widest italic">Recensement des actifs et propriétés...</span>
+                        <span className="block text-xs font-black text-[var(--text)] uppercase tracking-[0.4em]">Audit Patrimonial en Cours</span>
+                        <span className="block text-[8px] font-bold text-[var(--text-dim)] uppercase tracking-widest italic">Recensement des actifs et propriétés...</span>
                     </div>
                 </div>
             </div>
@@ -193,7 +193,7 @@ export const AssetsView: React.FC = () => {
     }
 
     return (
-        <div className="h-full flex flex-col bg-[#F8FAFC] overflow-hidden relative">
+        <div className="h-full flex flex-col bg-[var(--background)] overflow-hidden relative">
             <div className="absolute inset-0 z-0 pointer-events-none opacity-[0.25] report-paper"></div>
 
             <PageHeader
@@ -210,20 +210,20 @@ export const AssetsView: React.FC = () => {
                     {
                         label: "Wealth Audit",
                         value: "Active",
-                        icon: <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></div>
+                        icon: <div className="w-1.5 h-1.5 bg-[var(--success)] rounded-full animate-pulse"></div>
                     }
                 ]}
             >
-                <div className="flex items-center bg-slate-50 border border-slate-100 p-1 rounded-xl shadow-inner">
+                <div className="flex items-center bg-[var(--surface-muted)] border border-[var(--border)] p-1 rounded-xl shadow-inner">
                     <button
                         onClick={() => setViewMode('grid')}
-                        className={`px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-wider transition-all ${viewMode === 'grid' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
+                        className={`px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-wider transition-all ${viewMode === 'grid' ? 'bg-[var(--surface)] text-[var(--text)] shadow-sm' : 'text-[var(--text-dim)] hover:text-[var(--text-muted)]'}`}
                     >
                         <LayoutGrid size={12} className="inline mr-2" /> Grille
                     </button>
                     <button
                         onClick={() => setViewMode('list')}
-                        className={`px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-wider transition-all ${viewMode === 'list' ? 'bg-white text-slate-900 shadow-sm' : 'text-slate-400 hover:text-slate-600'}`}
+                        className={`px-3 py-1.5 rounded-lg text-[10px] font-black uppercase tracking-wider transition-all ${viewMode === 'list' ? 'bg-[var(--surface)] text-[var(--text)] shadow-sm' : 'text-[var(--text-dim)] hover:text-[var(--text-muted)]'}`}
                     >
                         <AlignLeft size={12} className="inline mr-2" /> Liste
                     </button>
@@ -238,36 +238,36 @@ export const AssetsView: React.FC = () => {
                             icon={DollarSign}
                             label="Patrimoine Total Estimé"
                             value={formatCurrency(stats.totalValue)}
-                            color="#B91C1C"
+                            color="var(--accent)"
                             subText={`${stats.count} Actifs identifiés`}
                         />
                         <StatCard
                             icon={Building2}
                             label="Actifs Immobiliers"
                             value={stats.typeCounts['immobilier']?.toString() || '0'}
-                            color="#2563EB"
+                            color="var(--info)"
                             subText="Propriétés et terrains"
                         />
                         <StatCard
                             icon={Wallet}
                             label="Capitaux Bancaires"
                             value={stats.typeCounts['compte_bancaire']?.toString() || '0'}
-                            color="#10B981"
+                            color="var(--success)"
                             subText="Comptes et placements"
                         />
                         <StatCard
                             icon={Globe}
                             label="Entités de Référence"
                             value={stats.typeCounts['societe']?.toString() || '0'}
-                            color="#0F172A"
+                            color="var(--primary)"
                             subText="Holdings et sociétés"
                         />
                     </div>
 
                     {/* Filter Bar */}
                     <div className="flex items-center gap-4 mb-8">
-                        <span className="text-[10px] font-black text-slate-300 uppercase tracking-[0.4em] italic">Classification des Biens</span>
-                        <div className="h-px flex-1 bg-gradient-to-r from-slate-100 to-transparent"></div>
+                        <span className="text-[10px] font-black text-[var(--text-dim)] uppercase tracking-[0.4em] italic">Classification des Biens</span>
+                        <div className="h-px flex-1 bg-gradient-to-r from-[var(--border)] to-transparent"></div>
                         <div className="flex gap-2">
                             <FilterTypeButton active={filterType === 'all'} onClick={() => setFilterType('all')} label="TOUS" />
                             <FilterTypeButton active={filterType === 'immobilier'} onClick={() => setFilterType('immobilier')} label="IMMOBILIER" />
@@ -293,25 +293,25 @@ export const AssetsView: React.FC = () => {
                     )}
 
                     {allAssets.length === 0 && (
-                        <div className="py-40 text-center bg-white rounded-[3rem] border border-slate-100 shadow-sm border-dashed">
-                            <Briefcase size={48} className="mx-auto text-slate-100 mb-6" />
-                            <h3 className="text-xl font-black text-slate-900 uppercase tracking-widest font-serif-legal italic mb-2">Aucun Actif Trouvé</h3>
-                            <p className="text-[10px] text-slate-400 font-bold uppercase tracking-[0.2em]">Le patrimoine n'a pas encore été identifié dans les documents</p>
+                        <div className="py-40 text-center bg-[var(--surface)] rounded-[var(--radius-2xl)] border border-[var(--border)] shadow-sm border-dashed">
+                            <Briefcase size={48} className="mx-auto text-[var(--surface-muted)] mb-6" />
+                            <h3 className="text-xl font-black text-[var(--text)] uppercase tracking-widest font-legal italic mb-2">Aucun Actif Trouvé</h3>
+                            <p className="text-[10px] text-[var(--text-dim)] font-bold uppercase tracking-[0.2em]">Le patrimoine n'a pas encore été identifié dans les documents</p>
                         </div>
                     )}
                 </div>
             </div>
 
-            <footer className="px-10 py-5 bg-white border-t border-slate-100 flex justify-between items-center z-30 shrink-0">
+            <footer className="px-10 py-5 bg-[var(--surface)] border-t border-[var(--border)] flex justify-between items-center z-30 shrink-0">
                 <div className="flex items-center gap-8">
                     <div className="flex items-center gap-2">
-                        <div className="w-2 h-2 rounded-full bg-[#B91C1C]"></div>
-                        <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Calcul Neural Actif</span>
+                        <div className="w-2 h-2 rounded-full bg-[var(--accent)]"></div>
+                        <span className="text-[9px] font-black text-[var(--text-dim)] uppercase tracking-widest">Calcul Neural Actif</span>
                     </div>
                 </div>
                 <div className="flex items-center gap-3">
-                    <span className="text-[9px] font-black text-slate-300 uppercase tracking-[0.4em] italic">Forensic-Asset-Scanner // Unit.09</span>
-                    <div className="h-4 w-px bg-slate-100"></div>
+                    <span className="text-[9px] font-black text-[var(--text-dim)] uppercase tracking-[0.4em] italic">Forensic-Asset-Scanner // Unit.09</span>
+                    <div className="h-4 w-px bg-[var(--border)]"></div>
                     <button
                         onClick={() => {
                             const doc = new jsPDF();
@@ -432,7 +432,7 @@ export const AssetsView: React.FC = () => {
 
                             doc.save(`QUANTUM_ASSET_REPORT_${new Date().getTime()}.pdf`);
                         }}
-                        className="text-[10px] font-black text-[#B91C1C] hover:text-[#7F1D1D] transition-colors flex items-center gap-2"
+                        className="text-[10px] font-black text-[var(--accent)] hover:text-[var(--text)] transition-colors flex items-center gap-2"
                     >
                         <Download size={12} /> RAPPORT DE PATRIMOINE
                     </button>
@@ -443,18 +443,18 @@ export const AssetsView: React.FC = () => {
 };
 
 const StatCard: React.FC<{ icon: any, label: string, value: string, color: string, subText: string }> = ({ icon: Icon, label, value, color, subText }) => (
-    <div className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm relative overflow-hidden group hover:shadow-xl transition-all duration-500">
+    <div className="bg-[var(--surface)] p-8 rounded-[var(--radius-2xl)] border border-[var(--border)] shadow-[var(--shadow-subtle)] relative overflow-hidden group hover:shadow-[var(--shadow-premium)] transition-all duration-500">
         <div className="absolute top-0 right-0 p-6 opacity-[0.03] group-hover:scale-125 transition-transform duration-700">
-            <Icon size={80} />
+            <Icon size={80} style={{ color }} />
         </div>
         <div className="relative z-10">
-            <div className="text-[9px] font-black text-slate-400 uppercase tracking-[0.2em] mb-3 flex items-center gap-2">
+            <div className="text-[9px] font-black text-[var(--text-dim)] uppercase tracking-[0.2em] mb-3 flex items-center gap-2">
                 <div className="w-1.5 h-1.5 rounded-full" style={{ backgroundColor: color }}></div> {label}
             </div>
-            <div className="text-2xl font-mono-data font-black text-[#0F172A] tracking-tighter mb-2 italic">
+            <div className="text-2xl font-mono-data font-black text-[var(--text)] tracking-tighter mb-2 italic">
                 {value}
             </div>
-            <p className="text-[10px] font-bold text-slate-400 uppercase tracking-tight">{subText}</p>
+            <p className="text-[10px] font-bold text-[var(--text-dim)] uppercase tracking-tight">{subText}</p>
         </div>
     </div>
 );
@@ -462,29 +462,29 @@ const StatCard: React.FC<{ icon: any, label: string, value: string, color: strin
 const FilterTypeButton: React.FC<{ active: boolean, onClick: () => void, label: string }> = ({ active, onClick, label }) => (
     <button
         onClick={onClick}
-        className={`px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all border ${active ? 'bg-[#0F172A] border-[#0F172A] text-white shadow-lg' : 'bg-white border-slate-100 text-slate-400 hover:border-slate-200'}`}
+        className={`px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all border ${active ? 'bg-[var(--primary)] border-[var(--primary)] text-[var(--primary-foreground)] shadow-lg' : 'bg-[var(--surface)] border-[var(--border)] text-[var(--text-dim)] hover:border-[var(--accent)] hover:text-[var(--text)]'}`}
     >
         {label}
     </button>
 );
 
 const AssetCard: React.FC<{ asset: any, formatCurrency: any, getTypeIcon: any, getTypeColor: any }> = ({ asset, formatCurrency, getTypeIcon, getTypeColor }) => (
-    <div className="bg-white p-8 rounded-[2.5rem] border border-slate-100 shadow-sm hover:shadow-2xl hover:-translate-y-2 transition-all duration-500 group relative overflow-hidden">
-        <div className={`w-12 h-12 rounded-2xl flex items-center justify-center mb-6 transition-all duration-500 group-hover:scale-110 group-hover:rotate-6 ${getTypeColor(asset.type)} shadow-inner`}>
+    <div className="bg-[var(--surface)] p-8 rounded-[var(--radius-2xl)] border border-[var(--border)] shadow-[var(--shadow-subtle)] hover:shadow-[var(--shadow-premium)] hover:-translate-y-2 transition-all duration-500 group relative overflow-hidden">
+        <div className={`w-12 h-12 rounded-[var(--radius-xl)] flex items-center justify-center mb-6 transition-all duration-500 group-hover:scale-110 group-hover:rotate-6 ${getTypeColor(asset.type)} shadow-inner`}>
             {getTypeIcon(asset.type)}
         </div>
 
         <div className="mb-4">
-            <div className="text-[9px] font-black text-slate-300 uppercase tracking-widest mb-1">{asset.type}</div>
-            <h3 className="text-lg font-black text-slate-900 font-serif-legal italic truncate leading-tight group-hover:text-[#B91C1C] transition-colors">
+            <div className="text-[9px] font-black text-[var(--text-dim)] uppercase tracking-widest mb-1">{asset.type}</div>
+            <h3 className="text-lg font-black text-[var(--text)] font-legal italic truncate leading-tight group-hover:text-[var(--accent)] transition-colors">
                 {asset.nom}
             </h3>
         </div>
 
         {asset.valeur_estimee && (
-            <div className="mb-6 p-4 bg-slate-50 rounded-2xl border border-slate-100/50">
-                <div className="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-1">Valeur Estimée</div>
-                <div className="text-xl font-mono-data font-black text-slate-900">
+            <div className="mb-6 p-4 bg-[var(--surface-muted)] rounded-[var(--radius-xl)] border border-[var(--border)]/50">
+                <div className="text-[8px] font-black text-[var(--text-dim)] uppercase tracking-widest mb-1">Valeur Estimée</div>
+                <div className="text-xl font-mono-data font-black text-[var(--text)]">
                     {formatCurrency(asset.valeur_estimee, asset.devise)}
                 </div>
             </div>
@@ -492,34 +492,34 @@ const AssetCard: React.FC<{ asset: any, formatCurrency: any, getTypeIcon: any, g
 
         <div className="space-y-4 mb-8">
             <div className="flex items-start gap-3">
-                <User size={14} className="text-slate-300 shrink-0 mt-0.5" />
+                <User size={14} className="text-[var(--text-dim)] shrink-0 mt-0.5" />
                 <div className="min-w-0">
-                    <div className="text-[8px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">Propriétaire</div>
-                    <div className="text-[11px] font-bold text-slate-700 truncate">{asset.proprietaire_declare}</div>
+                    <div className="text-[8px] font-black text-[var(--text-dim)] uppercase tracking-widest leading-none mb-1">Propriétaire</div>
+                    <div className="text-[11px] font-bold text-[var(--text-muted)] truncate">{asset.proprietaire_declare}</div>
                 </div>
             </div>
             {asset.localisation && (
                 <div className="flex items-start gap-3">
-                    <MapPin size={14} className="text-slate-300 shrink-0 mt-0.5" />
+                    <MapPin size={14} className="text-[var(--text-dim)] shrink-0 mt-0.5" />
                     <div className="min-w-0">
-                        <div className="text-[8px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">Localisation</div>
-                        <div className="text-[11px] font-bold text-slate-700 truncate">{asset.localisation}</div>
+                        <div className="text-[8px] font-black text-[var(--text-dim)] uppercase tracking-widest leading-none mb-1">Localisation</div>
+                        <div className="text-[11px] font-bold text-[var(--text-muted)] truncate">{asset.localisation}</div>
                     </div>
                 </div>
             )}
             <div className="flex items-start gap-3">
-                <Layers size={14} className="text-[#B91C1C] shrink-0 mt-0.5" />
+                <Layers size={14} className="text-[var(--accent)] shrink-0 mt-0.5" />
                 <div className="min-w-0">
-                    <div className="text-[8px] font-black text-slate-400 uppercase tracking-widest leading-none mb-1">Sources Doc.</div>
-                    <div className="text-[11px] font-black text-[#B91C1C] flex items-center gap-1">
+                    <div className="text-[8px] font-black text-[var(--text-dim)] uppercase tracking-widest leading-none mb-1">Sources Doc.</div>
+                    <div className="text-[11px] font-black text-[var(--accent)] flex items-center gap-1">
                         {asset.sources.length} Dossiers <span className="opacity-40">({asset.mentions} mentions)</span>
                     </div>
                 </div>
             </div>
         </div>
 
-        <div className="pt-6 border-t border-slate-50 relative">
-            <p className="text-[11px] text-slate-500 italic leading-relaxed line-clamp-2">
+        <div className="pt-6 border-t border-[var(--border)] relative">
+            <p className="text-[11px] text-[var(--text-muted)] italic leading-relaxed line-clamp-2">
                 "{asset.description}"
             </p>
         </div>
@@ -530,41 +530,41 @@ const AssetCard: React.FC<{ asset: any, formatCurrency: any, getTypeIcon: any, g
 );
 
 const AssetRow: React.FC<{ asset: any, formatCurrency: any, getTypeIcon: any, getTypeColor: any }> = ({ asset, formatCurrency, getTypeIcon, getTypeColor }) => (
-    <div className="bg-white p-6 rounded-[2rem] border border-slate-100 shadow-sm hover:shadow-xl transition-all duration-300 flex items-center gap-8 group">
-        <div className={`w-12 h-12 shrink-0 rounded-2xl flex items-center justify-center transition-all ${getTypeColor(asset.type)}`}>
+    <div className="bg-[var(--surface)] p-6 rounded-[var(--radius-2xl)] border border-[var(--border)] shadow-[var(--shadow-subtle)] hover:shadow-[var(--shadow-soft)] transition-all duration-300 flex items-center gap-8 group">
+        <div className={`w-12 h-12 shrink-0 rounded-[var(--radius-xl)] flex items-center justify-center transition-all ${getTypeColor(asset.type)}`}>
             {getTypeIcon(asset.type)}
         </div>
 
         <div className="w-1/4">
-            <div className="text-[9px] font-black text-slate-300 uppercase tracking-widest mb-1">{asset.type}</div>
-            <h3 className="text-[14px] font-black text-slate-900 font-serif-legal italic truncate group-hover:text-[#B91C1C] transition-colors">
+            <div className="text-[9px] font-black text-[var(--text-dim)] uppercase tracking-widest mb-1">{asset.type}</div>
+            <h3 className="text-[14px] font-black text-[var(--text)] font-legal italic truncate group-hover:text-[var(--accent)] transition-colors">
                 {asset.nom}
             </h3>
         </div>
 
         <div className="w-1/6">
-            <div className="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-1">Valeur</div>
-            <div className="text-[14px] font-mono-data font-black text-slate-900">
+            <div className="text-[8px] font-black text-[var(--text-dim)] uppercase tracking-widest mb-1">Valeur</div>
+            <div className="text-[14px] font-mono-data font-black text-[var(--text)]">
                 {asset.valeur_estimee ? formatCurrency(asset.valeur_estimee, asset.devise) : 'N/A'}
             </div>
         </div>
 
         <div className="w-1/6">
-            <div className="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-1">Propriétaire</div>
-            <div className="text-[11px] font-bold text-slate-700 truncate">{asset.proprietaire_declare}</div>
+            <div className="text-[8px] font-black text-[var(--text-dim)] uppercase tracking-widest mb-1">Propriétaire</div>
+            <div className="text-[11px] font-bold text-[var(--text-muted)] truncate">{asset.proprietaire_declare}</div>
         </div>
 
         <div className="flex-1">
-            <div className="text-[8px] font-black text-slate-400 uppercase tracking-widest mb-1">Description</div>
-            <p className="text-[11px] text-slate-500 italic truncate font-medium">"{asset.description}"</p>
+            <div className="text-[8px] font-black text-[var(--text-dim)] uppercase tracking-widest mb-1">Description</div>
+            <p className="text-[11px] text-[var(--text-muted)] italic truncate font-medium">"{asset.description}"</p>
         </div>
 
         <div className="w-24 text-right">
-            <div className="text-[8px] font-black text-[#B91C1C] uppercase tracking-widest mb-1">Impact</div>
-            <div className="text-[11px] font-black text-[#B91C1C]">{asset.sources.length} Sources</div>
+            <div className="text-[8px] font-black text-[var(--accent)] uppercase tracking-widest mb-1">Impact</div>
+            <div className="text-[11px] font-black text-[var(--accent)]">{asset.sources.length} Sources</div>
         </div>
 
-        <button className="w-10 h-10 rounded-xl bg-slate-50 text-slate-300 flex items-center justify-center hover:bg-[#B91C1C] hover:text-white transition-all opacity-0 group-hover:opacity-100">
+        <button className="w-10 h-10 rounded-xl bg-[var(--surface-muted)] text-[var(--text-dim)] flex items-center justify-center hover:bg-[var(--accent)] hover:text-white transition-all opacity-0 group-hover:opacity-100">
             <Maximize2 size={16} />
         </button>
     </div>

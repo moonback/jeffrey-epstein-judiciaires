@@ -173,26 +173,26 @@ export const BackgroundAIView: React.FC<BackgroundAIViewProps> = ({
     };
 
     return (
-        <div className="flex flex-col h-full bg-[#F8FAFC] animate-pro-reveal">
+        <div className="flex flex-col h-full bg-[var(--background)] animate-pro-reveal">
             <PageHeader
                 title="Analyseur"
                 titleHighlight="Automatique"
                 icon={Cpu}
                 badgeText="Background Intelligence"
                 stats={[
-                    { label: "Moteur", value: "Gemini 2.0 Flash", icon: <Zap size={10} className="text-[#B91C1C]" /> },
-                    { label: "Status", value: isProcessing ? "Actif" : "En veille", icon: <Loader2 size={10} className={isProcessing ? "animate-spin" : ""} /> },
-                    { label: "Fichiers", value: stats.total, icon: <FileText size={10} /> }
+                    { label: "Moteur", value: "Gemini 2.0 Flash", icon: <Zap size={10} className="text-[var(--accent)]" /> },
+                    { label: "Status", value: isProcessing ? "Actif" : "En veille", icon: <Loader2 size={10} className={isProcessing ? "animate-spin text-[var(--accent)]" : "text-[var(--text-dim)]"} /> },
+                    { label: "Fichiers", value: stats.total, icon: <FileText size={10} className="text-[var(--info)]" /> }
                 ]}
             >
                 <div className="flex items-center gap-3">
                     {/* Directory Selector for Public Archives */}
                     <div className="flex flex-col gap-1.5 min-w-[200px]">
-                        <label className="text-[8px] font-black text-slate-400 uppercase tracking-[0.2em] ml-2">Dossier Public Cible</label>
+                        <label className="text-[8px] font-black text-[var(--text-dim)] uppercase tracking-[0.2em] ml-2">Dossier Public Cible</label>
                         <select
                             value={selectedDir}
                             onChange={(e) => setSelectedDir(e.target.value)}
-                            className="px-4 py-2.5 bg-white border-2 border-slate-100 rounded-2xl text-[11px] font-bold text-slate-700 focus:border-[#B91C1C] outline-none transition-all shadow-sm"
+                            className="px-4 py-2.5 bg-[var(--surface)]/80 backdrop-blur-xl border border-[var(--border)] rounded-[var(--radius-xl)] text-[11px] font-bold text-[var(--text)] focus:border-[var(--accent)] outline-none transition-all shadow-sm hover:shadow-[var(--shadow-soft)]"
                         >
                             {availableDirs.map(dir => (
                                 <option key={dir} value={dir}>{dir}</option>
@@ -202,11 +202,11 @@ export const BackgroundAIView: React.FC<BackgroundAIViewProps> = ({
 
                     {/* Batch Limit Selector */}
                     <div className="flex flex-col gap-1.5 min-w-[120px]">
-                        <label className="text-[8px] font-black text-slate-400 uppercase tracking-[0.2em] ml-2">Limite (Fichiers)</label>
+                        <label className="text-[8px] font-black text-[var(--text-dim)] uppercase tracking-[0.2em] ml-2">Limite (Fichiers)</label>
                         <select
                             value={batchLimit}
                             onChange={(e) => setBatchLimit(Number(e.target.value))}
-                            className="px-4 py-2.5 bg-white border-2 border-slate-100 rounded-2xl text-[11px] font-bold text-slate-700 focus:border-[#B91C1C] outline-none transition-all shadow-sm"
+                            className="px-4 py-2.5 bg-[var(--surface)]/80 backdrop-blur-xl border border-[var(--border)] rounded-[var(--radius-xl)] text-[11px] font-bold text-[var(--text)] focus:border-[var(--accent)] outline-none transition-all shadow-sm hover:shadow-[var(--shadow-soft)]"
                         >
                             <option value={10}>10 Fichiers</option>
                             <option value={20}>20 Fichiers</option>
@@ -218,17 +218,16 @@ export const BackgroundAIView: React.FC<BackgroundAIViewProps> = ({
 
                     <button
                         onClick={importPublicArchives}
-                        disabled={isProcessing || !selectedDir}
-                        className="flex items-center gap-3 px-4 py-2.5 bg-white border-2 border-slate-200 mt-5 hover:border-[#B91C1C] hover:bg-[#B91C1C]/5 rounded-2xl cursor-pointer transition-all group shrink-0"
+                        className="flex items-center gap-3 px-4 py-2.5 bg-[var(--surface)]/80 backdrop-blur-xl border border-[var(--border)] mt-5 hover:border-[var(--accent)] hover:bg-[var(--accent)]/5 rounded-[var(--radius-xl)] cursor-pointer transition-all group shrink-0 shadow-sm hover:shadow-[var(--shadow-soft)]"
                         title="Charger les fichiers du dossier sélectionné"
                     >
-                        <Zap size={16} className="text-slate-400 group-hover:text-[#B91C1C]" />
-                        <span className="text-[10px] font-black uppercase tracking-widest text-slate-500 group-hover:text-[#B91C1C] hidden lg:inline">Charger</span>
+                        <Zap size={16} className="text-[var(--text-dim)] group-hover:text-[var(--accent)]" />
+                        <span className="text-[10px] font-black uppercase tracking-widest text-[var(--text-dim)] group-hover:text-[var(--accent)] hidden lg:inline">Charger</span>
                     </button>
 
-                    <label className="flex items-center gap-3 px-4 py-2.5 bg-white border-2 border-dashed border-slate-200 mt-5 hover:border-[#B91C1C] hover:bg-[#B91C1C]/5 rounded-2xl cursor-pointer transition-all group shrink-0">
-                        <Folder size={16} className="text-slate-400 group-hover:text-[#B91C1C]" />
-                        <span className="text-[10px] font-black uppercase tracking-widest text-slate-500 group-hover:text-[#B91C1C] hidden lg:inline">Local</span>
+                    <label className="flex items-center gap-3 px-4 py-2.5 bg-[var(--surface)]/80 backdrop-blur-xl border border-dashed border-[var(--border)] mt-5 hover:border-[var(--accent)] hover:bg-[var(--accent)]/5 rounded-[var(--radius-xl)] cursor-pointer transition-all group shrink-0 shadow-sm hover:shadow-[var(--shadow-soft)]">
+                        <Folder size={16} className="text-[var(--text-dim)] group-hover:text(--accent)" />
+                        <span className="text-[10px] font-black uppercase tracking-widest text-[var(--text-dim)] group-hover:text-[var(--accent)] hidden lg:inline">Local</span>
                         <input
                             type="file"
                             className="hidden"
@@ -243,9 +242,9 @@ export const BackgroundAIView: React.FC<BackgroundAIViewProps> = ({
                     <button
                         onClick={startSequencialAnalysis}
                         disabled={isProcessing || tasks.filter(t => t.status === 'idle' || t.status === 'error').length === 0}
-                        className={`flex items-center gap-3 px-6 py-2.5 mt-5 rounded-2xl font-black text-[10px] uppercase tracking-[0.2em] transition-all ${isProcessing || tasks.filter(t => t.status === 'idle' || t.status === 'error').length === 0
-                            ? 'bg-slate-100 text-slate-300 cursor-not-allowed'
-                            : 'bg-[#B91C1C] text-white shadow-xl shadow-red-900/20 hover:bg-[#0F172A] hover:scale-105 active:scale-95'
+                        className={`flex items-center gap-3 px-6 py-2.5 mt-5 rounded-[var(--radius-xl)] font-black text-[10px] uppercase tracking-[0.2em] transition-all ${isProcessing || tasks.filter(t => t.status === 'idle' || t.status === 'error').length === 0
+                            ? 'bg-[var(--surface-muted)] text-[var(--text-dim)] cursor-not-allowed border border-[var(--border)]'
+                            : 'bg-[var(--accent)] text-white shadow-xl shadow-[var(--accent)]/20 hover:brightness-110 hover:scale-105 active:scale-95'
                             }`}
                     >
                         {isProcessing ? (
@@ -263,7 +262,7 @@ export const BackgroundAIView: React.FC<BackgroundAIViewProps> = ({
                                 setStats({ total: 0, completed: 0, failed: 0 });
                             }
                         }}
-                        className="flex items-center justify-center w-10 h-10 mt-5 bg-white border-2 border-slate-100 text-slate-300 hover:text-red-500 hover:border-red-100 rounded-2xl transition-all"
+                        className="flex items-center justify-center w-10 h-10 mt-5 bg-[var(--surface)] border border-[var(--border)] text-[var(--text-dim)] hover:text-[var(--danger)] hover:border-[var(--danger)]/20 rounded-[var(--radius-xl)] transition-all shadow-sm hover:shadow-[var(--shadow-soft)]"
                         title="Vider la file d'attente"
                     >
                         <History size={16} />
@@ -273,62 +272,62 @@ export const BackgroundAIView: React.FC<BackgroundAIViewProps> = ({
 
             {/* Stats Dashboard */}
             {tasks.length > 0 && (
-                <div className="px-8 py-6 bg-slate-50 border-b border-slate-100">
+                <div className="px-8 py-6 bg-[var(--surface-muted)] border-b border-[var(--border)]">
                     <div className="max-w-7xl mx-auto grid grid-cols-1 md:grid-cols-4 gap-6">
-                        <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm flex flex-col justify-center">
-                            <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest mb-2">Progression Totale</span>
+                        <div className="bg-[var(--surface)]/80 backdrop-blur-xl p-6 rounded-[var(--radius-xl)] border border-[var(--border)] shadow-[var(--shadow-subtle)] hover:shadow-[var(--shadow-soft)] transition-all flex flex-col justify-center">
+                            <span className="text-[9px] font-black text-[var(--text-dim)] uppercase tracking-widest mb-2">Progression Totale</span>
                             <div className="flex items-end gap-3">
-                                <div className="text-3xl font-black text-[#0F172A]">{Math.round((stats.completed / (stats.total || 1)) * 100)}%</div>
-                                <div className="text-[10px] font-bold text-slate-400 mb-2 uppercase">{stats.completed}/{stats.total} Fichiers</div>
+                                <div className="text-3xl font-black text-[var(--text)] font-legal italic tabular-nums">{Math.round((stats.completed / (stats.total || 1)) * 100)}%</div>
+                                <div className="text-[10px] font-bold text-[var(--text-dim)] mb-2 uppercase tracking-tighter">{stats.completed}/{stats.total} Fichiers</div>
                             </div>
-                            <div className="w-full h-1.5 bg-slate-100 rounded-full mt-4 overflow-hidden">
+                            <div className="w-full h-1.5 bg-[var(--surface-muted)] rounded-full mt-4 overflow-hidden">
                                 <div
-                                    className="h-full bg-[#B91C1C] transition-all duration-500"
+                                    className="h-full bg-[var(--accent)] transition-all duration-500"
                                     style={{ width: `${(stats.completed / (stats.total || 1)) * 100}%` }}
                                 ></div>
                             </div>
                         </div>
 
-                        <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm">
+                        <div className="bg-[var(--surface)]/80 backdrop-blur-xl p-6 rounded-[var(--radius-xl)] border border-[var(--border)] shadow-[var(--shadow-subtle)] hover:shadow-[var(--shadow-soft)] transition-all">
                             <div className="flex justify-between items-start mb-4">
-                                <div className="p-2 bg-emerald-50 rounded-lg">
-                                    <CheckCircle2 size={16} className="text-emerald-500" />
+                                <div className="p-2 bg-[var(--success)]/10 rounded-lg">
+                                    <CheckCircle2 size={16} className="text-[var(--success)]" />
                                 </div>
-                                <span className="text-2xl font-black text-emerald-600">{stats.completed}</span>
+                                <span className="text-2xl font-black text-[var(--success)] font-legal italic tabular-nums">{stats.completed}</span>
                             </div>
-                            <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Analyses Terminées</span>
+                            <span className="text-[10px] font-black text-[var(--text-muted)] uppercase tracking-widest">Analyses Terminées</span>
                         </div>
 
-                        <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm">
+                        <div className="bg-[var(--surface)]/80 backdrop-blur-xl p-6 rounded-[var(--radius-xl)] border border-[var(--border)] shadow-[var(--shadow-subtle)] hover:shadow-[var(--shadow-soft)] transition-all">
                             <div className="flex justify-between items-start mb-4">
-                                <div className="p-2 bg-red-50 rounded-lg">
-                                    <AlertCircle size={16} className="text-red-500" />
+                                <div className="p-2 bg-[var(--danger)]/10 rounded-lg">
+                                    <AlertCircle size={16} className="text-[var(--danger)]" />
                                 </div>
-                                <span className="text-2xl font-black text-red-600">{stats.failed}</span>
+                                <span className="text-2xl font-black text-[var(--danger)] font-legal italic tabular-nums">{stats.failed}</span>
                             </div>
-                            <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Échecs</span>
+                            <span className="text-[10px] font-black text-[var(--text-muted)] uppercase tracking-widest">Échecs</span>
                         </div>
 
-                        <div className="bg-white p-6 rounded-2xl border border-slate-100 shadow-sm">
+                        <div className="bg-[var(--surface)]/80 backdrop-blur-xl p-6 rounded-[var(--radius-xl)] border border-[var(--border)] shadow-[var(--shadow-subtle)] hover:shadow-[var(--shadow-soft)] transition-all">
                             <div className="flex justify-between items-start mb-4">
-                                <div className="p-2 bg-blue-50 rounded-lg">
-                                    <Zap size={16} className="text-blue-500" />
+                                <div className="p-2 bg-[var(--info)]/10 rounded-lg">
+                                    <Zap size={16} className="text-[var(--info)]" />
                                 </div>
-                                <span className="text-2xl font-black text-blue-600">{isProcessing ? 'Actif' : 'En veille'}</span>
+                                <span className="text-2xl font-black text-[var(--info)] font-legal italic">{isProcessing ? 'Actif' : 'En veille'}</span>
                             </div>
-                            <span className="text-[10px] font-black text-slate-500 uppercase tracking-widest">Status Moteur IA</span>
+                            <span className="text-[10px] font-black text-[var(--text-muted)] uppercase tracking-widest">Status Moteur IA</span>
                         </div>
                     </div>
                 </div>
             )}
 
             {/* Task List */}
-            <div className="flex-1 overflow-y-auto p-8 custom-scrollbar bg-[#F8FAFC]">
+            <div className="flex-1 overflow-y-auto p-8 custom-scrollbar bg-[var(--background)]">
                 <div className="max-w-7xl mx-auto">
                     {tasks.length === 0 ? (
-                        <div className="h-96 flex flex-col items-center justify-center text-slate-300">
+                        <div className="h-96 flex flex-col items-center justify-center text-[var(--text-dim)]">
                             <Folder size={64} className="mb-6 opacity-20" />
-                            <p className="text-lg font-bold italic font-serif-legal">Aucun dossier sélectionné</p>
+                            <p className="text-lg font-bold italic font-legal">Aucun dossier sélectionné</p>
                             <p className="text-[10px] uppercase tracking-widest mt-2">En attente de documents judiciaires...</p>
                         </div>
                     ) : (
@@ -336,42 +335,42 @@ export const BackgroundAIView: React.FC<BackgroundAIViewProps> = ({
                             {tasks.map((task, idx) => (
                                 <div
                                     key={idx}
-                                    className={`bg-white border rounded-2xl p-4 flex items-center gap-6 transition-all group hover:shadow-lg ${task.status === 'completed' ? 'border-emerald-100' :
-                                        task.status === 'error' ? 'border-red-100' : 'border-slate-100'
+                                    className={`bg-[var(--surface)] border rounded-[var(--radius-xl)] p-4 flex items-center gap-6 transition-all group hover:shadow-[var(--shadow-premium)] ${task.status === 'completed' ? 'border-[var(--success)]/20 shadow-[0_4px_20px_rgba(16,185,129,0.05)]' :
+                                        task.status === 'error' ? 'border-[var(--danger)]/20 shadow-[0_4px_20px_rgba(239,68,68,0.05)]' : 'border-[var(--border)] shadow-sm'
                                         }`}
                                 >
-                                    <div className={`p-3 rounded-xl shrink-0 ${task.status === 'completed' ? 'bg-emerald-50 text-emerald-500' :
-                                        task.status === 'error' ? 'bg-red-50 text-red-500' :
-                                            task.status === 'idle' ? 'bg-slate-50 text-slate-400' : 'bg-blue-50 text-blue-500 animate-pulse'
+                                    <div className={`p-3 rounded-xl shrink-0 ${task.status === 'completed' ? 'bg-[var(--success)]/10 text-[var(--success)]' :
+                                        task.status === 'error' ? 'bg-[var(--danger)]/10 text-[var(--danger)]' :
+                                            task.status === 'idle' ? 'bg-[var(--surface-muted)] text-[var(--text-dim)]' : 'bg-[var(--info)]/10 text-[var(--info)] animate-pulse'
                                         }`}>
                                         <FileText size={20} />
                                     </div>
 
                                     <div className="flex-1 min-w-0">
                                         <div className="flex items-center gap-3">
-                                            <h3 className="text-[13px] font-bold text-[#0F172A] truncate font-serif-legal italic">
+                                            <h3 className="text-[13px] font-bold text-[var(--text)] truncate font-legal italic">
                                                 {task.file.name}
                                             </h3>
-                                            <span className="text-[9px] text-slate-300 font-mono-data">
+                                            <span className="text-[9px] text-[var(--text-dim)] font-mono-data">
                                                 {(task.file.size / 1024 / 1024).toFixed(2)} MB
                                             </span>
                                         </div>
                                         <div className="flex items-center gap-3 mt-1">
                                             <div className="text-[9px] font-black uppercase tracking-widest flex items-center gap-1.5 transition-colors">
-                                                {task.status === 'idle' && <span className="text-slate-400">En attente</span>}
-                                                {task.status === 'extracting' && <span className="text-blue-500">Extraction Texte...</span>}
-                                                {task.status === 'analyzing' && <span className="text-purple-500">Analyse IA Flash...</span>}
-                                                {task.status === 'completed' && <span className="text-emerald-600">Terminé</span>}
-                                                {task.status === 'error' && <span className="text-red-600">Erreur : {task.error}</span>}
+                                                {task.status === 'idle' && <span className="text-[var(--text-dim)]">En attente</span>}
+                                                {task.status === 'extracting' && <span className="text-[var(--info)]">Extraction Texte...</span>}
+                                                {task.status === 'analyzing' && <span className="text-[var(--accent)]">Analyse IA Flash...</span>}
+                                                {task.status === 'completed' && <span className="text-[var(--success)]">Terminé</span>}
+                                                {task.status === 'error' && <span className="text-[var(--danger)]">Erreur : {task.error}</span>}
                                             </div>
                                         </div>
                                     </div>
 
                                     <div className="w-48 hidden md:block">
-                                        <div className="w-full h-1 bg-slate-100 rounded-full overflow-hidden">
+                                        <div className="w-full h-1 bg-[var(--surface-muted)] rounded-full overflow-hidden">
                                             <div
-                                                className={`h-full transition-all duration-300 ${task.status === 'completed' ? 'bg-emerald-500' :
-                                                    task.status === 'error' ? 'bg-red-500' : 'bg-[#B91C1C]'
+                                                className={`h-full transition-all duration-300 ${task.status === 'completed' ? 'bg-[var(--success)]' :
+                                                    task.status === 'error' ? 'bg-[var(--danger)]' : 'bg-[var(--accent)]'
                                                     }`}
                                                 style={{ width: `${task.progress}%` }}
                                             ></div>
@@ -382,16 +381,16 @@ export const BackgroundAIView: React.FC<BackgroundAIViewProps> = ({
                                         {task.status === 'completed' && task.resultId && (
                                             <button
                                                 onClick={() => onOpenAnalysis?.(task.resultId!)}
-                                                className="p-2 text-slate-400 hover:text-[#B91C1C] bg-slate-50 rounded-lg transition-colors border border-transparent hover:border-[#B91C1C]/20"
+                                                className="p-2 text-[var(--text-dim)] hover:text-[var(--accent)] bg-[var(--surface-muted)] rounded-lg transition-colors border border-transparent hover:border-[var(--accent)]/20"
                                                 title="Voir l'analyse"
                                             >
                                                 <History size={16} />
                                             </button>
                                         )}
                                         <div className="w-8 h-8 flex items-center justify-center">
-                                            {task.status === 'completed' ? <CheckCircle2 size={18} className="text-emerald-500" /> :
-                                                task.status === 'error' ? <AlertCircle size={18} className="text-red-500" /> :
-                                                    (task.status !== 'idle' && <Loader2 size={18} className="text-[#B91C1C] animate-spin" />)}
+                                            {task.status === 'completed' ? <CheckCircle2 size={18} className="text-[var(--success)]" /> :
+                                                task.status === 'error' ? <AlertCircle size={18} className="text-[var(--danger)]" /> :
+                                                    (task.status !== 'idle' && <Loader2 size={18} className="text-[var(--accent)] animate-spin" />)}
                                         </div>
                                     </div>
                                 </div>
