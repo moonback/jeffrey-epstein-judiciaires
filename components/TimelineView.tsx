@@ -149,25 +149,25 @@ export const TimelineView: React.FC<TimelineViewProps> = ({ onDeepDive, isGuestM
 
     const getTypeStyles = (type: string) => {
         switch (type) {
-            case 'DOCUMENT': return { color: 'text-[#B91C1C]', border: 'border-[#B91C1C]', bg: 'bg-[#B91C1C]/5', icon: <FileText size={14} /> };
-            case 'ÉVÉNEMENT_CLÉ': return { color: 'text-[#B5965D]', border: 'border-[#B5965D]', bg: 'bg-[#B5965D]/5', icon: <Zap size={14} /> };
-            case 'TRANSACTION': return { color: 'text-emerald-600', border: 'border-emerald-600', bg: 'bg-emerald-50', icon: <DollarSign size={14} /> };
-            default: return { color: 'text-slate-500', border: 'border-slate-200', bg: 'bg-slate-50', icon: <Activity size={14} /> };
+            case 'DOCUMENT': return { color: 'text-[var(--accent)]', border: 'border-[var(--accent)]', bg: 'bg-[var(--accent)]/5', icon: <FileText size={14} /> };
+            case 'ÉVÉNEMENT_CLÉ': return { color: 'text-[var(--warning)]', border: 'border-[var(--warning)]', bg: 'bg-[var(--warning)]/5', icon: <Zap size={14} /> };
+            case 'TRANSACTION': return { color: 'text-[var(--success)]', border: 'border-[var(--success)]', bg: 'bg-[var(--success)]/5', icon: <DollarSign size={14} /> };
+            default: return { color: 'text-[var(--text-muted)]', border: 'border-[var(--border)]', bg: 'bg-[var(--surface-muted)]', icon: <Activity size={14} /> };
         }
     };
 
     if (loading) {
         return (
-            <div className="h-full flex items-center justify-center bg-white">
+            <div className="h-full flex items-center justify-center bg-[var(--background)]">
                 <div className="flex flex-col items-center gap-6">
                     <div className="relative w-24 h-24">
-                        <div className="absolute inset-0 border-[3px] border-slate-100 rounded-full"></div>
-                        <div className="absolute inset-0 border-t-[3px] border-[#B91C1C] rounded-full animate-spin"></div>
-                        <Clock size={32} className="absolute inset-0 m-auto text-[#B91C1C] animate-pulse" />
+                        <div className="absolute inset-0 border-[3px] border-[var(--surface-muted)] rounded-full"></div>
+                        <div className="absolute inset-0 border-t-[3px] border-[var(--accent)] rounded-full animate-spin"></div>
+                        <Clock size={32} className="absolute inset-0 m-auto text-[var(--accent)] animate-pulse" />
                     </div>
                     <div className="space-y-2 text-center">
-                        <span className="block text-xs font-black text-slate-800 uppercase tracking-[0.4em]">Reconstruction Temporelle</span>
-                        <span className="block text-[8px] font-bold text-slate-400 uppercase tracking-widest">Séquençage des données en cours...</span>
+                        <span className="block text-xs font-black text-[var(--text)] uppercase tracking-[0.4em]">Reconstruction Temporelle</span>
+                        <span className="block text-[8px] font-bold text-[var(--text-dim)] uppercase tracking-widest">Séquençage des données en cours...</span>
                     </div>
                 </div>
             </div>
@@ -175,7 +175,7 @@ export const TimelineView: React.FC<TimelineViewProps> = ({ onDeepDive, isGuestM
     }
 
     return (
-        <div className="h-full flex flex-col bg-[#F8FAFC] overflow-hidden relative">
+        <div className="h-full flex flex-col bg-[var(--background)] overflow-hidden relative">
             <div className="absolute inset-0 z-0 pointer-events-none opacity-[0.25] report-paper"></div>
 
             <PageHeader
@@ -192,32 +192,31 @@ export const TimelineView: React.FC<TimelineViewProps> = ({ onDeepDive, isGuestM
                     {
                         label: "Live Analysis",
                         value: "",
-                        icon: <div className="w-1.5 h-1.5 bg-emerald-500 rounded-full animate-pulse"></div>,
-                        color: "text-emerald-600 bg-emerald-50 border-emerald-100" // Not directly used by PageHeader simple stat render but close enough
+                        icon: <div className="w-1.5 h-1.5 bg-[var(--success)] rounded-full animate-pulse"></div>
                     }
                 ]}
             >
                 <button
                     onClick={() => setFilterType('ALL')}
                     className={`px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest transition-all border shrink-0 ${filterType === 'ALL'
-                        ? 'bg-[#B91C1C] text-white border-[#B91C1C] shadow-md'
-                        : 'bg-white text-slate-500 border-slate-200 hover:text-slate-600'}`}
+                        ? 'bg-[var(--accent)] text-[var(--accent-foreground)] border-[var(--accent)] shadow-md'
+                        : 'bg-[var(--surface)] text-[var(--text-muted)] border-[var(--border)] hover:text-[var(--text)]'}`}
                 >
                     Tous
                 </button>
                 <button
                     onClick={() => setFilterType('DOCUMENT')}
                     className={`px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest transition-all border shrink-0 ${filterType === 'DOCUMENT'
-                        ? 'bg-[#B91C1C] text-white border-[#B91C1C] shadow-md'
-                        : 'bg-white text-slate-500 border-slate-200 hover:text-slate-600'}`}
+                        ? 'bg-[var(--accent)] text-[var(--accent-foreground)] border-[var(--accent)] shadow-md'
+                        : 'bg-[var(--surface)] text-[var(--text-muted)] border-[var(--border)] hover:text-[var(--text)]'}`}
                 >
                     Docs
                 </button>
                 <button
                     onClick={() => setFilterType('TRANSACTION')}
                     className={`px-4 py-2 rounded-full text-[10px] font-black uppercase tracking-widest transition-all border shrink-0 ${filterType === 'TRANSACTION'
-                        ? 'bg-emerald-600 text-white border-emerald-600 shadow-md'
-                        : 'bg-white text-slate-500 border-slate-200 hover:text-slate-600'}`}
+                        ? 'bg-[var(--success)] text-white border-[var(--success)] shadow-md'
+                        : 'bg-[var(--surface)] text-[var(--text-muted)] border-[var(--border)] hover:text-[var(--text)]'}`}
                 >
                     Fonds
                 </button>
@@ -226,16 +225,16 @@ export const TimelineView: React.FC<TimelineViewProps> = ({ onDeepDive, isGuestM
             <div className="flex-1 overflow-y-auto p-6 lg:p-12 custom-scrollbar z-10 scroll-smooth">
                 <div className="max-w-5xl mx-auto relative pl-4 lg:pl-0">
                     {/* Central Vertical Line (for larger screens) */}
-                    <div className="absolute left-8 lg:left-1/2 top-0 bottom-0 w-[2px] bg-gradient-to-b from-[#B91C1C]/40 via-slate-100 to-transparent lg:-translate-x-1/2 hidden lg:block"></div>
-                    <div className="absolute left-8 lg:left-1/2 top-0 bottom-0 w-[1px] bg-slate-200 lg:-translate-x-1/2 lg:hidden"></div>
+                    <div className="absolute left-8 lg:left-1/2 top-0 bottom-0 w-[2px] bg-gradient-to-b from-[var(--accent)]/40 via-[var(--surface-muted)] to-transparent lg:-translate-x-1/2 hidden lg:block"></div>
+                    <div className="absolute left-8 lg:left-1/2 top-0 bottom-0 w-[1px] bg-[var(--border)] lg:-translate-x-1/2 lg:hidden"></div>
 
                     {groupedEvents.map((group, gIdx) => (
                         <div key={group.year} className="mb-20 last:mb-0">
                             {/* Year Marker */}
                             <div className="relative flex justify-center mb-16">
-                                <div className="bg-white border-2 border-slate-100 px-8 py-2 rounded-2xl shadow-xl z-20 relative group hover:border-[#B91C1C] transition-colors duration-500">
-                                    <div className="absolute inset-0 bg-[#B91C1C] blur-2xl opacity-0 group-hover:opacity-10 transition-opacity"></div>
-                                    <span className="text-2xl font-serif-legal font-black text-[#0F172A] italic tracking-tighter tabular-nums">
+                                <div className="bg-[var(--surface)] border-2 border-[var(--border)] px-8 py-2 rounded-[var(--radius-xl)] shadow-[var(--shadow-soft)] z-20 relative group hover:border-[var(--accent)] transition-colors duration-500">
+                                    <div className="absolute inset-0 bg-[var(--accent)] blur-2xl opacity-0 group-hover:opacity-10 transition-opacity"></div>
+                                    <span className="text-2xl font-legal font-black text-[var(--text)] italic tracking-tighter tabular-nums">
                                         {group.year}
                                     </span>
                                 </div>
@@ -255,10 +254,10 @@ export const TimelineView: React.FC<TimelineViewProps> = ({ onDeepDive, isGuestM
                                             {/* Left side (Even) / Right side (Odd) */}
                                             <div className={`hidden lg:block flex-1 ${isEven ? 'text-right' : 'order-last text-left'}`}>
                                                 <div className="transition-all duration-500 group-hover:scale-105">
-                                                    <div className={`text-xl font-serif-legal font-black ${styles.color} italic tracking-tighter mb-1`}>
+                                                    <div className={`text-xl font-legal font-black ${styles.color} italic tracking-tighter mb-1`}>
                                                         {event.dateStr}
                                                     </div>
-                                                    <div className={`flex items-center gap-2 text-[10px] font-black text-slate-400 uppercase tracking-widest ${isEven ? 'justify-end' : ''}`}>
+                                                    <div className={`flex items-center gap-2 text-[10px] font-black text-[var(--text-dim)] uppercase tracking-widest ${isEven ? 'justify-end' : ''}`}>
                                                         {styles.icon}
                                                         {event.type.replace('_', ' ')}
                                                     </div>
@@ -266,19 +265,19 @@ export const TimelineView: React.FC<TimelineViewProps> = ({ onDeepDive, isGuestM
                                             </div>
 
                                             {/* Connector Marker */}
-                                            <div className="absolute left-8 lg:left-1/2 w-4 h-4 rounded-full bg-white border-4 border-slate-100 group-hover:border-[#B91C1C] lg:-translate-x-1/2 z-30 transition-all duration-500 shadow-md group-hover:scale-125">
-                                                <div className="absolute inset-0 bg-[#B91C1C] rounded-full opacity-0 group-hover:opacity-100 animate-ping"></div>
+                                            <div className="absolute left-8 lg:left-1/2 w-4 h-4 rounded-full bg-[var(--surface)] border-4 border-[var(--border)] group-hover:border-[var(--accent)] lg:-translate-x-1/2 z-30 transition-all duration-500 shadow-md group-hover:scale-125">
+                                                <div className="absolute inset-0 bg-[var(--accent)] rounded-full opacity-0 group-hover:opacity-100 animate-ping"></div>
                                             </div>
 
                                             {/* Card Content */}
                                             <div className="flex-1 w-full lg:w-auto pl-12 lg:pl-0">
                                                 <div
                                                     className={`
-                                                        bg-white p-6 lg:p-8 rounded-[2.5rem] border border-transparent 
-                                                        group-hover:border-slate-100 transition-all duration-500 shadow-sm 
-                                                        hover:shadow-2xl hover:shadow-slate-200/50 relative overflow-hidden
+                                                        bg-[var(--surface)] p-6 lg:p-8 rounded-[var(--radius-2xl)] border border-transparent 
+                                                        group-hover:border-[var(--border)] transition-all duration-500 shadow-[var(--shadow-subtle)] 
+                                                        hover:shadow-[var(--shadow-premium)] relative overflow-hidden
                                                         cursor-pointer
-                                                        ${expandedEvent === event.id ? 'ring-2 ring-[#B91C1C]/10' : ''}
+                                                        ${expandedEvent === event.id ? 'ring-2 ring-[var(--accent)]/10' : ''}
                                                     `}
                                                     onClick={() => setExpandedEvent(expandedEvent === event.id ? null : event.id)}
                                                 >
@@ -287,7 +286,7 @@ export const TimelineView: React.FC<TimelineViewProps> = ({ onDeepDive, isGuestM
 
                                                     <div className="relative z-10">
                                                         <div className="flex items-start justify-between mb-4">
-                                                            <h3 className="text-[#0F172A] font-black text-lg lg:text-xl italic tracking-tight font-serif-legal leading-tight pr-10">
+                                                            <h3 className="text-[var(--text)] font-black text-lg lg:text-xl italic tracking-tight font-legal leading-tight pr-10">
                                                                 {event.title}
                                                             </h3>
                                                             <div className={`p-2 rounded-xl ${styles.bg} ${styles.color} border border-transparent group-hover:border-current/10 transition-all`}>
@@ -296,37 +295,37 @@ export const TimelineView: React.FC<TimelineViewProps> = ({ onDeepDive, isGuestM
                                                         </div>
 
                                                         {/* Description / Content */}
-                                                        <div className="bg-[#FFFFF0]/40 p-4 lg:p-5 rounded-2xl border border-slate-50 mb-5 relative group-hover:bg-[#FFFFF0] transition-colors duration-500">
+                                                        <div className="bg-[var(--surface-muted)]/40 p-4 lg:p-5 rounded-[var(--radius-xl)] border border-[var(--border)]/50 mb-5 relative group-hover:bg-[var(--surface-muted)] transition-colors duration-500">
                                                             <div className={`absolute left-0 top-0 bottom-0 w-1.5 ${styles.bg.replace('/5', '')} transition-all rounded-full`}></div>
-                                                            <p className="text-slate-600 text-[13px] lg:text-sm leading-relaxed italic font-medium">
+                                                            <p className="text-[var(--text-muted)] text-[13px] lg:text-sm leading-relaxed italic font-medium">
                                                                 "{event.description}"
                                                             </p>
                                                         </div>
 
                                                         {/* Expanded Details */}
                                                         {expandedEvent === event.id && (
-                                                            <div className="space-y-4 pt-2 pb-4 animate-pro-reveal border-t border-slate-50 mt-4">
+                                                            <div className="space-y-4 pt-2 pb-4 animate-reveal border-t border-[var(--border)]/50 mt-4">
                                                                 {event.metadata?.legal && (
                                                                     <div className="space-y-2">
-                                                                        <div className="flex items-center gap-2 text-[9px] font-black text-[#B91C1C] uppercase tracking-widest">
+                                                                        <div className="flex items-center gap-2 text-[9px] font-black text-[var(--accent)] uppercase tracking-widest">
                                                                             <Scale size={10} /> Implications Légales
                                                                         </div>
-                                                                        <p className="text-[12px] text-slate-500 leading-snug">
+                                                                        <p className="text-[12px] text-[var(--text-muted)] leading-snug">
                                                                             {event.metadata.legal}
                                                                         </p>
                                                                     </div>
                                                                 )}
                                                                 {event.type === 'TRANSACTION' && (
                                                                     <div className="grid grid-cols-2 gap-4">
-                                                                        <div className="bg-slate-50 p-3 rounded-xl">
-                                                                            <div className="text-[8px] font-black text-slate-400 uppercase mb-1">Source</div>
-                                                                            <div className="text-[11px] font-black text-slate-700 flex items-center gap-1">
+                                                                        <div className="bg-[var(--surface-muted)]/50 p-3 rounded-[var(--radius-lg)]">
+                                                                            <div className="text-[8px] font-black text-[var(--text-dim)] uppercase mb-1">Source</div>
+                                                                            <div className="text-[11px] font-black text-[var(--text)] flex items-center gap-1">
                                                                                 <User size={10} /> {event.metadata.source}
                                                                             </div>
                                                                         </div>
-                                                                        <div className="bg-slate-50 p-3 rounded-xl">
-                                                                            <div className="text-[8px] font-black text-slate-400 uppercase mb-1">Destination</div>
-                                                                            <div className="text-[11px] font-black text-slate-700 flex items-center gap-1">
+                                                                        <div className="bg-[var(--surface-muted)]/50 p-3 rounded-[var(--radius-lg)]">
+                                                                            <div className="text-[8px] font-black text-[var(--text-dim)] uppercase mb-1">Destination</div>
+                                                                            <div className="text-[11px] font-black text-[var(--text)] flex items-center gap-1">
                                                                                 <ArrowRight size={10} /> {event.metadata.destination}
                                                                             </div>
                                                                         </div>
@@ -335,12 +334,12 @@ export const TimelineView: React.FC<TimelineViewProps> = ({ onDeepDive, isGuestM
                                                             </div>
                                                         )}
 
-                                                        <div className="flex flex-wrap items-center justify-between gap-4 pt-5 border-t border-slate-50">
+                                                        <div className="flex flex-wrap items-center justify-between gap-4 pt-5 border-t border-[var(--border)]/50">
                                                             <div className="flex items-center gap-3">
-                                                                <div className="flex items-center gap-2 text-[9px] font-mono-data font-black text-slate-400 bg-slate-50 px-3 py-1.5 rounded-lg border border-slate-100">
+                                                                <div className="flex items-center gap-2 text-[9px] font-mono-data font-black text-[var(--text-dim)] bg-[var(--surface-muted)]/50 px-3 py-1.5 rounded-[var(--radius-md)] border border-[var(--border)]/50">
                                                                     <Layers size={10} /> {event.sourceId.slice(0, 8)}
                                                                 </div>
-                                                                <div className="flex items-center gap-2 text-[9px] font-black text-emerald-600 uppercase tracking-widest bg-emerald-50 px-3 py-1.5 rounded-lg border border-emerald-100/50">
+                                                                <div className="flex items-center gap-2 text-[9px] font-black text-[var(--success)] uppercase tracking-widest bg-[var(--success)]/10 px-3 py-1.5 rounded-[var(--radius-md)] border border-[var(--success)]/20">
                                                                     <ShieldCheck size={12} /> SECURE
                                                                 </div>
                                                             </div>
@@ -350,7 +349,7 @@ export const TimelineView: React.FC<TimelineViewProps> = ({ onDeepDive, isGuestM
                                                                         e.stopPropagation();
                                                                         onDeepDive(event.title, 'standard');
                                                                     }}
-                                                                    className="flex items-center gap-2 text-[10px] font-black uppercase text-[#0F172A] hover:text-[#B91C1C] transition-all tracking-wider group/btn bg-white hover:bg-slate-50 px-4 py-2 rounded-xl border border-slate-100 shadow-sm hover:shadow-md"
+                                                                    className="flex items-center gap-2 text-[10px] font-black uppercase text-[var(--primary)] hover:text-[var(--accent)] transition-all tracking-wider group/btn bg-[var(--surface)] hover:bg-[var(--surface-muted)] px-4 py-2 rounded-[var(--radius-lg)] border border-[var(--border)] shadow-sm hover:shadow-md"
                                                                 >
                                                                     Analyse Profonde <ChevronRight size={14} className="group-hover:translate-x-1.5 transition-transform duration-500" />
                                                                 </button>
@@ -367,13 +366,13 @@ export const TimelineView: React.FC<TimelineViewProps> = ({ onDeepDive, isGuestM
                     ))}
 
                     {events.length === 0 && (
-                        <div className="text-center py-40 bg-white rounded-[3rem] border border-slate-100 shadow-sm">
-                            <div className="w-32 h-32 bg-slate-50 rounded-[3rem] flex items-center justify-center mx-auto mb-8 relative group">
-                                <div className="absolute inset-0 bg-[#B91C1C]/5 rounded-[3rem] opacity-0 group-hover:opacity-100 transition-all duration-700 scale-110"></div>
-                                <Calendar size={56} className="text-slate-200 group-hover:text-[#B91C1C] transition-all duration-700" />
+                        <div className="text-center py-40 bg-[var(--surface)] rounded-[var(--radius-2xl)] border border-[var(--border)] shadow-sm">
+                            <div className="w-32 h-32 bg-[var(--surface-muted)] rounded-[var(--radius-xl)] flex items-center justify-center mx-auto mb-8 relative group">
+                                <div className="absolute inset-0 bg-[var(--accent)]/5 rounded-[var(--radius-xl)] opacity-0 group-hover:opacity-100 transition-all duration-700 scale-110"></div>
+                                <Calendar size={56} className="text-[var(--text-dim)] group-hover:text-[var(--accent)] transition-all duration-700" />
                             </div>
-                            <h3 className="text-2xl font-black text-[#0F172A] uppercase tracking-[0.3em] mb-4 font-serif-legal italic">Flux Temporel Silencieux</h3>
-                            <p className="text-slate-400 font-bold uppercase tracking-[0.2em] text-[10px] max-w-sm mx-auto leading-relaxed">
+                            <h3 className="text-2xl font-black text-[var(--text)] uppercase tracking-[0.3em] mb-4 font-legal italic">Flux Temporel Silencieux</h3>
+                            <p className="text-[var(--text-dim)] font-bold uppercase tracking-[0.2em] text-[10px] max-w-sm mx-auto leading-relaxed">
                                 Aucun point de données synchronisé pour les critères actuels.
                             </p>
                         </div>
@@ -381,23 +380,23 @@ export const TimelineView: React.FC<TimelineViewProps> = ({ onDeepDive, isGuestM
                 </div>
             </div>
 
-            <footer className="px-10 py-5 bg-white border-t border-slate-50 flex flex-wrap justify-between items-center gap-6 z-20">
+            <footer className="px-10 py-5 bg-[var(--surface)] border-t border-[var(--border)] flex flex-wrap justify-between items-center gap-6 z-20">
                 <div className="flex items-center gap-8">
                     <div className="flex items-center gap-3">
-                        <div className="w-2.5 h-2.5 rounded-full bg-[#B91C1C] shadow-[0_0_8px_rgba(185,28,28,0.3)]"></div>
-                        <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Document Officiel</span>
+                        <div className="w-2.5 h-2.5 rounded-full bg-[var(--accent)] shadow-[0_0_8px_rgba(185,28,28,0.3)]"></div>
+                        <span className="text-[9px] font-black text-[var(--text-dim)] uppercase tracking-widest">Document Officiel</span>
                     </div>
                     <div className="flex items-center gap-3">
-                        <div className="w-2.5 h-2.5 rounded-full bg-[#B5965D] shadow-[0_0_8px_rgba(181,150,93,0.3)]"></div>
-                        <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Événement Critique</span>
+                        <div className="w-2.5 h-2.5 rounded-full bg-[var(--warning)] shadow-[0_0_8px_rgba(245,158,11,0.3)]"></div>
+                        <span className="text-[9px] font-black text-[var(--text-dim)] uppercase tracking-widest">Événement Critique</span>
                     </div>
                     <div className="flex items-center gap-3">
-                        <div className="w-2.5 h-2.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.3)]"></div>
-                        <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Flux Financier</span>
+                        <div className="w-2.5 h-2.5 rounded-full bg-[var(--success)] shadow-[0_0_8px_rgba(16,185,129,0.3)]"></div>
+                        <span className="text-[9px] font-black text-[var(--text-dim)] uppercase tracking-widest">Flux Financier</span>
                     </div>
                 </div>
                 <div>
-                    <span className="text-[9px] font-black text-slate-300 uppercase tracking-[0.6em] italic">Temporal Reconstruction Unit // v2.0</span>
+                    <span className="text-[9px] font-black text-[var(--text-dim)]/40 uppercase tracking-[0.6em] italic">Temporal Reconstruction Unit // v5.0</span>
                 </div>
             </footer>
         </div>

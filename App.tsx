@@ -656,69 +656,67 @@ const App: React.FC = () => {
 
       <div className="flex-1 flex flex-col min-w-0 h-screen overflow-hidden bg-[#F8FAFC]">
 
-        {/* PREMIUM MODULE HEADER - Pro Light Theme */}
-        <header className="px-4 lg:px-6 h-12 lg:h-14 shrink-0 flex justify-between items-center bg-white border-b border-slate-100 z-40 shadow-sm relative">
-          <div className="flex gap-3 lg:gap-8 items-center">
-            {/* Mobile Logo */}
-            <div className="lg:hidden flex items-center gap-3">
+        {/* PREMIUM MODULE HEADER - Pro Design System */}
+        <header className="px-6 h-16 lg:h-20 shrink-0 flex justify-between items-center bg-[var(--surface)]/80 backdrop-blur-xl border-b border-[var(--border)] z-40 shadow-sm relative">
+          <div className="flex gap-4 lg:gap-10 items-center">
+            {/* Mobile Logo & Menu Trigger */}
+            <div className="lg:hidden flex items-center gap-4">
               <button
                 onClick={() => setIsMobileMenuOpen(true)}
-                className="p-2 -ml-2 text-slate-600 hover:text-[#B91C1C] hover:bg-slate-50 rounded-lg transition-colors"
+                className="p-2.5 -ml-2 text-[var(--text-muted)] hover:text-[var(--accent)] hover:bg-[var(--surface-muted)] rounded-[var(--radius-md)] transition-all"
                 aria-label="Ouvrir le menu"
               >
                 <Menu size={24} />
               </button>
-              <div className="p-1.5 bg-[#B91C1C] rounded-lg shadow-lg shadow-red-900/10">
-                <ShieldCheck size={18} className="text-white" />
+              <div className="p-2 bg-[var(--accent)] rounded-[var(--radius-sm)] shadow-lg shadow-red-900/20">
+                <ShieldCheck size={20} className="text-white" />
               </div>
-              <h1 className="text-base font-black tracking-tight text-[#0F172A] uppercase italic">
-                DOJ <span className="text-[#B91C1C] font-serif-legal font-black tracking-normal">Forensic</span>
+              <h1 className="text-lg font-black tracking-tighter text-[var(--primary)] uppercase italic font-display">
+                DOJ <span className="text-[var(--accent)] font-legal font-black tracking-normal">Forensic</span>
               </h1>
             </div>
 
+            <div className="hidden lg:block h-10 w-px bg-[var(--border)]"></div>
 
-
-            <div className="hidden lg:block h-8 w-[1px] bg-slate-100"></div>
-
-            <div className="flex items-center gap-4">
+            <div className="flex items-center gap-6">
               <div className="flex flex-col items-start hidden sm:flex">
-                <span className="text-[8px] font-black text-slate-300 uppercase tracking-[0.3em] mb-0.5">Index Central</span>
-                <div className="flex items-center gap-1.5">
-                  <div className="text-xl font-mono-data font-black text-[#B91C1C] leading-none">{processedCount}</div>
-                  <div className="text-[9px] font-black text-slate-400 uppercase tracking-tighter self-end mb-0.5 whitespace-nowrap">Dossiers analysés</div>
+                <span className="text-[9px] font-black text-[var(--text-dim)] uppercase tracking-[0.3em] mb-1">Index Central Analytique</span>
+                <div className="flex items-center gap-2">
+                  <div className="text-2xl font-mono-data font-black text-[var(--accent)] leading-none">{processedCount}</div>
+                  <div className="text-[10px] font-bold text-[var(--text-muted)] uppercase tracking-tight self-end mb-0.5 whitespace-nowrap">Dossiers de Preuves</div>
                 </div>
               </div>
             </div>
           </div>
 
-          <div className="flex items-center gap-3 lg:gap-6">
+          <div className="flex items-center gap-4 lg:gap-8">
             {isProcessing && (
-              <div className="flex gap-3 items-center bg-[#B91C1C]/5 px-4 py-2 rounded-xl text-[10px] text-[#B91C1C] border border-[#B91C1C]/10 shadow-sm animate-pulse">
-                <Loader2 size={14} className="animate-spin" />
-                <span className="font-black uppercase tracking-[0.2em] hidden xs:block">Traitement Neural...</span>
+              <div className="flex gap-3 items-center bg-[var(--accent)]/5 px-5 py-2.5 rounded-[var(--radius-md)] text-[10px] text-[var(--accent)] border border-[var(--accent)]/10 shadow-sm animate-pulse">
+                <Loader2 size={16} className="animate-spin" />
+                <span className="font-black uppercase tracking-[0.2em] hidden xs:block">Traitement Neural en cours...</span>
               </div>
             )}
 
-            <div className="hidden lg:flex items-center gap-6 text-[9px] font-black text-slate-400 uppercase border-l border-slate-100 pl-6 tracking-[0.15em]">
+            <div className="hidden lg:flex items-center gap-8 text-[10px] font-bold text-[var(--text-muted)] uppercase border-l border-[var(--border)] pl-8 tracking-[0.15em]">
               {session?.user?.email && (
-                <div className="flex flex-col items-start pr-6 border-r border-slate-100">
-                  <span className="text-slate-300 text-[7px] mb-0.5 uppercase">Agent Identifié</span>
-                  <div className="flex items-center gap-1.5 text-[#0F172A] font-bold">
-                    <div className="w-4 h-4 rounded-md bg-slate-900 flex items-center justify-center">
-                      <ShieldCheck size={10} className="text-white" />
+                <div className="flex flex-col items-start pr-8 border-r border-[var(--border)]">
+                  <span className="text-[var(--text-dim)] text-[8px] mb-1 uppercase tracking-[0.2em]">Agent de Liaison Certifié</span>
+                  <div className="flex items-center gap-2 text-[var(--primary)] font-black">
+                    <div className="w-5 h-5 rounded-[var(--radius-sm)] bg-[var(--primary)] flex items-center justify-center shadow-md">
+                      <ShieldCheck size={12} className="text-white" />
                     </div>
-                    <span>{session.user.email}</span>
+                    <span className="truncate max-w-[150px]">{session.user.email}</span>
                   </div>
                 </div>
               )}
-
             </div>
 
             <button
               onClick={() => setIsSettingsOpen(true)}
-              className="lg:hidden p-2 text-slate-400 hover:text-[#B91C1C] transition-colors bg-white rounded-lg border border-slate-100"
+              className="p-2.5 text-[var(--text-muted)] hover:text-[var(--accent)] transition-all bg-[var(--surface)] rounded-[var(--radius-md)] border border-[var(--border)] hover:border-[var(--accent)]/30 hover:shadow-md"
+              title="Paramètres Globaux"
             >
-              <Settings size={20} />
+              <Settings size={22} />
             </button>
           </div>
         </header>
@@ -732,57 +730,55 @@ const App: React.FC = () => {
               <div className="h-full flex flex-col lg:grid lg:grid-cols-12 overflow-hidden animate-pro-reveal">
                 {/* Lab Sidebar: Queue - Modern Sidebar */}
                 {queue.length > 0 && (
-                  <section className="hidden lg:flex lg:col-span-3 xl:col-span-2 border-r border-slate-100 bg-white flex-col overflow-hidden min-h-0 relative z-30 shadow-[4px_0_24px_rgba(0,0,0,0.02)] animate-in slide-in-from-left duration-700">
-                    <div className="absolute inset-0 z-0 pointer-events-none opacity-[0.1] report-paper"></div>
+                  <section className="hidden lg:flex lg:col-span-3 xl:col-span-2 border-r border-[var(--border)] bg-[var(--surface)] flex-col overflow-hidden min-h-0 relative z-30 shadow-2xl shadow-slate-900/5 animate-reveal">
+                    <div className="absolute inset-0 z-0 pointer-events-none opacity-[0.05] report-paper"></div>
 
-                    <div className="p-6 pb-4 flex flex-col gap-1 border-b border-slate-50 bg-white/50 backdrop-blur-md relative z-10">
-                      <div className="text-[9px] font-black text-[#B91C1C] uppercase tracking-[0.4em] mb-1 flex items-center gap-2">
-                        <Activity size={10} className="animate-pulse" /> Live Pipeline
+                    <div className="p-8 pb-6 flex flex-col gap-2 border-b border-[var(--border)] bg-[var(--surface)]/50 backdrop-blur-md relative z-10">
+                      <div className="text-[10px] font-black text-[var(--accent)] uppercase tracking-[0.4em] mb-1 flex items-center gap-2">
+                        <Activity size={12} className="animate-pulse" /> Live Pipeline
                       </div>
                       <div className="flex justify-between items-center">
-                        <h2 className="text-[14px] font-black text-[#0F172A] italic font-serif-legal">Neural Queue</h2>
-                        <div className="flex items-center justify-center px-2 py-0.5 bg-slate-900 text-white rounded-md font-mono-data font-black text-[10px] shadow-lg">
+                        <h2 className="text-lg font-black text-[var(--primary)] italic font-legal">Neural Queue</h2>
+                        <div className="flex items-center justify-center px-2.5 py-1 bg-[var(--primary)] text-white rounded-[var(--radius-sm)] font-mono-data font-black text-[10px] shadow-lg">
                           {queue.length}
                         </div>
                       </div>
                     </div>
 
-                    <div className="flex-1 overflow-y-auto custom-scrollbar p-4 space-y-4 relative z-10">
+                    <div className="flex-1 overflow-y-auto custom-scrollbar p-5 space-y-4 relative z-10">
                       {queue.map((item, idx) => (
                         <div key={item.id}
-                          className="bg-white p-5 rounded-2xl border border-slate-100 shadow-sm animate-in slide-in-from-left-4 group hover:shadow-xl hover:border-[#B91C1C]/10 transition-all duration-500 cursor-wait relative overflow-hidden"
-                          style={{ animationDelay: `${idx * 0.1}s` }}
+                          className="bg-[var(--surface)] p-5 rounded-[var(--radius-lg)] border border-[var(--border)] shadow-sm group hover:shadow-xl hover:border-[var(--accent)]/20 transition-all duration-500 cursor-wait relative overflow-hidden"
+                          style={{ animation: `reveal 0.6s cubic-bezier(0.16, 1, 0.3, 1) ${idx * 0.1}s forwards`, opacity: 0 }}
                         >
-                          <div className="absolute top-0 left-0 w-1 h-full bg-[#B91C1C]/20 group-hover:bg-[#B91C1C] transition-all"></div>
-                          <div className="flex justify-between items-start mb-2 pl-2">
-                            <div className="text-[9px] font-mono-data font-black text-slate-300 group-hover:text-[#B91C1C] transition-colors">{item.id}</div>
-                            <Loader2 size={10} className="text-[#B91C1C] animate-spin" />
+                          <div className="absolute top-0 left-0 w-1 h-full bg-[var(--accent)]/20 group-hover:bg-[var(--accent)] transition-all"></div>
+                          <div className="flex justify-between items-start mb-2.5">
+                            <div className="text-[10px] font-mono-data font-bold text-[var(--text-dim)] group-hover:text-[var(--accent)] transition-colors">{item.id}</div>
+                            <Loader2 size={12} className="text-[var(--accent)] animate-spin" />
                           </div>
-                          <div className="text-[12px] text-slate-500 font-bold line-clamp-2 leading-snug italic group-hover:text-[#0F172A] transition-colors pl-2">"{item.query}"</div>
+                          <div className="text-[13px] text-[var(--text-muted)] font-medium line-clamp-2 leading-relaxed italic group-hover:text-[var(--primary)] transition-colors">"{item.query}"</div>
                         </div>
                       ))}
                     </div>
 
-                    <div className="p-4 border-t border-slate-50 bg-[#F8FAFC]/50 flex items-center gap-3">
-                      <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse"></div>
-                      <span className="text-[8px] font-black text-slate-400 uppercase tracking-widest">Agent Monitoring Active</span>
+                    <div className="p-5 border-t border-[var(--border)] bg-[var(--background)]/50 flex items-center gap-3">
+                      <div className="w-2 h-2 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_10px_rgba(16,185,129,0.5)]"></div>
+                      <span className="text-[9px] font-black text-[var(--text-muted)] uppercase tracking-widest">Agent Monitoring Active</span>
                     </div>
                   </section>
                 )}
 
                 {/* Main Lab Area */}
-                <section className={`${queue.length > 0 ? 'lg:col-span-9 xl:col-span-10' : 'lg:col-span-12'} flex flex-col overflow-hidden min-h-0 bg-[#F8FAFC]`}>
+                <section className={`${queue.length > 0 ? 'lg:col-span-9 xl:col-span-10' : 'lg:col-span-12'} flex flex-col overflow-hidden min-h-0 bg-[var(--background)]`}>
                   {/* Modern Pro Tab Bar */}
-                  <div className="flex flex-col bg-[#F8FAFC] shrink-0 z-20">
-                    {/* Neural Link Status Line */}
-                    <div className="h-0.5 w-full bg-slate-100 relative overflow-hidden">
-                      <div className="absolute inset-y-0 left-0 w-1/4 bg-gradient-to-r from-transparent via-[#B91C1C] to-transparent animate-shimmer" style={{ backgroundSize: '200% 100%' }}></div>
+                  <div className="flex flex-col bg-[var(--background)] shrink-0 z-20">
+                    {/* Status Line */}
+                    <div className="h-0.5 w-full bg-[var(--border)] relative overflow-hidden">
+                      <div className="absolute inset-y-0 left-0 w-1/4 bg-gradient-to-r from-transparent via-[var(--accent)] to-transparent animate-shimmer"></div>
                     </div>
 
-                    <div className="flex items-center h-12 bg-white/80 backdrop-blur-md border-b border-slate-100 px-4">
-
-
-                      <div className="flex-1 flex items-center overflow-x-auto no-scrollbar gap-1 relative h-full">
+                    <div className="flex items-center h-14 bg-[var(--surface)]/90 backdrop-blur-md border-b border-[var(--border)] px-6 overflow-x-auto no-scrollbar">
+                      <div className="flex items-center gap-2 relative h-full">
                         {optimisticHistory.length > 0 && (
                           <button
                             onClick={() => {
@@ -790,114 +786,133 @@ const App: React.FC = () => {
                               setShowPlanner(true);
                               setActiveTabId(null);
                             }}
-                            className={`flex items-center justify-center w-10 h-8 rounded-lg transition-all shadow-sm border shrink-0 group ${showPlanner ? 'bg-[#0F172A] border-[#0F172A] text-white shadow-xl rotate-0' : 'bg-white border-slate-100 text-slate-400 hover:text-[#B91C1C] hover:border-[#B91C1C] -rotate-3 hover:rotate-0'}`}
+                            className={`flex items-center justify-center w-10 h-9 rounded-[var(--radius-md)] transition-all shadow-sm border shrink-0 group ${showPlanner ? 'bg-[var(--primary)] border-[var(--primary)] text-white shadow-xl rotate-0' : 'bg-[var(--surface)] border-[var(--border)] text-[var(--text-muted)] hover:text-[var(--accent)] hover:border-[var(--accent)]/30 -rotate-2 hover:rotate-0'}`}
                             title="Nouvelle Analyse"
                           >
-                            <Plus size={18} className={`${showPlanner ? 'rotate-90' : 'group-hover:rotate-90'} transition-transform`} />
+                            <Plus size={20} className={`${showPlanner ? 'rotate-90' : 'group-hover:rotate-90'} transition-transform duration-500`} />
                           </button>
                         )}
 
-                        <div className="h-4 w-px bg-slate-100 mx-2"></div>
+                        <div className="h-5 w-px bg-[var(--border)] mx-3"></div>
 
                         {optimisticHistory.map((res) => (
                           <div
                             key={res.id}
                             onClick={() => {
-                              setActiveTabId(res.id);
+                              setViewMode('lab');
                               setShowPlanner(false);
+                              setActiveTabId(res.id);
                             }}
-                            className={`group flex items-center gap-3 px-5 h-8.5 cursor-pointer min-w-[140px] max-w-[200px] transition-all duration-300 relative rounded-xl border select-none ${activeTabId === res.id && !showPlanner
-                              ? 'bg-[#0F172A] border-[#0F172A] text-white shadow-xl -translate-y-0.5 z-10'
-                              : 'bg-white border-slate-100 text-slate-500 hover:bg-slate-50 hover:border-slate-200'
+                            className={`group relative h-9 px-6 flex items-center gap-3 cursor-pointer transition-all duration-300 rounded-[var(--radius-md)] border-x border-t border-transparent select-none whitespace-nowrap min-w-[140px] max-w-[240px]
+                              ${activeTabId === res.id && !showPlanner
+                                ? 'bg-[var(--surface)] text-[var(--primary)] border-[var(--border)] shadow-sm translate-y-[-1px]'
+                                : 'text-[var(--text-muted)] hover:text-[var(--primary)] hover:bg-[var(--surface-muted)]/50'
                               }`}
                           >
-                            <div className="flex flex-col overflow-hidden flex-1">
-                              <span className={`text-[7px] font-mono-data font-black tracking-widest leading-none mb-0.5 ${activeTabId === res.id && !showPlanner ? 'text-[#B91C1C]' : 'text-slate-300'}`}>{res.id}</span>
-                              <span className={`text-[11px] font-black truncate italic font-serif-legal ${activeTabId === res.id && !showPlanner ? 'text-white' : 'text-slate-600'}`}>{res.input?.query || 'Analyse'}</span>
-                            </div>
-                            <div className="flex items-center gap-2">
-                              {res.status === 'processing' ? (
-                                <Loader2 size={10} className="text-[#B91C1C] animate-spin" />
-                              ) : (
-                                <div
-                                  role="button"
-                                  onClick={(e) => handleCloseTab(e, res.id)}
-                                  className={`w-5 h-5 flex items-center justify-center rounded-lg transition-all ${activeTabId === res.id && !showPlanner ? 'hover:bg-white/10 text-white/40 hover:text-white' : 'text-slate-300 hover:bg-slate-100 hover:text-[#B91C1C]'}`}
-                                >
-                                  <X size={10} strokeWidth={3} />
-                                </div>
-                              )}
-                            </div>
+                            <Terminal size={14} className={`${activeTabId === res.id && !showPlanner ? 'text-[var(--accent)]' : 'text-[var(--text-dim)] group-hover:text-[var(--accent)]'} transition-colors duration-500`} />
+                            <span className={`text-xs font-bold truncate transition-all ${activeTabId === res.id && !showPlanner ? 'tracking-normal' : 'tracking-tight'}`}>
+                              {res.input.query.slice(0, 30)}...
+                            </span>
+
+                            <button
+                              onClick={(e) => handleCloseTab(e, res.id)}
+                              className={`ml-2 p-1 rounded-full transition-all group-hover:bg-[var(--accent)]/10 group-hover:text-[var(--accent)] ${activeTabId === res.id && !showPlanner ? 'opacity-100' : 'opacity-0 group-hover:opacity-100'}`}
+                            >
+                              <X size={12} strokeWidth={3} />
+                            </button>
+
+                            {activeTabId === res.id && !showPlanner && (
+                              <div className="absolute bottom-0 left-0 right-0 h-0.5 bg-[var(--accent)] rounded-t-full shadow-[0_-2px_8px_var(--accent)]"></div>
+                            )}
                           </div>
                         ))}
-
-                        {optimisticHistory.length === 0 && (
-                          <div className="flex items-center gap-4 ml-2 animate-pulse">
-                            <span className="text-[10px] text-slate-300 uppercase font-black tracking-[0.4em] italic font-serif-legal">Prêt pour Analyse...</span>
-                            <div className="h-0.5 w-12 bg-slate-100 relative">
-                              <div className="absolute inset-y-0 left-0 w-1/3 bg-[#B91C1C]"></div>
-                            </div>
-                          </div>
-                        )}
                       </div>
 
-                      {/* Dropdown Menu - Modern */}
                       {optimisticHistory.length > 5 && (
-                        <div className="flex items-center pl-4 ml-4 border-l border-slate-100 relative h-full">
+                        <div className="relative ml-auto px-4 border-l border-[var(--border)] flex items-center gap-3">
                           <button
                             onClick={() => setShowFullHistory(true)}
-                            className={`w-8 h-8 flex items-center justify-center rounded-xl transition-all ${showFullHistory ? 'bg-[#B91C1C] text-white shadow-lg' : 'bg-slate-50 text-slate-400 hover:bg-slate-100 hover:text-[#0F172A]'}`}
-                            title="Historique des Analyses"
+                            className="bg-[var(--surface)] p-2 rounded-[var(--radius-md)] border border-[var(--border)] text-[var(--text-muted)] hover:text-[var(--accent)] shadow-sm transition-all"
+                            title="Historique Complet"
                           >
-                            <History size={14} />
+                            <History size={18} />
                           </button>
+
+                          <button
+                            onClick={() => setShowTabsDropdown(!showTabsDropdown)}
+                            className="bg-[var(--surface)] p-2 rounded-[var(--radius-md)] border border-[var(--border)] text-[var(--text-muted)] hover:text-[var(--accent)] shadow-sm transition-all"
+                          >
+                            <ChevronDown size={18} className={`${showTabsDropdown ? 'rotate-180' : ''} transition-transform duration-500`} />
+                          </button>
+
+                          {showTabsDropdown && (
+                            <div className="absolute right-0 top-full mt-2 w-72 bg-[var(--surface)] border border-[var(--border)] rounded-[var(--radius-lg)] shadow-2xl z-50 p-3 overflow-hidden animate-reveal">
+                              <div className="text-[10px] font-black text-[var(--text-dim)] uppercase tracking-[0.2em] mb-3 px-3">Sessions d'Analyse Active</div>
+                              <div className="max-h-96 overflow-y-auto custom-scrollbar space-y-1">
+                                {optimisticHistory.map(res => (
+                                  <button
+                                    key={res.id}
+                                    onClick={() => {
+                                      setActiveTabId(res.id);
+                                      setShowPlanner(false);
+                                      setShowTabsDropdown(false);
+                                    }}
+                                    className={`w-full text-left px-3 py-2.5 rounded-[var(--radius-md)] text-xs font-bold truncate transition-all ${activeTabId === res.id ? 'bg-[var(--accent)] text-white shadow-lg' : 'text-[var(--text-muted)] hover:bg-[var(--surface-muted)] hover:text-[var(--primary)]'}`}
+                                  >
+                                    <div className="flex items-center gap-3">
+                                      <Terminal size={12} className={activeTabId === res.id ? 'text-white' : 'text-[var(--text-dim)]'} />
+                                      <span className="truncate">{res.input.query}</span>
+                                    </div>
+                                  </button>
+                                ))}
+                              </div>
+                            </div>
+                          )}
                         </div>
                       )}
                     </div>
                   </div>
 
                   {/* Content Container */}
-                  <div className="flex-1 bg-white overflow-hidden relative flex flex-col min-h-0">
+                  <div className="flex-1 bg-[var(--background)] overflow-hidden relative flex flex-col min-h-0">
                     {activeResult && !showPlanner ? (
-                      <div className="flex-1 flex flex-col overflow-hidden animate-pro-reveal min-h-0">
-                        {/* Investigation Header Info */}
+                      <div className="flex-1 flex flex-col overflow-hidden animate-reveal min-h-0">
+                        {/* Investigation Header Info - Modernized */}
+                        <div className="px-8 py-6 border-b border-[var(--border)] flex flex-col lg:flex-row justify-between items-start lg:items-center bg-[var(--surface)]/50 backdrop-blur-xl shrink-0 gap-6 relative overflow-hidden">
+                          <div className="absolute inset-0 z-0 pointer-events-none opacity-[0.03] bg-noise"></div>
 
-                        <div className="px-6 lg:px-8 py-5 border-b border-slate-100 flex flex-col lg:flex-row justify-between items-start lg:items-center bg-white shrink-0 gap-6 relative overflow-hidden">
-                          <div className="max-w-6xl relative z-10">
-                            <div className="flex flex-wrap items-center gap-4 mb-3">
-                              <div className="flex items-center gap-2.5 px-3 py-1 rounded-full bg-slate-50 border border-slate-100 group">
-                                <div className={`w-2 h-2 rounded-full ${activeResult.status === 'completed' ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.4)]' : 'bg-[#DC2626] animate-pulse shadow-[0_0_8px_rgba(220,38,38,0.4)]'}`}></div>
-                                <span className={`text-[10px] font-bold uppercase tracking-wider ${activeResult.status === 'completed' ? 'text-emerald-700' : 'text-[#DC2626]'}`}>
+                          <div className="max-w-6xl relative z-10 flex flex-col gap-3">
+                            <div className="flex flex-wrap items-center gap-4">
+                              <div className="flex items-center gap-2.5 px-3 py-1.5 rounded-[var(--radius-md)] bg-[var(--surface-muted)] border border-[var(--border)] group">
+                                <div className={`w-2 h-2 rounded-full ${activeResult.status === 'completed' ? 'bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.4)]' : 'bg-[var(--accent)] animate-pulse shadow-[0_0_8px_var(--accent)]'}`}></div>
+                                <span className={`text-[10px] font-black uppercase tracking-wider ${activeResult.status === 'completed' ? 'text-emerald-700' : 'text-[var(--accent)]'}`}>
                                   {activeResult.status === 'completed' ? 'Extraction Validée' : 'Analyse de Flux...'}
                                 </span>
                               </div>
-                              <div className="h-4 w-px bg-slate-200"></div>
-                              <div className="flex items-center gap-2">
-                                <Monitor size={14} className="text-slate-400" />
-                                <span className="text-[11px] text-slate-500 font-mono-data font-bold uppercase tracking-tight">{activeResult.input.targetUrl.split(' : ')[1] || activeResult.input.targetUrl}</span>
+                              <div className="h-4 w-px bg-[var(--border)]"></div>
+                              <div className="flex items-center gap-2 text-[var(--text-muted)]">
+                                <Monitor size={14} />
+                                <span className="text-[11px] font-mono-data font-black uppercase tracking-tight">{activeResult.input.targetUrl.split(' : ')[1] || activeResult.input.targetUrl}</span>
                               </div>
                             </div>
-                            <h2 className="text-lg lg:text-xl font-black text-[#020617] font-display tracking-tight leading-tight group">
-                              <span className="text-[#DC2626] opacity-30 mr-1.5 group-hover:opacity-100 transition-opacity">/</span>
+                            <h2 className="text-xl lg:text-2xl font-black text-[var(--primary)] font-display tracking-tight leading-tight group flex items-center gap-3">
+                              <span className="text-[var(--accent)] opacity-40 font-legal">/</span>
                               {activeResult.input.query}
                             </h2>
                           </div>
 
-                          <div className="lg:text-right shrink-0 relative z-10">
-                            <div className="flex items-center gap-2 lg:justify-end mb-1">
-                              <span className="text-[9px] text-slate-400 uppercase font-black tracking-[0.3em]">Latence</span>
-                            </div>
-                            <div className="flex items-baseline gap-1.5 lg:justify-end">
-                              <div className="text-xl font-mono-data font-black text-[#DC2626] tracking-tighter">{activeResult.durationMs ? Math.round(activeResult.durationMs) : '000'}</div>
-                              <div className="text-[12px] font-black text-slate-300 uppercase">ms</div>
+                          <div className="lg:text-right shrink-0 relative z-10 flex flex-col items-end gap-1">
+                            <span className="text-[9px] text-[var(--text-dim)] uppercase font-black tracking-[0.3em]">Latence Forensique</span>
+                            <div className="flex items-baseline gap-1.5">
+                              <div className="text-3xl font-mono-data font-black text-[var(--accent)] tracking-tighter">{activeResult.durationMs ? Math.round(activeResult.durationMs) : '000'}</div>
+                              <div className="text-sm font-black text-[var(--text-dim)] uppercase">ms</div>
                             </div>
                           </div>
                         </div>
 
-
-                        {/* Analysis Body */}
-                        <div className="flex-1 overflow-y-auto p-2 lg:p-2 custom-scrollbar report-paper relative">
-                          <div className="max-w-12xl mx-auto pb-40">
+                        {/* Analysis Body - Modernized */}
+                        <div className="flex-1 overflow-y-auto custom-scrollbar report-paper relative">
+                          <div className="max-w-7xl mx-auto p-8 lg:p-12 pb-40">
                             <DataCard
                               result={activeResult}
                               loading={activeResult.status === 'processing' || activeResult.status === 'pending'}
@@ -911,20 +926,26 @@ const App: React.FC = () => {
                         </div>
                       </div>
                     ) : (
-                      <div className="flex-1 p-8 lg:p-2 animate-pro-reveal duration-1000 overflow-y-auto custom-scrollbar min-h-0 bg-[#F8FAFC]">
-                        <div className="max-w-12xl mx-auto py-2 relative">
-                          {/* Background Decorative */}
-                          <div className="absolute top-0 right-0 w-80 h-80 bg-[#B91C1C] rounded-full blur-[140px] opacity-[0.03]"></div>
-                          <div className="absolute bottom-0 left-0 w-80 h-80 bg-[#0F4C81] rounded-full blur-[140px] opacity-[0.03]"></div>
+                      <div className="flex-1 flex flex-col overflow-y-auto custom-scrollbar bg-[var(--background)] relative">
+                        <div className="absolute inset-0 z-0 pointer-events-none opacity-[0.02] bg-[var(--accent)]/10"></div>
 
-                          <InvestigationPlanner onStartInvestigation={handleStartInvestigation} />
+                        {/* Investigation Planner Interface */}
+                        <div className="flex-1 p-8 lg:p-16 animate-reveal">
+                          <div className="max-w-5xl mx-auto py-10 relative">
+                            {/* Visual Glows */}
+                            <div className="absolute -top-40 -right-40 w-96 h-96 bg-[var(--accent)] rounded-full blur-[140px] opacity-[0.05]"></div>
+                            <div className="absolute -bottom-40 -left-40 w-96 h-96 bg-[var(--primary)] rounded-full blur-[140px] opacity-[0.05]"></div>
+
+                            <InvestigationPlanner onStartInvestigation={handleStartInvestigation} />
+                          </div>
                         </div>
+
                         {showPlanner && activeResult && (
                           <button
                             onClick={() => setShowPlanner(false)}
-                            className="fixed top-24 lg:top-32 right-12 lg:right-40 p-5 bg-white rounded-full border border-slate-100 hover:border-[#B91C1C] text-slate-400 hover:text-[#B91C1C] shadow-2xl transition-all z-20 hover:scale-110 active:scale-90"
+                            className="fixed bottom-12 right-12 p-5 bg-[var(--surface)] text-[var(--primary)] rounded-full border border-[var(--border)] hover:border-[var(--accent)] hover:text-[var(--accent)] shadow-2xl transition-all z-20 hover:scale-110 active:scale-95 group"
                           >
-                            <X size={28} />
+                            <X size={28} className="group-hover:rotate-90 transition-transform" />
                           </button>
                         )}
                       </div>
@@ -934,8 +955,9 @@ const App: React.FC = () => {
               </div>
             )}
 
+            {/* Other Views Integration */}
             {viewMode === 'background_ai' && (
-              <div className="h-full overflow-hidden animate-pro-reveal">
+              <div className="h-full overflow-hidden animate-reveal bg-[var(--background)]">
                 <BackgroundAIView
                   onOpenAnalysis={handleOpenInvestigation}
                   tasks={bgTasks}
@@ -950,7 +972,7 @@ const App: React.FC = () => {
             )}
 
             {viewMode === 'database' && (
-              <div className="h-full overflow-hidden bg-white">
+              <div className="h-full overflow-hidden bg-[var(--surface)]">
                 <ResultsDashboard
                   history={optimisticHistory}
                   onDeepDive={handleDeepDive}
@@ -961,8 +983,7 @@ const App: React.FC = () => {
             )}
 
             {viewMode === 'network' && (
-              <div className="h-full bg-slate-50 relative">
-                {/* Conditional Rendering */}
+              <div className="h-full bg-[var(--background)] relative">
                 {is3DView ? (
                   <NetworkGraphView3D
                     onDeepDive={handleDeepDive}
@@ -1000,215 +1021,218 @@ const App: React.FC = () => {
             {viewMode === 'flights' && <FlightLogsView />}
             {viewMode === 'discovery' && <CrossDocumentDiscoveryView onNavigateToInvestigation={handleOpenInvestigation} />}
           </div>
-        </main >
-
-
-      </div >
+        </main>
+      </div>
 
       {!isGuestMode && <LiveAssistant />}
 
-      {
-        showFullHistory && (
-          <div className="fixed inset-0 z-[110] bg-white animate-in zoom-in-95 fade-in duration-500 flex flex-col pt-0">
-            <div className="absolute inset-0 z-0 pointer-events-none opacity-[0.2] report-paper"></div>
+      {/* FULL HISTORY OVERLAY - Modernized */}
+      {showFullHistory && (
+        <div className="fixed inset-0 z-[110] bg-[var(--background)] animate-reveal flex flex-col">
+          <div className="absolute inset-0 z-0 pointer-events-none opacity-[0.05] report-paper"></div>
 
-            <header className="px-6 lg:px-20 py-8 border-b border-slate-100 bg-white/50 backdrop-blur-xl shrink-0 z-10 relative">
-              <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between max-w-[1600px] mx-auto gap-6">
-                <div className="flex items-center gap-6">
-                  <div className="w-12 h-12 bg-black rounded-2xl flex items-center justify-center shadow-xl">
-                    <History className="text-white" size={20} />
-                  </div>
-                  <div>
-                    <h2 className="text-xl font-black text-[#0F172A] uppercase italic font-serif-legal tracking-tight">Dossiers <span className="text-[#B91C1C]">Historiques</span></h2>
-                    <div className="flex items-center gap-2 mt-0.5">
-                      <div className="w-1.5 h-1.5 rounded-full bg-[#B91C1C] animate-pulse"></div>
-                      <span className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Neural Database Index</span>
-                    </div>
-                  </div>
+          <header className="px-8 lg:px-20 py-10 border-b border-[var(--border)] bg-[var(--surface)]/80 backdrop-blur-2xl shrink-0 z-10 relative shadow-xl shadow-slate-900/5">
+            <div className="flex flex-col lg:flex-row items-start lg:items-center justify-between max-w-[1600px] mx-auto gap-8">
+              <div className="flex items-center gap-6">
+                <div className="w-16 h-16 bg-[var(--primary)] rounded-[var(--radius-xl)] flex items-center justify-center shadow-2xl">
+                  <History className="text-white" size={28} />
                 </div>
-
-                <div className="flex-1 max-w-2xl px-4 lg:px-10">
-                  <div className="relative group w-full">
-                    <div className="absolute left-4 top-1/2 -translate-y-1/2 text-slate-300 group-focus-within:text-[#B91C1C] transition-colors">
-                      <Search size={18} />
-                    </div>
-                    <input
-                      type="text"
-                      placeholder="Rechercher dans les archives neurales (ID, Query, URL)..."
-                      value={historySearchTerm}
-                      onChange={(e) => setHistorySearchTerm(e.target.value)}
-                      className="w-full bg-slate-50/50 border border-slate-100 rounded-2xl py-3 pl-12 pr-6 text-sm focus:bg-white focus:border-[#B91C1C] focus:ring-4 focus:ring-red-900/5 transition-all outline-none font-medium"
-                    />
+                <div>
+                  <h2 className="text-2xl font-black text-[var(--primary)] uppercase italic font-legal tracking-tight">Dossiers <span className="text-[var(--accent)]">Historiques</span></h2>
+                  <div className="flex items-center gap-2 mt-1">
+                    <div className="w-2 h-2 rounded-full bg-[var(--accent)] animate-pulse"></div>
+                    <span className="text-[10px] font-black text-[var(--text-dim)] uppercase tracking-[0.3em]">Neural Database Index</span>
                   </div>
-                </div>
-
-                <div className="flex items-center gap-4">
-                  <div className="hidden lg:flex flex-col items-end pr-6 border-r border-slate-100">
-                    <span className="text-[8px] font-black text-slate-300 uppercase tracking-widest">Total Archive</span>
-                    <span className="text-lg font-mono-data font-black text-[#0F172A] leading-none mt-1">{optimisticHistory.length}</span>
-                  </div>
-                  <button
-                    onClick={() => {
-                      setShowFullHistory(false);
-                      setHistorySearchTerm('');
-                    }}
-                    className="w-12 h-12 rounded-2xl bg-white border border-slate-100 flex items-center justify-center text-slate-400 hover:text-[#B91C1C] hover:border-[#B91C1C] transition-all shadow-lg active:scale-95 group"
-                  >
-                    <X size={20} className="group-hover:rotate-90 transition-transform" />
-                  </button>
                 </div>
               </div>
-            </header>
 
-            <div className="flex-1 overflow-y-auto p-6 lg:p-20 custom-scrollbar z-10">
-              <div className="max-w-[1600px] mx-auto space-y-12">
-                {(() => {
-                  const filtered = optimisticHistory.filter(res =>
-                    res.input?.query?.toLowerCase().includes(historySearchTerm.toLowerCase()) ||
-                    res.input?.targetUrl?.toLowerCase().includes(historySearchTerm.toLowerCase()) ||
-                    res.id.toLowerCase().includes(historySearchTerm.toLowerCase())
-                  );
-
-                  if (filtered.length === 0) {
-                    return (
-                      <div className="flex flex-col items-center justify-center py-40 animate-pro-reveal">
-                        <div className="w-24 h-24 bg-slate-50 rounded-full flex items-center justify-center mb-8 border border-slate-100">
-                          <Search size={40} className="text-slate-200" />
-                        </div>
-                        <h3 className="text-lg font-black text-slate-300 uppercase tracking-[0.4em] italic font-serif-legal">Aucun dossier correspondant</h3>
-                        <button
-                          onClick={() => setHistorySearchTerm('')}
-                          className="mt-6 text-[10px] font-black text-[#B91C1C] uppercase tracking-widest hover:underline"
-                        >
-                          Réinitialiser la recherche
-                        </button>
-                      </div>
-                    );
-                  }
-
-                  const grouped = filtered.reduce((acc, res) => {
-                    const cat = res.input?.targetUrl || 'Analyses Diverses';
-                    if (!acc[cat]) acc[cat] = [];
-                    acc[cat].push(res);
-                    return acc;
-                  }, {} as Record<string, typeof optimisticHistory>);
-
-                  return Object.entries(grouped).map(([category, items]) => (
-                    <section key={category} className="space-y-6">
-                      <div className="flex items-center gap-4">
-                        <div className="h-px flex-1 bg-slate-100"></div>
-                        <div className="flex items-center gap-3 px-6 py-2 bg-slate-50 border border-slate-100 rounded-full shadow-sm">
-                          <div className="w-1.5 h-1.5 rounded-full bg-slate-300"></div>
-                          <h3 className="text-[10px] font-black text-slate-400 uppercase tracking-widest truncate max-w-md">{category}</h3>
-                          <span className="text-[9px] font-mono-data font-black text-slate-300 ml-2">({items.length})</span>
-                        </div>
-                        <div className="h-px flex-1 bg-slate-100"></div>
-                      </div>
-
-                      <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-4">
-                        {items.map((res) => (
-                          <button
-                            key={res.id}
-                            onClick={() => {
-                              setActiveTabId(res.id);
-                              setShowPlanner(false);
-                              setShowFullHistory(false);
-                              setHistorySearchTerm('');
-                            }}
-                            className={`flex flex-col p-6 rounded-3xl border text-left transition-all relative group overflow-hidden ${activeTabId === res.id && !showPlanner
-                              ? 'bg-[#0F172A] border-[#0F172A] shadow-2xl scale-[1.02] z-20'
-                              : 'bg-white border-slate-100 hover:border-[#B91C1C]/30 shadow-sm hover:shadow-xl hover:-translate-y-1'
-                              }`}
-                          >
-                            <div className="flex justify-between items-start mb-4">
-                              <div className="flex flex-col">
-                                <span className={`text-[8px] font-mono-data font-black tracking-widest ${activeTabId === res.id && !showPlanner ? 'text-[#B91C1C]' : 'text-slate-300'}`}>
-                                  #{res.id.slice(0, 10)}
-                                </span>
-                                <span className={`text-[8px] font-black uppercase mt-0.5 ${activeTabId === res.id && !showPlanner ? 'text-slate-400' : 'text-slate-300'}`}>
-                                  {new Date(res.timestamp || (res.input as any).timestamp || Date.now()).toLocaleDateString('fr-FR')}
-                                </span>
-                              </div>
-                              {res.status === 'processing' ? (
-                                <Loader2 size={12} className="text-[#B91C1C] animate-spin" />
-                              ) : res.status === 'completed' ? (
-                                <ShieldCheck size={12} className="text-emerald-500" />
-                              ) : (
-                                <Activity size={12} className="text-[#B91C1C]" />
-                              )}
-                            </div>
-
-                            <h4 className={`text-[13px] font-bold italic font-serif-legal leading-relaxed mb-4 line-clamp-2 h-10 ${activeTabId === res.id && !showPlanner ? 'text-white' : 'text-[#0F172A]'}`}>
-                              "{res.input?.query || 'Analyse Neutre'}"
-                            </h4>
-
-                            <div className={`mt-auto pt-4 border-t flex items-center justify-between ${activeTabId === res.id && !showPlanner ? 'border-white/10' : 'border-slate-50'}`}>
-                              <span className={`text-[7px] font-black uppercase tracking-widest flex items-center gap-1.5 ${activeTabId === res.id && !showPlanner ? 'text-slate-400' : 'text-slate-300'}`}>
-                                <Cpu size={10} /> Forensic Node {res.id.slice(-2)}
-                              </span>
-                              <ArrowUpRight size={12} className={`${activeTabId === res.id && !showPlanner ? 'text-[#B91C1C]' : 'text-slate-200 group-hover:text-[#B91C1C]'} transition-colors`} />
-                            </div>
-                          </button>
-                        ))}
-                      </div>
-                    </section>
-                  ));
-                })()}
-              </div>
-            </div>
-
-            <footer className="px-10 py-4 border-t border-slate-50 bg-[#F8FAFC]/50 flex justify-between items-center shrink-0">
-              <span className="text-[8px] font-black text-slate-300 uppercase tracking-widest flex items-center gap-3">
-                <span className="w-2 h-2 rounded-full bg-emerald-500"></span> Neural Database Status: SECURED_IDLE
-              </span>
-              <span className="text-[8px] font-black text-slate-300 uppercase tracking-widest italic font-serif-legal">SECURE_LEGAL_PROTOCOL_V4</span>
-            </footer>
-          </div>
-        )
-      }
-
-      {/* LOGS OVERLAY - PRO STYLE */}
-      {
-        !isGuestMode && showLogs && (
-          <div className="fixed bottom-24 lg:bottom-12 right-6 lg:right-12 left-6 lg:left-auto lg:w-[600px] h-[500px] lg:h-[600px] z-[100] animate-in slide-in-from-bottom-12 fade-in duration-700">
-            <div className="absolute inset-0 bg-white border border-slate-100 shadow-[0_40px_100px_rgba(0,0,0,0.15)] rounded-[3rem] overflow-hidden flex flex-col scale-100">
-              <div className="px-10 py-8 border-b border-slate-50 flex justify-between items-center bg-[#F8FAFC]">
-                <div className="flex items-center gap-5">
-                  <div className="w-4 h-4 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_15px_rgba(16,185,129,0.5)]"></div>
-                  <div>
-                    <h3 className="text-sm font-black uppercase tracking-[0.4em] text-[#0F172A]">Real-time Trace Console</h3>
-                    <div className="flex items-center gap-2 mt-1">
-                      <span className="text-[9px] font-black text-slate-300 uppercase tracking-widest">Neural Link Synchronized</span>
-                      <div className="h-0.5 w-4 bg-emerald-500/20"></div>
-                    </div>
+              <div className="flex-1 max-w-2xl px-4 lg:px-12 w-full">
+                <div className="relative group w-full">
+                  <div className="absolute left-5 top-1/2 -translate-y-1/2 text-[var(--text-dim)] group-focus-within:text-[var(--accent)] transition-colors">
+                    <Search size={22} />
                   </div>
+                  <input
+                    type="text"
+                    placeholder="Recherche cryptographique (ID, Dossier, Source)..."
+                    value={historySearchTerm}
+                    onChange={(e) => setHistorySearchTerm(e.target.value)}
+                    className="w-full bg-[var(--surface-muted)]/50 border border-[var(--border)] rounded-[var(--radius-xl)] py-4 pl-14 pr-8 text-base focus:bg-[var(--surface)] focus:border-[var(--accent)] focus:ring-8 focus:ring-[var(--accent)]/5 transition-all outline-none font-bold text-[var(--primary)] shadow-inner"
+                  />
+                </div>
+              </div>
+
+              <div className="flex items-center gap-6">
+                <div className="hidden lg:flex flex-col items-end pr-8 border-r border-[var(--border)]">
+                  <span className="text-[9px] font-black text-[var(--text-dim)] uppercase tracking-widest">Archives Totales</span>
+                  <span className="text-2xl font-mono-data font-black text-[var(--primary)] leading-none mt-1">{optimisticHistory.length}</span>
                 </div>
                 <button
-                  onClick={() => setShowLogs(false)}
-                  className="w-12 h-12 flex items-center justify-center hover:bg-red-50 rounded-2xl transition-all group"
+                  onClick={() => {
+                    setShowFullHistory(false);
+                    setHistorySearchTerm('');
+                  }}
+                  className="w-14 h-14 rounded-[var(--radius-lg)] bg-[var(--surface)] border border-[var(--border)] flex items-center justify-center text-[var(--text-muted)] hover:text-[var(--accent)] hover:border-[var(--accent)]/30 hover:shadow-2xl transition-all shadow-lg active:scale-90 group"
                 >
-                  <X size={24} className="text-slate-300 group-hover:text-[#B91C1C] transition-colors" />
+                  <X size={24} className="group-hover:rotate-90 transition-transform duration-500" />
                 </button>
               </div>
-              <div className="flex-1 overflow-hidden p-6 bg-slate-50 relative">
-                <div className="absolute inset-0 opacity-[0.03] pointer-events-none">
-                  <Activity size={300} className="absolute -bottom-20 -right-20" />
+            </div>
+          </header>
+
+          <div className="flex-1 overflow-y-auto p-8 lg:p-20 custom-scrollbar z-10 relative">
+            <div className="max-w-[1600px] mx-auto space-y-16">
+              {(() => {
+                const filtered = optimisticHistory.filter(res =>
+                  res.input?.query?.toLowerCase().includes(historySearchTerm.toLowerCase()) ||
+                  res.input?.targetUrl?.toLowerCase().includes(historySearchTerm.toLowerCase()) ||
+                  res.id.toLowerCase().includes(historySearchTerm.toLowerCase())
+                );
+
+                if (filtered.length === 0) {
+                  return (
+                    <div className="flex flex-col items-center justify-center py-40 animate-reveal">
+                      <div className="w-24 h-24 bg-[var(--surface-muted)] rounded-full flex items-center justify-center mb-10 border border-[var(--border)] shadow-inner">
+                        <Search size={40} className="text-[var(--text-dim)] opacity-40" />
+                      </div>
+                      <h3 className="text-xl font-black text-[var(--text-dim)] uppercase tracking-[0.5em] italic font-legal">Aucune archive neural détectée</h3>
+                      <button
+                        onClick={() => setHistorySearchTerm('')}
+                        className="mt-8 text-xs font-black text-[var(--accent)] uppercase tracking-widest hover:underline hover:opacity-80 transition-opacity"
+                      >
+                        Réinitialiser les filtres de recherche
+                      </button>
+                    </div>
+                  );
+                }
+
+                const grouped = filtered.reduce((acc, res) => {
+                  const cat = res.input?.targetUrl || 'Analyses Diverses';
+                  if (!acc[cat]) acc[cat] = [];
+                  acc[cat].push(res);
+                  return acc;
+                }, {} as Record<string, typeof optimisticHistory>);
+
+                return Object.entries(grouped).map(([category, items], gIdx) => (
+                  <section key={category} className="space-y-8 animate-reveal" style={{ animationDelay: `${gIdx * 0.1}s` }}>
+                    <div className="flex items-center gap-6">
+                      <div className="flex items-center gap-4 px-8 py-3 bg-[var(--surface)] border border-[var(--border)] rounded-full shadow-premium relative overflow-hidden group">
+                        <div className="absolute inset-0 bg-gradient-to-r from-[var(--accent)]/5 to-transparent opacity-0 group-hover:opacity-100 transition-opacity"></div>
+                        <div className="w-2 h-2 rounded-full bg-[var(--accent)]"></div>
+                        <h3 className="text-[11px] font-black text-[var(--primary)] uppercase tracking-widest truncate max-w-2xl">{category}</h3>
+                        <span className="text-[10px] font-mono-data font-black text-[var(--text-dim)] ml-4 bg-[var(--surface-muted)] px-2 py-0.5 rounded-md">/ {items.length}</span>
+                      </div>
+                      <div className="h-px flex-1 bg-[var(--border)] opacity-40"></div>
+                    </div>
+
+                    <div className="grid grid-cols-1 md:grid-cols-2 lg:grid-cols-3 xl:grid-cols-4 2xl:grid-cols-5 gap-6">
+                      {items.map((res, iIdx) => (
+                        <button
+                          key={res.id}
+                          onClick={() => {
+                            setActiveTabId(res.id);
+                            setShowPlanner(false);
+                            setShowFullHistory(false);
+                            setHistorySearchTerm('');
+                          }}
+                          className={`flex flex-col p-8 rounded-[var(--radius-xl)] border text-left transition-all relative group overflow-hidden h-[220px] shadow-sm
+                            ${activeTabId === res.id && !showPlanner
+                              ? 'bg-[var(--primary)] border-[var(--primary)] shadow-2xl scale-[1.03] z-20'
+                              : 'bg-[var(--surface)] border-[var(--border)] hover:border-[var(--accent)]/40 hover:shadow-premium hover:-translate-y-2'
+                            }`}
+                          style={{ animationDelay: `${iIdx * 0.05}s` }}
+                        >
+                          <div className="flex justify-between items-start mb-6">
+                            <div className="flex flex-col gap-1">
+                              <span className={`text-[9px] font-mono-data font-black tracking-widest ${activeTabId === res.id && !showPlanner ? 'text-[var(--accent)]' : 'text-[var(--text-dim)]'}`}>
+                                #{res.id.slice(0, 10)}
+                              </span>
+                              <span className={`text-[8px] font-black uppercase ${activeTabId === res.id && !showPlanner ? 'text-white/40' : 'text-[var(--text-dim)]/60'}`}>
+                                {new Date(res.timestamp || (res.input as any).timestamp || Date.now()).toLocaleDateString('fr-FR')}
+                              </span>
+                            </div>
+                            <div className={`p-1.5 rounded-[var(--radius-sm)] ${activeTabId === res.id && !showPlanner ? 'bg-white/10' : 'bg-[var(--surface-muted)]'}`}>
+                              {res.status === 'processing' ? (
+                                <Loader2 size={14} className="text-[var(--accent)] animate-spin" />
+                              ) : res.status === 'completed' ? (
+                                <ShieldCheck size={14} className="text-emerald-500" />
+                              ) : (
+                                <Activity size={14} className="text-[var(--accent)]" />
+                              )}
+                            </div>
+                          </div>
+
+                          <h4 className={`text-sm font-bold italic font-legal leading-relaxed mb-6 line-clamp-2 h-10 ${activeTabId === res.id && !showPlanner ? 'text-white' : 'text-[var(--primary)]'}`}>
+                            "{res.input?.query || 'Investigation Sans Nom'}"
+                          </h4>
+
+                          <div className={`mt-auto pt-6 border-t flex items-center justify-between ${activeTabId === res.id && !showPlanner ? 'border-white/10' : 'border-[var(--border)]'}`}>
+                            <span className={`text-[8px] font-black uppercase tracking-widest flex items-center gap-2 ${activeTabId === res.id && !showPlanner ? 'text-white/40' : 'text-[var(--text-dim)]'}`}>
+                              <Cpu size={12} /> Node {res.id.slice(-2)}
+                            </span>
+                            <div className={`w-6 h-6 rounded-full flex items-center justify-center transition-all ${activeTabId === res.id && !showPlanner ? 'bg-[var(--accent)] text-white' : 'bg-[var(--surface-muted)] text-[var(--text-dim)] group-hover:bg-[var(--accent)]/10 group-hover:text-[var(--accent)]'}`}>
+                              <ArrowUpRight size={14} />
+                            </div>
+                          </div>
+                        </button>
+                      ))}
+                    </div>
+                  </section>
+                ));
+              })()}
+            </div>
+          </div>
+
+          <footer className="px-12 py-6 border-t border-[var(--border)] bg-[var(--surface)]/50 flex justify-between items-center shrink-0 z-10 backdrop-blur-md">
+            <span className="text-[9px] font-black text-[var(--text-dim)] uppercase tracking-widest flex items-center gap-4">
+              <span className="w-2.5 h-2.5 rounded-full bg-emerald-500 shadow-[0_0_10px_rgba(16,185,129,0.5)]"></span>
+              Neural Engine Status: <span className="text-[var(--primary)]">ACTIVE_SECURED_QUERY</span>
+            </span>
+            <span className="text-[9px] font-black text-[var(--text-dim)] uppercase tracking-[0.3em] italic font-legal">DOJ_FORENSIC_SECURE_PROTOCOL_v04.2</span>
+          </footer>
+        </div>
+      )}
+
+      {/* LOGS OVERLAY - PRO STYLE */}
+      {/* {!isGuestMode && showLogs && (
+        <div className="fixed bottom-24 lg:bottom-12 right-6 lg:right-12 left-6 lg:left-auto lg:w-[650px] h-[550px] lg:h-[650px] z-[100] animate-reveal">
+          <div className="absolute inset-0 bg-[var(--surface)] border border-[var(--border)] shadow-premium rounded-[var(--radius-2xl)] overflow-hidden flex flex-col">
+            <div className="absolute inset-0 z-0 pointer-events-none opacity-[0.03] bg-noise"></div>
+
+            <div className="px-10 py-8 border-b border-[var(--border)] flex justify-between items-center bg-[var(--surface-muted)]/50 backdrop-blur-xl relative z-10">
+              <div className="flex items-center gap-6">
+                <div className="w-5 h-5 rounded-full bg-emerald-500 animate-pulse shadow-[0_0_20px_rgba(16,185,129,0.6)]"></div>
+                <div>
+                  <h3 className="text-sm font-black uppercase tracking-[0.4em] text-[var(--primary)]">Machine Learning Trace</h3>
+                  <div className="flex items-center gap-2 mt-1.5">
+                    <span className="text-[9px] font-black text-[var(--text-dim)] uppercase tracking-widest">Real-time Neural Stream</span>
+                    <div className="h-0.5 w-6 bg-[var(--accent)]/30"></div>
+                  </div>
                 </div>
-                <LogTerminal logs={activeLogs} type="flash" />
               </div>
-              <div className="px-8 py-3 bg-white border-t border-slate-50 flex justify-between items-center">
-                <div className="flex items-center gap-3">
-                  <div className="w-1 h-8 bg-[#B91C1C]/10 rounded-full"></div>
-                  <span className="text-[10px] font-black text-slate-300 uppercase tracking-[0.3em]">Agent Monitoring Active</span>
-                </div>
-                <div className="flex items-center gap-2">
-                  <span className="text-[9px] font-mono-data text-slate-400">STATUS: IDLE_WAIT_FLUSH</span>
-                </div>
+              <button
+                onClick={() => setShowLogs(false)}
+                className="w-12 h-12 flex items-center justify-center hover:bg-[var(--accent)]/5 rounded-[var(--radius-lg)] transition-all group"
+              >
+                <X size={22} className="text-[var(--text-dim)] group-hover:text-[var(--accent)] transition-transform duration-500 group-hover:rotate-90" />
+              </button>
+            </div>
+
+            <div className="flex-1 overflow-hidden p-8 bg-[var(--primary)] relative z-10 shadow-inner">
+              <LogTerminal logs={activeLogs} type="flash" />
+            </div>
+
+            <div className="px-10 py-4 bg-[var(--surface)] border-t border-[var(--border)] flex justify-between items-center relative z-10">
+              <div className="flex items-center gap-4">
+                <div className="w-1.5 h-10 bg-[var(--accent)]/20 rounded-full"></div>
+                <span className="text-[10px] font-black text-[var(--text-dim)] uppercase tracking-[0.3em]">Agent Monitoring Protocol ACTIVE</span>
+              </div>
+              <div className="flex items-center gap-3">
+                <span className="text-[9px] font-mono-data text-[var(--text-dim)] opacity-60">MEM_ALLOC: 4.2GB / SWAP: OK</span>
               </div>
             </div>
           </div>
-        )
-      }
+        </div>
+      )} */}
 
       <SettingsModal
         isOpen={isSettingsOpen}
@@ -1223,11 +1247,8 @@ const App: React.FC = () => {
         onLogout={handleLogout}
         isGuestMode={isGuestMode}
       />
-
-    </div >
+    </div>
   );
 };
-
-
 
 export default App;

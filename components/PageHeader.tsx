@@ -26,7 +26,7 @@ export const PageHeader: React.FC<PageHeaderProps> = ({
     title,
     titleHighlight,
     icon: Icon,
-    badgeText = "Vault_Sync_ v4.0",
+    badgeText = "",
     stats = [],
     searchQuery,
     onSearchChange,

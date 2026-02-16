@@ -68,17 +68,17 @@ export const CrossDocumentDiscoveryView: React.FC<CrossDocumentDiscoveryViewProp
 
     if (loading) {
         return (
-            <div className="h-full flex items-center justify-center bg-white">
+            <div className="h-full flex items-center justify-center bg-[var(--background)]">
                 <div className="flex flex-col items-center gap-4">
-                    <div className="w-12 h-12 border-4 border-slate-100 border-t-[#B91C1C] rounded-full animate-spin"></div>
-                    <span className="text-[10px] font-black text-slate-300 uppercase tracking-widest">Initialisation du scanner...</span>
+                    <div className="w-12 h-12 border-4 border-[var(--surface-muted)] border-t-[var(--accent)] rounded-full animate-spin"></div>
+                    <span className="text-[10px] font-black text-[var(--text-dim)] uppercase tracking-widest">Initialisation du scanner...</span>
                 </div>
             </div>
         );
     }
 
     return (
-        <div className="h-full flex flex-col bg-[#F8FAFC] overflow-hidden relative font-sans">
+        <div className="h-full flex flex-col bg-[var(--background)] overflow-hidden relative font-sans text-[var(--text)]">
             <PageHeader
                 title="Cross-Document"
                 titleHighlight="Discovery"
@@ -91,12 +91,12 @@ export const CrossDocumentDiscoveryView: React.FC<CrossDocumentDiscoveryViewProp
                 totalCount={discoveries.length}
             >
                 <div className="flex items-center gap-4">
-                    <div className="flex items-center gap-2 shrink-0 bg-slate-50 border border-slate-100 rounded-xl px-3 py-1.5">
-                        <span className="text-[9px] font-black text-slate-300 uppercase tracking-widest leading-none">Source</span>
+                    <div className="flex items-center gap-2 shrink-0 bg-[var(--surface-muted)] border border-[var(--border)] rounded-[var(--radius-xl)] px-3 py-1.5 shadow-inner">
+                        <span className="text-[9px] font-black text-[var(--text-dim)] uppercase tracking-widest leading-none">Source</span>
                         <select
                             value={selectedDocId || ''}
                             onChange={(e) => setSelectedDocId(e.target.value)}
-                            className="bg-transparent text-[10px] font-bold text-[#0F172A] outline-none max-w-[150px] truncate"
+                            className="bg-transparent text-[10px] font-bold text-[var(--primary)] outline-none max-w-[150px] truncate"
                         >
                             {results.map(r => (
                                 <option key={r.id} value={r.id}>
@@ -113,9 +113,9 @@ export const CrossDocumentDiscoveryView: React.FC<CrossDocumentDiscoveryViewProp
                             <button
                                 key={type}
                                 onClick={() => setFilterType(type)}
-                                className={`px-3 py-1.5 rounded-lg text-[9px] font-black uppercase tracking-widest transition-all whitespace-nowrap ${filterType === type
-                                    ? 'bg-[#0F172A] text-white shadow-md'
-                                    : 'bg-white border border-slate-100 text-slate-400 hover:text-slate-600'
+                                className={`px-4 py-1.5 rounded-[var(--radius-xl)] text-[9px] font-black uppercase tracking-widest transition-all whitespace-nowrap border ${filterType === type
+                                    ? 'bg-[var(--primary)] text-[var(--primary-foreground)] border-[var(--primary)] shadow-md translate-y-[-1px]'
+                                    : 'bg-[var(--surface)] border-[var(--border)] text-[var(--text-dim)] hover:text-[var(--text)] hover:border-[var(--border-strong)]'
                                     }`}
                             >
                                 {type === 'all' ? 'Tous' : type}
@@ -129,10 +129,10 @@ export const CrossDocumentDiscoveryView: React.FC<CrossDocumentDiscoveryViewProp
                 {analyzing ? (
                     <div className="text-center py-20">
                         <div className="inline-block relative">
-                            <div className="w-20 h-20 border-2 border-slate-100 rounded-full animate-spin border-t-[#B91C1C]"></div>
-                            <Activity size={24} className="absolute inset-0 m-auto text-[#B91C1C] animate-pulse" />
+                            <div className="w-20 h-20 border-2 border-[var(--border)] rounded-full animate-spin border-t-[var(--accent)]"></div>
+                            <Activity size={24} className="absolute inset-0 m-auto text-[var(--accent)] animate-pulse" />
                         </div>
-                        <p className="mt-6 text-[10px] font-black text-slate-400 uppercase tracking-[0.4em]">Analyse des convergences en cours...</p>
+                        <p className="mt-6 text-[10px] font-black text-[var(--text-dim)] uppercase tracking-[0.4em]">Analyse des convergences en cours...</p>
                     </div>
                 ) : discoveries.length > 0 ? (
                     <div className="max-w-6xl mx-auto space-y-10">
@@ -151,55 +151,55 @@ export const CrossDocumentDiscoveryView: React.FC<CrossDocumentDiscoveryViewProp
                                 if (filteredLinks.length === 0) return null;
 
                                 return (
-                                    <div key={idx} className="bg-white rounded-[2.5rem] border border-slate-100 shadow-xl shadow-slate-200/20 hover:shadow-2xl hover:shadow-[#B91C1C]/5 transition-all duration-700 group overflow-hidden border-l-4 border-l-transparent hover:border-l-[#B91C1C]">
+                                    <div key={idx} className="bg-[var(--surface)] rounded-[var(--radius-2xl)] border border-[var(--border)] shadow-[var(--shadow-premium)] hover:shadow-2xl hover:shadow-[var(--accent)]/5 transition-all duration-700 group overflow-hidden border-l-4 border-l-transparent hover:border-l-[var(--accent)]">
                                         <div className="flex flex-col lg:flex-row h-full">
                                             {/* Document Info Sidebar */}
-                                            <div className="lg:w-85 border-r border-slate-50 p-10 flex flex-col bg-slate-50/20">
+                                            <div className="lg:w-85 border-r border-[var(--border)]/50 p-10 flex flex-col bg-[var(--surface-muted)]/30 backdrop-blur-sm">
                                                 <div className="flex items-center justify-between mb-8">
                                                     <div className="flex flex-col">
-                                                        <span className="text-[8px] font-black text-[#B91C1C] uppercase tracking-[0.3em] mb-1">Convergence IA</span>
-                                                        <span className="text-2xl font-black text-[#0F172A]">{Math.round(discovery.totalStrength)}%</span>
+                                                        <span className="text-[8px] font-black text-[var(--accent)] uppercase tracking-[0.3em] mb-1">Convergence IA</span>
+                                                        <span className="text-2xl font-black text-[var(--text)] font-legal italic tabular-nums">{Math.round(discovery.totalStrength)}%</span>
                                                     </div>
-                                                    <div className="w-12 h-12 rounded-full border-2 border-slate-100 flex items-center justify-center relative">
+                                                    <div className="w-12 h-12 rounded-full border-2 border-[var(--border)] flex items-center justify-center relative bg-[var(--surface)] shadow-sm">
                                                         <div
-                                                            className="absolute inset-0 rounded-full border-2 border-[#B91C1C] border-t-transparent animate-spin-slow"
+                                                            className="absolute inset-0 rounded-full border-2 border-[var(--accent)] border-t-transparent animate-spin-slow"
                                                             style={{ opacity: discovery.totalStrength / 100 }}
                                                         ></div>
-                                                        <Link2 size={20} className="text-slate-200 group-hover:text-[#B91C1C] transition-colors" />
+                                                        <Link2 size={20} className="text-[var(--text-dim)] group-hover:text-[var(--accent)] transition-colors" />
                                                     </div>
                                                 </div>
 
                                                 <div className="space-y-4 mb-8">
-                                                    <div className="text-[9px] font-black text-slate-400 uppercase tracking-widest">Document Cible :</div>
-                                                    <h3 className="text-sm font-black text-[#0F172A] italic font-serif-legal leading-relaxed">
+                                                    <div className="text-[9px] font-black text-[var(--text-dim)] uppercase tracking-widest">Document Cible :</div>
+                                                    <h3 className="text-sm font-black text-[var(--text)] italic font-legal leading-relaxed">
                                                         {otherDoc?.input.query}
                                                     </h3>
-                                                    <div className="flex items-center gap-2 text-[10px] text-slate-400 font-bold italic underline decoration-slate-200">
+                                                    <div className="flex items-center gap-2 text-[10px] text-[var(--text-dim)] font-bold italic underline decoration-[var(--border)]">
                                                         {otherDoc?.input.targetUrl.split('/').pop()?.slice(0, 30)}
                                                     </div>
                                                 </div>
 
                                                 <div className="flex flex-wrap gap-2 mb-8">
                                                     {Array.from(new Set(discovery.links.map(l => l.type))).map(t => (
-                                                        <span key={t} className="px-2 py-1 bg-white border border-slate-100 rounded text-[8px] font-black text-slate-400 uppercase tracking-widest">{t}</span>
+                                                        <span key={t} className="px-2 py-1 bg-[var(--surface)] border border-[var(--border)] rounded text-[8px] font-black text-[var(--text-dim)] uppercase tracking-widest shadow-sm">{t}</span>
                                                     ))}
                                                 </div>
 
                                                 <button
                                                     onClick={() => onNavigateToInvestigation?.(discovery.doc2Id)}
-                                                    className="mt-auto flex items-center justify-center gap-3 px-6 py-4 bg-[#0F172A] text-white rounded-2xl text-[10px] font-black uppercase tracking-[0.2em] hover:bg-[#B91C1C] transition-all transform active:scale-95 shadow-lg shadow-slate-900/10"
+                                                    className="mt-auto flex items-center justify-center gap-3 px-6 py-4 bg-[var(--primary)] text-[var(--primary-foreground)] rounded-[var(--radius-xl)] text-[10px] font-black uppercase tracking-[0.2em] hover:bg-[var(--accent)] transition-all transform active:scale-95 shadow-lg shadow-[var(--primary)]/10"
                                                 >
                                                     Ouvrir l'Analyse <ArrowRight size={14} />
                                                 </button>
                                             </div>
 
                                             {/* Links Content */}
-                                            <div className="flex-1 p-10 bg-white relative">
-                                                <div className="flex items-center justify-between mb-10 border-b border-slate-50 pb-6">
-                                                    <h4 className="text-[10px] font-black text-[#B91C1C] uppercase tracking-[0.4em] flex items-center gap-3">
+                                            <div className="flex-1 p-10 bg-[var(--surface)] relative">
+                                                <div className="flex items-center justify-between mb-10 border-b border-[var(--border)]/50 pb-6">
+                                                    <h4 className="text-[10px] font-black text-[var(--accent)] uppercase tracking-[0.4em] flex items-center gap-3">
                                                         <Activity size={16} /> Matrix des Connecteurs
                                                     </h4>
-                                                    <div className="flex items-center gap-4 text-slate-300 font-black text-[9px] uppercase tracking-widest">
+                                                    <div className="flex items-center gap-4 text-[var(--text-muted)] font-black text-[9px] uppercase tracking-widest">
                                                         <span>Confidence: HIGH</span>
                                                         <span>Matches: {filteredLinks.length}</span>
                                                     </div>
@@ -207,30 +207,30 @@ export const CrossDocumentDiscoveryView: React.FC<CrossDocumentDiscoveryViewProp
 
                                                 <div className="grid grid-cols-1 md:grid-cols-2 gap-6">
                                                     {filteredLinks.map((link, lIdx) => (
-                                                        <div key={lIdx} className="group/link bg-[#F8FAFC] hover:bg-white p-6 rounded-3xl border border-slate-100 hover:border-[#B91C1C]/20 hover:shadow-2xl hover:shadow-slate-200/50 transition-all duration-500 relative overflow-hidden">
+                                                        <div key={lIdx} className="group/link bg-[var(--surface-muted)]/50 hover:bg-[var(--surface)] p-6 rounded-[var(--radius-xl)] border border-[var(--border)]/50 hover:border-[var(--accent)]/20 hover:shadow-[var(--shadow-premium)] transition-all duration-500 relative overflow-hidden">
                                                             <div className="absolute top-0 right-0 p-4 opacity-[0.03] group-hover/link:opacity-10 transition-opacity">
                                                                 {getLinkIcon(link.type)}
                                                             </div>
                                                             <div className="flex items-center gap-4 mb-4">
-                                                                <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-transform group-hover/link:scale-110 duration-500 ${link.type === 'pii' ? 'bg-emerald-50 text-emerald-600 shadow-sm shadow-emerald-900/5' :
-                                                                    link.type === 'transaction' ? 'bg-red-50 text-[#B91C1C] shadow-sm shadow-red-900/5' :
-                                                                        link.type === 'semantic' ? 'bg-purple-50 text-purple-600 shadow-sm shadow-purple-900/5' :
-                                                                            'bg-blue-50 text-[#0F4C81] shadow-sm shadow-blue-900/5'
+                                                                <div className={`w-10 h-10 rounded-xl flex items-center justify-center transition-transform group-hover/link:scale-110 duration-500 ${link.type === 'pii' ? 'bg-emerald-500/10 text-emerald-600 shadow-inner' :
+                                                                    link.type === 'transaction' ? 'bg-[var(--accent)]/10 text-[var(--accent)] shadow-inner' :
+                                                                        link.type === 'semantic' ? 'bg-purple-500/10 text-purple-600 shadow-inner' :
+                                                                            'bg-blue-500/10 text-blue-600 shadow-inner'
                                                                     }`}>
                                                                     {getLinkIcon(link.type)}
                                                                 </div>
                                                                 <div className="flex flex-col">
-                                                                    <span className="text-[9px] font-black text-slate-300 uppercase tracking-widest mb-0.5">{link.type}</span>
-                                                                    <span className="text-xs font-black text-[#0F172A] italic font-serif-legal line-clamp-1">{link.label}</span>
+                                                                    <span className="text-[9px] font-black text-[var(--text-dim)] uppercase tracking-widest mb-0.5">{link.type}</span>
+                                                                    <span className="text-xs font-black text-[var(--text)] italic font-legal line-clamp-1">{link.label}</span>
                                                                 </div>
                                                             </div>
-                                                            <p className="text-[11px] text-slate-500 leading-relaxed font-medium pl-14">
+                                                            <p className="text-[11px] text-[var(--text-muted)] leading-relaxed font-medium pl-14">
                                                                 {link.description}
                                                             </p>
 
                                                             {link.strength > 8 && (
-                                                                <div className="absolute bottom-4 right-6 text-[8px] font-black text-[#B91C1C] uppercase tracking-[0.2em] flex items-center gap-1.5 opacity-0 group-hover/link:opacity-100 transition-opacity">
-                                                                    <Zap size={10} className="fill-[#B91C1C]" /> HIGH CONFIDENCE
+                                                                <div className="absolute bottom-4 right-6 text-[8px] font-black text-[var(--accent)] uppercase tracking-[0.2em] flex items-center gap-1.5 opacity-0 group-hover/link:opacity-100 transition-opacity">
+                                                                    <Zap size={10} className="fill-[var(--accent)]" /> HIGH CONFIDENCE
                                                                 </div>
                                                             )}
                                                         </div>
@@ -244,11 +244,11 @@ export const CrossDocumentDiscoveryView: React.FC<CrossDocumentDiscoveryViewProp
                     </div>
                 ) : (
                     <div className="text-center py-40">
-                        <div className="w-24 h-24 bg-slate-50 rounded-full flex items-center justify-center mx-auto mb-6 border border-slate-100">
-                            <Search size={32} className="text-slate-200" />
+                        <div className="w-24 h-24 bg-[var(--surface-muted)] rounded-full flex items-center justify-center mx-auto mb-6 border border-[var(--border)] shadow-inner">
+                            <Search size={32} className="text-[var(--text-dim)]" />
                         </div>
-                        <h3 className="text-lg font-black text-slate-300 uppercase tracking-widest italic mb-2">Aucun pont identifié</h3>
-                        <p className="text-[10px] text-slate-400 font-bold uppercase tracking-[0.2em]">Importez plus de documents pour activer la découverte</p>
+                        <h3 className="text-lg font-black text-[var(--text-dim)] uppercase tracking-widest italic mb-2 font-legal">Aucun pont identifié</h3>
+                        <p className="text-[10px] text-[var(--text-muted)] font-bold uppercase tracking-[0.2em]">Importez plus de documents pour activer la découverte</p>
                     </div>
                 )}
             </div>
