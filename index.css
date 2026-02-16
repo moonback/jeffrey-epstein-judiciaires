@@ -63,17 +63,17 @@
     --radius-2xl: 2.5rem;
     /* 40px */
 
-    /* Premium Shadow System */
-    --shadow-subtle: 0 1px 2px 0 rgb(0 0 0 / 0.05);
-    --shadow-soft: 0 4px 6px -1px rgb(0 0 0 / 0.1), 0 2px 4px -2px rgb(0 0 0 / 0.1);
-    --shadow-premium: 0 20px 25px -5px rgb(0 0 0 / 0.1), 0 8px 10px -6px rgb(0 0 0 / 0.1);
-    --shadow-inner: inset 0 2px 4px 0 rgb(0 0 0 / 0.05);
+    /* Premium Shadow System - Softer & More Modern */
+    --shadow-subtle: 0 1px 3px 0 rgba(0, 0, 0, 0.03);
+    --shadow-soft: 0 4px 20px -5px rgba(0, 0, 0, 0.05);
+    --shadow-premium: 0 15px 40px -10px rgba(0, 0, 0, 0.08), 0 5px 15px -5px rgba(0, 0, 0, 0.04);
+    --shadow-inner: inset 0 2px 4px 0 rgba(0, 0, 0, 0.02);
 
-    /* State Colors */
-    --success: #10b981;
-    --warning: #f59e0b;
-    --danger: #ef4444;
-    --info: #3b82f6;
+    /* State Colors - Refined */
+    --success: #059669;
+    --warning: #d97706;
+    --danger: #dc2626;
+    --info: #2563eb;
 }
 
 [data-theme="dark"] {
@@ -141,15 +141,15 @@ h6 {
     background: var(--surface);
     border: 1px solid var(--border);
     border-radius: var(--radius-xl);
-    padding: 1.5rem;
-    transition: all 0.4s cubic-bezier(0.4, 0, 0.2, 1);
-    box-shadow: var(--shadow-soft);
+    padding: 2rem;
+    transition: all 0.5s cubic-bezier(0.16, 1, 0.3, 1);
+    box-shadow: var(--shadow-subtle);
 }
 
 .premium-card:hover {
     box-shadow: var(--shadow-premium);
-    border-color: var(--border-strong);
-    transform: translateY(-2px);
+    border-color: var(--accent);
+    transform: translateY(-4px);
 }
 
 /* --- Interactive Elements --- */

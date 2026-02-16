@@ -168,7 +168,7 @@ export const MainActorsView: React.FC<MainActorsViewProps> = ({ onEntityClick, i
                 <button
                     onClick={() => setOnlyHighMentions(!onlyHighMentions)}
                     title="Filtrer par activité"
-                    className={`mt-[-4px] p-2 h-[34px] rounded-lg border transition-all flex items-center justify-center ${onlyHighMentions ? 'bg-[var(--primary)] border-[var(--primary)] text-[var(--primary-foreground)]' : 'bg-[var(--surface)] border-[var(--border)] text-[var(--text-dim)] hover:border-[var(--accent)] hover:text-[var(--accent)]'}`}
+                    className={`mt-[-4px] p-2 h-[34px] rounded-lg border transition-all flex items-center justify-center ${onlyHighMentions ? 'bg-[var(--accent)] border-[var(--accent)] text-white' : 'bg-[var(--surface)] border-[var(--border)] text-[var(--text-dim)] hover:border-[var(--accent)] hover:text-[var(--accent)]'}`}
                 >
                     <Activity size={14} />
                     <span className="ml-2 text-[10px] font-black uppercase tracking-wider hidden sm:inline">Actifs</span>
@@ -196,12 +196,14 @@ export const MainActorsView: React.FC<MainActorsViewProps> = ({ onEntityClick, i
                     {/* High Importance Grid */}
                     {actors.some(a => a.risk_level >= 8 || a.influence >= 8) && (
                         <div>
-                            <div className="flex items-center gap-2 mb-3">
-                                <ShieldAlert size={14} className="text-[var(--danger)]" />
-                                <span className="text-[10px] font-black text-[var(--danger)] uppercase tracking-[0.2em]">Cibles Prioritaires Alpha</span>
-                                <div className="h-px flex-1 bg-gradient-to-r from-[var(--danger)]/20 to-transparent"></div>
+                            <div className="flex items-center gap-3 mb-6">
+                                <div className="p-1.5 bg-[var(--danger)]/10 rounded-lg">
+                                    <ShieldAlert size={14} className="text-[var(--danger)]" />
+                                </div>
+                                <span className="text-[10px] font-black text-[var(--text)] uppercase tracking-[0.2em]">Cibles Prioritaires Alpha</span>
+                                <div className="h-px flex-1 bg-gradient-to-r from-[var(--border)] to-transparent opacity-50"></div>
                             </div>
-                            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-3">
+                            <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-5">
                                 {actors.filter(a => a.risk_level >= 8 || a.influence >= 8).map((actor, idx) => (
                                     <ActorCard
                                         key={actor.nom + idx}
@@ -215,13 +217,15 @@ export const MainActorsView: React.FC<MainActorsViewProps> = ({ onEntityClick, i
                     )}
 
                     {/* Standard Registry */}
-                    <div>
-                        <div className="flex items-center gap-2 mb-3">
-                            <Database size={14} className="text-[var(--text-dim)]" />
+                    <div className="pt-8">
+                        <div className="flex items-center gap-3 mb-6">
+                            <div className="p-1.5 bg-[var(--primary)]/5 rounded-lg text-[var(--text-dim)]">
+                                <Database size={14} />
+                            </div>
                             <span className="text-[10px] font-black text-[var(--text-dim)] uppercase tracking-[0.2em]">Registre Complet</span>
-                            <div className="h-px flex-1 bg-gradient-to-r from-[var(--border)] to-transparent"></div>
+                            <div className="h-px flex-1 bg-gradient-to-r from-[var(--border)] to-transparent opacity-50"></div>
                         </div>
-                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-3">
+                        <div className="grid grid-cols-1 sm:grid-cols-2 md:grid-cols-3 lg:grid-cols-4 xl:grid-cols-5 2xl:grid-cols-6 gap-4">
                             {actors.filter(a => !(a.risk_level >= 8 || a.influence >= 8)).map((actor, idx) => (
                                 <ActorCard
                                     key={actor.nom + idx}
@@ -258,7 +262,6 @@ export const MainActorsView: React.FC<MainActorsViewProps> = ({ onEntityClick, i
 
 // Ultra Compact Actor Card
 const ActorCard: React.FC<{ actor: any, isPriority?: boolean, onClick: () => void }> = ({ actor, isPriority, onClick }) => {
-    // Risk color logic
     const isHighRisk = actor.risk_level >= 7;
     const isMediumRisk = actor.risk_level >= 4 && actor.risk_level < 7;
 
@@ -267,63 +270,57 @@ const ActorCard: React.FC<{ actor: any, isPriority?: boolean, onClick: () => voi
             onClick={onClick}
             className={`
                 group relative flex flex-col
-                bg-[var(--surface)] border-[var(--border)] rounded-[var(--radius-xl)] overflow-hidden cursor-pointer transition-all duration-300
-                hover:shadow-[var(--shadow-premium)] hover:-translate-y-1 hover:border-[var(--accent)]/50
-                ${isPriority ? 'border-[var(--danger)]/20 shadow-[var(--shadow-subtle)] bg-[var(--danger)]/5' : 'border-[var(--border)]'}
+                bg-[var(--surface)] border-[var(--border)] rounded-[var(--radius-xl)] overflow-hidden cursor-pointer transition-all duration-500
+                hover:shadow-[var(--shadow-premium)] hover:-translate-y-1.5 hover:border-[var(--accent)]/30
+                ${isPriority ? 'border-[var(--danger)]/20 shadow-sm bg-gradient-to-b from-[var(--surface)] to-[var(--danger)]/5' : 'shadow-sm'}
             `}
         >
-            {/* Hover Accent Line */}
-            <div className={`absolute top-0 left-0 w-full h-0.5 transform scale-x-0 group-hover:scale-x-100 transition-transform duration-500 ${isHighRisk ? 'bg-[var(--danger)]' : 'bg-[var(--primary)]'}`}></div>
-
-            <div className="p-3">
-                <div className="flex justify-between items-start gap-3 mb-2">
-                    {/* Avatar Info */}
+            <div className="p-4">
+                <div className="flex justify-between items-start mb-4">
                     <div className={`
-                        w-8 h-8 rounded-lg flex items-center justify-center font-black text-xs font-legal italic transition-all group-hover:scale-105 shrink-0
-                        ${isHighRisk ? 'bg-[var(--danger)] text-white shadow-md shadow-red-900/10' :
+                        w-10 h-10 rounded-xl flex items-center justify-center font-black text-sm font-legal italic transition-all duration-500 group-hover:scale-110 shrink-0
+                        ${isHighRisk ? 'bg-[var(--danger)] text-white shadow-lg shadow-red-900/10' :
                             isMediumRisk ? 'bg-[var(--warning)]/10 text-[var(--warning)] border border-[var(--warning)]/20' :
                                 'bg-[var(--surface-muted)] text-[var(--text-muted)] border border-[var(--border)]'}
                     `}>
                         {actor.nom[0]}
                     </div>
 
-                    {/* Risk Badge */}
                     <div className={`
-                        px-1.5 py-0.5 rounded flex items-center gap-1 border
+                        px-2 py-0.5 rounded-full flex items-center gap-1 border text-[10px] font-black uppercase tracking-wider
                         ${isHighRisk ? 'bg-[var(--danger)]/5 border-[var(--danger)]/20 text-[var(--danger)]' : 'bg-[var(--surface-muted)] border-[var(--border)] text-[var(--text-dim)]'}
                     `}>
-                        {isHighRisk && <AlertTriangle size={8} />}
-                        <span className="text-[9px] font-black uppercase tracking-wider">{actor.risk_level}/10</span>
+                        <span className="tabular-nums">{actor.risk_level}</span>
+                        <span className="opacity-40">/10</span>
                     </div>
                 </div>
 
-                <div className="mb-2.5">
-                    <h3 className="font-bold text-[var(--text)] text-xs leading-tight group-hover:text-[var(--accent)] transition-colors truncate" title={actor.nom}>
+                <div className="mb-4">
+                    <h3 className="font-bold text-[var(--text)] text-[13px] leading-tight group-hover:text-[var(--accent)] transition-colors line-clamp-2" title={actor.nom}>
                         {actor.nom}
                     </h3>
-                    <p className="text-[8px] font-semibold text-[var(--text-dim)] uppercase tracking-wider truncate mt-0.5" title={actor.role}>
+                    <p className="text-[9px] font-black text-[var(--text-dim)] uppercase tracking-widest truncate mt-1.5 opacity-70">
                         {actor.role || 'Rôle Inconnu'}
                     </p>
                 </div>
 
-                {/* Micro Stats */}
-                <div className="grid grid-cols-2 gap-2 mt-auto">
-                    <div className="bg-[var(--surface-muted)]/50 rounded flex flex-col justify-center px-2 py-1 border border-[var(--border)]/50">
-                        <span className="text-[6px] font-black text-[var(--text-dim)] uppercase tracking-widest leading-none mb-0.5">MENTIONS</span>
-                        <span className="text-[10px] font-black text-[var(--text-muted)] leading-none">{actor.mentions}</span>
+                {/* Simplified Stats */}
+                <div className="flex items-center gap-4 pt-4 border-t border-[var(--border)]/40 mt-auto">
+                    <div className="flex flex-col">
+                        <span className="text-[7px] font-black text-[var(--text-dim)] uppercase tracking-widest mb-0.5">Mentions</span>
+                        <span className="text-[11px] font-black text-[var(--text)] leading-none tabular-nums">{actor.mentions}</span>
                     </div>
-                    <div className="bg-[var(--surface-muted)]/50 rounded flex flex-col justify-center px-2 py-1 border border-[var(--border)]/50">
-                        <span className="text-[6px] font-black text-[var(--text-dim)] uppercase tracking-widest leading-none mb-0.5">INFLUENCE</span>
-                        <span className="text-[10px] font-black text-[var(--text-muted)] leading-none">{actor.influence}</span>
+                    <div className="h-6 w-px bg-[var(--border)]/50"></div>
+                    <div className="flex flex-col">
+                        <span className="text-[7px] font-black text-[var(--text-dim)] uppercase tracking-widest mb-0.5">Influence</span>
+                        <span className="text-[11px] font-black text-[var(--text)] leading-none tabular-nums">{actor.influence}</span>
                     </div>
                 </div>
             </div>
 
-            {/* View Profile Overlay Action */}
-            <div className="absolute bottom-2 right-2 opacity-0 group-hover:opacity-100 transition-opacity transform translate-y-2 group-hover:translate-y-0 duration-300 z-20">
-                <div className="w-5 h-5 rounded-full bg-[var(--primary)] flex items-center justify-center shadow-lg">
-                    <ChevronRight size={10} className="text-[var(--primary-foreground)]" />
-                </div>
+            {/* Subtle Hover Action indicator */}
+            <div className="absolute top-2 right-2 opacity-0 group-hover:opacity-100 transition-all duration-300">
+                <ChevronRight size={14} className="text-[var(--accent)]" />
             </div>
         </div>
     );

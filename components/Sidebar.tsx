@@ -102,10 +102,10 @@ export const Sidebar: React.FC<SidebarProps> = ({
                 {/* COLLAPSE TOGGLE (Desktop Only) */}
                 <button
                     onClick={() => setIsCollapsed(!isCollapsed)}
-                    className="hidden lg:flex absolute -right-3 top-20 w-7 h-7 bg-[var(--surface)] border border-[var(--border)] rounded-full items-center justify-center text-[var(--text-muted)] hover:text-[var(--accent)] transition-all z-[60] shadow-md hover:scale-110 active:scale-95"
+                    className="hidden lg:flex absolute -right-3 top-20 w-6 h-6 bg-[var(--surface)] border border-[var(--border)] rounded-full items-center justify-center text-[var(--text-dim)] hover:text-[var(--accent)] transition-all z-[60] shadow-sm hover:scale-110 active:scale-95"
                     aria-label={isCollapsed ? "Déplier le menu" : "Replier le menu"}
                 >
-                    {isCollapsed ? <ChevronRight size={14} /> : <ChevronLeft size={14} />}
+                    {isCollapsed ? <ChevronRight size={12} /> : <ChevronLeft size={12} />}
                 </button>
 
                 {/* MOBILE CLOSE BUTTON */}
@@ -147,11 +147,11 @@ export const Sidebar: React.FC<SidebarProps> = ({
                     {!isGuestMode && (
                         <button
                             onClick={() => { onNewAnalysis(); onMobileClose(); }}
-                            className={`w-full mb-8 group relative flex items-center ${isCollapsed ? 'justify-center' : 'px-4'} h-12 bg-[var(--accent)] hover:bg-[var(--primary)] text-white rounded-[var(--radius-md)] transition-all duration-500 shadow-xl active:scale-95 overflow-hidden border border-white/10`}
+                            className={`w-full mb-8 group relative flex items-center ${isCollapsed ? 'justify-center' : 'px-4'} h-11 bg-[var(--accent)] text-white rounded-[var(--radius-lg)] transition-all duration-500 shadow-md hover:shadow-xl active:scale-[0.98] border border-white/10`}
                         >
                             <Plus size={18} className="shrink-0 group-hover:rotate-90 transition-transform duration-500" />
                             {!isCollapsed && (
-                                <span className="ml-3 font-bold text-xs uppercase tracking-wider whitespace-nowrap font-display">
+                                <span className="ml-3 font-black text-[10px] uppercase tracking-[0.15em] whitespace-nowrap">
                                     Nouvelle Analyse
                                 </span>
                             )}
@@ -178,7 +178,7 @@ export const Sidebar: React.FC<SidebarProps> = ({
                                     aria-current={isActive ? 'page' : undefined}
                                 >
                                     {isActive && (
-                                        <div className="absolute left-0 w-1 h-6 bg-[var(--accent)] rounded-r-full shadow-[0_0_15px_var(--accent)]"></div>
+                                        <div className="absolute left-0 w-1 h-5 bg-[var(--accent)] rounded-r-full"></div>
                                     )}
                                     <item.icon
                                         size={20}

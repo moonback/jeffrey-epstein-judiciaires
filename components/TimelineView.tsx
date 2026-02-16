@@ -225,16 +225,14 @@ export const TimelineView: React.FC<TimelineViewProps> = ({ onDeepDive, isGuestM
             <div className="flex-1 overflow-y-auto p-6 lg:p-12 custom-scrollbar z-10 scroll-smooth">
                 <div className="max-w-5xl mx-auto relative pl-4 lg:pl-0">
                     {/* Central Vertical Line (for larger screens) */}
-                    <div className="absolute left-8 lg:left-1/2 top-0 bottom-0 w-[2px] bg-gradient-to-b from-[var(--accent)]/40 via-[var(--surface-muted)] to-transparent lg:-translate-x-1/2 hidden lg:block"></div>
-                    <div className="absolute left-8 lg:left-1/2 top-0 bottom-0 w-[1px] bg-[var(--border)] lg:-translate-x-1/2 lg:hidden"></div>
+                    <div className="absolute left-8 lg:left-1/2 top-0 bottom-0 w-[1px] bg-gradient-to-b from-[var(--border)] via-[var(--border)] to-transparent lg:-translate-x-1/2"></div>
 
                     {groupedEvents.map((group, gIdx) => (
                         <div key={group.year} className="mb-20 last:mb-0">
                             {/* Year Marker */}
                             <div className="relative flex justify-center mb-16">
-                                <div className="bg-[var(--surface)] border-2 border-[var(--border)] px-8 py-2 rounded-[var(--radius-xl)] shadow-[var(--shadow-soft)] z-20 relative group hover:border-[var(--accent)] transition-colors duration-500">
-                                    <div className="absolute inset-0 bg-[var(--accent)] blur-2xl opacity-0 group-hover:opacity-10 transition-opacity"></div>
-                                    <span className="text-2xl font-legal font-black text-[var(--text)] italic tracking-tighter tabular-nums">
+                                <div className="bg-[var(--surface)] border border-[var(--border)] px-6 py-2 rounded-full shadow-sm z-20 relative group hover:border-[var(--accent)] transition-all duration-500">
+                                    <span className="text-xl font-legal font-black text-[var(--text)] italic tracking-tighter tabular-nums">
                                         {group.year}
                                     </span>
                                 </div>
@@ -265,39 +263,35 @@ export const TimelineView: React.FC<TimelineViewProps> = ({ onDeepDive, isGuestM
                                             </div>
 
                                             {/* Connector Marker */}
-                                            <div className="absolute left-8 lg:left-1/2 w-4 h-4 rounded-full bg-[var(--surface)] border-4 border-[var(--border)] group-hover:border-[var(--accent)] lg:-translate-x-1/2 z-30 transition-all duration-500 shadow-md group-hover:scale-125">
-                                                <div className="absolute inset-0 bg-[var(--accent)] rounded-full opacity-0 group-hover:opacity-100 animate-ping"></div>
+                                            <div className="absolute left-8 lg:left-1/2 w-3 h-3 rounded-full bg-[var(--surface)] border border-[var(--border)] group-hover:border-[var(--accent)] lg:-translate-x-1/2 z-30 transition-all duration-500 shadow-sm group-hover:scale-125">
                                             </div>
 
                                             {/* Card Content */}
                                             <div className="flex-1 w-full lg:w-auto pl-12 lg:pl-0">
                                                 <div
                                                     className={`
-                                                        bg-[var(--surface)] p-6 lg:p-8 rounded-[var(--radius-2xl)] border border-transparent 
-                                                        group-hover:border-[var(--border)] transition-all duration-500 shadow-[var(--shadow-subtle)] 
+                                                        bg-[var(--surface)] p-8 rounded-[var(--radius-2xl)] border border-[var(--border)]
+                                                        transition-all duration-500 shadow-sm
                                                         hover:shadow-[var(--shadow-premium)] relative overflow-hidden
                                                         cursor-pointer
-                                                        ${expandedEvent === event.id ? 'ring-2 ring-[var(--accent)]/10' : ''}
+                                                        ${expandedEvent === event.id ? 'ring-2 ring-[var(--accent)]/10 border-[var(--accent)]/30' : ''}
                                                     `}
                                                     onClick={() => setExpandedEvent(expandedEvent === event.id ? null : event.id)}
                                                 >
-                                                    {/* Type Accent */}
-                                                    <div className={`absolute top-0 right-0 w-32 h-32 ${styles.bg} -mr-16 -mt-16 rounded-full opacity-50 group-hover:scale-110 transition-transform duration-700`}></div>
-
                                                     <div className="relative z-10">
                                                         <div className="flex items-start justify-between mb-4">
-                                                            <h3 className="text-[var(--text)] font-black text-lg lg:text-xl italic tracking-tight font-legal leading-tight pr-10">
-                                                                {event.title}
-                                                            </h3>
-                                                            <div className={`p-2 rounded-xl ${styles.bg} ${styles.color} border border-transparent group-hover:border-current/10 transition-all`}>
-                                                                {styles.icon}
+                                                            <div>
+                                                                <div className={`text-[10px] font-black uppercase tracking-widest ${styles.color} mb-1 flex items-center gap-2`}>
+                                                                    {styles.icon} {event.type.replace('_', ' ')}
+                                                                </div>
+                                                                <h3 className="text-[var(--text)] font-black text-xl italic tracking-tight font-legal leading-tight pr-10">
+                                                                    {event.title}
+                                                                </h3>
                                                             </div>
                                                         </div>
 
-                                                        {/* Description / Content */}
-                                                        <div className="bg-[var(--surface-muted)]/40 p-4 lg:p-5 rounded-[var(--radius-xl)] border border-[var(--border)]/50 mb-5 relative group-hover:bg-[var(--surface-muted)] transition-colors duration-500">
-                                                            <div className={`absolute left-0 top-0 bottom-0 w-1.5 ${styles.bg.replace('/5', '')} transition-all rounded-full`}></div>
-                                                            <p className="text-[var(--text-muted)] text-[13px] lg:text-sm leading-relaxed italic font-medium">
+                                                        <div className="mb-6">
+                                                            <p className="text-[var(--text-muted)] text-[14px] leading-relaxed italic font-legal">
                                                                 "{event.description}"
                                                             </p>
                                                         </div>
